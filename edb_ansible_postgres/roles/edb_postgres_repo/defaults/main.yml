@@ -1,0 +1,21 @@
+---
+# Postgres EDB Postgres Advanced Server CentOS 7 and RHEL 7
+#PG_RPMREPO: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+# Prior to 06/23/2020 - Redesign of EDB Portal
+#PG_RPMREPO: "https://yum.enterprisedb.com/edb-repo-rpms/edb-repo-latest.noarch.rpm"
+# After 06/23/2020 - Redesigned EDB Portal
+
+# EDB RPM Repo
+EDB_RPMREPO: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
+
+# Postgresql Repos
+PG_RPMREPO: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+
+# epel Repo
+EPEL_REPO7: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+
+OS: ""
+PG_TYPE: "PG"
+EDB_YUM_USERNAME: ""
+EDB_YUM_PASSWORD: ""
+FORCE_INSTALL: false
