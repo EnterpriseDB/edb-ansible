@@ -17,7 +17,7 @@ tags:
 - edb
 - edb_postgres_repo
 dependencies: {}
-repository: "https://github.com/EnterpriseDB/edb-ansible"
-documentation: "https://github.com/EnterpriseDB/edb-ansible/README.md"
-homepage: "https://github.com/EnterpriseDB/edb-ansible"
+repository: "https://github.com/EnterpriseDB/edb-ansible/tree/master/edb_ansible_postgres"
+documentation: "https://github.com/EnterpriseDB/edb-ansible/tree/master/edb_ansible_postgres/README.md"
+homepage: "https://github.com/EnterpriseDB/edb-ansible/tree/master/edb_ansible_postgres"
 issues: "https://github.com/EnterpriseDB/edb-ansible/issues"
