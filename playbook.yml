@@ -40,23 +40,23 @@
         with_dict: "{{ hosts }}"
 
   tasks:
-    #    - name: Iterate through repo role with items from hosts file
-    #  include_role:
-    #    name: repo
-    #  with_dict: "{{ hosts }}"
-    #- name: Iterate through install role with items from hosts file
-    #  include_role:
-    #    name: install
-    #  with_dict: "{{ hosts }}"
+    - name: Iterate through repo role with items from hosts file
+      include_role:
+        name: edb_repo
+      with_dict: "{{ hosts }}"
+    - name: Iterate through install role with items from hosts file
+      include_role:
+        name: edb_install
+      with_dict: "{{ hosts }}"
     - name: Iterate through initialize role with items from hosts file
       include_role:
-        name: initialize
+        name: edb_initialize
       with_dict: "{{ hosts }}"
     - name: Iterate through replication role with items from hosts file
       include_role:
-        name: replication
+        name: edb_replication
       with_dict: "{{ hosts }}"
     - name: Iterate through efm install role with items from hosts file
       include_role:
-        name: efminstall
+        name: edb_efminstall
       with_dict: "{{ hosts }}"
