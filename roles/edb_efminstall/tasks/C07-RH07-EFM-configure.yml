@@ -81,4 +81,4 @@
   args:
     creates: "/etc/edb/efm-{{ EFM_VERSION }}/.allowed"
     executable: /bin/bash
-  registe: output
+  register: output
