@@ -1,0 +1,29 @@
+---
+- name: Stop the PG service if it's running
+  systemd:
+      name: postgresql-{{ PG_VERSION }}
+      state: stopped
+  become: yes
+  ignore_errors: yes
+
+- name: Remove required dependencies
+  yum:
+    name:
+      - glibc-common
+      - ca-certificates
+      - python-pycurl
+      - libselinux-python
+      - python-psycopg2
+      - python-ipaddress
+    state: removed
+  become: yes
+  ignore_errors: yes
+
+- name: Remove Postgres
+  yum:
+    name:
+      - postgresql{{ PG_VERSION }}-server
+      - postgresql{{ PG_VERSION }}
+    state: removed
+  become: yes
+  ignore_errors: yes

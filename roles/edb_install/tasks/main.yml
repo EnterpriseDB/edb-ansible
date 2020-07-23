@@ -1,0 +1,49 @@
+---
+# Tasks file for edb.postgres.install Role
+
+# Display if the Operating System is supported
+- name: Display support for Operating System
+  block:
+    - debug:
+        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
+  when: (OS != 'CentOS7' and OS != 'RHEL7')
+
+# Display if the Database Version is not supported
+- name: Display supported versions for Database Engine
+  block:
+    - debug:
+        msg: "Database Engine Version = {{ PG_VERSION }} not supported."
+  when: (PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12')
+
+# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
+- meta: end_play
+  when: (OS != 'CentOS7' and OS != 'RHEL7') or
+        (PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12')
+
+- name: Set force_install based on the user input
+  set_fact:
+    force_install: "{{ item.value.force_install }}"
+  when: item.value.force_install is defined
+  register: output
+
+# Display details of Node being processed
+- name: Display current Node to Install
+  block:
+    - debug:
+        msg: "Operating System = {{ OS }}:
+             Postgres Version = {{ PG_VERSION }},
+             Database Engine = {{ PG_TYPE }},
+             Public IP = {{ item.value.public_ip }}"
+
+- name: Install and Configure Postgres on CentOS7 or RHEL7
+  block:
+    - include_tasks: C07-RH07-{{ PG_TYPE }}-rm-install.yml
+  when: force_install
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Install and Configure Postgres on CentOS7 or RHEL7
+  block:
+    - include_tasks: C07-RH07-{{ PG_TYPE }}-install.yml
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
