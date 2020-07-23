@@ -1,0 +1,62 @@
+---
+- hosts: localhost
+  name: Configure Postgres SQL Replication on Instances
+  connection: local
+  become: true
+  gather_facts: no
+
+  vars_files:
+    - hosts.yml
+
+  #initializing internal variables
+  vars:
+      PRIMARY_PRIVATE_IP: ""
+      PRIMARY_PUBLIC_IP: ""
+      STANDBY_NAMES: []
+      ALL_NODE_IPS: []
+  # Internal processing purpose
+  pre_tasks:
+      - name: Initialize the user defined variables
+        set_fact:
+            OS: "CentOS7"
+            PG_VERSION: "12"
+            PG_TYPE: "EPAS"
+            PG_DATA: "/data/pgdata"
+            PG_WAL: "/data/pg_wal"
+            EDB_YUM_USERNAME: "qmg"
+            EDB_YUM_PASSWORD: "EdB123"
+            STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
+
+            # This is internal variables processing please do not modify
+            ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
+            PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'main') else PRIMARY_PRIVATE_IP }}"
+            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'main') else PRIMARY_PUBLIC_IP }}"
+        with_dict: "{{ hosts }}"
+
+      - name: Gather the standby names
+        set_fact:
+            STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
+        when: item.value.node_type == 'standby'
+        with_dict: "{{ hosts }}"
+
+  tasks:
+    #    - name: Iterate through repo role with items from hosts file
+    #  include_role:
+    #    name: repo
+    #  with_dict: "{{ hosts }}"
+    #- name: Iterate through install role with items from hosts file
+    #  include_role:
+    #    name: install
+    #  with_dict: "{{ hosts }}"
+    - name: Iterate through initialize role with items from hosts file
+      include_role:
+        name: initialize
+      with_dict: "{{ hosts }}"
+    - name: Iterate through replication role with items from hosts file
+      include_role:
+        name: replication
+      with_dict: "{{ hosts }}"
+    - name: Iterate through efm install role with items from hosts file
+      include_role:
+        name: efminstall
+      with_dict: "{{ hosts }}"
