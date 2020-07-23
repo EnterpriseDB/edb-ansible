@@ -1,0 +1,37 @@
+---
+# EFM Credentials
+OS: ""
+PG_VERSION: ""
+EFM_VERSION: "3.10" 
+
+FORCE_EFM_INSTALL: false
+SKIP_EFM_INSTALL: false
+
+USER_HOMEDIR: "~/"
+
+PG_EFM_USER: "efm"
+PG_EFM_USER_PASSWORD: ""
+
+# EFM Data Dir
+PG_DATA: "/var/lib/edb/as{{ PG_VERSION }}/data"
+PG_BIN_PATH: "/usr/edb/as{{ PG_VERSION }}/bin"
+
+PG_SSL: True
+
+EFM_NOTIFICATION_EMAIL: "unknown@gmail.com"
+EFM_SERVICE: "edb-efm-{{ EFM_VERSION }}"
+EFM_NODES_LIST: ""
+
+PG_OWNER: "enterprisedb"
+PG_EFM_DATABASE: "edb"
+
+# Unix socket domain directories
+PG_UNIX_SOCKET_DIRECTORIES:
+   - "/var/run/edb"
+
+
+# Postgres Port
+PG_PORT: 5444
+
+# Postgres Service
+PG_SERVICE: "edb-as-{{ PG_VERSION }}"

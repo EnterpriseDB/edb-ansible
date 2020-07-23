@@ -1,0 +1,28 @@
+
+- name: Copy EDB Postgres Advanced Service File
+  copy:
+    src: "/usr/lib/systemd/system/{{ PG_SERVICE }}.service"
+    dest: "/etc/systemd/system/"
+    remote_src: yes
+  become: yes
+
+- name: Update Postgres Service File
+  lineinfile:
+    path: "/etc/systemd/system/{{ PG_SERVICE }}.service"
+    regexp: "{{ line_item.From }}"
+    line: "{{ line_item.To }}"
+  with_items:
+    - { From: 'Environment=PGDATA={{ PG_DEFAULT_DATA }}', To: 'Environment=PGDATA={{ PG_DATA }}'}
+    - { From: 'PIDFile={{ PG_DEFAULT_DATA }}/postmaster.pid', To: 'PIDFile={{ PG_DATA }}/postmaster.pid'}
+  loop_control:
+    loop_var: line_item
+  become: yes
+  notify: Restart the PG Service
+
+- name: Reload and restart the PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: started
+  become: yes
+

@@ -1,0 +1,76 @@
+---
+
+- name: Find the HBA File location on primary
+  postgresql_query:
+      login_user: "{{ PG_OWNER }}"
+      port: "{{ PG_PORT }}"
+      login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+      query: "SHOW hba_file;"
+      db: "{{ PG_EFM_DATABASE }}"
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  register: hba_info
+
+- name: Add localhost IP address entries into pg_hba file for EFM user
+  postgresql_pg_hba:
+      dest: "{{ hba_info.query_result[0].hba_file }}"
+      contype: host
+      users: "{{ PG_EFM_USER }}"
+      source: "127.0.0.1/32"
+      databases: "{{ PG_EFM_DATABASE }}"
+      method: scram-sha-256
+      create: true
+  when: not PG_SSL
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
+- name: Add all node IP address entries into pg_hba file for efm user
+  postgresql_pg_hba:
+      dest: "{{ hba_info.query_result[0].hba_file }}"
+      contype: host
+      users: "{{ PG_EFM_USER }}"
+      source: "{{ line_items }}/32"
+      databases: "{{ PG_EFM_DATABASE }}"
+      method: scram-sha-256
+      create: true
+  when: not PG_SSL
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items: "{{ ALL_NODE_IPS }}"
+  loop_control:
+      loop_var: line_items
+
+- name: Add localhost IP address entries into pg_hba file for EFM user
+  postgresql_pg_hba:
+      dest: "{{ hba_info.query_result[0].hba_file }}"
+      contype: hostssl
+      users: "{{ PG_EFM_USER }}"
+      source: "127.0.0.1/32"
+      databases: "{{ PG_EFM_DATABASE }}"
+      method: scram-sha-256
+      create: true
+  when: PG_SSL
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
+- name: Add all node IP address entries into pg_hba file for efm user
+  postgresql_pg_hba:
+      dest: "{{ hba_info.query_result[0].hba_file }}"
+      contype: hostssl
+      users: "{{ PG_EFM_USER }}"
+      source: "{{ line_items }}/32"
+      databases: "{{ PG_EFM_DATABASE }}"
+      method: scram-sha-256
+      create: true
+  when: PG_SSL
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items: "{{ ALL_NODE_IPS }}"
+  loop_control:
+      loop_var: line_items
+
+- name: Reload the PG Service
+  systemd:
+    name: "{{ PG_SERVICE }}"
+    state: reloaded
+  become: yes

@@ -1,0 +1,104 @@
+---
+- name: Display Details of Node to Configure
+  block:
+    - debug:
+        msg: "
+             Operating System = {{ OS }}:
+             Postgres Version = {{ PG_VERSION }},
+             Node Type = {{ item.value.node_type }},
+             Public IP = {{ item.value.public_ip }},
+             NODE_TYPE = {{ NODE_TYPE }},
+             PUBLIC_IP = {{ PUBLIC_IP }},
+             PG_DATA = {{ PG_DATA }},
+             PG_OWNER = {{ PG_OWNER }}"
+
+- name: Set PG_REPLICATION_USER pass file
+  set_fact:
+     PASSFILE: "{{ USER_HOMEDIR }}/.edb/{{ PG_REPLICATION_USER }}_pass"
+
+- name: Set PG_REPLICATION_USER_PASSWORD if not provided
+  set_fact:
+      PG_REPLICATION_USER_PASSWORD: "{{ lookup('password', '{{ PASSFILE }} chars=ascii_letters') }}"
+  when: PG_REPLICATION_USER_PASSWORD|length < 1
+
+- name: Create Replication user
+  postgresql_user:
+    name: "{{ PG_REPLICATION_USER }}"
+    password: "{{ PG_REPLICATION_USER_PASSWORD }}"
+    role_attr_flags: REPLICATION
+    login_user: "{{ PG_OWNER }}"
+    login_host: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    db: "{{ PG_DATABASE }}"
+    port: "{{ PG_PORT }}"
+  no_log: True
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
+- name: Find the HBA File location on primary
+  postgresql_query:
+      login_user: "{{ PG_OWNER }}"
+      port: "{{ PG_PORT }}"
+      login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+      query: "SHOW hba_file;"
+      db: "{{ PG_DATABASE }}"
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  register: hba_info
+
+- name: Adding standby IP address entries into pg_hba file on primary
+  postgresql_pg_hba:
+      dest: "{{ hba_info.query_result[0].hba_file }}"
+      contype: host
+      users: "{{ PG_REPLICATION_USER }}"
+      source: "{{ line_items }}/32"
+      databases: replication
+      method: scram-sha-256
+      state: present
+      create: true
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  when: line_items != item.value.private_ip and not PG_SSL
+  with_items: "{{ ALL_NODE_IPS }}"
+  loop_control:
+      loop_var: line_items
+
+
+- name: Adding standby IP address entries into pg_hba file on primary
+  postgresql_pg_hba:
+      dest: "{{ hba_info.query_result[0].hba_file }}"
+      contype: hostssl
+      users: "{{ PG_REPLICATION_USER }}"
+      source: "{{ line_items }}/32"
+      databases: replication
+      method: scram-sha-256
+      state: present
+      create: true
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  when: line_items != item.value.private_ip and PG_SSL
+  with_items: "{{ ALL_NODE_IPS }}"
+  loop_control:
+      loop_var: line_items
+
+- name: "Create physical slots for standbys"
+  postgresql_slot:
+      name: "{{ line_items | replace('.','_') }}"
+      slot_type: physical
+      state: present
+      login_host: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+      port: "{{ PG_PORT }}"
+      login_user: "{{ PG_OWNER }}"
+      db: "{{ PG_DATABASE }}"
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  when: line_items != PRIMARY_PRIVATE_IP
+  with_items: "{{ ALL_NODE_IPS  }}"
+  loop_control:
+      loop_var: line_items
+
+- name: Reload Primary PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: reloaded
+  become: yes
