@@ -23,8 +23,8 @@
             PG_TYPE: "EPAS"
             PG_DATA: "/data/pgdata"
             PG_WAL: "/data/pg_wal"
-            EDB_YUM_USERNAME: "qmg"
-            EDB_YUM_PASSWORD: "EdB123"
+            EDB_YUM_USERNAME: ""
+            EDB_YUM_PASSWORD: ""
             STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
 
             # This is internal variables processing please do not modify
