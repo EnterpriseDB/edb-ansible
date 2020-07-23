@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: Doug Ortiz
+  author: EDB
   description: Installation of Postgres 10, 11 and 12 to RHEL and CentOS on Instances
   company: "EnterpriseDB"
 
