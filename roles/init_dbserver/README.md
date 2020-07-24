@@ -1,4 +1,4 @@
-edb.postgres.initialize
+init_dbserver
 =========
 
 This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11 and 12 on Instances previously configured. 
@@ -19,7 +19,7 @@ The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
 2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install
-3. edb.postgres.repo, edb.postgres.install - This role must have been previously executed on the cluster
+3. setup_repo, install_dbserver - This role must have been previously executed on the cluster
 
 Role Variables
 --------------
@@ -38,8 +38,8 @@ These and other variables can be assigned in the 'pre_tasks' definition of the s
 
 
 The rest of the variables can be configured and are available in the:
-* [roles/edb.postgres.initialize/vars/edb-pg.yml](./roles/edb.postgres.initialize/vars/edb-pg.yml) 
-* [roles/edb.postgres.initialize/vars/edb-epas.yml](./roles/edb.postgres.initialize/vars/edb-epas.yml) 
+* [roles/init_dbserver/vars/edb-pg.yml](./vars/edb-pg.yml) 
+* [roles/init_dbserver/vars/edb-epas.yml](./vars/edb-epas.yml) 
 
 
 
@@ -48,8 +48,8 @@ Dependencies
 
 The edb.postgres.initialize role does depend on the following roles:
 
-* edb.postgres.install
-* edb.postgres.repo
+* install_dbserver
+* setup_repo
 
 Hosts file content
 ----------------
@@ -71,7 +71,7 @@ Content of the hosts.yml file:
 
 
 
-How to include the 'edb.postgres.initialize' role in your Playbook
+How to include the 'init_dbserver' role in your Playbook
 ----------------
 
 Below is an example of how to include the edb.postgres.initialize role:
@@ -116,15 +116,15 @@ Below is an example of how to include the edb.postgres.initialize role:
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
-            name: edb.postgres.initialize
+            name: init_dbserver
           with_dict: "{{ hosts }}"
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 All the variables are available at:
-- [roles/edb.postgres.initialize/defaults/main.yml](./roles/edb.postgres.initialize/defaults/main.yml) 
-- [roles/edb.postgres.initialize/vars/edb-epas.yml](./roles/edb.postgres.initialize/vars/edb-epas.yml) 
+- [roles/init_dbserver/vars/edb-pg.yml](./vars/edb-pg.yml) 
+- [roles/init_dbserver/vars/edb-epas.yml](./vars/edb-epas.yml) 
 
 Database Engines Supported
 ----------------
