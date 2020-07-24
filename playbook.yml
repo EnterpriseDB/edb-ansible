@@ -42,21 +42,21 @@
   tasks:
     - name: Iterate through repo role with items from hosts file
       include_role:
-        name: edb_repo
+        name: setup_repo
       with_dict: "{{ hosts }}"
     - name: Iterate through install role with items from hosts file
       include_role:
-        name: edb_install
+        name: install_dbserver
       with_dict: "{{ hosts }}"
     - name: Iterate through initialize role with items from hosts file
       include_role:
-        name: edb_initialize
+        name: init_dbserver
       with_dict: "{{ hosts }}"
     - name: Iterate through replication role with items from hosts file
       include_role:
-        name: edb_replication
+        name: setup_replication
       with_dict: "{{ hosts }}"
     - name: Iterate through efm install role with items from hosts file
       include_role:
-        name: edb_efminstall
+        name: setup_install
       with_dict: "{{ hosts }}"
