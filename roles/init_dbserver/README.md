@@ -8,7 +8,7 @@ This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advance
 
 **Note:**
 The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server for replication it only installs Postgres or EnterpriseDB Postgres Advanced Server across multiple nodes: Main and Standby.
-Should there be a need to configure a Postgres or EnterpriseDB Postgres Advanced Server Cluster for replication you can utilize the **edb.postgres.replication** role.
+Should there be a need to configure a Postgres or EnterpriseDB Postgres Advanced Server Cluster for replication you can utilize the **setup_replication** role.
 
 **The ansible playbook must be executed under an account that has full privileges.**
 
