@@ -1,0 +1,142 @@
+---
+# Tasks file for edb.postgres.install Role
+
+# Reference EPAS Variables
+- name: Reference EPAS Variables
+  include_vars: edb-epas.yml
+  when: PG_TYPE == 'EPAS'
+
+- name: Reference EPAS Variables
+  include_vars: edb-pg.yml
+  when: PG_TYPE == 'PG'
+
+# Display if the Operating System is supported
+- name: Display support for Operating System
+  block:
+    - debug:
+        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
+  when: OS != 'CentOS7' and OS != 'RHEL7'
+
+# Display if the Database Version is not supported
+- name: Display supported versions for Database Engine
+  block:
+    - debug:
+        msg: "Database Engine Version = {{ PG_VERSION }} not supported."
+  when: PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
+
+# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
+- meta: end_play
+  when: OS != 'CentOS7' and OS != 'RHEL7' or
+        PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
+
+# Configure Variables
+- name: Display details of Node to Configure
+  block:
+    - debug:
+        msg:
+            "Operating System = {{ OS }}:
+             Postgres Version = {{ PG_VERSION }},
+             Node Type = {{ item.value.node_type }},
+             Public IP = {{ item.value.public_ip }},
+             Postgres Type = {{ PG_TYPE }},
+             ALL_NODE_IPS = {{ ALL_NODE_IPS }},
+             PRIMARY_PRIVATE_IP = {{ PRIMARY_PRIVATE_IP }},
+            STANDBY_NAMES = {{ STANDBY_NAMES }}"
+
+# Setting variables available in all nodes
+- name: Assign variables
+  set_fact:
+    NODE_TYPE: "{{ item.value.node_type }}"
+    PUBLIC_IP: "{{ item.value.public_ip }}"
+  register: output
+
+- name: set FORCE_REPLICATION based on the user input
+  set_fact:
+      FORCE_REPLICATION: "{{ item.value.force_replication }}"
+  when: item.value.force_replication is defined
+  register: output
+
+- name: set SKIP_REPLICATION based on the user input
+  set_fact:
+      SKIP_REPLICATION: "{{ item.value.skip_replication }}"
+  when: item.value.skip_replication is defined
+  register: output
+
+- name: Force cleanup based on force_replication
+  block:
+    - include_tasks: C07-RH07-rm-replication.yml
+  when:
+      - FORCE_REPLICATION
+      - not SKIP_REPLICATION
+      - NODE_TYPE == 'standby'
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+# Postgres
+- name: Updating primary server for replication
+  block:
+      - import_tasks: C07-RH07-update-primary.yml
+  become: yes
+  when:
+      - NODE_TYPE == 'main'
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Verify if we have standby intialized already
+  block:
+    - import_tasks: C07-RH07-create-directories.yml
+    - import_tasks: C07-RH07-check-service.yml
+  become: yes
+  when:
+      - not SKIP_REPLICATION
+      - NODE_TYPE == 'standby'
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Update the SSL based on the options
+  block:
+    - import_tasks: C07-RH07-ssl-configure.yml
+  become: yes
+  when:
+      - NODE_TYPE == 'standby'
+      - PG_SSL
+      - PG_SSL_GENERATE
+      - not SKIP_REPLICATION
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: building standby
+  block:
+    - import_tasks: C07-RH07-pg-basebackup.yml
+    - import_tasks: C07-RH07-update-service.yml
+  become: yes
+  when:
+      - not SKIP_REPLICATION
+      - NODE_TYPE == 'standby'
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Configure standby and update primary node
+  block:
+    - import_tasks: C07-RH07-configure-node.yml
+    - import_tasks: C07-RH07-sql-standby-names.yml
+    - import_tasks: C07-RH07-post-standby-primary.yml
+  when:
+      - not SKIP_REPLICATION
+      - NODE_TYPE == 'standby'
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- meta: flush_handlers
+
+- name: Update the conf/hba
+  block:
+    - import_tasks: C07-RH07-update-conf-hba.yml
+  when:
+      - NODE_TYPE == 'standby'
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- meta: flush_handlers
+
+- name: Reset FORCE/SKIP_REPLICATION based on the user input
+  set_fact:
+      FORCE_REPLICATION: false
+      SKIP_REPLICATION: false
+  register: output

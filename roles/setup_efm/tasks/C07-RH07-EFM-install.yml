@@ -1,0 +1,13 @@
+---
+- name: Install Software for EFM
+  yum:
+    name:
+      - edb-efm{{ EFM_INSTALL_VERSION }}
+  become: yes
+
+- name: Install EFM dependencies
+  yum:
+    name:
+      - java-1.8.0-openjdk
+      - mailx
+  become: yes

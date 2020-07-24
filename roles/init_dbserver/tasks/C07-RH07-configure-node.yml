@@ -1,0 +1,61 @@
+---
+
+- name: Set PG_SUPERUSER_PASSWORD if not provided
+  set_fact:
+      PG_SUPERUSER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_SUPERUSER }}_pass chars=ascii_letters') }}"
+      PG_RANDOM_PASSWORD: true
+  when: PG_SUPERUSER_PASSWORD|length < 1
+  delegate_to: localhost
+
+- name: Make sure file is has permission for owner only
+  file:
+    path: "{{ USER_HOMEDIR }}/.edb/{{ PG_SUPERUSER }}_pass"
+    mode: 0600
+  when: PG_RANDOM_PASSWORD
+  delegate_to: localhost
+
+- name: Set Postgres Superuser's Database Cluster Password
+  postgresql_user:
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    name: "{{ PG_SUPERUSER }}"
+    password: "{{ PG_SUPERUSER_PASSWORD }}"
+    role_attr_flags: SUPERUSER
+    port: "{{ PG_PORT }}"
+    db: "{{ PG_DATABASE }}"
+    state: present
+    login_user: "{{ PG_OWNER }}"
+  no_log: true
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
+- name: Configure unix socket directory
+  postgresql_set:
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    port: "{{ PG_PORT }}"
+    db: "{{ PG_DATABASE }}"
+    login_user: "{{ PG_OWNER }}"
+    name: "{{ line_item.name }}"
+    value: "{{ line_item.value }}"
+  with_items: "{{ PG_POSTGRES_DEFAULT_CONF_PARAMS }}"
+  become: true
+  become_user: "{{ PG_OWNER }}"
+  loop_control:
+    loop_var: line_item
+  notify: Restart the PG Service
+
+- name: Configure log_file_name
+  postgresql_set:
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    port: "{{ PG_PORT }}"
+    db: "{{ PG_DATABASE }}"
+    login_user: "{{ PG_OWNER }}"
+    name: "{{ line_item.name }}"
+    value: "{{ line_item.value }}"
+  when: PG_LOG in PG_LOG_FILENAME and not PG_DATA in PG_LOG
+  with_items:
+      - { name: "log_filename", value: "{{ PG_LOG_FILENAME }}" }
+  become: true
+  become_user: "{{ PG_OWNER }}"
+  loop_control:
+    loop_var: line_item
+  notify: Reload the PG Service

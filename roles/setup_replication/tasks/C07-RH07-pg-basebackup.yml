@@ -1,0 +1,46 @@
+- name: Define pg_basebackup command.
+  set_fact:
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' -D ' + PG_DATA }}"
+
+- name: Verify PG_WAL and accordingly add the in the INITDB
+  set_fact:
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --waldir=' + PG_WAL }}"
+  when: PG_WAL|length > 0  and not PG_DATA in PG_WAL
+
+- name: Add slot_name in pg_basebackup
+  set_fact:
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --slot=' }}{{ item.value.private_ip | replace('.','_') }}"
+
+- name: set replication user information
+  set_fact:
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --username=' + PG_REPLICATION_USER }}"
+  when: PG_REPLICATION_USER|length > 0
+
+- name: set host and port
+  set_fact:
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --host=' + PRIMARY_PRIVATE_IP + ' --port=' + PG_PORT }}"
+
+- name: Use other supplied options if given
+  set_fact:
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' ' + PG_BASEBACKUP_OPTIONS }}"
+  when: PG_BASEBACKUP_OPTIONS|length > 0
+
+- name: Create a .pgpass
+  copy:
+    dest: ~/.pgpass
+    content: |
+        *:{{ PG_PORT }}:*:{{ PG_REPLICATION_USER }}:{{ PG_REPLICATION_USER_PASSWORD }}
+    mode: 0600
+    owner: "{{ PG_OWNER }}"
+    group: "{{ PG_OWNER }}"
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
+- name: Create standby
+  shell: |
+    PGAPPNAME={{ item.key }} {{ PG_BASEBACKUP }}
+  args:
+    creates: "{{ PG_DATA }}/PG_VERSION"
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
