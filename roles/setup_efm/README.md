@@ -1,4 +1,4 @@
-edb.efm.install
+setup_efm
 =========
 
 This Ansible Galaxy Role Installs EFM versions: 3.7, 3.8 and 3.9 on Instances previously configured.
@@ -12,10 +12,10 @@ The role only installs EPAS: 10, 11 or 12 along with EFM: 3.7, 3.8 or 3.9 across
 **Note:**
 The role does not configure EDB Postgres Advanced Server or PostgreSQL for replication it only installs EDB Postgres Failover Manager (EFM) across multiple nodes and configure database nodes for EFM monitornig and HA management.
 If you want to configure EDB Advanced Server Cluster of PostgreSQL, then please user following module:
-1. edb.postgres.repo : For installing the EPAS/PG repository
-2. edb.postgres.install: For installing the EPAS/PG binaries
-3. edb.postgres.initialize: For initializing the EPAS/PG data directory and configuring a primary/master node.
-4. edb.postgres.replication: For creating the standby.
+1. setup_repo : For installing the EPAS/PG repository
+2. install_dbserver: For installing the EPAS/PG binaries
+3. init_dbserver: For initializing the EPAS/PG data directory and configuring a primary/master node.
+4. setup_replication: For creating the standby.
 
 **The ansible playbook must be executed under an account that has full privileges.**
 
@@ -43,7 +43,7 @@ When executing the role via ansible the variables listed below are required:
 
 
 The rest of the variables can be configured and are available in the:
-* [roles/edb.efm.install/defaults/main.yml](./roles/edb.efm.install/defaults/main.yml) 
+* [roles/setup_efm/defaults/main.yml](./defaults/main.yml) 
 
 Dependencies
 ------------
@@ -75,7 +75,7 @@ Content of the hosts.yml file:
 
 
 
-How to include the 'edb.efm.install' role in your Playbook
+How to include the 'setup_efm' role in your Playbook
 ----------------
 
 Below is an example of how to include the edb.efm.install role:
@@ -119,7 +119,7 @@ Below is an example of how to include the edb.efm.install role:
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
-            name: edb.efm.install
+            name: setup_efm
           with_dict: "{{ hosts }}"
 
 
@@ -127,8 +127,8 @@ Below is an example of how to include the edb.efm.install role:
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 All the variables are available at:
-- [roles/edb.efm.install/vars/edb-epas.yml](./roles/edb.efm.install/vars/edb-epas.yml) 
-- [roles/edb.efm.install/vars/edb-pg.yml](./roles/edb.efm.install/vars/edb-pg.yml) 
+- [roles/setup_efm/vars/edb-epas.yml](./vars/edb-epas.yml) 
+- [roles/setup_efm/vars/edb-pg.yml](./vars/edb-pg.yml) 
 
 
 Database Engines Supported
