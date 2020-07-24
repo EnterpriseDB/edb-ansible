@@ -33,7 +33,7 @@ When executing the role via ansible these are the required variables:
 * PG_TYPE
   Database Engine supported are: PG and EPAS
 
-These and other variables can be assigned in the 'pre_tasks' definition of the section: 'How to include the 'edb.postgres.install' role in your Playbook'
+These and other variables can be assigned in the 'pre_tasks' definition of the section: 'How to include the 'install_dbserver' role in your Playbook'
 
 
 
@@ -45,7 +45,7 @@ The rest of the variables can be configured and are available in the:
 Dependencies
 ------------
 
-The edb.postgres.install role does not have any dependencies on any other roles.
+The install_dbserver role does not have any dependencies on any other roles.
 
 Hosts file content
 ----------------
