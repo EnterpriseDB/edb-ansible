@@ -28,7 +28,7 @@
             EDB_YUM_PASSWORD: ""
             STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
       
-      - name: Populate internal variables for collections
+      - name: Populate internal variables for roles.
         set_fact:
             # This is internal variables processing please do not modify
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
