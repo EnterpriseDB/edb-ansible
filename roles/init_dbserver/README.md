@@ -33,7 +33,7 @@ When executing the role via ansible there are two required variables:
 * PG_TYPE
   Database Engine supported are: PG and EPAS
 
-These and other variables can be assigned in the 'pre_tasks' definition of the section: 'How to include the 'edb.postgres.initialize' role in your Playbook'
+These and other variables can be assigned in the 'pre_tasks' definition of the section: 'How to include the 'init_dbserver' role in your Playbook'
 
 
 
@@ -46,7 +46,7 @@ The rest of the variables can be configured and are available in the:
 Dependencies
 ------------
 
-The edb.postgres.initialize role does depend on the following roles:
+The init_dbserver role does depend on the following roles:
 
 * install_dbserver
 * setup_repo
@@ -74,7 +74,7 @@ Content of the hosts.yml file:
 How to include the 'init_dbserver' role in your Playbook
 ----------------
 
-Below is an example of how to include the edb.postgres.initialize role:
+Below is an example of how to include the init_dbserver role:
 
 
 

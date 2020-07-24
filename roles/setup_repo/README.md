@@ -68,7 +68,7 @@ Content of the hosts.yml file:
 How to include the 'setup_repo' role in your Playbook
 ----------------
 
-Below is an example of how to include the edb_postgres_repo role:
+Below is an example of how to include the setup_repo role:
 
 
 
@@ -93,7 +93,7 @@ Below is an example of how to include the edb_postgres_repo role:
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
-            name: edb_postgres_repo
+            name: setup_repo
           with_dict: "{{ hosts }}"
 
 

@@ -30,7 +30,7 @@ The rest of the variables can be configured and are available in the:
 Dependencies
 ------------
 
-The edb.postgres.replication role does not have any dependencies on any other roles.
+The setup_replication role does not have any dependencies on any other roles.
 
 Hosts file content
 ----------------
@@ -60,7 +60,7 @@ Content of the hosts.yml file:
 How to include the 'setup_replication' role in your Playbook
 ----------------
 
-Below is an example of how to include the edb.postgres.install role:
+Below is an example of how to include the setup_replication role:
 
 
 
