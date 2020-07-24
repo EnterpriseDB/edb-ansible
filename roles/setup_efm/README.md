@@ -48,7 +48,7 @@ The rest of the variables can be configured and are available in the:
 Dependencies
 ------------
 
-The edb.efm.install role does not have any dependencies on any other roles.
+The setup_efm role does not have any dependencies on any other roles.
 
 Hosts file content
 ----------------
@@ -78,7 +78,7 @@ Content of the hosts.yml file:
 How to include the 'setup_efm' role in your Playbook
 ----------------
 
-Below is an example of how to include the edb.efm.install role:
+Below is an example of how to include the setup_efm role:
 
 
 
