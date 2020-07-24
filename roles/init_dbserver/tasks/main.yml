@@ -80,6 +80,7 @@
       - not SKIP_INITIALIZE
       - NODE_TYPE == 'main'
   delegate_to: "{{ item.value.public_ip }}"
+
 - meta: flush_handlers
 
 - name: Configure SSL based on PG_SSL configuration

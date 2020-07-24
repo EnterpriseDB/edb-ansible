@@ -47,4 +47,5 @@
     path: "{{ USER_HOMEDIR }}/.edb"
     mode: 0700
     state: directory
+  become: no
   delegate_to: localhost

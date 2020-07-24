@@ -20,6 +20,8 @@
   set_fact:
       PG_REPLICATION_USER_PASSWORD: "{{ lookup('password', '{{ PASSFILE }} chars=ascii_letters') }}"
   when: PG_REPLICATION_USER_PASSWORD|length < 1
+  become: no
+  delegate_to: localhost
 
 - name: Create Replication user
   postgresql_user:

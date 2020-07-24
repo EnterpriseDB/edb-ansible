@@ -1,6 +1,6 @@
 ---
 
-- name: Restart the EFM service
+- name: Restart the EFM Service
   systemd:
     name: "{{ EFM_SERVICE }}"
     enabled: yes

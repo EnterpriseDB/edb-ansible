@@ -5,6 +5,7 @@
       PG_SUPERUSER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_SUPERUSER }}_pass chars=ascii_letters') }}"
       PG_RANDOM_PASSWORD: true
   when: PG_SUPERUSER_PASSWORD|length < 1
+  become: no
   delegate_to: localhost
 
 - name: Make sure file is has permission for owner only
@@ -12,6 +13,7 @@
     path: "{{ USER_HOMEDIR }}/.edb/{{ PG_SUPERUSER }}_pass"
     mode: 0600
   when: PG_RANDOM_PASSWORD
+  become: no
   delegate_to: localhost
 
 - name: Set Postgres Superuser's Database Cluster Password

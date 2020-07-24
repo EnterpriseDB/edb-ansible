@@ -3,6 +3,8 @@
   set_fact:
       PG_EFM_USER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_EFM_USER }}_pass chars=ascii_letters') }}"
   when: PG_EFM_USER_PASSWORD|length < 1
+  become: no
+  delegate_to: localhost
 
 - name: Create EDB efm role if not exists
   postgresql_user:
