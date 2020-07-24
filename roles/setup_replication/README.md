@@ -23,7 +23,7 @@ When executing the role via ansible there are two required variables:
   The type of postgres : EPAS or PG
 
 The rest of the variables can be configured and are available in the:
-* [roles/edb.postgres.replication/defaults/main.yml](roles/edb.postgres.replication/defaults/main.yml)
+* [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
 
 Dependencies
 ------------
@@ -55,7 +55,7 @@ Content of the hosts.yml file:
 
 
 
-How to include the 'edb.postgres.replication' role in your Playbook
+How to include the 'setup_replication' role in your Playbook
 ----------------
 
 Below is an example of how to include the edb.postgres.install role:
@@ -99,15 +99,15 @@ Below is an example of how to include the edb.postgres.install role:
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
-            name: edb.postgres.replication
+            name: setup_replication
           with_dict: "{{ hosts }}"
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 All the variables are available at:
-- [roles/edb.postgres.replication/vars/edb-epas.yml](./roles/edb.postgres.replication/vars/edb-epas.yml) 
-- [roles/edb.postgres.replication/vars/edb-pg.yml](./roles/edb.postgres.replication/vars/edb-pg.yml) 
+- [roles/setup_replication/vars/edb-epas.yml](./vars/edb-epas.yml) 
+- [roles/setup_replication/vars/edb-pg.yml](./vars/edb-pg.yml) 
 
 Database Engines Supported
 ----------------
