@@ -1,4 +1,4 @@
-edb.postgres.install
+install_dbserver
 =========
 
 This Ansible Galaxy Role Installs Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11 and 12 on Instances previously configured. 
@@ -8,7 +8,7 @@ This Ansible Galaxy Role Installs Postgres or EnterpriseDB Postgresql Advanced S
 
 **Note:**
 The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server for replication it only installs Postgres or EnterpriseDB Postgres Advanced Server across multiple nodes: Main and Standby.
-Should there be a need to configure a Postgres or EnterpriseDB Postgres Advanced Server Cluster for replication you can utilize the **edb.postgres.replication** role.
+Should there be a need to configure a Postgres or EnterpriseDB Postgres Advanced Server Cluster for replication you can utilize the **setup_replication** role.
 
 **The ansible playbook must be executed under an account that has full privileges.**
 
@@ -19,6 +19,7 @@ The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
 2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install
+3. set_repo for setting the repository on the systems
 
 Role Variables
 --------------
@@ -37,7 +38,7 @@ These and other variables can be assigned in the 'pre_tasks' definition of the s
 
 
 The rest of the variables can be configured and are available in the:
-* [roles/edb.postgres.install/defaults/main.yml](./roles/edb.postgres.install/defaults/main.yml) 
+* [roles/install_dbserver/defaults/main.yml](./defaults/main.yml) 
 
 
 
@@ -66,10 +67,10 @@ Content of the hosts.yml file:
 
 
 
-How to include the 'edb.postgres.install' role in your Playbook
+How to include the 'install_dbserver' role in your Playbook
 ----------------
 
-Below is an example of how to include the edb.postgres.install role:
+Below is an example of how to include the install_dbserver role:
 
 
 
@@ -95,14 +96,14 @@ Below is an example of how to include the edb.postgres.install role:
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
-            name: edb.postgres.install
+            name: install_dbserver
           with_dict: "{{ hosts }}"
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 All the variables are available at:
-- [roles/edb.postgres.install/defaults/main.yml](./roles/edb.postgres.install/defaults/main.yml) 
+- [roles/install_dbserver/defaults/main.yml](./defaults/main.yml)
 
 Database Engines Supported
 ----------------
