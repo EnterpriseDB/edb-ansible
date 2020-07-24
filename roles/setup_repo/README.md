@@ -1,4 +1,4 @@
-edb_postgres_repo
+setup_repo
 =========
 
 This Ansible Galaxy Role sets up and configures the repositories from which packages will be retrieved for any Postgres or EnterpriseDB Postgresql Advanced Server installations.
@@ -8,7 +8,7 @@ This Ansible Galaxy Role sets up and configures the repositories from which pack
 
 **Note:**
 The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server for replication it only installs Postgres or EnterpriseDB Postgres Advanced Server across multiple nodes.
-Should there be a need to install and/or configure a Postgres or EnterpriseDB Postgres Advanced Server Cluster you can utilize the **edb_postgres_install** role.
+Should there be a need to install and/or configure a Postgres or EnterpriseDB Postgres Advanced Server Cluster you can utilize the **install_dbserver** role.
 
 **The ansible playbook must be executed under an account that has full privileges.**
 
@@ -36,14 +36,14 @@ When executing the role via ansible these are the required variables:
 
 
 The rest of the variables can be configured and are available in the:
-* [roles/edb_postgres_repo/defaults/main.yml](./roles/edb_postgres_repo/defaults/main.yml) 
+* [roles/setup_repo/defaults/main.yml](./defaults/main.yml) 
 
 
 
 Dependencies
 ------------
 
-The edb_postgres_repo role does not have any dependencies on any other roles.
+The setup_repo role does not have any dependencies on any other roles.
 
 Hosts file content
 ----------------
@@ -65,7 +65,7 @@ Content of the hosts.yml file:
 
 
 
-How to include the 'edb_postgres_repo' role in your Playbook
+How to include the 'setup_repo' role in your Playbook
 ----------------
 
 Below is an example of how to include the edb_postgres_repo role:
@@ -100,7 +100,7 @@ Below is an example of how to include the edb_postgres_repo role:
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 All the variables are available at:
-- [roles/edb_postgres_repo/defaults/main.yml](./roles/edb_postgres_repo/defaults/main.yml) 
+- [roles/setup_repo/defaults/main.yml](./defaults/main.yml) 
 
 
 Database Engines Supported
