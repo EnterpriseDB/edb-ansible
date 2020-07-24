@@ -118,6 +118,8 @@
   become_user: root
   delegate_to: "{{ item.value.public_ip }}"
 
+- meta: flush_handlers
+
 - name: Install and Configure Postgres on CentOS7 or RHEL7
   block:
     - import_tasks: C07-RH07-EFM-install.yml
@@ -127,6 +129,8 @@
   become: yes
   become_user: root
   delegate_to: "{{ item.value.public_ip }}"
+
+- meta: flush_handlers
 
 - name: Reset FORCE/SKIPP_EFM_INSTALL based on the user input
   set_fact:

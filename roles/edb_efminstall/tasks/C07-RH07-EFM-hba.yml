@@ -23,6 +23,7 @@
   when: not PG_SSL
   become: yes
   become_user: "{{ PG_OWNER }}"
+  notify: Reload the PG Service
 
 - name: Add all node IP address entries into pg_hba file for efm user
   postgresql_pg_hba:
@@ -39,6 +40,7 @@
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
+  notify: Reload the PG Service
 
 - name: Add localhost IP address entries into pg_hba file for EFM user
   postgresql_pg_hba:
@@ -52,6 +54,7 @@
   when: PG_SSL
   become: yes
   become_user: "{{ PG_OWNER }}"
+  notify: Reload the PG Service
 
 - name: Add all node IP address entries into pg_hba file for efm user
   postgresql_pg_hba:
@@ -68,9 +71,5 @@
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
+  notify: Reload the PG Service
 
-- name: Reload the PG Service
-  systemd:
-    name: "{{ PG_SERVICE }}"
-    state: reloaded
-  become: yes

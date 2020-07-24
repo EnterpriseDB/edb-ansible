@@ -1,21 +1,14 @@
 ---
 
-- name: create dummy_check_file
-  file:
-    path: /tmp/check_service
-    mode: 0600
-    state: touch
-  become: yes
-
 - name: Check if Cluster has been initialized
   shell: |
       #/bin/bash
       systemctl is-active --quiet {{ PG_SERVICE }} \
       && echo "service_running" || echo "service_not_running"
-      rm /tmp/check_service
   args:
     removes: /tmp/check_service
     executable: /bin/bash
+  changed_when: "'service_not_running' in service_status.stdout"
   become: yes
   register: service_status
 

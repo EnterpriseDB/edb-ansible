@@ -80,6 +80,7 @@
       - not SKIP_INITIALIZE
       - NODE_TYPE == 'main'
   delegate_to: "{{ item.value.public_ip }}"
+- meta: flush_handlers
 
 - name: Configure SSL based on PG_SSL configuration
   block:
@@ -91,6 +92,8 @@
       - not SKIP_INITIALIZE
   delegate_to: "{{ item.value.public_ip }}"
 
+- meta: flush_handlers
+
 - name: Apply any user defined settings, users, databases and configurations
   block:
     - import_tasks: C07-RH07-users.yml
@@ -99,6 +102,8 @@
   when:
       - NODE_TYPE == 'main'
   delegate_to: "{{ item.value.public_ip }}"
+
+- meta: flush_handlers
 
 - name: Reset FORCE/SKIP_INITIALIZE based on the user input
   set_fact:

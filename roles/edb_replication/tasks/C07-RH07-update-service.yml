@@ -19,7 +19,7 @@
   become: yes
   notify: Restart the PG Service
 
-- name: Reload and restart the PG Service
+- name: Start the PG Service
   systemd:
       name: "{{ PG_SERVICE }}"
       daemon_reload: yes

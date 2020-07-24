@@ -123,6 +123,8 @@
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 
+- meta: flush_handlers
+
 - name: Update the conf/hba
   block:
     - import_tasks: C07-RH07-update-conf-hba.yml
@@ -130,6 +132,8 @@
       - NODE_TYPE == 'standby'
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
+
+- meta: flush_handlers
 
 - name: Reset FORCE/SKIP_REPLICATION based on the user input
   set_fact:
