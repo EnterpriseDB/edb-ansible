@@ -1,5 +1,5 @@
 ---
-# Tasks file for edb.postgres.install Role
+# Tasks file for install_dbserver Role
 
 # Display if the Operating System is supported
 - name: Display support for Operating System
