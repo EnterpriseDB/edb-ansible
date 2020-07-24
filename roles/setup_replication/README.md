@@ -9,6 +9,8 @@ The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
 2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install. Only on main nodes.
+3. setup_repo - for repository installation
+4. install_dbserver - for installation of PostgreSQL/EPAS binaries.
 
 Role Variables
 --------------
