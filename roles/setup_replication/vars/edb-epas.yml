@@ -9,6 +9,7 @@ PG_LOG: ""
 PG_WAL: ""
 
 USER_HOMEDIR: "~/"
+LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
 PG_OWNER: "enterprisedb"
 PG_GROUP: "enterprisedb"
 PG_SSL: True
@@ -20,7 +21,6 @@ PG_REPLICATION_USER_PASSWORD: ""
 SYNCHRONOUS_STANDBY_NAMES: ""
 
 RANDOM_STRING: ""
-LOCAL_SSL_DIR: ""
     
 PG_DATABASE: "edb"
 PG_SERVICE: "edb-as-{{ PG_VERSION }}"

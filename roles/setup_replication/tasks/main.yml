@@ -73,14 +73,6 @@
   delegate_to: "{{ item.value.public_ip }}"
 
 # Postgres
-- name: Updating primary server for replication
-  block:
-      - import_tasks: C07-RH07-update-primary.yml
-  become: yes
-  when:
-      - NODE_TYPE == 'main'
-  delegate_to: "{{ item.value.public_ip }}"
-
 - name: Verify if we have standby intialized already
   block:
     - import_tasks: C07-RH07-create-directories.yml
@@ -90,6 +82,17 @@
       - not SKIP_REPLICATION
       - NODE_TYPE == 'standby'
   delegate_to: "{{ item.value.public_ip }}"
+
+- name: Updating primary server for replication
+  block:
+      - import_tasks: C07-RH07-update-primary.yml
+  become: yes
+  when:
+      - not SKIP_REPLICATION
+      - NODE_TYPE == 'standby'
+  delegate_to: "{{ item.value.public_ip }}"
+
+- meta: flush_handlers
 
 - name: Update the SSL based on the options
   block:

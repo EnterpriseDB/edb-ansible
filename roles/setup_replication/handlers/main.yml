@@ -29,6 +29,13 @@
       name: "{{ PG_SERVICE }}"
       daemon_reload: yes
       state: reloaded
-  delegate_to: "{{ item.value.public_ip }}"
   become: yes
+  delegate_to: "{{ item.value.public_ip }}"
 
+- name: Reload the Primary PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: reloaded
+  become: yes
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"

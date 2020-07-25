@@ -37,7 +37,7 @@
 
 - name: set FORCE_INSTALL based on the user input
   set_fact:
-      force_install: "{{ item.value.force_install }}"
+      FORCE_INSTALL: "{{ item.value.force_install }}"
   when: item.value.force_install is defined
   register: output
 
@@ -53,7 +53,7 @@
 - name: Cleanup the repos based on force_install
   block:
     - include_tasks: C07-RH07-{{ PG_TYPE }}-rm-repos.yml
-  when: force_install
+  when: FORCE_INSTALL
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 

@@ -3,4 +3,4 @@
 OS: ""
 PG_TYPE: "PG"
 PG_VERSION: "12"
-force_install: false
+FORCE_INSTALL: false

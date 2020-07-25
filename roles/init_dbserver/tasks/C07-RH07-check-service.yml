@@ -6,7 +6,6 @@
       systemctl is-active --quiet {{ PG_SERVICE }} \
       && echo "service_running" || echo "service_not_running"
   args:
-    removes: /tmp/check_service
     executable: /bin/bash
   changed_when: "'service_not_running' in service_status.stdout"
   become: yes

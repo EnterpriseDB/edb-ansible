@@ -38,10 +38,10 @@ new_standby_list AS (
             ''
         END AS old_number,
         CASE WHEN number_of_synchoronous ~ '^[0-9]+$'
-            AND '{{ item.key }}' != ANY (string_to_array(sync_standby_list, ',')) THEN
+            AND NOT ARRAY['{{ item.key }}'] &&  string_to_array(sync_standby_list, ',') THEN
             ' ' || (number_of_synchoronous::integer + 1)::text
         WHEN number_of_synchoronous ~ '^[0-9]+$'
-            AND '{{ item.key }}' = ANY (string_to_array(sync_standby_list, ',')) THEN
+            AND ARRAY['{{ item.key }}'] && string_to_array(sync_standby_list, ',') THEN
             ' ' || number_of_synchoronous::text
         ELSE
             ''

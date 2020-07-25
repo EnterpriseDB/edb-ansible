@@ -22,7 +22,8 @@ PG_SSL: True
 PG_SSL_DIR: "/etc/edb/certs"
 PG_SSL_GENERATE: True
 
-LOCAL_SSL_DIR: ""
+USER_HOMEDIR: "~/"
+LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
 RANDOM_STRING: ""
 
 PG_OWNER: "postgres"

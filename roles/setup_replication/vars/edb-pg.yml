@@ -11,7 +11,7 @@ PG_LOG_FILENAME: "postgresql.log"
 
 USER_HOMEDIR: "~/"
 
-LOCAL_SSL_DIR: ""
+LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
 RANDOM_STRING: ""
 SYNCHRONOUS_STANDBY_NAMES: ""
 PG_OWNER: "postgres"

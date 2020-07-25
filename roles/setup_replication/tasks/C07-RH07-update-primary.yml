@@ -35,6 +35,7 @@
   no_log: True
   become: yes
   become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
 
 - name: Find the HBA File location on primary
   postgresql_query:
@@ -45,6 +46,7 @@
       db: "{{ PG_DATABASE }}"
   become: yes
   become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
   register: hba_info
 
 - name: Adding standby IP address entries into pg_hba file on primary
@@ -63,6 +65,8 @@
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
+  notify: Reload the Primary PG Service
 
 
 - name: Adding standby IP address entries into pg_hba file on primary
@@ -81,6 +85,8 @@
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
+  notify: Reload the Primary PG Service
 
 - name: "Create physical slots for standbys"
   postgresql_slot:
@@ -97,10 +103,4 @@
   with_items: "{{ ALL_NODE_IPS  }}"
   loop_control:
       loop_var: line_items
-
-- name: Reload Primary PG Service
-  systemd:
-      name: "{{ PG_SERVICE }}"
-      daemon_reload: yes
-      state: reloaded
-  become: yes
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"

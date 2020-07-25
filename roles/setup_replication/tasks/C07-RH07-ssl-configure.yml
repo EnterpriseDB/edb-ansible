@@ -1,26 +1,16 @@
 ---
 
-- name: set local ssl file
-  set_fact:
-      LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
-  register: output
-
-- name: create the local ssl directory
-  file:
-      path: "{{ PG_SSL_DIR }}/.list"
-      state: touch
-  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
-
 - name: list the ssl file
   shell: |
     #!/bin/bash
     set -o pipefail
     set -e
-    rm -f {{ PG_SSL_DIR }}/.list
-    ls -1 {{ PG_SSL_DIR }}
+    ls -1 {{ PG_SSL_DIR }} \
+       || echo "list_failed"
   args:
-    removes: "{{ PG_SSL_DIR }}/.list"
     executable: /bin/bash
+  failed_when: "'list_failed' in ssl_file.stdout"
+  changed_when: "'list_failed' in ssl_file.stdout"
   register: ssl_file
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
 
@@ -31,10 +21,13 @@
   become: no
   delegate_to: localhost
 
-- name: create the local ssl directory
+- name: create the ssl directory on the server
   file:
       path: "{{ PG_SSL_DIR }}"
       state: directory
+      recurse: yes
+      owner: "{{ PG_OWNER }}"
+  become: yes
 
 - name: fetch ssl to local
   fetch:
@@ -55,14 +48,6 @@
       loop_var: line_item
   become: yes
 
-- name: Change ownership of the SSL
-  file:
-      path: "{{ PG_SSL_DIR }}"
-      state: directory
-      recurse: yes
-      owner: "{{ PG_OWNER }}"
-  become: yes
-
 - name: Change the SSL files permission
   file:
       path: "{{ PG_SSL_DIR }}/{{ line_item }}"
@@ -72,7 +57,7 @@
       loop_var: line_item
   become: yes
 
-- name: Change the SSL files permission
+- name: Create .created_ssl file
   file:
       path: "{{ PG_SSL_DIR }}/.created_ssl"
       mode: 0600
@@ -85,5 +70,3 @@
       state: absent
   become: no
   delegate_to: localhost
-
-

@@ -29,5 +29,5 @@
       name: "{{ PG_SERVICE }}"
       daemon_reload: yes
       state: reloaded
-  delegate_to: "{{ item.value.public_ip }}"
   become: yes
+  delegate_to: "{{ item.value.public_ip }}"
