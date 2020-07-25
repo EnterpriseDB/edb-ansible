@@ -1,7 +1,6 @@
 ---
 - hosts: localhost
   name: Configure Postgres SQL Replication on Instances
-  connection: local
   become: true
   gather_facts: no
 
@@ -61,5 +60,5 @@
       with_dict: "{{ hosts }}"
     - name: Iterate through efm install role with items from hosts file
       include_role:
-        name: setup_efm
+        name: setup_efminstall
       with_dict: "{{ hosts }}"
