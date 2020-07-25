@@ -1,4 +1,4 @@
-edb_postgres_repo
+postgres
 =========
 
 This Ansible Galaxy Collection sets up and configures the repositories from which packages will be retrieved for any Postgres or EnterpriseDB Postgresql Advanced Server installations.
@@ -7,6 +7,65 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 
 **The ansible playbook must be executed under an account that has full privileges.**
 
+
+Dependencies
+------------
+
+The setup_repo role does not have any dependencies on any other roles.
+
+Hosts file content
+----------------
+
+Content of the hosts.yml file:
+
+
+
+      hosts:
+        main1:
+          node_type: main
+          public_ip: xxx.xxx.xxx.xxx
+        standby11:
+          node_type: standby
+          public_ip: xxx.xxx.xxx.xxx
+        standby12:
+          node_type: standby
+          public_ip: xxx.xxx.xxx.xxx
+
+
+
+How to include the 'setup_repo' role in your Playbook
+----------------
+
+Below is an example of how to include the setup_repo role:
+
+
+
+    - hosts: localhost
+      name: Setup and Configure Repos for package retrievals
+      connection: local
+      become: true
+      gather_facts: no
+
+      vars_files:
+        - hosts.yml
+
+      pre_tasks:
+        # Define or re-define any variables previously assigned
+        - set_fact:
+            OS: OS
+            PG_TYPE: PG_TYPE
+            EDB_YUM_USERNAME: ""
+            EDB_YUM_PASSWORD: ""
+          with_dict: "{{ hosts }}"
+
+      tasks:
+        - name: Iterate through role with items from hosts file
+          include_role:
+            name: setup_repo
+          with_dict: "{{ hosts }}"
+
+
+**Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 
 Database Engines Supported
@@ -71,6 +130,6 @@ Author Information
 Author: 
 * Doug Ortiz
 * Vibhor Kumar (Reviewer)
-* EDB Postgres 
+* Collection Name: postgres 
 * DevOps 
 * doug.ortiz@enterprisedb.com www.enterprisedb.com

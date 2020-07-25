@@ -1,6 +1,6 @@
 namespace: "dougortiz"
-name: "edb_ansible_postgres"
-version: "1.0.6"
+name: "postgres"
+version: "1.0.7"
 readme: "README.md"
 authors:
 - "Doug Ortiz"
@@ -18,6 +18,6 @@ tags:
 - repo
 dependencies: {}
 repository: "https://github.com/EnterpriseDB/edb-ansible"
-documentation: "https://github.com/EnterpriseDB/edb-ansible/README.md"
+documentation: "https://github.com/EnterpriseDB/edb-ansible/blob/master/README.md"
 homepage: "https://github.com/EnterpriseDB/edb-ansible"
 issues: "https://github.com/EnterpriseDB/edb-ansible/issues"
