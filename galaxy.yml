@@ -1,6 +1,6 @@
 namespace: "dougortiz"
 name: "postgres"
-version: "1.0.7"
+version: "1.0.9"
 readme: "README.md"
 authors:
 - "Doug Ortiz"
