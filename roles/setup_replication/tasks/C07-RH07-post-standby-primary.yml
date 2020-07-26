@@ -40,11 +40,6 @@
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
   register: sql_output
 
-- name: Display the new_setting
-  block:
-    - debug:
-        msg: "sql_output.query_result[0].new_setting"
-
 - name: Set synchronous_standby_names
   set_fact:
      SYNCHRONOUS_STANDBY_NAMES: "{{ sql_output.query_result[0].new_setting }}"
@@ -71,5 +66,13 @@
   loop_control:
       loop_var: line_items
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
-  notify: Reload the Primary PG Service
+  register: sync_update
+
+- name: Reload the Primary PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: reloaded
+  when: sync_update.changed
+  become: yes
 

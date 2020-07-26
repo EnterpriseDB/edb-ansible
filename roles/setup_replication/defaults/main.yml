@@ -7,7 +7,6 @@ OS: ""
 PG_VERSION: "12"
 
 FORCE_REPLICATION: false
-SKIP_REPLICATION: false
 
 PG_TYPE: "PG"
 PG_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"

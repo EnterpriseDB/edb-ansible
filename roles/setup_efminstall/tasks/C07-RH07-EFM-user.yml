@@ -18,9 +18,9 @@
     port: "{{ PG_PORT }}"
     state: present
   no_log: True
-  when: NODE_TYPE == 'main'
   become: yes
   become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
 
 - name: GRANT execute privilege on system functions to EFM user
   postgresql_privs:
@@ -34,6 +34,6 @@
     schema: pg_catalog
     objs: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
     roles: "{{ PG_EFM_USER }}"
-  when: NODE_TYPE == 'main'
   become: yes
   become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"

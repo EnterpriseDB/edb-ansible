@@ -13,7 +13,7 @@
       PRIMARY_PUBLIC_IP: ""
       STANDBY_NAMES: []
       ALL_NODE_IPS: []
-      
+
   # Internal processing purpose
   pre_tasks:
       - name: Initialize the user defined variables
@@ -26,7 +26,7 @@
             EDB_YUM_USERNAME: ""
             EDB_YUM_PASSWORD: ""
             STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
-      
+
       - name: Populate internal variables for roles.
         set_fact:
             # This is internal variables processing please do not modify

@@ -52,6 +52,8 @@
   file:
       path: "{{ PG_SSL_DIR }}/{{ line_item }}"
       mode: 0600
+      owner: "{{ PG_OWNER }}"
+      group: "{{ PG_OWNER }}"
   with_items: "{{ ssl_file.stdout_lines }}"
   loop_control:
       loop_var: line_item

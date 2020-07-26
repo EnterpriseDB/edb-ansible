@@ -17,12 +17,6 @@
   become: yes
   register: pgdata_file
 
-- name: If PGDATA is intialized and service is running we assume, we can skip the initialize
-  set_fact:
-      SKIP_INITIALIZE: true
-  when: pgdata_file.stat.exists and service_status.stdout == 'service_running'
-  register: output
-
 - name: Verify PGDATA and stop if exists
   fail:
       msg: "It looks like either  {{ PG_DATA }} directory is not empty or Service is running

@@ -8,7 +8,6 @@ PG_SSL_DIR: "/etc/edb/certs"
 PG_SSL_GENERATE: True
 
 FORCE_INITIALIZE: false
-SKIP_INITIALIZE: false
 
 USER_HOMEDIR: "~/"
 

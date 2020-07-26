@@ -12,7 +12,7 @@
   become_user: "{{ PG_OWNER }}"
   loop_control:
      loop_var: line_item
-  notify: Restart the PG Service
+  register: params_update
 
 - name: Find the HBA File location on primary
   postgresql_query:
@@ -42,7 +42,6 @@
   loop_control:
       loop_var: line_items
   register: hba_update
-  notify: Reload the PG Service
 
 - name: Adding standby IP address entries into pg_hba file on primary
   postgresql_pg_hba:
@@ -61,4 +60,19 @@
   loop_control:
       loop_var: line_items
   register: hba_update
-  notify: Reload the PG Service
+
+- name: Reload the PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: reloaded
+  become: yes
+  when: hba_update.changed
+
+- name: Restart the PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: restarted
+  become: yes
+  when: params_update.changed

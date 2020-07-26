@@ -56,90 +56,38 @@
   when: item.value.force_replication is defined
   register: output
 
-- name: set SKIP_REPLICATION based on the user input
-  set_fact:
-      SKIP_REPLICATION: "{{ item.value.skip_replication }}"
-  when: item.value.skip_replication is defined
-  register: output
-
 - name: Force cleanup based on force_replication
   block:
     - include_tasks: C07-RH07-rm-replication.yml
-  when:
-      - FORCE_REPLICATION
-      - not SKIP_REPLICATION
-      - NODE_TYPE == 'standby'
+  when: NODE_TYPE == 'standby' and FORCE_REPLICATION
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 
 # Postgres
-- name: Verify if we have standby intialized already
-  block:
-    - import_tasks: C07-RH07-create-directories.yml
-    - import_tasks: C07-RH07-check-service.yml
-  become: yes
-  when:
-      - not SKIP_REPLICATION
-      - NODE_TYPE == 'standby'
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Updating primary server for replication
-  block:
-      - import_tasks: C07-RH07-update-primary.yml
-  become: yes
-  when:
-      - not SKIP_REPLICATION
-      - NODE_TYPE == 'standby'
-  delegate_to: "{{ item.value.public_ip }}"
-
-- meta: flush_handlers
 
 - name: Update the SSL based on the options
   block:
     - import_tasks: C07-RH07-ssl-configure.yml
   become: yes
-  when:
-      - NODE_TYPE == 'standby'
-      - PG_SSL
-      - PG_SSL_GENERATE
-      - not SKIP_REPLICATION
+  when: NODE_TYPE == 'standby' and PG_SSL and PG_SSL_GENERATE
   delegate_to: "{{ item.value.public_ip }}"
 
-- name: building standby
+- name: Build standby service check
   block:
+    - import_tasks: C07-RH07-check-service.yml
+    - import_tasks: C07-RH07-create-directories.yml
+    - import_tasks: C07-RH07-update-primary.yml
     - import_tasks: C07-RH07-pg-basebackup.yml
     - import_tasks: C07-RH07-update-service.yml
-  become: yes
-  when:
-      - not SKIP_REPLICATION
-      - NODE_TYPE == 'standby'
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Configure standby and update primary node
-  block:
     - import_tasks: C07-RH07-configure-node.yml
     - import_tasks: C07-RH07-sql-standby-names.yml
     - import_tasks: C07-RH07-post-standby-primary.yml
-  when:
-      - not SKIP_REPLICATION
-      - NODE_TYPE == 'standby'
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- meta: flush_handlers
-
-- name: Update the conf/hba
-  block:
     - import_tasks: C07-RH07-update-conf-hba.yml
-  when:
-      - NODE_TYPE == 'standby'
   become: yes
+  when: NODE_TYPE == 'standby'
   delegate_to: "{{ item.value.public_ip }}"
 
-- meta: flush_handlers
-
-- name: Reset FORCE/SKIP_REPLICATION based on the user input
+- name: Reset FORCE_REPLICATION based on the user input
   set_fact:
       FORCE_REPLICATION: false
-      SKIP_REPLICATION: false
   register: output

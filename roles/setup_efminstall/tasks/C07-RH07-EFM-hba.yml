@@ -1,6 +1,6 @@
 ---
 
-- name: Find the HBA File location on primary
+- name: Find the HBA File location on the node
   postgresql_query:
       login_user: "{{ PG_OWNER }}"
       port: "{{ PG_PORT }}"
@@ -23,7 +23,7 @@
   when: not PG_SSL
   become: yes
   become_user: "{{ PG_OWNER }}"
-  notify: Reload the PG Service
+  register: hba_update
 
 - name: Add all node IP address entries into pg_hba file for efm user
   postgresql_pg_hba:
@@ -40,7 +40,7 @@
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
-  notify: Reload the PG Service
+  register: hba_update
 
 - name: Add localhost IP address entries into pg_hba file for EFM user
   postgresql_pg_hba:
@@ -54,7 +54,7 @@
   when: PG_SSL
   become: yes
   become_user: "{{ PG_OWNER }}"
-  notify: Reload the PG Service
+  register: hba_update
 
 - name: Add all node IP address entries into pg_hba file for efm user
   postgresql_pg_hba:
@@ -71,5 +71,11 @@
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
-  notify: Reload the PG Service
+  register: hba_update
 
+- name: Reload the PG Service
+  systemd:
+    name: "{{ PG_SERVICE }}"
+    state: reloaded
+  become: yes
+  when: hba_update.changed

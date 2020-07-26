@@ -43,7 +43,7 @@
   become_user: "{{ PG_OWNER }}"
   loop_control:
     loop_var: line_item
-  notify: Restart the PG Service
+  register: unix_socket_update
 
 - name: Configure log_file_name
   postgresql_set:
@@ -60,4 +60,20 @@
   become_user: "{{ PG_OWNER }}"
   loop_control:
     loop_var: line_item
-  notify: Reload the PG Service
+  register: log_update
+
+- name: Reload the PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: reloaded
+  become: yes
+  when: log_update.changed
+
+- name: Restart the PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: restarted
+  become: yes
+  when: unix_socket_update.changed

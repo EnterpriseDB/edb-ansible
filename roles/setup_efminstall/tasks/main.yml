@@ -83,57 +83,34 @@
   when: item.value.force_efm_install is defined
   register: output
 
-- name: Set FORCE_EFM_INSTALL based on the user input
-  set_fact:
-      SKIP_EFM_INSTALL: "{{ item.value.skip_efm_install }}"
-  when: item.value.skip_efm_install is defined
-  register: output
-
 - name: Remove before we start as per force_install
   block:
     - include_tasks: C07-RH07-EFM-rm-install-configure.yml
   become: yes
-  become_user: root
-  when:
-      - FORCE_EFM_INSTALL
-      - not SKIP_EFM_INSTALL
+  when: FORCE_EFM_INSTALL
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Make sure EFM user exists and have right privileges.
   block:
     - include_tasks: C07-RH07-EFM-user.yml
   become: yes
-  when:
-      - NODE_TYPE == 'main'
-      - not SKIP_EFM_INSTALL
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Install and Configure Postgres on CentOS7 or RHEL7
   block:
     - import_tasks: C07-RH07-EFM-hba.yml
-  when:
-      - NODE_TYPE != 'witness'
-      - not SKIP_EFM_INSTALL
+  when: NODE_TYPE in ['primary','standby']
   become: yes
-  become_user: root
   delegate_to: "{{ item.value.public_ip }}"
-
-- meta: flush_handlers
 
 - name: Install and Configure Postgres on CentOS7 or RHEL7
   block:
     - import_tasks: C07-RH07-EFM-install.yml
     - import_tasks: C07-RH07-EFM-configure.yml
-  when:
-      - not SKIP_EFM_INSTALL
   become: yes
-  become_user: root
   delegate_to: "{{ item.value.public_ip }}"
-
-- meta: flush_handlers
 
 - name: Reset FORCE/SKIPP_EFM_INSTALL based on the user input
   set_fact:
       FORCE_EFM_INSTALL: false
-      SKIP_EFM_INSTALL: false
   register: output

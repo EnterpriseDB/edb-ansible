@@ -1,16 +1,4 @@
 ---
-- name: Display Details of Node to Configure
-  block:
-    - debug:
-        msg: "
-             Operating System = {{ OS }}:
-             Postgres Version = {{ PG_VERSION }},
-             Node Type = {{ item.value.node_type }},
-             Public IP = {{ item.value.public_ip }},
-             NODE_TYPE = {{ NODE_TYPE }},
-             PUBLIC_IP = {{ PUBLIC_IP }},
-             PG_DATA = {{ PG_DATA }},
-             PG_OWNER = {{ PG_OWNER }}"
 
 - name: Set PG_REPLICATION_USER pass file
   set_fact:
@@ -61,12 +49,12 @@
       create: true
   become: yes
   become_user: "{{ PG_OWNER }}"
-  when: line_items != item.value.private_ip and not PG_SSL
+  when: line_items != PRIMARY_PRIVATE_IP and not PG_SSL
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
-  notify: Reload the Primary PG Service
+  register: hba_update
 
 
 - name: Adding standby IP address entries into pg_hba file on primary
@@ -81,12 +69,12 @@
       create: true
   become: yes
   become_user: "{{ PG_OWNER }}"
-  when: line_items != item.value.private_ip and PG_SSL
+  when: line_items != PRIMARY_PRIVATE_IP and PG_SSL
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
       loop_var: line_items
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
-  notify: Reload the Primary PG Service
+  register: hba_update
 
 - name: "Create physical slots for standbys"
   postgresql_slot:
@@ -103,4 +91,13 @@
   with_items: "{{ ALL_NODE_IPS  }}"
   loop_control:
       loop_var: line_items
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
+
+- name: Reload the Primary PG Service
+  systemd:
+      name: "{{ PG_SERVICE }}"
+      daemon_reload: yes
+      state: reloaded
+  become: yes
+  when: hba_update.changed
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"

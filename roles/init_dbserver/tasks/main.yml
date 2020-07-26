@@ -41,6 +41,8 @@
 
 # Setting variables available for all nodes
 # Any of the variables existing can be updated and configured
+- meta: flush_handlers
+
 - name: Set Node Type
   set_fact:
     NODE_TYPE: "{{ item.value.node_type }}"
@@ -52,23 +54,15 @@
   when: item.value.force_initialize is defined
   register: output
 
-- name: set FORCE_INITIALIZE based on the user input
-  set_fact:
-      SKIP_INITIALIZE: "{{ item.value.skip_initialize }}"
-  when: item.value.skip_initialize is defined
-  register: output
-
+# main blog for tasks
 - name: Force cleanup based on force_initialize
   block:
     - include_tasks: C07-RH07-rm-initialize.yml
-  when:
-      - FORCE_INITIALIZE
-      - not SKIP_INITIALIZE
-      - NODE_TYPE == 'main'
+  when: FORCE_INITIALIZE and NODE_TYPE == 'primary'
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 
-- name: Configure node, databases and users
+- name: Check and configure the primary node
   block:
     - import_tasks: C07-RH07-check-service.yml
     - import_tasks: C07-RH07-create-directories.yml
@@ -76,38 +70,25 @@
     - import_tasks: C07-RH07-update-service.yml
     - import_tasks: C07-RH07-configure-node.yml
   become: yes
-  when:
-      - not SKIP_INITIALIZE
-      - NODE_TYPE == 'main'
+  when: NODE_TYPE == 'primary'
   delegate_to: "{{ item.value.public_ip }}"
 
-- meta: flush_handlers
-
-- name: Configure SSL based on PG_SSL configuration
+- name: Configure SSL based on PG_SSL parameter
   block:
     - import_tasks: C07-RH07-ssl-configure.yml
   become: yes
-  when:
-      - NODE_TYPE == 'main'
-      - PG_SSL
-      - not SKIP_INITIALIZE
+  when: NODE_TYPE == 'primary' and PG_SSL
   delegate_to: "{{ item.value.public_ip }}"
-
-- meta: flush_handlers
 
 - name: Apply any user defined settings, users, databases and configurations
   block:
     - import_tasks: C07-RH07-users.yml
     - import_tasks: C07-RH07-databases.yml
     - import_tasks: C07-RH07-update-conf-hba.yml
-  when:
-      - NODE_TYPE == 'main'
+  when: NODE_TYPE == 'primary'
   delegate_to: "{{ item.value.public_ip }}"
-
-- meta: flush_handlers
 
 - name: Reset FORCE/SKIP_INITIALIZE based on the user input
   set_fact:
       FORCE_INITIALIZE: false
-      SKIP_INITIALIZE: false
   register: output

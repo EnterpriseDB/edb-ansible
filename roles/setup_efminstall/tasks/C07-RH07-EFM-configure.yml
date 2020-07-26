@@ -72,11 +72,27 @@
     regexp: "{{ line_item.name + '=' }}"
     line: "{{ line_item.name + '=' + line_item.value|string }}"
     state: present
-  with_items: "{{ EFM_PARAMETERS }}"
+  with_items:
+    - { name: db.user, value: "{{ PG_EFM_USER }}"}
+    - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+    - { name: db.port, value: "{{ PG_PORT }}"}
+    - { name: db.database, value: "{{ PG_EFM_DATABASE }}"}
+    - { name: db.service.owner, value: "{{ PG_OWNER }}"}
+    - { name: db.service.name, value: "{{ PG_SERVICE }}"}
+    - { name: db.bin, value: "{{ PG_BIN_PATH }}"}
+    - { name: db.recovery.dir, value: "{{ PG_DATA }}"}
+    - { name: db.data.dir, value: "{{ PG_DATA }}"}
+    - { name: user.email, value: "{{ EFM_NOTIFICATION_EMAIL }}"}
+    - { name: auto.allow.hosts, value: true}
+    - { name: stable.nodes.file, value: true}
+    - { name: bind.address, value: "{{ item.value.private_ip }}:7800"}
+    - { name: is.witness, value: "{{ EFM_WITNESS }}" }
+    - { name: application.name, value: "{{ item.key }}" }
+    - { name: update.physical.slots.period, value: "10" }
   loop_control:
    loop_var: line_item
   become: yes
-  notify: Restart the EFM Service
+  register: properties_changes
 
 - name: Start EFM service
   systemd:
@@ -85,11 +101,19 @@
     state: started
   become: yes
 
+- name: Restart the EFM service
+  systemd:
+    name: "{{ EFM_SERVICE }}"
+    enabled: yes
+    state: restarted
+  become: yes
+  when: properties_changes.changed
+
 - name: Allow efm node on all the host
   shell: |
     set -o pipefail
     set -eu
-    CLUSTER_STATUS="$( {{ EFM_BIN_PATH }}/efm cluster-status-json efm |jq '.allowednodes'"
+    CLUSTER_STATUS="$( {{ EFM_BIN_PATH }}/efm cluster-status-json efm |jq '.allowednodes'" )
     for ip_address in {{ ALL_NODE_IPS|join(' ') }}
     do
        CHECK=$( echo "${CLUSTER_STATUS}"|grep ${ip_address}|wc -l )

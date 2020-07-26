@@ -5,7 +5,6 @@ PG_VERSION: ""
 EFM_VERSION: "3.10" 
 
 FORCE_EFM_INSTALL: false
-SKIP_EFM_INSTALL: false
 
 USER_HOMEDIR: "~/"
 
@@ -38,7 +37,6 @@ PG_SERVICE: "edb-as-{{ PG_VERSION }}"
 
 EFM_PARAMETERS:
   - { name: db.user, value: "{{ PG_EFM_USER }}"}
-  - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
   - { name: db.port, value: "{{ PG_PORT }}"}
   - { name: db.database, value: "{{ PG_EFM_DATABASE }}"}
   - { name: db.service.owner, value: "{{ PG_OWNER }}"}
