@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
   name: Configure Postgres SQL Replication on Instances
+  connection: local
   become: true
   gather_facts: no
 
@@ -13,26 +14,25 @@
       PRIMARY_PUBLIC_IP: ""
       STANDBY_NAMES: []
       ALL_NODE_IPS: []
-
   # Internal processing purpose
+  #collections:
+  #    - dougortiz.edb_ansible_postgres
   pre_tasks:
       - name: Initialize the user defined variables
         set_fact:
             OS: "CentOS7"
             PG_VERSION: "12"
-            PG_TYPE: "EPAS"
+            PG_TYPE: "PG"
             PG_DATA: "/data/pgdata"
             PG_WAL: "/data/pg_wal"
-            EDB_YUM_USERNAME: ""
-            EDB_YUM_PASSWORD: ""
+            EDB_YUM_USERNAME: "qmg"
+            EDB_YUM_PASSWORD: "EdB123"
             STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
 
-      - name: Populate internal variables for roles.
-        set_fact:
             # This is internal variables processing please do not modify
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
-            PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'main') else PRIMARY_PRIVATE_IP }}"
-            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'main') else PRIMARY_PUBLIC_IP }}"
+            PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
+            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
         with_dict: "{{ hosts }}"
 
       - name: Gather the standby names

@@ -57,7 +57,7 @@ Content of the hosts.yml file:
 
       hosts:
         main:
-          node_type: main
+          node_type: primary
           private_ip: xxx.xxx.xxx.xxx
           public_ip: xxx.xxx.xxx.xxx
         standby1:
@@ -108,12 +108,12 @@ Below is an example of how to include the setup_efm role:
             PG_EFM_USER: "efm"
             PG_EFM_USER_PASSWORD: "efm"
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
-            PRIMARY: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'main') else PRIMARY }}"
+            PRIMARY: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
           with_dict: "{{ hosts }}"
           
         - set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
-          when: item.value.node_type != 'main
+          when: item.value.node_type != 'primary'
           with_dict: "{{ hosts }}"
           
       tasks:

@@ -60,7 +60,7 @@ Content of the hosts.yml file:
 
       hosts:
         main1:
-          node_type: main
+          node_type: primary
           public_ip: xxx.xxx.xxx.xxx
         standby11:
           node_type: standby
@@ -105,8 +105,8 @@ Below is an example of how to include the init_dbserver role:
 
             # Variables related to internal processing
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
-            PRIMARY_PRIVATE_IP: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'main') else PRIMARY }}"
-            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'main') else PRIMARY_PUBLIC_IP }}"
+            PRIMARY_PRIVATE_IP: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
+            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
           with_dict: "{{ hosts }}"
           
         - set_fact:

@@ -8,7 +8,7 @@ Requirements
 The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
-2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install. Only on main nodes.
+2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install. Only on primary nodes.
 3. setup_repo - for repository installation
 4. install_dbserver - for installation of PostgreSQL/EPAS binaries.
 
@@ -40,7 +40,7 @@ Content of the hosts.yml file:
 
      hosts:
        main:
-         node_type: main
+         node_type: primary
          public_ip: xx.xx.xx.xx.             #- Public IP Address for Main Node
          private_ip: xx.xx.xx.xx.            #- Private IP Address for Main Node
        standby1: 

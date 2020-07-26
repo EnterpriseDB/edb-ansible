@@ -56,7 +56,7 @@ Content of the hosts.yml file:
 
       hosts:
         main1:
-          node_type: main
+          node_type: primary
           public_ip: xxx.xxx.xxx.xxx
         standby11:
           node_type: standby
