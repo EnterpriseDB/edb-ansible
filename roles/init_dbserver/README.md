@@ -19,7 +19,7 @@ The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
 2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install
-3. setup_repo, install_dbserver - This role must have been previously executed on the cluster
+3. setup_repo and install_dbserver - These roles must have been previously executed on the cluster
 
 Role Variables
 --------------
@@ -80,9 +80,12 @@ Below is an example of how to include the init_dbserver role:
 
     - hosts: localhost
       name: Install EFM on Instances
-      connection: local
+      #connection: local
       become: true
       gather_facts: no
+
+      collections:
+        - edb-devops.postgres
 
       vars_files:
         - hosts.yml
@@ -113,6 +116,7 @@ Below is an example of how to include the init_dbserver role:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
           when: item.value.node_type == 'standby'
           with_dict: "{{ hosts }}"
+
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
@@ -193,8 +197,6 @@ CentOS 7: Community Postgresql without command line parameters
 
 
     ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
 
 
 CentOS 7: Enterprise Postgresql without command line parameters
@@ -202,23 +204,17 @@ CentOS 7: Enterprise Postgresql without command line parameters
 
 
     ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
 
 
 RHEL 7: Community Postgresql without command line parameters
 ----------------
 
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
 
 RHEL 7: Enterprise Postgresql without command line parameters
 ----------------
 
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
 
