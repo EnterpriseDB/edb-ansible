@@ -17,7 +17,7 @@ The only dependencies required for this ansible galaxy role are:
 Role Variables
 --------------
 
-When executing the role via ansible there are two required variables:
+When executing the role via ansible there are three required variables:
 
 * OS
   Operating Systems supported are: CentOS7 and RHEL7
@@ -71,6 +71,9 @@ Below is an example of how to include the setup_replication role:
       connection: local
       become: true
       gather_facts: no
+      
+      collections:
+        - edb-devops.postgres
 
       vars_files:
         - hosts.yml
@@ -93,13 +96,14 @@ Below is an example of how to include the setup_replication role:
 
             # Variables for internal processing
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
-            PRIMARY_PRIVATE_IP: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'main') else PRIMARY }}"
-            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'main') else PRIMARY_PUBLIC_IP }}"
+            PRIMARY_PRIVATE_IP: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
+            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
           with_dict: "{{ hosts }}"       
         - set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
           when: item.value.node_type == 'standby'
           with_dict: "{{ hosts }}"
+          
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
@@ -161,15 +165,11 @@ CentOS 7 without command line parameters:
 
 
     ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
   
 
 RHEL 7 without command line parameters:
 ----------------
 
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
 
