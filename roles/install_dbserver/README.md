@@ -172,15 +172,11 @@ CentOS 7: Community Postgresql without command line parameters
 ----------------
 
     ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
 
 
 RHEL 7: Community Postgresql without command line parameters
 ----------------
 
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
 
