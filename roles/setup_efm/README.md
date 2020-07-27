@@ -11,7 +11,7 @@ The role only installs EPAS: 10, 11 or 12 along with EFM: 3.7, 3.8 or 3.9 across
 
 **Note:**
 The role does not configure EDB Postgres Advanced Server or PostgreSQL for replication it only installs EDB Postgres Failover Manager (EFM) across multiple nodes and configure database nodes for EFM monitornig and HA management.
-If you want to configure EDB Advanced Server Cluster of PostgreSQL, then please user following module:
+If you want to configure EDB Advanced Server Cluster of PostgreSQL, then please use the 'setup_replication' module:
 1. setup_repo : For installing the EPAS/PG repository
 2. install_dbserver: For installing the EPAS/PG binaries
 3. init_dbserver: For initializing the EPAS/PG data directory and configuring a primary/master node.
@@ -84,10 +84,13 @@ Below is an example of how to include the setup_efm role:
 
     - hosts: localhost
       name: Install EFM on Instances
-      connection: local
+      #connection: local
       become: true
       gather_facts: no
 
+      collections:
+        - edb-devops.postgres
+    
       vars_files:
         - hosts.yml
   
