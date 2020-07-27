@@ -74,9 +74,12 @@ Below is an example of how to include the setup_repo role:
 
     - hosts: localhost
       name: Setup and Configure Repos for package retrievals
-      connection: local
+      #connection: local
       become: true
       gather_facts: no
+
+      collections:
+        - edb-devops.postgres
 
       vars_files:
         - hosts.yml
@@ -84,8 +87,11 @@ Below is an example of how to include the setup_repo role:
       pre_tasks:
         # Define or re-define any variables previously assigned
         - set_fact:
-            OS: OS
-            PG_TYPE: PG_TYPE
+            # 'CentOS7' or 'RHEL7'
+            OS: "CentOS7"
+            # 'PG' or 'EPAS'
+            PG_TYPE: "EPAS"
+            # Enter credentials below
             EDB_YUM_USERNAME: ""
             EDB_YUM_PASSWORD: ""
           with_dict: "{{ hosts }}"
@@ -130,37 +136,21 @@ Enterprise DB Postgresql Advanced Server
 Playbook Execution Examples
 ----------------
 
-CentOS 7: Community Postgresql
-----------------
-
-
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=PG"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=PG"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=PG"
-
-CentOS 7: Enterprise Postgresql
-----------------
-
-
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=EPAS"
-
 
 RHEL 7: Community Postgresql
 ----------------
 
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=PG"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=PG"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=PG"
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
 
 RHEL 7: Enterprise Postgresql
 ----------------
 
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=EPAS"
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
  
 Debian: Community Postgresql
