@@ -10,6 +10,7 @@
   postgresql_user:
     name: "{{ PG_EFM_USER }}"
     password: "{{ PG_EFM_USER_PASSWORD }}"
+    role_attr_flags: REPLICATION
     groups:
         - pg_read_all_settings
     login_user: "{{ PG_OWNER }}"

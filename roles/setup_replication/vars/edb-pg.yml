@@ -20,8 +20,8 @@ PG_SSL: True
 PG_SSL_DIR: "/etc/edb/certs"
 PG_SSL_GENERATE: True
 PG_PORT: "5432"
-PG_REPLICATION_USER: "postgres"
-PG_REPLICATION_USER_PASSWORD: "postgres"
+PG_REPLICATION_USER: "repuser"
+PG_REPLICATION_USER_PASSWORD: ""
     
 PG_DATABASE: "postgres"
 PG_SERVICE: "postgresql-{{ PG_VERSION }}"
