@@ -13,6 +13,50 @@ Dependencies
 
 The setup_repo role does not have any dependencies on any other roles.
 
+
+Ports to be aware that require to be available
+----------------
+
+Postgres:
+
+      5432
+
+EDB Postgres Advanced Server:
+
+      5444
+ 
+EDB Failover Manager:
+
+      7800 through 7810
+
+
+
+Items to be aware 
+----------------
+
+Ports Open 
+Firewalld
+
+
+
+Installation of Collection with Ansible Galaxy
+----------------
+
+ansible-galaxy collection install edb-devops.postgres --force
+
+**A message indicating where the collection is installed will be displayed by ansible-galaxy. The collection code should be readily available for you.**
+
+
+
+Retrieving the code from the repository in GitHub
+----------------
+
+  git clone git@github.com:EnterpriseDB/edb-ansible.git
+
+**After the code has been downloaded, the code will be available in your current directory within a directory named: 'edb-ansible'.**
+
+
+
 Hosts file content
 ----------------
 
@@ -42,30 +86,44 @@ How to include the roles in your Playbook
 Below is an example of how to include the setup_repo role:
 
     - hosts: localhost
-      name: Setup and Configure Repos for package retrievals
-      connection: local
+      # Un-comment to specify which python interpreter to utilize
+      #vars:
+      #  ansible_python_interpreter: /usr/bin/python2
+      name: Install, Configure, Initialize and Replication EDB Postgres Advanced Server 12 and EFM 10 on Instances
+      #connection: local
       become: true
       gather_facts: no
+   
+      collections:
+        - edb-devops.postgres
 
       vars_files:
         - hosts.yml
 
+      vars:
+        PRIMARY_PRIVATE_IP: ""
+        PRIMARY_PUBLIC_IP: ""
+        STANDBY_NAMES: []
+        ALL_NODE_IPS: []
+
+      # Internal processing purposes only
       pre_tasks:
         # Define or re-define any variables previously assigned
         - name: Initialize the user defined variables
           set_fact:
-            OS: "OS"
-            PG_TYPE: "PG_TYPE"
+            # 'CentOS7' or 'RHEL7'
+            OS: "CentOS7"
+            # 'PG' or 'EPAS'
+            PG_TYPE: "EPAS"
+            PG_DATA: "/data/pgdata"
+            PG_WAL: "/data/pg_wal"
+            # Ensure you enter your credentials when utilizing EDB custom repositories
             EDB_YUM_USERNAME: ""
             EDB_YUM_PASSWORD: ""
-   
             STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
-            
-            # This is internal variables processing please do not modify
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
             PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
-            
           with_dict: "{{ hosts }}"
           
         - name: Gather the standby names
@@ -73,6 +131,7 @@ Below is an example of how to include the setup_repo role:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
           when: item.value.node_type == 'standby'
           with_dict: "{{ hosts }}"
+
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
