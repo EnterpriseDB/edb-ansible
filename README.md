@@ -34,8 +34,10 @@ EDB Failover Manager:
 Items to be aware 
 ----------------
 
-Ports Open 
-Firewalld
+Security in your environment
+
+Services enabled on your instances, such as: Firewalld
+
 
 
 
@@ -48,12 +50,14 @@ ansible-galaxy collection install edb-devops.postgres --force
 
 
 
+
 Retrieving the code from the repository in GitHub
 ----------------
 
   git clone git@github.com:EnterpriseDB/edb-ansible.git
 
 **After the code has been downloaded, the code will be available in your current directory within a directory named: 'edb-ansible'.**
+
 
 
 
@@ -156,6 +160,7 @@ Below is an example of how to include the setup_repo role:
  
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
+
 
 
 Database Engines Supported
