@@ -92,7 +92,7 @@ Below is an example of how to include the setup_repo role:
           with_dict: "{{ hosts }}"
         - name: Iterate through efm install role with items from hosts file
           include_role:
-            name: setup_efminstall
+            name: setup_efm
           with_dict: "{{ hosts }}"
  
 
