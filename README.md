@@ -34,10 +34,9 @@ EDB Failover Manager:
 Items to be aware 
 ----------------
 
-Security in your environment
+* Security in your environment
 
-Services enabled on your instances, such as: Firewalld
-
+* Services enabled on your instances, such as: Firewalld
 
 
 
@@ -160,6 +159,22 @@ Below is an example of how to include the setup_repo role:
  
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
+
+**You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication' or 'setup_efm'.**
+
+
+
+Executing the playbook:
+----------------
+
+CentOS7
+
+      ansible-playbook -private-key=<yourprivatekey> efm_inst_C07_EPAS12_EFM310.yml -u centos
+
+RHEL7
+
+       ansible-playbook -private-key=<yourprivatekey> efm_inst_C07_EPAS12_EFM310.yml -u ec2-user
+
 
 
 
