@@ -78,6 +78,9 @@ Community Postgresql
 | ------------------------- |:--:|:--:|:--:|
 | CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian | :x: | :x: | :x: |
+| Ubuntu | :x: | :x: | :x: |
+| SLES | :x: | :x: | :x: |
 
 Enterprise DB Postgresql Advanced Server
 ----------------
@@ -86,38 +89,11 @@ Enterprise DB Postgresql Advanced Server
 | ------------------------- |:--:|:--:|:--:|
 | CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-
+| Debian | :x: | :x: | :x: |
+| Ubuntu | :x: | :x: | :x: |
+| SLES | :x: | :x: | :x: |
 - :white_check_mark: - Tested and supported
-
-
-
-
-Operating Systems Supported
-----------------
-
-
-Debian: Community Postgresql
-----------------
-
-     Not Supported.
-
-
-Debian: Enterprise Postgresql
-----------------
-     Not Supported.
-
-
-Ubuntu: Community Postgresql
-----------------
-
-     Not Supported.
-
-
-Ubuntu: Enterprise Postgresql
-----------------
-
-     Not Supported.
-
+- :x: - Not tested and not supported
 
 
 License
