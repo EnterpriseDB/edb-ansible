@@ -19,7 +19,7 @@ The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
 2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install
-3. set_repo for setting the repository on the systems
+3. edb-devops.postgres -> setup_repo role for setting the repository on the systems
 
 Role Variables
 --------------
@@ -76,9 +76,12 @@ Below is an example of how to include the install_dbserver role:
 
     - hosts: localhost
       name: Install Postgres on Instances
-      connection: local
+      #connection: local
       become: true
       gather_facts: no
+ 
+      collections:
+        - edb-devops.postgres
 
       vars_files:
         - hosts.yml
@@ -172,12 +175,6 @@ CentOS 7: Community Postgresql without command line parameters
     ansible-playbook playbook.yml -u centos -- private-key <key.pem>
     ansible-playbook playbook.yml -u centos -- private-key <key.pem>
 
-CentOS 7: Enterprise Postgresql without command line parameters
-----------------
-
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
 
 RHEL 7: Community Postgresql without command line parameters
 ----------------
@@ -186,13 +183,6 @@ RHEL 7: Community Postgresql without command line parameters
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
-
-RHEL 7: Enterprise Postgresql without command line parameters
-----------------
-
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
 
  
