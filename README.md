@@ -51,6 +51,7 @@ Installation Steps
 
 The 'postgres' Ansible collection can be installed by two different steps:
 
+* [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 * Installing the 'postgres' Ansible Collection
 * Downloading the 'postgres' repository source code from the repository in GitHub
 * Cloning the 'postgres' repository source code from the repository in GitHub
