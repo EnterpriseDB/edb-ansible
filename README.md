@@ -20,6 +20,12 @@ edb-ansible is a repository used for hosting an Ansible Collection that currentl
 * setup_efm
 
 
+PreRequisites
+------------
+
+A previously existing and configured set of Instances for executing the 'postgres' Ansible Collection.
+
+
 Ports to be aware that require to be available
 ----------------
 
