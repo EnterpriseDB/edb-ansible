@@ -86,12 +86,31 @@ PG_ALLOW_IP_ADDRESSES:
     
 ### setup_replication:
 
-A role for setting up the replication (synchronous/asynchronous)
+A role for setting up the replication (synchronous/asynchronous).
+Similar to `init_dbserver` role, `setup_replication` has following variables for managing the EPAS/PG.
+1. `PG_TYPE`: EPAS/PG
+2. `PG_VERSION`: EPAS/PG Version. Default is 12. 
+3. `PG_DATA`: EPAS/PG data directory. Default is /var/lib/edb/as{PG_VERSION}/data
+4. `PG_WAL`: EPAS/PG wal location. Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal
+5.  For EPAS/PG postgresql.conf parameters.
+```
+PG_POSTGRES_CONF_PARAMS:
+    - { name: "maintenance_work_mem", value: "1GB" }
+    - { name: "work_mem", value: "1024MB" }
+```
+
+For setting specific pg_hba.conf rule, following varaible can be used:
+6. 
+```
+PG_ALLOW_IP_ADDRESSES:
+    - { user: "user1,user2", ip_address: "172.0.0.1/16", databases: "db1,db2" }
+    - { user: "user3,user4", ip_address: "172.128.0.1/16", databases: "db3,db4" }
+```
+    
 
 ### setup_efm:
 
-A role for setting up Failover Manager for Postgres/EPAS HA cluster.
-
+A role for setting up EDB Failover Manager for Postgres/EPAS HA cluster.
 In the playbook, user can choose the specific roles based on their requirement.
 
 Prerequiste
@@ -109,16 +128,6 @@ For correctly installed and configuration of the cluster following are requireme
 3. Operating system privileged user (user with sudo privilege) on all the servers/virtual machines.
 
 **Note**: In our examples, we have used centos user for CentOS OS and ec2_user for RHEL OS as a privileged user.
-
-
-Items to be aware 
-----------------
-
-* Security in your environment
-
-* Services enabled on your instances, such as: Firewalld
-
-
 
 Installation Steps
 ----------------
