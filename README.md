@@ -15,20 +15,25 @@ Roles
 
 ### setup_repo: 
 A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
+
+```
    1. yum.enterprisedb.com
    2. download.postgresql.org
    3. dl.fedoraproject.org
+```
+
 This role requires following compulsory parameters:
 * `PG_TYPE`: "EPAS" or "PG"
 * `EDB_YUM_USERNAME`: EDB repository's username
 * `EDB_YUM_PASSWORD`: EDB yum repository's password.
 
-For access to EDB repository, you can use following link: [EDB yum access ](https://www.enterprisedb.com/user/register?destination=/repository-access-request%3Fdestination%3Dnode/1255704%26resource%3D1255704%26ma_formid%3D2098)
+For access to EDB repository, you can use following link: [EDB yum access](https://www.enterprisedb.com/user/register?destination=/repository-access-request%3Fdestination%3Dnode/1255704%26resource%3D1255704%26ma_formid%3D2098)
 
 
 ### install_dbserver: 
 
 A role for installing EPAS/PG database server packages. This role installs the PG/EEPAS packages, depending on the values of the following variablesin the playbook.yml:
+
 1. `PG_TYPE`: EPAS/PG 
 2. And `PG_VERSION`: PG/EPAS major version number
 
@@ -38,6 +43,7 @@ A role for installing EPAS/PG database server packages. This role installs the P
 A role for initializing the PG/EDB cluster(data) directory. 
 
 This role allows users to pass following variables:
+
 1. `PG_TYPE`: EPAS/PG
 2. `PG_VERSION`: EPAS/PG Version. Default is 12. 
 3. `PG_DATA`: EPAS/PG data directory. Default is /var/lib/edb/as{PG_VERSION}/data
@@ -91,11 +97,13 @@ PG_ALLOW_IP_ADDRESSES:
 
 A role for setting up the replication (synchronous/asynchronous).
 Similar to `init_dbserver` role, `setup_replication` has following variables for managing the EPAS/PG.
+
 1. `PG_TYPE`: EPAS/PG
 2. `PG_VERSION`: EPAS/PG Version. Default is 12. 
 3. `PG_DATA`: EPAS/PG data directory. Default is /var/lib/edb/as{PG_VERSION}/data
 4. `PG_WAL`: EPAS/PG wal location. Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal
 5.  For EPAS/PG postgresql.conf parameters.
+
 ```
 PG_POSTGRES_CONF_PARAMS:
     - { name: "maintenance_work_mem", value: "1GB" }
@@ -116,14 +124,15 @@ PG_ALLOW_IP_ADDRESSES:
 A role for setting up EDB Failover Manager for Postgres/EPAS HA cluster.
 In the playbook, user can choose the specific roles based on their requirement.
 
-Prerequiste
+Prerequisites
 ----------------
 For correctly installed and configuration of the cluster following are requirements:
 
 1. Following are ports which should be opened for communication between the servers
     
-    * Postgres/EPAS port:  5432/5444
-    * EDB Failover Manager: 7800-7810
+    * Postgres:                           5432
+    * EDB Postgres Advanced Server Port:  5444
+    * EDB Failover Manager:               7800-7810
   
   **Note**: If you have firewall enabled on the server, then please allow the access through above ports. 
 
