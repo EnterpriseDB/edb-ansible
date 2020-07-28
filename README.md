@@ -10,7 +10,7 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 
 edb-ansible is a repository used for hosting an Ansible Collection that currently supports the following ansible roles:
 
-## setup_repo: 
+### setup_repo: 
 A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
    1. yum.enterprisedb.com
    2. download.postgresql.org
@@ -23,7 +23,9 @@ This role requires following compulsory parameters:
 For access to EDB repository, you can use following link: [EDB yum access ](https://www.enterprisedb.com/user/register?destination=/repository-access-request%3Fdestination%3Dnode/1255704%26resource%3D1255704%26ma_formid%3D2098)
 
 
-* install_dbserver: A role for installing EPAS/PG database server packages. This role installs the PG/EEPAS packages, depending on the `PG_TYPE` and `PG_VERSION` variables' setting in the playbook.yml.
+### install_dbserver: 
+
+A role for installing EPAS/PG database server packages. This role installs the PG/EEPAS packages, depending on the `PG_TYPE` and `PG_VERSION` variables' setting in the playbook.yml.
 
 * init_dbserver: A role for initializing the PG/EDB cluster(data) directory. This role allows users to pass following variables:
 1. `PG_TYPE`: EPAS/PG
@@ -42,29 +44,46 @@ For more informtion on variables, please refere to the following variables file:
 2. And, PG variables [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
 
 In case user wants to manage normal database users, then they can use following varaible and syntax in the playbook:
-`PG_USERS
+
+```
+PG_USERS
     - name: app1_user
       pass: password
     - name: app2_user
-      pass: password`
+      pass: password
+```
       
 For user defined databases:
-`PG_DATABASES:
+
+```
+PG_DATABASES:
     - name: app_db1
-      owner: app_user1`
+      owner: app_user1
+```
       
 In case a user wants to pass set specific PG/EPAS parameters, following variables can be set in playbook:
-`PG_POSTGRES_CONF_PARAMS:
+
+```
+PG_POSTGRES_CONF_PARAMS:
     - { name: "maintenance_work_mem", value: "1GB" }
-    - { name: "work_mem", value: "1024MB" }`
+    - { name: "work_mem", value: "1024MB" }
+```
 
 For setting specific pg_hba.conf rule, following varaible can be used:
-`PG_ALLOW_IP_ADDRESSES:
+
+```
+PG_ALLOW_IP_ADDRESSES:
     - { user: "user1,user2", ip_address: "172.0.0.1/16", databases: "db1,db2" }
-    - { user: "user3,user4", ip_address: "172.128.0.1/16", databases: "db3,db4" }`
+    - { user: "user3,user4", ip_address: "172.128.0.1/16", databases: "db3,db4" }
+```
     
-* setup_replication: A role for setting up the replication (synchronous/asynchronous)
-* setup_efm: A role for setting up Failover Manager for Postgres/EPAS HA cluster.
+### setup_replication:
+
+A role for setting up the replication (synchronous/asynchronous)
+
+### setup_efm:
+
+A role for setting up Failover Manager for Postgres/EPAS HA cluster.
 
 In the playbook, user can choose the specific roles based on their requirement.
 
