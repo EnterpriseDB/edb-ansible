@@ -169,11 +169,11 @@ Executing the playbook:
 
 CentOS7
 
-      ansible-playbook -private-key=<yourprivatekey> efm_inst_C07_EPAS12_EFM310.yml -u centos
+      ansible-playbook -private-key=<yourprivatekey> playbook.yml -u centos
 
 RHEL7
 
-       ansible-playbook -private-key=<yourprivatekey> efm_inst_C07_EPAS12_EFM310.yml -u ec2-user
+       ansible-playbook -private-key=<yourprivatekey> playbook.yml -u ec2-user
 
 
 
