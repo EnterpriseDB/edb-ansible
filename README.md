@@ -51,8 +51,8 @@ Installation Steps
 
 The 'postgres' Ansible collection can be installed by two different steps:
 
-* Ansible galaxy
-* Utilizing git to download the source code of the from the repository
+* Installing the 'postgres' Ansible Collection
+* Downloading the 'postgres' repository source code from the repository in GitHub
 
 
 Installing the 'postgres' Ansible Collection
