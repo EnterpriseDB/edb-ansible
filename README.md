@@ -8,10 +8,16 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 **The ansible playbook must be executed under an account that has full privileges.**
 
 
-Dependencies
+Description
 ------------
 
-The setup_repo role does not have any dependencies on any other roles.
+edb-ansible is a repository used for hosting an Ansible Collection that currently supports the following ansible roles:
+
+* setup_repo
+* install_dbserver
+* init_dbserver
+* setup_replication
+* setup_efm
 
 
 Ports to be aware that require to be available
