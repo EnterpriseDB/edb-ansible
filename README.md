@@ -56,8 +56,8 @@ This role allows users to pass following variables:
 
 
 For more information on variables, please refer to the following variables file:
-1. EPAS variables [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) 
-2. And, PG variables [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
+1. EPAS variables: [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) 
+2. And, PG variables: [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
 
 In case user wants to manage normal database users, then they can use following naming conventions in the playbook:
 
