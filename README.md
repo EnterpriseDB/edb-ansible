@@ -147,9 +147,9 @@ Installation Steps
 The `postgres` Ansible collection can be installed by two different steps:
 
 * [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-* Installing the 'postgres' Ansible Collection
-* Downloading the 'postgres' repository source code from the repository in GitHub
-* Cloning the 'postgres' repository source code from the repository in GitHub
+* Installing the `postgres` Ansible Collection
+* Downloading the `postgres` repository source code from the repository in GitHub
+* Cloning the `postgres` repository source code from the repository in GitHub
 
 
 Installing the `postgres` Ansible Collection
@@ -158,7 +158,7 @@ Installing the `postgres` Ansible Collection is done by following the steps belo
 
       ansible-galaxy collection install edb-devops.postgres --force
 
-**This step does automatically make the 'postgres' collection available to your playbooks.**
+**This step does automatically make the `postgres` collection available to your playbooks.**
 
 **A message indicating where the collection is installed will be displayed by ansible-galaxy. The collection code should be automatically made readily available for you.**
 
@@ -176,7 +176,7 @@ Downloading the code from the repository can be accomplished by following the st
 
 **After the code has been downloaded, the code will be available as a zip file which requires being unzipped to your desired target destination.**
 
-**This step does not automatically make the 'postgres' collection available to your playbooks.**
+**This step does not automatically make the `postgres` collection available to your playbooks.**
 
 
 Cloning the `postgres` repository source code from the repository GitHub
