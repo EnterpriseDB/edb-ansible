@@ -8,39 +8,71 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 **The ansible playbook must be executed under an account that has full privileges.**
 
 
-Description
-------------
-
 edb-ansible is a repository used for hosting an Ansible Collection that currently supports the following ansible roles:
 
-* setup_repo
-* install_dbserver
-* init_dbserver
-* setup_replication
-* setup_efm
+* setup_repo: A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
+   1. yum.enterprisedb.com
+   2. download.postgresql.org
+   3. dl.fedoraproject.org
+This role requires following compulsory parameters:
+* `PG_TYPE`: "EPAS" or "PG"
+* `EDB_YUM_USERNAME`: EDB repository's username
+* `EDB_YUM_PASSWORD`: EDB yum repository's password.
+
+For access to EDB repository, you can use following link: [EDB yum access ](https://www.enterprisedb.com/user/register?destination=/repository-access-request%3Fdestination%3Dnode/1255704%26resource%3D1255704%26ma_formid%3D2098)
 
 
-Pre-Requisites
-------------
+* install_dbserver: A role for installing EPAS/PG database server packages. This role installs the PG/EEPAS packages, depending on the `PG_TYPE` and `PG_VERSION` variables' setting in the playbook.yml.
 
-A previously existing and configured set of Instances for executing the 'postgres' Ansible Collection.
+* init_dbserver: A role for initializing the PG/EDB cluster(data) directory. This role allows users to pass following variables:
+1. `PG_TYPE`: EPAS/PG
+2. `PG_VERSION`: EPAS/PG Version. Default is 12. 
+3. `PG_DATA`: EPAS/PG data directory. Default is /var/lib/edb/as{PG_VERSION}/data
+4. `PG_WAL`: EPAS/PG wal location. Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal
+5. `PG_SSL`: For configuration of data directory with SSL
+6. `PG_SSL_DIR`: Location of ssl files. Due to security reasons, default location is /etc/edb/certs.
+**Note**: In case, users want to use their certificates, then it is recommended to set `PG_SSL_GENERATE` to false and place their certificate in /etc/edb/certs directory or directory.
+7. `PG_SSL_GENERATE`: Default is True. Allow role to generate SSL certificates with the initialization of the database cluster.
+9. `PG_ENCODING`: Database encoding. Default "UTF-8"
+For more informtion on variables, please refere to EPAS variables [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) and PG variables [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
 
+In case user wants to manage normal database users, then they can use following varaible and syntax in the playbook:
+`PG_USERS
+    - name: app1_user
+      pass: password
+    - name: app2_user
+      pass: password`
+      
+For user defined databases:
+`PG_DATABASES:
+    - name: app_db1
+      owner: app_user1`
+      
+In case a user wants to pass set specific PG/EPAS parameters, following variables can be set in playbook:
+`PG_POSTGRES_CONF_PARAMS:
+    - { name: "maintenance_work_mem", value: "1GB" }
+    - { name: "work_mem", value: "1024MB" }`
 
-Ports to be aware that require to be available
+For setting specific pg_hba.conf rule, following varaible can be used:
+`PG_ALLOW_IP_ADDRESSES:
+    - { user: "user1,user2", ip_address: "172.0.0.1/16", databases: "db1,db2" }
+    - { user: "user3,user4", ip_address: "172.128.0.1/16", databases: "db3,db4" }`
+    
+* setup_replication: A role for setting up the replication (synchronous/asynchronous)
+* setup_efm: A role for setting up Failover Manager for Postgres/EPAS HA cluster.
+
+In the playbook, user can choose the specific roles based on their requirement.
+
+Prerequiste
 ----------------
-
-Postgres:
-
-      5432
-
-EDB Postgres Advanced Server:
-
-      5444
- 
-EDB Failover Manager:
-
-      7800 through 7810
-
+For correctly installed and configuration of the cluster following are requirements:
+1. Following are ports which should be opened for communication between the servers
+    Postgres/EPAS port:  5432/5444
+    EDB Failover Manager: 7800-7810
+  **Note**: If you have firewall enabled on the server, then please allow the access through above ports. 
+2. Ansible (on the machine on which playbook will be executed).
+3. Operating system privileged user (user with sudo privilege) on all the servers/virtual machines.
+**Note**: In our examples, we have used centos user for CentOS OS and ec2_user for RHEL OS as a privileged user.
 
 
 Items to be aware 
