@@ -25,9 +25,16 @@ For access to EDB repository, you can use following link: [EDB yum access ](http
 
 ### install_dbserver: 
 
-A role for installing EPAS/PG database server packages. This role installs the PG/EEPAS packages, depending on the `PG_TYPE` and `PG_VERSION` variables' setting in the playbook.yml.
+A role for installing EPAS/PG database server packages. This role installs the PG/EEPAS packages, depending on the values of the following variablesin the playbook.yml:
+1. `PG_TYPE`: EPAS/PG 
+2. And `PG_VERSION`: PG/EPAS major version number
 
-* init_dbserver: A role for initializing the PG/EDB cluster(data) directory. This role allows users to pass following variables:
+
+### init_dbserver: 
+
+A role for initializing the PG/EDB cluster(data) directory. 
+
+This role allows users to pass following variables:
 1. `PG_TYPE`: EPAS/PG
 2. `PG_VERSION`: EPAS/PG Version. Default is 12. 
 3. `PG_DATA`: EPAS/PG data directory. Default is /var/lib/edb/as{PG_VERSION}/data
