@@ -94,7 +94,9 @@ For correctly installed and configuration of the cluster following are requireme
 1. Following are ports which should be opened for communication between the servers
     Postgres/EPAS port:  5432/5444
     EDB Failover Manager: 7800-7810
+  
   **Note**: If you have firewall enabled on the server, then please allow the access through above ports. 
+
 2. Ansible (on the machine on which playbook will be executed).
 3. Operating system privileged user (user with sudo privilege) on all the servers/virtual machines.
 
