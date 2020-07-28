@@ -297,6 +297,22 @@ Below is an example of how to include the setup_repo role:
 
 
 
+Default user and passwords
+----------------
+The following will occur should a password not be provided for the following accounts:
+
+```
+* PG_SUPERUSER
+* PG_REPLICATIONUSER
+* PG_EFM_USER
+```
+
+**Note**:
+*A password of 20 characters will be automatically created under: `~/.edb` folder. 
+* The naming convention for the password file is: `<username>_pass`
+* The permissions for the `~/.edb` folder and contained files will be assigned to owner which is `<username>`.
+
+
 Executing the playbook:
 ----------------
 
