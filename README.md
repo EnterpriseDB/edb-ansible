@@ -8,7 +8,7 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 **The ansible playbook must be executed under an account that has full privileges.**
 
 
-edb-ansible is a repository used for hosting an Ansible Collection that currently supports the following ansible roles:
+`edb-ansible` is a repository used for hosting an Ansible Collection that currently supports the following ansible roles:
 
 Roles
 -----
