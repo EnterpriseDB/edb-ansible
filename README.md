@@ -155,7 +155,7 @@ The `postgres` Ansible collection can be installed by two different steps:
 * Cloning the `postgres` repository source code from the repository in GitHub
 
 
-##Installing the `postgres` Ansible Collection
+## Installing the `postgres` Ansible Collection
 
 Installing the `postgres` Ansible Collection is done by following the steps below:
 
@@ -169,7 +169,7 @@ Installing the `postgres` Ansible Collection is done by following the steps belo
 
 
 
-##Downloading the `postgres` repository source code from the repository in GitHub
+## Downloading the `postgres` repository source code from the repository in GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
@@ -182,7 +182,7 @@ Downloading the code from the repository can be accomplished by following the st
 **This step does not automatically make the `postgres` collection available to your playbooks.**
 
 
-##Cloning the `postgres` repository source code from the repository GitHub
+## Cloning the `postgres` repository source code from the repository GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
