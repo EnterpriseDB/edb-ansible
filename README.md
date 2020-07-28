@@ -53,7 +53,8 @@ This role allows users to pass following variables:
 **Note**: In case, users want to use their certificates, then it is recommended to set `PG_SSL_GENERATE` to false and place their certificate in /etc/edb/certs directory or directory.
 7. `PG_SSL_GENERATE`: *Default is True. Allow role to generate SSL certificates with the initialization of the database cluster.*
 9. `PG_ENCODING`: Database encoding. *Default "UTF-8"*
-
+10. `PG_SUPERUSER`: PostgreSQL superuser name. *Default is enterprisedb for EPAS and postgres for PG*
+11. `PG_SUPERUSER_PASSWORD`: Password for PG_SUPERUSER. *Default is auto generated password with 20 characters. Password will be stored in ~/.edb with name <PG_SUPERUSER>_pass.*
 
 For more information on variables, please refer to the following variables file:
 1. EPAS variables: [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) 
@@ -102,7 +103,9 @@ Similar to `init_dbserver` role, `setup_replication` has following variables for
 2. `PG_VERSION`: EPAS/PG Version. *Default is 12.*
 3. `PG_DATA`: EPAS/PG data directory. *Default is /var/lib/edb/as{PG_VERSION}/data*
 4. `PG_WAL`: EPAS/PG wal location. *Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal*
-5.  For EPAS/PG postgresql.conf parameters.
+5. `PG_REPLICATION_USER`: Replication user for replicating data between primary and standby. *Default is repuser*
+6. `PG_REPLICATION_USER_PASSWORD`: Replication user password. *Default auto generated and stored on localhost under ~/.edb/<PG_REPLICATION_USER_PASSWORD>_pass*
+7.  For EPAS/PG postgresql.conf parameters.
 
 ```
 PG_POSTGRES_CONF_PARAMS:
