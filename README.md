@@ -309,9 +309,10 @@ The following will occur should a password not be provided for the following acc
 
 **Note:**
 
+* The `~/.edb` folder and contained files are secured by assigning the permissions to `user` executing the playbook.
 * A password of 20 characters will be automatically created under: `~/.edb` folder. 
 * The naming convention for the password file is: `<username>_pass`
-* The permissions for the `~/.edb` folder and contained files will be assigned to owner which is `<username>`.
+
 
 
 Executing the playbook:
