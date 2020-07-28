@@ -45,14 +45,14 @@ A role for initializing the PG/EPAS cluster(data) directory.
 This role allows users to pass following variables:
 
 1. `PG_TYPE`: EPAS/PG
-2. `PG_VERSION`: EPAS/PG Version. Default is 12. 
-3. `PG_DATA`: EPAS/PG data directory. Default is /var/lib/edb/as{PG_VERSION}/data
-4. `PG_WAL`: EPAS/PG wal location. Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal
+2. `PG_VERSION`: EPAS/PG Version. *Default is 12.*
+3. `PG_DATA`: EPAS/PG data directory. *Default is /var/lib/edb/as{PG_VERSION}/data*
+4. `PG_WAL`: EPAS/PG wal location. *Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal*
 5. `PG_SSL`: For configuration of data directory with SSL
-6. `PG_SSL_DIR`: Location of ssl files. Due to security reasons, default location is /etc/edb/certs.
+6. `PG_SSL_DIR`: Location of ssl files. *Due to security reasons, default location is /etc/edb/certs.*
 **Note**: In case, users want to use their certificates, then it is recommended to set `PG_SSL_GENERATE` to false and place their certificate in /etc/edb/certs directory or directory.
-7. `PG_SSL_GENERATE`: Default is True. Allow role to generate SSL certificates with the initialization of the database cluster.
-9. `PG_ENCODING`: Database encoding. Default "UTF-8"
+7. `PG_SSL_GENERATE`: *Default is True. Allow role to generate SSL certificates with the initialization of the database cluster.*
+9. `PG_ENCODING`: Database encoding. *Default "UTF-8"*
 
 
 For more information on variables, please refer to the following variables file:
