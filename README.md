@@ -10,6 +10,9 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 
 edb-ansible is a repository used for hosting an Ansible Collection that currently supports the following ansible roles:
 
+Roles
+-----
+
 ### setup_repo: 
 A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
    1. yum.enterprisedb.com
