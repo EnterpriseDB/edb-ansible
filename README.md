@@ -92,8 +92,9 @@ Prerequiste
 For correctly installed and configuration of the cluster following are requirements:
 
 1. Following are ports which should be opened for communication between the servers
-    Postgres/EPAS port:  5432/5444
-    EDB Failover Manager: 7800-7810
+    
+    * Postgres/EPAS port:  5432/5444
+    * EDB Failover Manager: 7800-7810
   
   **Note**: If you have firewall enabled on the server, then please allow the access through above ports. 
 
