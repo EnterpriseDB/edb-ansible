@@ -32,15 +32,15 @@ For access to EDB repository, you can use following link: [EDB yum access](https
 
 ### install_dbserver: 
 
-A role for installing EPAS/PG database server packages. This role installs the PG/EEPAS packages, depending on the values of the following variablesin the playbook.yml:
+A role for installing EPAS/PG database server packages. This role installs the EPAS/PG packages, depending on the values of the following variables in the playbook.yml:
 
 1. `PG_TYPE`: EPAS/PG 
-2. And `PG_VERSION`: PG/EPAS major version number
+2. And `PG_VERSION`: EPAS/PG major version number
 
 
 ### init_dbserver: 
 
-A role for initializing the PG/EDB cluster(data) directory. 
+A role for initializing the PG/EPAS cluster(data) directory. 
 
 This role allows users to pass following variables:
 
@@ -55,11 +55,11 @@ This role allows users to pass following variables:
 9. `PG_ENCODING`: Database encoding. Default "UTF-8"
 
 
-For more informtion on variables, please refere to the following variables file:
+For more information on variables, please refer to the following variables file:
 1. EPAS variables [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) 
 2. And, PG variables [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
 
-In case user wants to manage normal database users, then they can use following varaible and syntax in the playbook:
+In case user wants to manage normal database users, then they can use following naming conventions in the playbook:
 
 ```
 PG_USERS
@@ -77,7 +77,7 @@ PG_DATABASES:
       owner: app_user1
 ```
       
-In case a user wants to pass set specific PG/EPAS parameters, following variables can be set in playbook:
+In case a user wants to pass set specific PG/EPAS parameters, the following variables can be set in playbook:
 
 ```
 PG_POSTGRES_CONF_PARAMS:
@@ -85,7 +85,7 @@ PG_POSTGRES_CONF_PARAMS:
     - { name: "work_mem", value: "1024MB" }
 ```
 
-For setting specific pg_hba.conf rule, following varaible can be used:
+For setting specific `pg_hba.conf` rule, following variable can be used:
 
 ```
 PG_ALLOW_IP_ADDRESSES:
@@ -99,9 +99,9 @@ A role for setting up the replication (synchronous/asynchronous).
 Similar to `init_dbserver` role, `setup_replication` has following variables for managing the EPAS/PG.
 
 1. `PG_TYPE`: EPAS/PG
-2. `PG_VERSION`: EPAS/PG Version. Default is 12. 
-3. `PG_DATA`: EPAS/PG data directory. Default is /var/lib/edb/as{PG_VERSION}/data
-4. `PG_WAL`: EPAS/PG wal location. Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal
+2. `PG_VERSION`: EPAS/PG Version. *Default is 12.*
+3. `PG_DATA`: EPAS/PG data directory. *Default is /var/lib/edb/as{PG_VERSION}/data*
+4. `PG_WAL`: EPAS/PG wal location. *Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal*
 5.  For EPAS/PG postgresql.conf parameters.
 
 ```
@@ -110,7 +110,7 @@ PG_POSTGRES_CONF_PARAMS:
     - { name: "work_mem", value: "1024MB" }
 ```
 
-For setting specific pg_hba.conf rule, following varaible can be used:
+For setting specific `pg_hba.conf` rule, following variable can be used:
 6. 
 ```
 PG_ALLOW_IP_ADDRESSES:
@@ -139,7 +139,7 @@ For correctly installed and configuration of the cluster following are requireme
 2. Ansible (on the machine on which playbook will be executed).
 3. Operating system privileged user (user with sudo privilege) on all the servers/virtual machines.
 
-**Note**: In our examples, we have used centos user for CentOS OS and ec2_user for RHEL OS as a privileged user.
+**Note**: In our examples, we have used `centos` user for CentOS OS and `ec2_user` for RHEL OS as a privileged user.
 
 Installation Steps
 ----------------
@@ -152,9 +152,9 @@ The 'postgres' Ansible collection can be installed by two different steps:
 * Cloning the 'postgres' repository source code from the repository in GitHub
 
 
-Installing the 'postgres' Ansible Collection
+Installing the `postgres` Ansible Collection
 ----------------
-Installing the 'postgres' Ansible Collection is done by following the steps below:
+Installing the `postgres` Ansible Collection is done by following the steps below:
 
       ansible-galaxy collection install edb-devops.postgres --force
 
@@ -166,11 +166,11 @@ Installing the 'postgres' Ansible Collection is done by following the steps belo
 
 
 
-Downloading the 'postgres' repository source code from the repository in GitHub
+Downloading the `postgres` repository source code from the repository in GitHub
 ----------------
 Downloading the code from the repository can be accomplished by following the steps below:
 
-      * Navigate to the repository address: https://github.com/EnterpriseDB/edb-ansible
+      * Navigate to the repository address: `https://github.com/EnterpriseDB/edb-ansible`
       * Click on the green *Code* Button located next to the *About* section
       * Click on the *Download Zip* Link menu option
 
@@ -179,7 +179,7 @@ Downloading the code from the repository can be accomplished by following the st
 **This step does not automatically make the 'postgres' collection available to your playbooks.**
 
 
-Cloning the 'postgres' repository source code from the repository GitHub
+Cloning the `postgres` repository source code from the repository GitHub
 ----------------
 Downloading the code from the repository can be accomplished by following the steps below:
 
