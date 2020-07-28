@@ -46,24 +46,36 @@ Items to be aware
 
 
 
-Installation of Collection with Ansible Galaxy
+Installation Steps
 ----------------
 
-ansible-galaxy collection install edb-devops.postgres --force
+The 'postgres' Ansible collection can be installed by two different steps:
 
-**A message indicating where the collection is installed will be displayed by ansible-galaxy. The collection code should be readily available for you.**
+* Ansible galaxy
+* Utilizing git to download the source code of the from the repository
 
 
-
-
-Retrieving the code from the repository in GitHub
+Installing the 'postgres' Ansible Collection
 ----------------
+Installing the 'postgres' Ansible Collection is done by following the steps below:
 
-  git clone git@github.com:EnterpriseDB/edb-ansible.git
+      ansible-galaxy collection install edb-devops.postgres --force
+
+**A message indicating where the collection is installed will be displayed by ansible-galaxy. The collection code should be automatically made readily available for you.**
+
+
+
+Downloading the 'postgres' repository source code from the repository in GitHub
+----------------
+Downloading the code from the repository can be accomplished by following the steps below:
+
+      git clone git@github.com:EnterpriseDB/edb-ansible.git
 
 **After the code has been downloaded, the code will be available in your current directory within a directory named: 'edb-ansible'.**
 
+You can access the root folder of the repository by entering the command below:
 
+      cd edb-ansible
 
 
 Hosts file content
