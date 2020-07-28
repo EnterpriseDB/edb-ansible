@@ -144,7 +144,7 @@ For correctly installed and configuration of the cluster following are requireme
 Installation Steps
 ----------------
 
-The 'postgres' Ansible collection can be installed by two different steps:
+The `postgres` Ansible collection can be installed by two different steps:
 
 * [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 * Installing the 'postgres' Ansible Collection
