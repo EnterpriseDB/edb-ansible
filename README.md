@@ -34,7 +34,11 @@ For access to EDB repository, you can use following link: [EDB yum access ](http
 **Note**: In case, users want to use their certificates, then it is recommended to set `PG_SSL_GENERATE` to false and place their certificate in /etc/edb/certs directory or directory.
 7. `PG_SSL_GENERATE`: Default is True. Allow role to generate SSL certificates with the initialization of the database cluster.
 9. `PG_ENCODING`: Database encoding. Default "UTF-8"
-For more informtion on variables, please refere to EPAS variables [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) and PG variables [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
+
+
+For more informtion on variables, please refere to the following variables file:
+1. EPAS variables [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) 
+2. And, PG variables [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
 
 In case user wants to manage normal database users, then they can use following varaible and syntax in the playbook:
 `PG_USERS
