@@ -193,6 +193,7 @@ You can access the root folder of the repository by entering the command below:
 
 **This step does not automatically make the 'postgres' collection available to your playbooks.**
 
+
 Hosts file content
 ----------------
 
@@ -296,7 +297,6 @@ Below is an example of how to include the setup_repo role:
 **You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication' or 'setup_efm'.**
 
 
-
 Default user and passwords
 ----------------
 The following will occur should a password not be provided for the following accounts:
@@ -307,8 +307,9 @@ The following will occur should a password not be provided for the following acc
 * PG_EFM_USER
 ```
 
-**Note**:
-*A password of 20 characters will be automatically created under: `~/.edb` folder. 
+**Note:**
+
+* A password of 20 characters will be automatically created under: `~/.edb` folder. 
 * The naming convention for the password file is: `<username>_pass`
 * The permissions for the `~/.edb` folder and contained files will be assigned to owner which is `<username>`.
 
