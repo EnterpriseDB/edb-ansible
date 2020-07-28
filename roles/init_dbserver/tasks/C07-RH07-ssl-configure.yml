@@ -1,8 +1,8 @@
 - name: Define ssl  file names
   set_fact:
-     SSL_CA_FILE: "{{ PG_SSL_DIR }}/root.crt"
-     SSL_KEY_FILE: "{{ PG_SSL_DIR }}/server.key"
-     SSL_CERT_FILE: "{{ PG_SSL_DIR }}/server.crt"
+    SSL_CA_FILE: "{{ PG_SSL_DIR }}/root.crt"
+    SSL_KEY_FILE: "{{ PG_SSL_DIR }}/server.key"
+    SSL_CERT_FILE: "{{ PG_SSL_DIR }}/server.crt"
   register: output
 
 - name: Generate SSL certificates
@@ -24,34 +24,34 @@
     mkdir -p ${CERTS_DIRECTORY}
 
     openssl req -new -x509 -days ${NUMBER_OF_DAYS} \
-         -nodes \
-         -text -out ${SERVER_CRT} \
-         -keyout ${SERVER_KEY} \
-         -subj "/CN=${HOST_FQDN}"
+      -nodes \
+      -text -out ${SERVER_CRT} \
+      -keyout ${SERVER_KEY} \
+      -subj "/CN=${HOST_FQDN}"
 
     openssl req -new -nodes \
-         -text -out ${ROOT_CSR} \
-         -keyout ${ROOT_KEY} -subj "/CN=root.${DOMAIN_NAME}"
+      -text -out ${ROOT_CSR} \
+      -keyout ${ROOT_KEY} -subj "/CN=root.${DOMAIN_NAME}"
 
     openssl x509 -req \
-         -in ${ROOT_CSR} \
-         -text -days ${NUMBER_OF_DAYS}0 \
-         -extfile ${OPENSSL_CNF}/openssl.cnf \
-         -extensions v3_ca \
-         -signkey ${ROOT_KEY} \
-         -out ${ROOT_CRT}
+      -in ${ROOT_CSR} \
+      -text -days ${NUMBER_OF_DAYS}0 \
+      -extfile ${OPENSSL_CNF}/openssl.cnf \
+      -extensions v3_ca \
+      -signkey ${ROOT_KEY} \
+      -out ${ROOT_CRT}
 
     openssl req -new -nodes \
-         -text -out ${SERVER_CSR} \
-         -keyout ${SERVER_KEY} \
-         -subj "/CN=${HOST_FQDN}"
+      -text -out ${SERVER_CSR} \
+      -keyout ${SERVER_KEY} \
+      -subj "/CN=${HOST_FQDN}"
 
     openssl x509 -req \
-         -in ${SERVER_CSR} \
-         -text -days ${NUMBER_OF_DAYS} \
-         -CA ${ROOT_CRT} \
-         -CAkey ${ROOT_KEY} -CAcreateserial \
-         -out ${SERVER_CRT}
+      -in ${SERVER_CSR} \
+      -text -days ${NUMBER_OF_DAYS} \
+      -CA ${ROOT_CRT} \
+      -CAkey ${ROOT_KEY} -CAcreateserial \
+      -out ${SERVER_CRT}
     chown -R {{ PG_OWNER }}:{{ PG_OWNER }} /etc/edb/certs
     chmod 600 {{ SSL_CA_FILE }} {{ SSL_KEY_FILE }} {{ SSL_CERT_FILE }}
     touch ${CERTS_DIRECTORY}/.created_ssl
@@ -63,53 +63,53 @@
 
 - name: Find the HBA File location
   postgresql_query:
-      login_user: "{{ PG_OWNER }}"
-      port: "{{ PG_PORT }}"
-      login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
-      query: "SHOW hba_file;"
-      db: "{{ PG_DATABASE }}"
+    login_user: "{{ PG_OWNER }}"
+    port: "{{ PG_PORT }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    query: "SHOW hba_file;"
+    db: "{{ PG_DATABASE }}"
   become: yes
   become_user: "{{ PG_OWNER }}"
   register: hba_info
 
 - name: Update localhost addresses entries into pg_hba file
   postgresql_pg_hba:
-      dest: "{{ hba_info.query_result[0].hba_file }}"
-      contype: host
-      users: "all"
-      source: "{{ line_items.ip_addr }}"
-      databases: "{{ line_items.database }}"
-      state: absent
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: host
+    users: "all"
+    source: "{{ line_items.ip_addr }}"
+    databases: "{{ line_items.database }}"
+    state: absent
   become: yes
   become_user: "{{ PG_OWNER }}"
   with_items:
-      - { ip_addr: "127.0.0.1/32", database: "all" }
-      - { ip_addr: "::1/128", database: "all" }
-      - { ip_addr: "127.0.0.1/32", database: "replication" }
-      - { ip_addr: "::1/128", database: "replication" }
+    - { ip_addr: "127.0.0.1/32", database: "all" }
+    - { ip_addr: "::1/128", database: "all" }
+    - { ip_addr: "127.0.0.1/32", database: "replication" }
+    - { ip_addr: "::1/128", database: "replication" }
   loop_control:
-      loop_var: line_items
+    loop_var: line_items
   register: ssl_hba_update
 
 - name: Update localhost addresses entries into pg_hba file
   postgresql_pg_hba:
-      dest: "{{ hba_info.query_result[0].hba_file }}"
-      contype: hostssl
-      users: "all"
-      source: "{{ line_items.ip_addr }}"
-      databases: "{{ line_items.database }}"
-      method: scram-sha-256
-      state: present
-      create: true
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: hostssl
+    users: "all"
+    source: "{{ line_items.ip_addr }}"
+    databases: "{{ line_items.database }}"
+    method: scram-sha-256
+    state: present
+    create: true
   become: yes
   become_user: "{{ PG_OWNER }}"
   with_items:
-      - { ip_addr: "127.0.0.1/32", database: "all" }
-      - { ip_addr: "::1/128", database: "all" }
-      - { ip_addr: "127.0.0.1/32", database: "replication" }
-      - { ip_addr: "::1/128", database: "replication" }
+    - { ip_addr: "127.0.0.1/32", database: "all" }
+    - { ip_addr: "::1/128", database: "all" }
+    - { ip_addr: "127.0.0.1/32", database: "replication" }
+    - { ip_addr: "::1/128", database: "replication" }
   loop_control:
-      loop_var: line_items
+    loop_var: line_items
   register: ssl_hba_update
 
 - name: Configure ssl Settings in postgresql.auto.conf
@@ -121,10 +121,10 @@
     name: "{{ line_item.name }}"
     value: "{{ line_item.value }}"
   with_items:
-      - { name: "ssl", value: "on" }
-      - { name: "ssl_ca_file", value: "{{ SSL_CA_FILE }}" }
-      - { name: "ssl_key_file", value: "{{ SSL_KEY_FILE }}" }
-      - { name: "ssl_cert_file", value: "{{ SSL_CERT_FILE }}" }
+    - { name: "ssl", value: "on" }
+    - { name: "ssl_ca_file", value: "{{ SSL_CA_FILE }}" }
+    - { name: "ssl_key_file", value: "{{ SSL_KEY_FILE }}" }
+    - { name: "ssl_cert_file", value: "{{ SSL_CERT_FILE }}" }
   become: true
   become_user: "{{ PG_OWNER }}"
   loop_control:
@@ -133,16 +133,16 @@
 
 - name: Reload the PG Service
   systemd:
-      name: "{{ PG_SERVICE }}"
-      daemon_reload: yes
-      state: reloaded
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: reloaded
   become: yes
   when: ssl_hba_update.changed
 
 - name: Restart the PG Service
   systemd:
-      name: "{{ PG_SERVICE }}"
-      daemon_reload: yes
-      state: restarted
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: restarted
   become: yes
   when: ssl_params.changed

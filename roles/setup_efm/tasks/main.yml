@@ -56,10 +56,10 @@
 
 - name: Prepare EFM node list
   set_fact:
-      EFM_NODES_LIST: "{{ EFM_NODES_LIST + line_items + ':7800 ' }}"
+    EFM_NODES_LIST: "{{ EFM_NODES_LIST + line_items + ':7800 ' }}"
   with_items: "{{ ALL_NODE_IPS }}"
   loop_control:
-      loop_var: line_items
+    loop_var: line_items
 
 
 # Display Details of Node to Install
@@ -79,7 +79,7 @@
 
 - name: Set FORCE_EFM_INSTALL based on the user input
   set_fact:
-      FORCE_EFM_INSTALL: "{{ item.value.force_efm_install }}"
+    FORCE_EFM_INSTALL: "{{ item.value.force_efm_install }}"
   when: item.value.force_efm_install is defined
   register: output
 
@@ -112,5 +112,5 @@
 
 - name: Reset FORCE/SKIPP_EFM_INSTALL based on the user input
   set_fact:
-      FORCE_EFM_INSTALL: false
+    FORCE_EFM_INSTALL: false
   register: output

@@ -2,8 +2,8 @@
 
 - name: Set PG_SUPERUSER_PASSWORD if not provided
   set_fact:
-      PG_SUPERUSER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_SUPERUSER }}_pass chars=ascii_letters') }}"
-      PG_RANDOM_PASSWORD: true
+    PG_SUPERUSER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_SUPERUSER }}_pass chars=ascii_letters') }}"
+    PG_RANDOM_PASSWORD: true
   when: PG_SUPERUSER_PASSWORD|length < 1
   become: no
   delegate_to: localhost
@@ -55,7 +55,7 @@
     value: "{{ line_item.value }}"
   when: PG_LOG in PG_LOG_FILENAME and not PG_DATA in PG_LOG
   with_items:
-      - { name: "log_filename", value: "{{ PG_LOG_FILENAME }}" }
+    - { name: "log_filename", value: "{{ PG_LOG_FILENAME }}" }
   become: true
   become_user: "{{ PG_OWNER }}"
   loop_control:
@@ -64,16 +64,16 @@
 
 - name: Reload the PG Service
   systemd:
-      name: "{{ PG_SERVICE }}"
-      daemon_reload: yes
-      state: reloaded
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: reloaded
   become: yes
   when: log_update.changed
 
 - name: Restart the PG Service
   systemd:
-      name: "{{ PG_SERVICE }}"
-      daemon_reload: yes
-      state: restarted
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: restarted
   become: yes
   when: unix_socket_update.changed

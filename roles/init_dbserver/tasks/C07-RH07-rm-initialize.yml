@@ -30,4 +30,3 @@
     path: "{{ PG_SSL_DIR }}/.created_ssl"
     state: absent
   become: yes
-

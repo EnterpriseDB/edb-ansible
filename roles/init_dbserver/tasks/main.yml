@@ -50,7 +50,7 @@
 
 - name: set FORCE_INITIALIZE based on the user input
   set_fact:
-      FORCE_INITIALIZE: "{{ item.value.force_initialize }}"
+    FORCE_INITIALIZE: "{{ item.value.force_initialize }}"
   when: item.value.force_initialize is defined
   register: output
 
@@ -90,5 +90,5 @@
 
 - name: Reset FORCE/SKIP_INITIALIZE based on the user input
   set_fact:
-      FORCE_INITIALIZE: false
+    FORCE_INITIALIZE: false
   register: output

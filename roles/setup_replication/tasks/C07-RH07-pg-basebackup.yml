@@ -43,4 +43,3 @@
     creates: "{{ PG_DATA }}/PG_VERSION"
   become: yes
   become_user: "{{ PG_OWNER }}"
-

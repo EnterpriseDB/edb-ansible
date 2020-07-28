@@ -16,33 +16,33 @@
 
 - name: create the local ssl directory
   file:
-      path: "{{ LOCAL_SSL_DIR }}"
-      state: directory
+    path: "{{ LOCAL_SSL_DIR }}"
+    state: directory
   become: no
   delegate_to: localhost
 
 - name: create the ssl directory on the server
   file:
-      path: "{{ PG_SSL_DIR }}"
-      state: directory
-      recurse: yes
-      owner: "{{ PG_OWNER }}"
+    path: "{{ PG_SSL_DIR }}"
+    state: directory
+    recurse: yes
+    owner: "{{ PG_OWNER }}"
   become: yes
 
 - name: fetch ssl to local
   fetch:
-      src: "{{ PG_SSL_DIR }}/{{ line_item }}"
-      dest: "{{ LOCAL_SSL_DIR }}"
+    src: "{{ PG_SSL_DIR }}/{{ line_item }}"
+    dest: "{{ LOCAL_SSL_DIR }}"
   with_items: "{{ ssl_file.stdout_lines }}"
   loop_control:
-      loop_var: line_item
+    loop_var: line_item
   become: yes
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
 
 - name: Copy the SSL files to standby
   copy:
-      src: "{{ LOCAL_SSL_DIR }}/localhost/{{ PG_SSL_DIR }}/{{ line_item }}"
-      dest: "{{ PG_SSL_DIR }}/{{ line_item }}"
+    src: "{{ LOCAL_SSL_DIR }}/localhost/{{ PG_SSL_DIR }}/{{ line_item }}"
+    dest: "{{ PG_SSL_DIR }}/{{ line_item }}"
   with_items: "{{ ssl_file.stdout_lines }}"
   loop_control:
       loop_var: line_item
@@ -50,25 +50,25 @@
 
 - name: Change the SSL files permission
   file:
-      path: "{{ PG_SSL_DIR }}/{{ line_item }}"
-      mode: 0600
-      owner: "{{ PG_OWNER }}"
-      group: "{{ PG_OWNER }}"
+    path: "{{ PG_SSL_DIR }}/{{ line_item }}"
+    mode: 0600
+    owner: "{{ PG_OWNER }}"
+    group: "{{ PG_OWNER }}"
   with_items: "{{ ssl_file.stdout_lines }}"
   loop_control:
-      loop_var: line_item
+    loop_var: line_item
   become: yes
 
 - name: Create .created_ssl file
   file:
-      path: "{{ PG_SSL_DIR }}/.created_ssl"
-      mode: 0600
-      state: touch
+    path: "{{ PG_SSL_DIR }}/.created_ssl"
+    mode: 0600
+    state: touch
   become: yes
 
 - name: Remove the local ssl directory
   file:
-      path: "{{ LOCAL_SSL_DIR }}"
-      state: absent
+    path: "{{ LOCAL_SSL_DIR }}"
+    state: absent
   become: no
   delegate_to: localhost

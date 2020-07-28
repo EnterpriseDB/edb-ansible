@@ -1,6 +1,6 @@
 - name: Set query if snchronous_standby_names is not empty
   set_fact:
-      sql_query: "WITH synchronous_standby_string AS (
+    sql_query: "WITH synchronous_standby_string AS (
     SELECT
         pg_catalog.current_setting('synchronous_standby_names') AS parameter,
         CASE WHEN pg_catalog.current_setting('synchronous_standby_names')

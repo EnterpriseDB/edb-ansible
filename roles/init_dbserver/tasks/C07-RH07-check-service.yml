@@ -2,9 +2,9 @@
 
 - name: Check if Cluster has been initialized
   shell: |
-      #/bin/bash
-      systemctl is-active --quiet {{ PG_SERVICE }} \
-      && echo "service_running" || echo "service_not_running"
+    #/bin/bash
+    systemctl is-active --quiet {{ PG_SERVICE }} \
+    && echo "service_running" || echo "service_not_running"
   args:
     executable: /bin/bash
   changed_when: "'service_not_running' in service_status.stdout"
@@ -19,10 +19,10 @@
 
 - name: Verify PGDATA and stop if exists
   fail:
-      msg: "It looks like either  {{ PG_DATA }} directory is not empty or Service is running
-            without {{ PG_DATA }} as directory. Take he backup of existing {{ PG_DATA }}
-            and stop the service to proceed for intialize.
-            Or use force_initialize option"
+    msg: "It looks like either  {{ PG_DATA }} directory is not empty or Service is running
+         without {{ PG_DATA }} as directory. Take he backup of existing {{ PG_DATA }}
+         and stop the service to proceed for intialize.
+         Or use force_initialize option"
   when:
       - ( pgdata_file.stat.exists and service_status.stdout != 'service_running' )
       - (  not pgdata_file.stat.exists and service_status.stdout == 'service_running' )

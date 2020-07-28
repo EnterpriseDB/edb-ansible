@@ -28,15 +28,15 @@
 
 - name: Start the PG Service
   systemd:
-      name: "{{ PG_SERVICE }}"
-      daemon_reload: yes
-      state: started
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: started
   become: yes
 
 - name: Restart the PG Service
   systemd:
-      name: "{{ PG_SERVICE }}"
-      daemon_reload: yes
-      state: restarted
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: restarted
   become: yes
   when: service_changed.changed

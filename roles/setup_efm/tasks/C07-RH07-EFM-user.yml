@@ -1,7 +1,7 @@
 ---
 - name: Set PG_REPLICATION_USER_PASSWORD if not provided
   set_fact:
-      PG_EFM_USER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_EFM_USER }}_pass chars=ascii_letters') }}"
+    PG_EFM_USER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_EFM_USER }}_pass chars=ascii_letters') }}"
   when: PG_EFM_USER_PASSWORD|length < 1
   become: no
   delegate_to: localhost
@@ -12,7 +12,7 @@
     password: "{{ PG_EFM_USER_PASSWORD }}"
     role_attr_flags: REPLICATION
     groups:
-        - pg_read_all_settings
+      - pg_read_all_settings
     login_user: "{{ PG_OWNER }}"
     login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
     db: "{{ PG_EFM_DATABASE }}"

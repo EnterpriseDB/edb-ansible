@@ -56,7 +56,7 @@
 
 - name: Generate EFM encrypted Password
   shell: |
-   {{ EFM_BIN_PATH }}/efm encrypt efm --from-env
+    {{ EFM_BIN_PATH }}/efm encrypt efm --from-env
   args:
     executable: /bin/bash
   environment:

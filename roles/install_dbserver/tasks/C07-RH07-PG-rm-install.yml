@@ -1,8 +1,8 @@
 ---
 - name: Stop the PG service if it's running
   systemd:
-      name: postgresql-{{ PG_VERSION }}
-      state: stopped
+    name: postgresql-{{ PG_VERSION }}
+    state: stopped
   become: yes
   ignore_errors: yes
 
