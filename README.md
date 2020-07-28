@@ -53,6 +53,7 @@ The 'postgres' Ansible collection can be installed by two different steps:
 
 * Installing the 'postgres' Ansible Collection
 * Downloading the 'postgres' repository source code from the repository in GitHub
+* Cloning the 'postgres' repository source code from the repository in GitHub
 
 
 Installing the 'postgres' Ansible Collection
@@ -66,6 +67,18 @@ Installing the 'postgres' Ansible Collection is done by following the steps belo
 
 
 Downloading the 'postgres' repository source code from the repository in GitHub
+----------------
+Downloading the code from the repository can be accomplished by following the steps below:
+
+      Navigate to the repository address: https://github.com/EnterpriseDB/edb-ansible
+      Click on the green *Code* Button located next to the *About* section
+      Click on the *Download Zip* Link menu option
+
+**After the code has been downloaded, the code will be available as a zip file which requires being unzipped to your desired target destination.**
+
+
+
+Cloning the 'postgres' repository source code from the repository GitHub
 ----------------
 Downloading the code from the repository can be accomplished by following the steps below:
 
