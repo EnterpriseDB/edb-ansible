@@ -85,7 +85,7 @@ Below is an example of how to include the init_dbserver role:
       gather_facts: no
 
       collections:
-        - edb-devops.postgres
+        - edb_devops.postgres
 
       vars_files:
         - hosts.yml
