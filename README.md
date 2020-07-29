@@ -261,6 +261,8 @@ Below is an example of how to include the setup_repo role:
             EDB_YUM_USERNAME: ""
             EDB_YUM_PASSWORD: ""
             STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
+            
+            # Variables processing roles
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
             PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
