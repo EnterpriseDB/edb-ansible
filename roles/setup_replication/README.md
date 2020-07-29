@@ -73,7 +73,7 @@ Below is an example of how to include the setup_replication role:
       gather_facts: no
       
       collections:
-        - edb-devops.postgres
+        - edb_devops.postgres
 
       vars_files:
         - hosts.yml
