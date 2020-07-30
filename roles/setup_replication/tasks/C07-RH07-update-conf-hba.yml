@@ -66,7 +66,7 @@
     name: "{{ PG_SERVICE }}"
     daemon_reload: yes
     state: reloaded
-  be: yes
+  become: yes
   when: hba_update.changed
 
 - name: Restart the PG Service
