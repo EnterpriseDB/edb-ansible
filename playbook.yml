@@ -5,9 +5,13 @@
   become: true
   gather_facts: no
 
+  # When using collections
+  #collections:
+  #    - edb_devops.edb_postgres
+  
   vars_files:
     - hosts.yml
-
+  
   #initializing internal variables
   vars:
       PRIMARY_PRIVATE_IP: ""
@@ -15,10 +19,6 @@
       STANDBY_NAMES: []
       ALL_NODE_IPS: []
       
-  # When using collections
-  #collections:
-  #    - edb_devops.edb_postgres
-  
   pre_tasks:
       - name: Initialize the user defined variables
         set_fact:
