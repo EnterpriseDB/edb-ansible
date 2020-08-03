@@ -14,9 +14,11 @@
       PRIMARY_PUBLIC_IP: ""
       STANDBY_NAMES: []
       ALL_NODE_IPS: []
-  # Internal processing purpose
+      
+  # When using collections
   #collections:
-  #    - dougortiz.edb_ansible_postgres
+  #    - edb_devops.edb_postgres
+  
   pre_tasks:
       - name: Initialize the user defined variables
         set_fact:
