@@ -1,4 +1,4 @@
-postgres
+edb_postgres
 =========
 
 This Ansible Galaxy Collection sets up and configures the repositories from which packages will be retrieved for any Postgres or EnterpriseDB Postgresql Advanced Server installations.
@@ -147,21 +147,21 @@ For correctly installed and configuration of the cluster following are requireme
 Installation Steps
 ----------------
 
-The `postgres` Ansible collection can be installed by two different steps:
+The `edb_postgres` Ansible collection can be installed by two different steps:
 
 * [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-* Installing the `postgres` Ansible Collection
-* Downloading the `postgres` repository source code from the repository in GitHub
-* Cloning the `postgres` repository source code from the repository in GitHub
+* Installing the `edb_postgres` Ansible Collection
+* Downloading the `edb_postgres` repository source code from the repository in GitHub
+* Cloning the `edb_postgres` repository source code from the repository in GitHub
 
 
-### Installing the `postgres` Ansible Collection
+### Installing the `edb_postgres` Ansible Collection
 
-Installing the `postgres` Ansible Collection is done by following the steps below:
+Installing the `edb_postgres` Ansible Collection is done by following the steps below:
 
-      ansible-galaxy collection install edb-devops.postgres --force
+      ansible-galaxy collection install edb_devops.edb_postgres --force
 
-**This step does automatically make the `postgres` collection available to your playbooks.**
+**This step does automatically make the `edb_postgres` collection available to your playbooks.**
 
 **A message indicating where the collection is installed will be displayed by ansible-galaxy. The collection code should be automatically made readily available for you.**
 
@@ -169,7 +169,7 @@ Installing the `postgres` Ansible Collection is done by following the steps belo
 
 
 
-### Downloading the `postgres` repository source code from the repository in GitHub
+### Downloading the `edb_postgres` repository source code from the repository in GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
@@ -182,7 +182,7 @@ Downloading the code from the repository can be accomplished by following the st
 **This step does not automatically make the `postgres` collection available to your playbooks.**
 
 
-### Cloning the `postgres` repository source code from the repository GitHub
+### Cloning the `edb_postgres` repository source code from the repository GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
@@ -194,7 +194,7 @@ You can access the root folder of the repository by entering the command below:
 
       cd edb-ansible
 
-**This step does not automatically make the 'postgres' collection available to your playbooks.**
+**This step does not automatically make the 'edb_postgres' collection available to your playbooks.**
 
 
 Hosts file content
@@ -317,6 +317,13 @@ The following will occur should a password not be provided for the following acc
 * The `~/.edb` folder and contained files are secured by assigning the permissions to `user` executing the playbook.
 * A password of 20 characters will be automatically created under: `~/.edb` folder. 
 * The naming convention for the password file is: `<username>_pass`
+
+
+
+Playbook examples:
+----------------
+
+Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postgres Advanced Server, CentOS7 or RHEL7 are provided and located within the ```playbook-examples``` directory.
 
 
 

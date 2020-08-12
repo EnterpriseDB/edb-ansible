@@ -1,4 +1,6 @@
-- name: Define ssl  file names
+---
+
+- name: Define ssl file names
   set_fact:
     SSL_CA_FILE: "{{ PG_SSL_DIR }}/root.crt"
     SSL_KEY_FILE: "{{ PG_SSL_DIR }}/server.key"

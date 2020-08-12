@@ -1,4 +1,5 @@
 ---
+
 - name: Stop EFM service
   systemd:
     name: "{{ EFM_SERVICE }}"

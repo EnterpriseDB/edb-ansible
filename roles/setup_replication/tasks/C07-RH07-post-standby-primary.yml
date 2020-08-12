@@ -1,4 +1,5 @@
 ---
+
 - name: Check if we have synchronous_standby_names set
   postgresql_query:
     login_user: "{{ PG_OWNER }}"

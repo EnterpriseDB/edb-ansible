@@ -54,7 +54,7 @@
   when: item.value.force_initialize is defined
   register: output
 
-# main blog for tasks
+# Mmain block for tasks
 - name: Force cleanup based on force_initialize
   block:
     - include_tasks: C07-RH07-rm-initialize.yml

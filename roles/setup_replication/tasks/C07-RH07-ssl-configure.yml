@@ -1,6 +1,6 @@
 ---
 
-- name: list the ssl file
+- name: List the ssl file
   shell: |
     #!/bin/bash
     set -o pipefail
@@ -14,14 +14,14 @@
   register: ssl_file
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
 
-- name: create the local ssl directory
+- name: Create the local ssl directory
   file:
     path: "{{ LOCAL_SSL_DIR }}"
     state: directory
   become: no
   delegate_to: localhost
 
-- name: create the ssl directory on the server
+- name: Create the ssl directory on the server
   file:
     path: "{{ PG_SSL_DIR }}"
     state: directory
@@ -29,7 +29,7 @@
     owner: "{{ PG_OWNER }}"
   become: yes
 
-- name: fetch ssl to local
+- name: Fetch ssl to local
   fetch:
     src: "{{ PG_SSL_DIR }}/{{ line_item }}"
     dest: "{{ LOCAL_SSL_DIR }}"

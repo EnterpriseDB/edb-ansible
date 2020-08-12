@@ -1,4 +1,5 @@
 ---
+
 - name: Stop PG service if running
   systemd:
     name: "{{ PG_SERVICE }}"

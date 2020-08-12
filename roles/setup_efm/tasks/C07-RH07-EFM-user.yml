@@ -1,4 +1,5 @@
 ---
+
 - name: Set PG_REPLICATION_USER_PASSWORD if not provided
   set_fact:
     PG_EFM_USER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_EFM_USER }}_pass chars=ascii_letters') }}"

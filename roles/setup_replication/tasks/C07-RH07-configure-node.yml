@@ -1,3 +1,4 @@
+---
 
 - name: Configure Global Settings in postgresql.auto.conf
   postgresql_set:

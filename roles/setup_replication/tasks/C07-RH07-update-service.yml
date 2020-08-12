@@ -1,4 +1,5 @@
 ---
+
 - name: Check if we have the service file already created
   stat:
     path: "/etc/systemd/system/{{ PG_SERVICE }}.service"

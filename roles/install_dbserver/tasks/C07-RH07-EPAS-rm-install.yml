@@ -1,4 +1,5 @@
 ---
+
 - name: Stop the PG service if it's running
   systemd:
     name: edb-as-{{ PG_VERSION }}
