@@ -54,7 +54,7 @@ Content of the hosts.yml file:
 
 
 
-      hosts:
+      servers:
         main1:
           node_type: primary
           public_ip: xxx.xxx.xxx.xxx
@@ -94,13 +94,13 @@ Below is an example of how to include the install_dbserver role:
             OS: "CentOS7"
             PG_TYPE: "PG"
             PG_VERSION: "12"
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
             name: install_dbserver
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**

@@ -58,7 +58,7 @@ Content of the hosts.yml file:
 
 
 
-      hosts:
+      servers:
         main1:
           node_type: primary
           public_ip: xxx.xxx.xxx.xxx
@@ -110,18 +110,18 @@ Below is an example of how to include the init_dbserver role:
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
             PRIMARY_PRIVATE_IP: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
           
         - set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
           when: item.value.node_type == 'standby'
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
             name: init_dbserver
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**

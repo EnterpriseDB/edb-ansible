@@ -52,7 +52,7 @@ Content of the hosts.yml file:
 
 
 
-      hosts:
+      servers:
         primary:
           node_type: primary
           public_ip: xxx.xxx.xxx.xxx
@@ -94,13 +94,13 @@ Below is an example of how to include the setup_repo role:
             # Enter credentials below
             EDB_YUM_USERNAME: ""
             EDB_YUM_PASSWORD: ""
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
             name: setup_repo
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**

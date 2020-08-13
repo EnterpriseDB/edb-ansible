@@ -1,7 +1,7 @@
-setup_efm
+setup_pem
 =========
 
-This Ansible Galaxy Role Installs EFM versions: 3.7, 3.8 and 3.9 on Instances previously configured.
+This Ansible Galaxy Role Installs and configure PEM on Instances previously configured.
 
 **Note:**
 The role only installs EPAS: 10, 11 or 12 along with EFM: 3.7, 3.8 or 3.9 across multiple nodes.
@@ -10,12 +10,13 @@ The role only installs EPAS: 10, 11 or 12 along with EFM: 3.7, 3.8 or 3.9 across
 **For more details refer to the: 'Database Engines Supported' section**
 
 **Note:**
-The role does not configure EDB Postgres Advanced Server or PostgreSQL for replication it only installs EDB Postgres Failover Manager (EFM) across multiple nodes and configure database nodes for EFM monitornig and HA management.
+The role does not configure EDB Postgres Advanced Server or PostgreSQL for replication it only installs Postgres Enterprise Manager (PEM) agents across multiple nodes and configure database nodes for PEM monitornig and configures any node to be a PEM server.
 If you want to configure EDB Advanced Server Cluster of PostgreSQL, then please use the 'setup_replication' module:
 1. setup_repo : For installing the EPAS/PG repository
 2. install_dbserver: For installing the EPAS/PG binaries
 3. init_dbserver: For initializing the EPAS/PG data directory and configuring a primary/master node.
 4. setup_replication: For creating the standby.
+5. setup_efm: For managing and maintaing the HA of the Postgres cluster
 
 **The ansible playbook must be executed under an account that has full privileges.**
 
@@ -43,19 +44,19 @@ When executing the role via ansible the variables listed below are required:
 
 
 The rest of the variables can be configured and are available in the:
-* [roles/setup_efm/defaults/main.yml](./defaults/main.yml) 
+* [roles/setup_pem/defaults/main.yml](./defaults/main.yml) 
 
 Dependencies
 ------------
 
-The setup_efm role does not have any dependencies on any other roles.
+The setup_pem role does not have any dependencies on any other roles.
 
 Hosts file content
 ----------------
 
 Content of the hosts.yml file:    
 
-      hosts:
+     servers:
         main:
           node_type: primary
           private_ip: xxx.xxx.xxx.xxx
@@ -75,10 +76,10 @@ Content of the hosts.yml file:
 
 
 
-How to include the 'setup_efm' role in your Playbook
+How to include the 'setup_pem' role in your Playbook
 ----------------
 
-Below is an example of how to include the setup_efm role:
+Below is an example of how to include the setup_pem role:
 
 
 
@@ -112,32 +113,32 @@ Below is an example of how to include the setup_efm role:
             PG_EFM_USER_PASSWORD: "efm"
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
             PRIMARY: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
           
         - set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
           when: item.value.node_type != 'primary'
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
           
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
-            name: setup_efm
-          with_dict: "{{ hosts }}"
+            name: setup_pem
+          with_dict: "{{ servers }}"
 
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 All the variables are available at:
-- [roles/setup_efm/vars/edb-epas.yml](./vars/edb-epas.yml) 
-- [roles/setup_efm/vars/edb-pg.yml](./vars/edb-pg.yml) 
+- [roles/setup_pem/vars/edb-epas.yml](./vars/edb-epas.yml) 
+- [roles/setup_pem/vars/edb-pg.yml](./vars/edb-pg.yml) 
 
 
 Database Engines Supported
 ----------------
 
-EnterpriseDB Failover Manager 3.7:
+Postgres Enterprise Manager:
 ----------------
 
 | Postgres | 10 | 11 | 12 |
@@ -160,7 +161,7 @@ EnterpriseDB Failover Manager 3.7:
 
 
 
-EnterpriseDB Failover Manager 3.8:
+Postgres Enterprise Manager:
 ----------------
 
 | Postgres | 10 | 11 | 12 |
@@ -183,7 +184,7 @@ EnterpriseDB Failover Manager 3.8:
 
 
 
-EnterpriseDB Failover Manager 3.9:
+Postgres Enterprise Manager:
 ----------------
 
 | Postgres | 10 | 11 | 12 |
