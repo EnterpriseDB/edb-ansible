@@ -84,13 +84,13 @@ Below is an example of how to include the setup_pem role:
 
 
     - hosts: localhost
-      name: Install EFM on Instances
+      name: Setup PEM on Instances
       #connection: local
       become: true
       gather_facts: no
 
       collections:
-        - edb_devops.postgres
+        - edb_devops.edb_postgres
     
       vars_files:
         - hosts.yml

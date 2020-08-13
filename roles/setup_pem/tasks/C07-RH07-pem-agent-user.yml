@@ -1,4 +1,5 @@
 ---
+
 - name: Set PG_PEM_AGENT_PASSWORD if not provided
   set_fact:
     PG_PEM_AGENT_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_PEM_AGENT_USER }}_pass chars=ascii_letters') }}"
