@@ -84,13 +84,13 @@ Below is an example of how to include the setup_pem role:
 
 
     - hosts: localhost
-      name: Install EFM on Instances
+      name: Setup PEM on Instances
       #connection: local
       become: true
       gather_facts: no
 
       collections:
-        - edb_devops.postgres
+        - edb_devops.edb_postgres
     
       vars_files:
         - hosts.yml
@@ -127,6 +127,7 @@ Below is an example of how to include the setup_pem role:
           with_dict: "{{ servers }}"
 
 
+**Two example playbooks for setting up PEM with CentOS7 and RHEL7 are available in the [playbook-examples](/playbook-examples) directory.**
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 

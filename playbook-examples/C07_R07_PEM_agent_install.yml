@@ -1,4 +1,3 @@
----
 - hosts: localhost
   name: Configure Postgres SQL Replication on Instances
   connection: local
@@ -8,10 +7,10 @@
   # When using collections
   #collections:
   #    - edb_devops.edb_postgres
-
+  
   vars_files:
     - hosts.yml
-
+  
   #initializing internal variables
   vars:
       PEM_SERVER_PRIVATE_IP: ""
@@ -19,7 +18,7 @@
       PRIMARY_PUBLIC_IP: ""
       STANDBY_NAMES: []
       ALL_NODE_IPS: []
-
+      
   pre_tasks:
       - name: Initialize the user defined variables
         set_fact:
@@ -45,28 +44,8 @@
         when: item.value.node_type == 'standby'
         with_dict: "{{ servers }}"
 
-  tasks:
-    - name: Iterate through repo role with items from hosts file
-      include_role:
-        name: setup_repo
-      with_dict: "{{ servers }}"
-    - name: Iterate through install role with items from hosts file
-      include_role:
-        name: install_dbserver
-      with_dict: "{{ servers }}"
-    - name: Iterate through initialize role with items from hosts file
-      include_role:
-        name: init_dbserver
-      with_dict: "{{ servers }}"
-    - name: Iterate through replication role with items from hosts file
-      include_role:
-        name: setup_replication
-      with_dict: "{{ servers }}"
-    - name: Iterate through efm install role with items from hosts file
-      include_role:
-        name: setup_efm
-      with_dict: "{{ servers }}"
-    - name: Iterate through pem install role with items from hosts file
+  tasks: 
+    - name: Iterate through role with items from hosts file
       include_role:
         name: setup_pem
-      with_dict: "{{ servers }}"
+      with_dict: "{{ servers }}" 

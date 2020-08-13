@@ -1,4 +1,5 @@
 ---
+
 - name: Install require packages for PEM
   yum:
     name: "{{ packages }}"
@@ -6,13 +7,13 @@
     packages: "{{ PEM_AGENT_PACKAGE }}"
   become: yes
 
-- name: check if we had registered the agent
+- name: Check if agent was registered
   stat:
     path: "{{ PEM_AGENT_BIN_PATH }}/../etc/.agentregistered"
   become: yes
   register: pemagent_configured
 
-- name: check if we had registered the aagent
+- name: Check if agent key was registered
   stat:
     path: "{{ PEM_AGENT_BIN_PATH }}/../etc/.{{ item.key }}registered"
   become: yes

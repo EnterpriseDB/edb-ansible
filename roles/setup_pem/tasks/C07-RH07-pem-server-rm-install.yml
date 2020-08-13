@@ -1,4 +1,5 @@
 ---
+
 - name: Stopped pemagent
   systemd:
     name: "{{ PEM_AGENT_SERVICE }}"
@@ -15,19 +16,19 @@
     packages: "{{ PEM_SERVER_PACKAGES }}"
   become: yes
 
-- name: remove pem ceritficate directory
+- name: Remove pem ceritficate directory
   file:
     path: /root/.pem
     state: absent
   become: yes
 
-- name: remove agent.cfg
+- name: Remove agent.cfg
   file:
     path: "{{ PEM_AGENT_BIN_PATH }}/../etc/agent.cfg"
     state: absent
   become: yes
 
-- name: remove agent.cfg
+- name: Remove worker.log
   file:
     path: "/var/log/pem/worker.log"
     state: absent

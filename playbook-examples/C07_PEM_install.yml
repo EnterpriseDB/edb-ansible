@@ -1,0 +1,45 @@
+---
+- hosts: localhost
+  #vars:
+  #  ansible_python_interpreter: /usr/bin/python2
+  name: Setup PEM on Instances
+  #connection: local
+  become: true
+  gather_facts: no
+
+  collections:
+    -  edb_devops.edb_postgres
+     
+  vars_files:
+    - hosts.yml
+    
+  #initializing some variables
+  vars:
+    PRIMARY: ""
+    STANDBY_NAMES: []
+    ALL_NODE_IPS: []
+
+  pre_tasks:
+    # Define or re-define any variables previously assigned
+    - set_fact:
+        OS: "CentOS7"
+        PG_TYPE: "EPAS"
+        PG_VERSION: "12"
+        EFM_VERSION: "EFM_VERSION"
+        PG_DATA: "/data/pgdata"
+        PG_EFM_USER: "efm"
+        PG_EFM_USER_PASSWORD: "efm"
+        ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
+        PRIMARY: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
+      with_dict: "{{ servers }}"
+      
+    - set_fact:
+        STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
+      when: item.value.node_type != 'primary'
+      with_dict: "{{ servers }}"
+      
+  tasks:
+    - name: Iterate through role with items from hosts file
+      include_role:
+        name: setup_pem
+      with_dict: "{{ servers }}"      
