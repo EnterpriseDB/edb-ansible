@@ -127,7 +127,7 @@ Below is an example of how to include the setup_pem role:
           with_dict: "{{ servers }}"
 
 
-**Two example playbooks for setting up PEM with CentOS7 and RHEL7 are available in the [playbook-examples/](/playbook-examples) directory.**
+**Two example playbooks for setting up PEM with CentOS7 and RHEL7 are available in the [playbook-examples](/playbook-examples) directory.**
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
