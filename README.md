@@ -203,20 +203,27 @@ Hosts file content
 Content of the hosts.yml file:
 
       servers:
-        main1:
+        pem-server:
+          node_type: pemserver
+          public_ip: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+        primary1:
           node_type: primary
           public_ip: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
+          pem_agent: True
         standby11:
           node_type: standby
           public_ip: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
+          pem_agent: True
         standby12:
           node_type: standby
           public_ip: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
+          pem_agent: True
 
 
 
