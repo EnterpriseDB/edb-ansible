@@ -66,7 +66,7 @@
       include_role:
         name: setup_efm
       with_dict: "{{ servers }}"
-    - name: Iterate through efm install role with items from hosts file
+    - name: Iterate through pem install role with items from hosts file
       include_role:
         name: setup_pem
       with_dict: "{{ servers }}"
