@@ -8,10 +8,10 @@
   # When using collections
   #collections:
   #    - edb_devops.edb_postgres
-  
+
   vars_files:
     - hosts.yml
-  
+
   #initializing internal variables
   vars:
       PEM_SERVER_PRIVATE_IP: ""
@@ -19,7 +19,7 @@
       PRIMARY_PUBLIC_IP: ""
       STANDBY_NAMES: []
       ALL_NODE_IPS: []
-      
+
   pre_tasks:
       - name: Initialize the user defined variables
         set_fact:

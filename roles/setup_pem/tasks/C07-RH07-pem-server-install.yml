@@ -9,7 +9,7 @@
 
 - name: Check if we PEM server is already configured
   stat:
-    path: "{{ PEM_SERVER_BIN_PATH }}/../.server_configured"
+    path: "/etc/httpd/conf.d/edb-ssl-pem.conf"
   become: yes
   register: pem_configured
 
@@ -76,13 +76,6 @@
   changed_when: "'PEM server can be accessed at https:' in output.stdout"
   failed_when: "'Error' in output.stdout"
   when: not pem_configured.stat.exists
-  become: yes
-
-- name: Create a installed file for no further execution
-  file:
-    path: "{{ PEM_SERVER_BIN_PATH }}/../.server_configured"
-    state: touch
-  when: not pem_configured.stat.exists and output.changed
   become: yes
 
 - name: Update agent to use hostssl
@@ -159,9 +152,8 @@
     name: "{{ PG_SERVICE }}"
     daemon_reload: yes
     state: reloaded
-  when: not pem_configured.stat.exists
+  when: not pem_configured.stat.exists and hba_info.changed
   become: yes
-  when: hba_info.changed
 
 - name: Start the PEM agent Service
   systemd:

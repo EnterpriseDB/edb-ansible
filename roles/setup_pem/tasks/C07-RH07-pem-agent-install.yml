@@ -28,7 +28,6 @@
                                                --pem-user {{ PG_PEM_ADMIN_USER }} \
                                                --pem-server {{ PEM_SERVER_PRIVATE_IP }} \
                                                --pem-port {{ PG_PORT }} \
-                                               --cert-path {{ PG_SSL_DIR }}/pem \
                                                --allow_server_restart true \
                                                --allow-batch-probes true \
                                                --batch-script-user root
