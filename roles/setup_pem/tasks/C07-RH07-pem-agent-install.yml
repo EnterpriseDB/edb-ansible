@@ -25,7 +25,7 @@
     set -eu
     PEM_SERVER_PASSWORD={{ PG_PEM_ADMIN_PASSWORD }} {{ PEM_AGENT_BIN_PATH }}/pemworker \
                                                --register-agent \
-                                                --display-name {{ item.key }} \
+                                               --display-name {{ item.key }} \
                                                --pem-user {{ PG_PEM_ADMIN_USER }} \
                                                --pem-server {{ PEM_SERVER_PRIVATE_IP }} \
                                                --pem-port {{ PG_PORT }} \
