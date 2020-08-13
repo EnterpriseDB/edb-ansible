@@ -18,7 +18,7 @@
         - debug:
             msg: "Private IP = {{ item.value.private_ip }},
                 Public IP = {{ item.value.public_ip }}"
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
     - name: Stop Firewalld Service in Each Node
       block:
@@ -28,4 +28,4 @@
             state: stopped
             enabled: false
           delegate_to: "{{ item.value.public_ip }}"
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"

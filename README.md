@@ -202,7 +202,7 @@ Hosts file content
 
 Content of the hosts.yml file:
 
-      hosts:
+      servers:
         main1:
           node_type: primary
           public_ip: xxx.xxx.xxx.xxx
@@ -266,35 +266,35 @@ Below is an example of how to include the setup_repo role:
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
             PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
           
         - name: Gather the standby names
           set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
           when: item.value.node_type == 'standby'
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
 
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
             name: setup_repo
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
         - name: Iterate through install role with items from hosts file
           include_role:
             name: install_dbserver
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
         - name: Iterate through initialize role with items from hosts file
           include_role:
             name: init_dbserver
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
         - name: Iterate through replication role with items from hosts file
           include_role:
             name: setup_replication
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
         - name: Iterate through efm install role with items from hosts file
           include_role:
             name: setup_efm
-          with_dict: "{{ hosts }}"
+          with_dict: "{{ servers }}"
  
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
