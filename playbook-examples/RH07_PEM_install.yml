@@ -41,5 +41,9 @@
   tasks:
     - name: Iterate through role with items from hosts file
       include_role:
+        name: init_dbserver
+      with_dict: "{{ servers }}"   
+    - name: Iterate through role with items from hosts file
+      include_role:
         name: setup_pem
       with_dict: "{{ servers }}"      
