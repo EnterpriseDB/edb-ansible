@@ -1,0 +1,199 @@
+---
+- name: Install require packages for PEM
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages: "{{ PEM_SERVER_PACKAGES }}"
+  become: yes
+
+- name: Check if we PEM server is already configured
+  stat:
+    path: "{{ PEM_SERVER_BIN_PATH }}/../.server_configured"
+  become: yes
+  register: pem_configured
+
+- name: Find the HBA File location
+  postgresql_query:
+    login_user: "{{ PG_OWNER }}"
+    port: "{{ PG_PORT }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    query: "SHOW hba_file;"
+    db: "{{ PG_DATABASE }}"
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  register: hba_info
+
+- name: Update localhost addresses entries into pg_hba file
+  postgresql_pg_hba:
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: host
+    users: "{{ PG_PEM_ADMIN_USER }}"
+    source: "{{ line_items.ip_addr }}"
+    databases: "{{ line_items.database }}"
+    method: scram-sha-256
+    state: present
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items:
+    - { ip_addr: "127.0.0.1/32", database: "all" }
+  loop_control:
+    loop_var: line_items
+  register: hba_update
+
+- name: Reload the PG Service
+  systemd:
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: reloaded
+  become: yes
+  when: hba_info.changed and not pem_configured.stat.exists
+
+- name: Install pem server
+  shell: |
+    set -o pipefail
+    set -eu
+    sed -i 's/md5/scram-sha-256/g' {{ PEM_SERVER_BIN_PATH }}/configure-pem-server.sh
+    sed -i 's/host    all/hostssl    all/g' {{ PEM_SERVER_BIN_PATH }}/configure-pem-server.sh
+    ln -s {{ PG_SSL_DIR }}/ca_key.key {{ PG_DATA }}/ca_key.key
+    ln -s {{ PG_SSL_DIR }}/ca_certificate.crt {{ PG_DATA }}/ca_certificate.crt
+    {{ PEM_SERVER_BIN_PATH }}/configure-pem-server.sh \
+                         --db-install-path {{ PG_HOME }} \
+                         --cidr-address {{ PEM_ALLOWED_CONNECTIONS }} \
+                         --db-unitfile {{ PG_SERVICE }} \
+                         --host {{ item.value.private_ip }} \
+                         --port {{ PG_PORT }} \
+                         --superuser {{ PG_PEM_ADMIN_USER }} \
+                         --superpassword {{ PG_PEM_ADMIN_PASSWORD }} \
+                         --type {{ PEM_INSTALLATION_TYPE }}
+    systemctl stop {{ PEM_AGENT_SERVICE }}
+    rm -f /var/log/pem/worker.log
+  args:
+    executable: /bin/bash
+  register: output
+  changed_when: "'PEM server can be accessed at https:' in output.stdout"
+  failed_when: "'Error' in output.stdout"
+  when: not pem_configured.stat.exists
+  become: yes
+
+- name: Create a installed file for no further execution
+  file:
+    path: "{{ PEM_SERVER_BIN_PATH }}/../.server_configured"
+    state: touch
+  when: not pem_configured.stat.exists and output.changed
+  become: yes
+
+- name: Update agent to use hostssl
+  postgresql_query:
+    login_user: "{{ PG_OWNER }}"
+    port: "{{ PG_PORT }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    query: "UPDATE pem.agent_server_binding SET sslmode='prefer' WHERE agent_id=1 AND server_id=1;"
+    db: "pem"
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
+- name: Update localhost addresses entries into pg_hba file
+  postgresql_pg_hba:
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: host
+    users: "{{ PG_PEM_ADMIN_USER }}"
+    source: "{{ line_items.ip_addr }}"
+    databases: "{{ line_items.database }}"
+    state: absent
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items:
+    - { ip_addr: "127.0.0.1/32", database: "all" }
+  loop_control:
+    loop_var: line_items
+  register: hba_update
+
+- name: Update localhost addresses entries for hostssl into pg_hba file
+  postgresql_pg_hba:
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: hostssl
+    users: "{{ PG_PEM_ADMIN_USER }}"
+    source: "{{ line_items.ip_addr }}"
+    databases: "{{ line_items.database }}"
+    method: scram-sha-256
+    state: present
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items:
+    - { ip_addr: "127.0.0.1/32", database: "all" }
+  loop_control:
+    loop_var: line_items
+  register: hba_update
+
+- name: Add all node IP address entries into pg_hba file for efm user
+  postgresql_pg_hba:
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: hostssl
+    users: "+{{ line_items.group }}"
+    source: "{{ line_items.ip_addr }}"
+    databases: "{{ line_items.database }}"
+    method: "{{ line_items.method }}"
+    state: present
+    create: true
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items:
+    - { database: "pem", group: "pem_user", ip_addr: "{{ item.value.private_ip }}/32", method: "scram-sha-256" }
+    - { database: "pem", group: "pem_agent", ip_addr: "{{ item.value.private_ip }}/32", method: "cert" }
+    - { database: "pem", group: "pem_agent", ip_addr: "127.0.0.1/32", method: "cert" }
+    - { database: "pem", group: "pem_user", ip_addr: "{{ PEM_ALLOWED_CONNECTIONS }}", method: "scram-sha-256" }
+    - { database: "pem", group: "pem_agent", ip_addr: "{{ PEM_ALLOWED_CONNECTIONS }}", method: "cert" }
+  loop_control:
+    loop_var: line_items
+  register: hba_update
+
+- name: Reload the PG Service
+  systemd:
+    name: "{{ PG_SERVICE }}"
+    daemon_reload: yes
+    state: reloaded
+  when: not pem_configured.stat.exists
+  become: yes
+  when: hba_info.changed
+
+- name: Start the PEM agent Service
+  systemd:
+    name: "{{ PEM_AGENT_SERVICE }}"
+    daemon_reload: yes
+    state: started
+  when: not pem_configured.stat.exists
+  become: yes
+
+- name: Assign pg_monitor to PG_PEM_ADMIN_USER
+  postgresql_membership:
+    group: pg_monitor
+    target_roles: "{{ PG_PEM_ADMIN_USER }}"
+    login_user: "{{ PG_OWNER }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    db: "{{ PG_DATABASE }}"
+    port: "{{ PG_PORT }}"
+    state: present
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+
+- name: Reduce the privileges of PEM user
+  postgresql_user:
+    name: "{{ PG_PEM_ADMIN_USER }}"
+    password: "{{ PG_PEM_ADMIN_PASSWORD }}"
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
+    login_user: "{{ PG_OWNER }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    db: "{{ PG_DATABASE }}"
+    port: "{{ PG_PORT }}"
+    state: present
+  when: not pem_configured.stat.exists
+  become: yes
+  become_user: "{{ PG_OWNER }}"

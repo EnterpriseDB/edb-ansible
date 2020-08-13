@@ -1,0 +1,57 @@
+---
+# EFM Credentials
+OS: ""
+PG_VERSION: "12"
+
+FORCE_INSTALL: false
+PEM_AGENT: false
+USER_HOMEDIR: "~/"
+
+PG_PEM_ADMIN_USER: "pemadmin"
+PG_PEM_ADMIN_PASSWORD: ""
+PG_PEM_AGENT_USER: "pemagent"
+PG_PEM_AGENT_PASSWORD: ""
+PG_SSL: True
+PG_SSL_DIR: "/etc/edb/certs"
+
+# PEM Data Dir
+PG_HOME: "/usr/pgsql-{{ PG_VERSION }}"
+PG_BIN_PATH: "{{ PG_HOME }}/bin"
+
+PG_OWNER: "postgres"
+PG_DATABASE: "postgres"
+
+# EFM information
+EFM_VERSION: "3.10"
+EFM_BIN_PATH: "/usr/edb/efm-{{ EFM_VERSION }}/bin"
+
+# Unix socket domain directories
+PG_UNIX_SOCKET_DIRECTORIES:
+   - "/var/run/postgresql"
+
+
+# Postgres Port
+PG_PORT: 5432
+
+# Postgres Service
+PG_SERVICE: "postgresql-{{ PG_VERSION }}"
+
+PEM_SERVER_PACKAGES:
+      - postgresql{{ PG_VERSION }}-contrib
+      - sslutils_{{ PG_VERSION }}
+      - edb-pem-server
+
+PEM_AGENT_PACKAGE:
+      - edb-pem-agent
+
+PEM_AGENT_SERVICE: pemagent
+
+PEM_SERVER_BIN_PATH: "/usr/edb/pem/bin"
+PEM_AGENT_BIN_PATH: "/usr/edb/pem/agent/bin"
+
+PEM_ALLOWED_CONNECTIONS: "0.0.0.0/0"
+PEM_AGENT_CERTIFICATE_PATH: "/etc/edb/certs/pem"
+PEM_AGENT_SERVICE_NAME: "pem-server-agent"
+
+# 1: Web Servce and Database, 2: Web Services, 3: Database
+PEM_INSTALLATION_TYPE: "1"

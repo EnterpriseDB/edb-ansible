@@ -15,7 +15,9 @@
 - name: Install Postgres
   yum:
     name:
-      - postgresql{{ PG_VERSION }}-server
       - postgresql{{ PG_VERSION }}
+      - postgresql{{ PG_VERSION }}-server
+      - postgresql{{ PG_VERSION }}-contrib
+      - sslutils_{{ PG_VERSION }}
     state: present
   become: yes

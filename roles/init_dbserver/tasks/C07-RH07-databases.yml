@@ -1,5 +1,4 @@
 ---
-
 - name: Create optional Databases
   postgresql_db:
     name: "{{ line_item.name }}"

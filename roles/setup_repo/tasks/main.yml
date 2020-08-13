@@ -35,7 +35,7 @@
   when: (EDB_YUM_USERNAME | length < 1 or EDB_YUM_PASSWORD | length < 1)
 
 
-- name: set FORCE_INSTALL based on the user input
+- name: Set FORCE_INSTALL based on the user input
   set_fact:
       FORCE_INSTALL: "{{ item.value.force_install }}"
   when: item.value.force_install is defined

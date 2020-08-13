@@ -1,0 +1,34 @@
+---
+- name: Stopped pemagent
+  systemd:
+    name: "{{ PEM_AGENT_SERVICE }}"
+    daemon_reload: yes
+    state: stopped
+  become: yes
+  ignore_errors: yes
+
+- name: Install require packages for PEM
+  yum:
+    name: "{{ packages }}"
+    state: removed
+  vars:
+    packages: "{{ PEM_SERVER_PACKAGES }}"
+  become: yes
+
+- name: remove pem ceritficate directory
+  file:
+    path: /root/.pem
+    state: absent
+  become: yes
+
+- name: remove agent.cfg
+  file:
+    path: "{{ PEM_AGENT_BIN_PATH }}/../etc/agent.cfg"
+    state: absent
+  become: yes
+
+- name: remove agent.cfg
+  file:
+    path: "/var/log/pem/worker.log"
+    state: absent
+  become: yes

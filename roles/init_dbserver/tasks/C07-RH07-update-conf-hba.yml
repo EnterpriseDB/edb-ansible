@@ -1,5 +1,3 @@
----
-
 - name: Check user defined parameters and update
   postgresql_set:
     login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"

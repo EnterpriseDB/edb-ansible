@@ -1,5 +1,3 @@
----
-
 - name: Define INITDB command.
   set_fact:
     PG_INITDB: "{{ PG_INITDB + ' --pgdata ' + PG_DATA }}"

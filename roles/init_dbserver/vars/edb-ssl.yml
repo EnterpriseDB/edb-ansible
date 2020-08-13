@@ -1,0 +1,6 @@
+CERT_COMMON_NAME: "PEM"
+CERT_COUNTRY: "US"
+CERT_STATE: "MA"
+CERT_CITY: "Bedford"
+CERT_ORG_UNIT: "EDB Postgres Enterprise Manager"
+CERT_EMAIL: "support@enterprisedb.com"

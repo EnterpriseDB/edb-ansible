@@ -1,4 +1,3 @@
----
 
 - name: Configure Global Settings in postgresql.auto.conf
   postgresql_set:
@@ -8,14 +7,22 @@
     login_user: "{{ PG_OWNER }}"
     name: "{{ line_item.name }}"
     value: "{{ line_item.value }}"
-  when: PG_LOG in PG_LOG_FILENAME and not PG_DATA in PG_LOG
+  when: PG_LOG_FILENAME and not PG_DATA in PG_LOG
   with_items:
       - { name: "log_filename", value: "{{ PG_LOG_FILENAME }}" }
+      - { name: "log_directory", value: "{{ PG_LOG }}" }
   become: true
   become_user: "{{ PG_OWNER }}"
   loop_control:
     loop_var: line_item
   register: log_update
+
+- name: Remove the default directory based on PG_LOG
+  file:
+    path: "{{ PG_DATA }}/log"
+    state: absent
+  become: yes
+  when: log_update.changed
 
 - name: Find the HBA File location on standby
   postgresql_query:

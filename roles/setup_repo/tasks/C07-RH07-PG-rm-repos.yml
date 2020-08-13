@@ -1,5 +1,4 @@
 ---
-
 - name: Remove PG repos and epel-release packages
   yum:
     name:

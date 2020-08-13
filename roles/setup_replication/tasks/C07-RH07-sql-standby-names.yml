@@ -1,5 +1,3 @@
----
-
 - name: Set query if snchronous_standby_names is not empty
   set_fact:
     sql_query: "WITH synchronous_standby_string AS (

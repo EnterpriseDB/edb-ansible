@@ -20,8 +20,8 @@ PG_LOCALE: "en_US"
 PG_CTYPE: "{{ postgresql_ctype_parts | join('.') }}"
 
 # Log directory and Filename
-PG_LOG: ""
-PG_LOG_FILENAME: "postgresql.log"
+PG_LOG: "/var/log/postgres"
+PG_LOG_FILENAME: "postgresql-%a.log"
 
 # Databases
 PG_DATABASES: []
@@ -68,7 +68,34 @@ PG_RANDOM_PASSWORD: false
 # Global configuration options that will be set via ALTER SYSTEM in postgresql.auto.conf
 PG_POSTGRES_DEFAULT_CONF_PARAMS:
   - {name: "unix_socket_directories", value: "{{ PG_UNIX_SOCKET_DIRECTORIES | join(',') }}"}
-  - {name: "listen_addresses", value: "*"}
+  - {name: "listen_addresses", value: "*" }
+  - { name: wal_level, value: replica }
+  - { name: max_wal_senders, value: 10 }
+  - { name: hot_standby, value: on }
+  - { name: max_replication_slots, value: 10 }
+  - { name: wal_compression, value: on }
+  - { name: wal_log_hints, value: on }
+  - { name: checkpoint_timeout, value: 15min }
+  - { name: checkpoint_completion_target, value: 0.9 }
+  - { name: archive_mode, value: on }
+  - { name: archive_command, value: '/bin/true' }
+  - { name: random_page_cost, value: 1.1 }
+  - { name: cpu_tuple_cost, value: 0.03 }
+  - { name: logging_collector, value: on }
+  - { name: log_line_prefix, value: '%m [%p-%l] %u@%d app=%a ' }
+  - { name: log_truncate_on_rotation, value: on }
+  - { name: log_rotation_size, value: '1GB' }
+  - { name: log_lock_waits, value: on }
+  - { name: log_connections, value: on }
+  - { name: log_disconnections, value: on }
+  - { name: log_error_verbosity, value: verbose }
+  - { name: log_statement, value: ddl }
+  - { name: log_temp_files, value: 0 }
+  - { name: log_autovacuum_min_duration, value: 0 }
+  - { name: autovacuum_max_workers, value: 5 }
+  - { name: autovacuum_vacuum_cost_limit, value: 3000 }
+  - { name: idle_in_transaction_session_timeout, value: 10min }
+  - { name: syslog_ident, value: postgres }
 
 PG_POSTGRES_CONF_PARAMS: ""
 PG_ALLOW_IP_ADDRESSES: ""

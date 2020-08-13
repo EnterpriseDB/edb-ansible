@@ -1,5 +1,4 @@
 ---
-
 - name: Check if we have efm.properties file or not
   stat:
     path: "{{ EFM_PROPERTIES }}"

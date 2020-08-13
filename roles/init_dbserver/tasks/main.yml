@@ -41,7 +41,6 @@
 
 # Setting variables available for all nodes
 # Any of the variables existing can be updated and configured
-- meta: flush_handlers
 
 - name: Set Node Type
   set_fact:
@@ -54,13 +53,17 @@
   when: item.value.force_initialize is defined
   register: output
 
-# Mmain block for tasks
+# main blog for tasks
 - name: Force cleanup based on force_initialize
   block:
     - include_tasks: C07-RH07-rm-initialize.yml
-  when: FORCE_INITIALIZE and NODE_TYPE == 'primary'
+  when: FORCE_INITIALIZE and NODE_TYPE in ['primary','pemserver']
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
+
+- name: Reference EPAS Variables
+  include_vars: edb-ssl.yml
+  when: PG_SSL
 
 - name: Check and configure the primary node
   block:
@@ -70,14 +73,14 @@
     - import_tasks: C07-RH07-update-service.yml
     - import_tasks: C07-RH07-configure-node.yml
   become: yes
-  when: NODE_TYPE == 'primary'
+  when: NODE_TYPE in ['primary','pemserver']
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Configure SSL based on PG_SSL parameter
   block:
     - import_tasks: C07-RH07-ssl-configure.yml
   become: yes
-  when: NODE_TYPE == 'primary' and PG_SSL
+  when: NODE_TYPE in ['primary','pemserver'] and PG_SSL
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Apply any user defined settings, users, databases and configurations
@@ -85,7 +88,7 @@
     - import_tasks: C07-RH07-users.yml
     - import_tasks: C07-RH07-databases.yml
     - import_tasks: C07-RH07-update-conf-hba.yml
-  when: NODE_TYPE == 'primary'
+  when: NODE_TYPE in ['primary', 'pemserver']
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Reset FORCE/SKIP_INITIALIZE based on the user input

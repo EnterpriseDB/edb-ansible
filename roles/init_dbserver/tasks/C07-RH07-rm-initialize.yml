@@ -1,5 +1,4 @@
 ---
-
 - name: Stop PG service if running
   systemd:
     name: "{{ PG_SERVICE }}"
@@ -26,8 +25,9 @@
   become: yes
   when: PG_WAL|length > 0
 
-- name: Remove postgres /etc/edb/certs/.created_ssl  directory exists
+- name: Remove PG_SSL_DIR
   file:
-    path: "{{ PG_SSL_DIR }}/.created_ssl"
+    path: "{{ PG_SSL_DIR }}"
     state: absent
   become: yes
+  when: PG_SSL_DIR|length > 0

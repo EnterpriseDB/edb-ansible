@@ -5,9 +5,9 @@
 # POSTGRES Constants
 PG_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"
 PG_DEFAULT_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"
-PG_LOG: ""
+PG_LOG: "/var/log/postgres"
 PG_WAL: ""
-PG_LOG_FILENAME: "postgresql.log"
+PG_LOG_FILENAME: "postgresql-%a.log"
 
 USER_HOMEDIR: "~/"
 

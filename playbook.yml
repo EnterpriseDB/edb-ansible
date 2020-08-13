@@ -14,6 +14,7 @@
   
   #initializing internal variables
   vars:
+      PEM_SERVER_PRIVATE_IP: ""
       PRIMARY_PRIVATE_IP: ""
       PRIMARY_PUBLIC_IP: ""
       STANDBY_NAMES: []
@@ -35,6 +36,7 @@
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
             PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
+            PEM_SERVER_PRIVATE_IP: "{{ PEM_SERVER_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'pemserver') else PEM_SERVER_PRIVATE_IP }}"
         with_dict: "{{ hosts }}"
 
       - name: Gather the standby names
@@ -62,5 +64,9 @@
       with_dict: "{{ hosts }}"
     - name: Iterate through efm install role with items from hosts file
       include_role:
-        name: setup_efminstall
+        name: setup_efm
+      with_dict: "{{ hosts }}"
+    - name: Iterate through efm install role with items from hosts file
+      include_role:
+        name: setup_pem
       with_dict: "{{ hosts }}"

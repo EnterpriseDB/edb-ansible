@@ -23,5 +23,6 @@
       - edb-as{{ PG_VERSION }}-server-indexadvisor
       - edb-as{{ PG_VERSION }}-server-sqlprofiler
       - edb-as{{ PG_VERSION }}-server-sqlprotect
+      - edb-as{{ PG_VERSION }}-server-sslutils
     state: present
   become: yes

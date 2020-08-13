@@ -1,0 +1,97 @@
+---
+# Tasks file for edb.postgres.install Role
+
+- name: Reference EPAS Variables
+  include_vars: edb-epas.yml
+  when: PG_TYPE == 'EPAS'
+
+- name: Reference PG Variables
+  include_vars: edb-pg.yml
+  when: PG_TYPE == 'PG'
+
+# Display if the Operating System is supported
+- name: Display support for Operating System
+  block:
+    - debug:
+        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
+  when: OS != 'CentOS7' and OS != 'RHEL7'
+
+# Display if the Operating System is supported
+- name: Display support for Operating System
+  block:
+    - debug:
+        msg: "EPAS/PG Version = {{ OS }} not supported. Only '10', '11' and '12'."
+  when: PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
+
+# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
+- meta: end_play
+  when: (OS != 'CentOS7' and OS != 'RHEL7') or
+        (PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12')
+
+# Configure Variables
+
+# Setting variables available for all nodes
+- name: Set Node Type
+  set_fact:
+    NODE_TYPE: "{{ item.value.node_type }}"
+  register: output
+
+# Display Details of Node to Install
+- name: Display current Node to Install
+  block:
+    - debug:
+        msg:
+            "Operating System = {{ OS }}:
+             PG_TYPE = {{ PG_TYPE }},
+             Node Type = {{ NODE_TYPE }},
+             PG_DATA = {{ PG_DATA }},
+             Public IP = {{ item.value.public_ip }}"
+
+- name: Set FORCE_INSTALL based on the user input
+  set_fact:
+    FORCE_INSTALL: "{{ item.value.force_install }}"
+  when: item.value.force_install is defined
+  register: output
+
+- name: Set PEM_AGENT based on the user input
+  set_fact:
+    PEM_AGENT: "{{ item.value.pem_agent }}"
+  when: item.value.pem_agent is defined
+  register: output
+
+- name: Remove PEM server based on force_install
+  block:
+    - import_tasks: C07-RH07-pem-server-rm-install.yml
+  when: FORCE_INSTALL
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Install and Configure Postgres on CentOS7 or RHEL7
+  block:
+    - import_tasks: C07-RH07-pem-server-user.yml
+    - import_tasks: C07-RH07-pem-server-install.yml
+    - import_tasks: C07-RH07-pem-server-hba.yml
+  when: NODE_TYPE in ['pemserver']
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Create pemagent user
+  block:
+    - import_tasks: C07-RH07-pem-agent-user.yml
+  when: NODE_TYPE in ['primary'] and PEM_AGENT
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Install and Configure Postgres on CentOS7 or RHEL7
+  block:
+    - import_tasks: C07-RH07-pem-agent-hba.yml
+    - import_tasks: C07-RH07-pem-agent-install.yml
+  when: NODE_TYPE in ['primary', 'standby'] and PEM_AGENT
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Reset FORCE/SKIP_PEM_INSTALL based on the user input
+  set_fact:
+    PEM_AGENT: false
+    FORCE_INSTALL: false
+  register: output

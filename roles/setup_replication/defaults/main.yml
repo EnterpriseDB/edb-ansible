@@ -11,7 +11,7 @@ FORCE_REPLICATION: false
 PG_TYPE: "PG"
 PG_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"
 PG_DEFAULT_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"
-PG_LOG: ""
+PG_LOG: "/var/log/postgres"
 PG_LOG_FILENAME: "postgresql.log"
 PG_WAL: ""
 

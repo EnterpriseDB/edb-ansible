@@ -1,5 +1,4 @@
 ---
-
 - name: Install Software for EFM
   yum:
     name:

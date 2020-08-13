@@ -5,8 +5,9 @@
 # POSTGRES Constants
 PG_DATA: "/var/lib/edb/as{{ PG_VERSION }}/data"
 PG_DEFAULT_DATA: "/var/lib/edb/as{{ PG_VERSION }}/data"
-PG_LOG: ""
+PG_LOG: "/var/log/edb"
 PG_WAL: ""
+PG_LOG_FILENAME: "edb-%a.log"
 
 USER_HOMEDIR: "~/"
 LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
