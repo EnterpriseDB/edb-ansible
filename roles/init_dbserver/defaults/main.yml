@@ -88,7 +88,7 @@ PG_POSTGRES_DEFAULT_CONF_PARAMS:
   - { name: log_lock_waits, value: on }
   - { name: log_connections, value: on }
   - { name: log_disconnections, value: on }
-  - { name: log_error_verbosity, value: verbose }
+  - { name: log_error_verbosity, value: default }
   - { name: log_statement, value: ddl }
   - { name: log_temp_files, value: 0 }
   - { name: log_autovacuum_min_duration, value: 0 }
