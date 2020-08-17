@@ -9,26 +9,15 @@ servers:
     public_ip: xxx.xxx.xxx.xxx
     private_ip: xxx.xxx.xxx.xxx
     pem_agent: True
-    replication_type: synchronous
-    force_install: True
-    force_initialize: True
-    force_replication: True  
   standby11:
     node_type: standby
     public_ip: xxx.xxx.xxx.xxx
     private_ip: xxx.xxx.xxx.xxx
     replication_type: synchronous
     pem_agent: True
-    force_install: True
-    force_initialize: True
-    force_replication: True
   standby12:
     node_type: standby
     public_ip: xxx.xxx.xxx.xxx
     private_ip: xxx.xxx.xxx.xxx
     replication_type: asynchronous
     pem_agent: True
-    replication_type: synchronous
-    force_install: True
-    force_initialize: True
-    force_replication: True
