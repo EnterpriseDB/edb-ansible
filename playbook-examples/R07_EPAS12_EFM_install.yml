@@ -9,20 +9,21 @@
 
   collections:
     -  edb_devops.edb_postgres
-     
+
   vars_files:
     - hosts.yml
-    
+
   #initializing internal variables
   vars:
       PRIMARY_PRIVATE_IP: ""
       PRIMARY_PUBLIC_IP: ""
       STANDBY_NAMES: []
       ALL_NODE_IPS: []
-      
+
   # Internal processing purposes only
   pre_tasks:
-    - set_fact:
+    - name: Initialize the user defined variables
+      set_fact:
         OS: "RHEL7"
         PG_VERSION: "12"
         PG_TYPE: "EPAS"
@@ -35,11 +36,13 @@
         PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
         PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
       with_dict: "{{ hosts }}"
-    - set_fact:
+
+    - name: Gather the standby names
+      set_fact:
         STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
       when: item.value.node_type == 'standby'
       with_dict: "{{ hosts }}"
-      
+
   tasks:
     - name: Iterate through role with items from hosts file
       include_role:

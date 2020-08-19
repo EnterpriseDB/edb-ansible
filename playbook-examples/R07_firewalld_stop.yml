@@ -11,7 +11,7 @@
 
   vars_files:
     - hosts.yml
-    
+
   tasks:
     - name: Display current Node to Install
       block:
@@ -24,7 +24,7 @@
       block:
         - name: Stop Firewalld Service
           service:
-            name: firewalld  
+            name: firewalld
             state: stopped
             enabled: false
           delegate_to: "{{ item.value.public_ip }}"
