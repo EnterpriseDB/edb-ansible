@@ -1,6 +1,6 @@
 namespace: "edb_devops"
 name: "edb_postgres"
-version: "1.0.0"
+version: "1.0.1"
 readme: "README.md"
 authors:
 - "Doug Ortiz"
