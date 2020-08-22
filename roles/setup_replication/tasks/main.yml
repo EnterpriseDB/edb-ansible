@@ -74,6 +74,7 @@
 
 - name: Build standby service check
   block:
+    - import_tasks: C07-RH07-os-tune.yml
     - import_tasks: C07-RH07-check-service.yml
     - import_tasks: C07-RH07-create-directories.yml
     - import_tasks: C07-RH07-update-primary.yml

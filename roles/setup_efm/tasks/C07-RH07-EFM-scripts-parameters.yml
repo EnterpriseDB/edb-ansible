@@ -1,0 +1,35 @@
+---
+
+- name: Copying the scripts
+  copy:
+      src: "{{ line_item.file }}"
+      dest: "{{ line_item.remote_file }}"
+      owner: "{{ line_item.owner }}"
+      group: "{{ line_item.group }}"
+      mode: "{{ line_item.mode }}"
+  with_items: "{{ EFM_SCRIPTS }}"
+  loop_control:
+      loop_var: line_item
+  when: EFM_SCRIPTS|length > 0
+  become: yes
+
+- name: Update EFM efm.properties File
+  lineinfile:
+    path: /etc/edb/efm-{{ EFM_VERSION }}/efm.properties
+    regexp: "{{ line_item.name + '=' }}"
+    line: "{{ line_item.name + '=' + line_item.value|string }}"
+    state: present
+  with_items: "{{ EFM_CUSTOM_PARAMETERS }}"
+  loop_control:
+   loop_var: line_item
+  when: EFM_CUSTOM_PARAMETERS|length > 0
+  become: yes
+  register: properties_changes
+
+- name: Restart the EFM service
+  systemd:
+    name: "{{ EFM_SERVICE }}"
+    enabled: yes
+    state: restarted
+  become: yes
+  when: properties_changes.changed
