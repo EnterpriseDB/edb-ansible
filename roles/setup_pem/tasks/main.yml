@@ -75,15 +75,9 @@
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 
-- name: Create pemagent user
-  block:
-    - import_tasks: C07-RH07-pem-agent-user.yml
-  when: NODE_TYPE in ['primary'] and PEM_AGENT
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
 - name: Install and Configure Postgres on CentOS7 or RHEL7
   block:
+    - import_tasks: C07-RH07-pem-agent-user.yml
     - import_tasks: C07-RH07-pem-agent-hba.yml
     - import_tasks: C07-RH07-pem-agent-install.yml
   when: NODE_TYPE in ['primary', 'standby'] and PEM_AGENT

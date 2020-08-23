@@ -7,13 +7,6 @@
     packages: "{{ PEM_AGENT_PACKAGE }}"
   become: yes
 
-- name: Set PG_PEM_AGENT_PASSWORD if not provided
-  set_fact:
-    PG_PEM_AGENT_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_PEM_AGENT_USER }}_pass chars=ascii_letters') }}"
-  when: PG_PEM_AGENT_PASSWORD|length < 1
-  become: no
-  delegate_to: localhost
-
 - name: Check if agent was registered
   stat:
     path: "{{ PEM_AGENT_BIN_PATH }}/../etc/.agentregistered"

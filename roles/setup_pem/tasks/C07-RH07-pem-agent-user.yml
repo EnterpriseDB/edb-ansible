@@ -19,6 +19,7 @@
   no_log: True
   become: yes
   become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
 
 - name: Assign pg_monitor to PG_PEM_AGENT_USER
   postgresql_membership:
@@ -31,3 +32,4 @@
     state: present
   become: yes
   become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
