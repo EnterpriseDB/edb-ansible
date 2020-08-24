@@ -328,8 +328,10 @@ The following will occur should a password not be provided for the following acc
 
 ```
 * PG_SUPERUSER
-* PG_REPLICATIONUSER
+* PG_REPLICATION_USER
 * PG_EFM_USER
+* PG_PEM_AGENT_USER
+* PG_PEM_ADMIN_USER
 ```
 
 **Note:**
