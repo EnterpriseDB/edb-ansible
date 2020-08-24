@@ -1,5 +1,17 @@
 ---
 
+- name: Enumerate disks
+  command: lsblk --raw --noheadings --nodeps --output NAME
+  registe: block_devices
+  check_mode: no
+
+- name: Update the block devices
+  shell: |
+    /bin/echo 4096 > /sys/block/{{ line_item }}/queue/read_ahead_kb
+  with_items: "{{ block_devices.stdout_lines }}"
+  loop_control:
+    loop_var: line_item
+
 - name: Ensure /etc/tuned/edb directory exists
   file:
     path: "/etc/tuned/edb"
