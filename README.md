@@ -125,7 +125,20 @@ PG_ALLOW_IP_ADDRESSES:
 ### setup_efm:
 
 A role for setting up EDB Failover Manager for Postgres/EPAS HA cluster.
+If user wants to push any scripts for EFM, following variable can be use:
+```
+EFM_SCRIPTS:
+    - { file: "~/edb-ansible-all/notification.sh", remote_file: "/usr/edb/efm-3.10/bin/notification.sh", owner: "root", group: "root", mode: 777 }
+```
+
+If user wants to modify specific EFM parameters, following variable would help:
+```
+EFM_CUSTOM_PARAMETERS:
+     - { name: script.notification, value: "/usr/edb/efm-3.10/bin/notification.sh" }
+```
+
 In the playbook, user can choose the specific roles based on their requirement.
+
 
 Prerequisites
 ----------------
