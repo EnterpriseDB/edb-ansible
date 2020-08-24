@@ -265,6 +265,7 @@ Below is an example of how to include the setup_repo role:
         - hosts.yml
 
       vars:
+        PEM_SERVER_PRIVATE_IP: ""
         PRIMARY_PRIVATE_IP: ""
         PRIMARY_PUBLIC_IP: ""
         STANDBY_NAMES: []
@@ -288,6 +289,7 @@ Below is an example of how to include the setup_repo role:
             
             # Variables processing roles
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
+            PEM_SERVER_PRIVATE_IP: "{{ PEM_SERVER_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'pemserver') else PEM_SERVER_PRIVATE_IP }}"
             PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
           with_dict: "{{ servers }}"
@@ -319,11 +321,15 @@ Below is an example of how to include the setup_repo role:
           include_role:
             name: setup_efm
           with_dict: "{{ servers }}"
+        - name: Iterate through efm install role with items from hosts file
+          include_role:
+            name: setup_efm
+          with_dict: "{{ servers }}"
  
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
-**You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication' or 'setup_efm'.**
+**You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or PEM or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication' or 'setup_efm' or setup_pem.**
 
 
 Default user and passwords
