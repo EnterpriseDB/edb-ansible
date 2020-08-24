@@ -139,6 +139,10 @@ EFM_CUSTOM_PARAMETERS:
 
 In the playbook, user can choose the specific roles based on their requirement.
 
+### setup_pem
+
+This role helps in setting PEM Server and deployment of PEM Agent on the PG/EPAS servers.
+
 
 Prerequisites
 ----------------
