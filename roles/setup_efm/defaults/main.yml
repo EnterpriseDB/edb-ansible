@@ -45,7 +45,6 @@ EFM_PARAMETERS:
   - { name: user.email, value: "{{ EFM_NOTIFICATION_EMAIL }}"}
   - { name: auto.allow.hosts, value: true}
   - { name: stable.nodes.file, value: true}
-  - { name: is.witness, value: "{{ EFM_WITNESS }}" }
   - { name: update.physical.slots.period, value: "10" }
   - { name: local.period, value: "3" }
   - { name: local.timeout, value: "5" }

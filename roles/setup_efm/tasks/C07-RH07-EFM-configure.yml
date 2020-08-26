@@ -88,6 +88,7 @@
     - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
     - { name: bind.address, value: "{{ item.value.private_ip }}:7800"}
     - { name: application.name, value: "{{ item.key }}" }
+    - { name: is.witness, value: "{{ EFM_WITNESS }}" }
   loop_control:
    loop_var: line_item
   become: yes
