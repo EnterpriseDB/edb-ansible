@@ -80,7 +80,7 @@
     - import_tasks: C07-RH07-pem-agent-user.yml
     - import_tasks: C07-RH07-pem-agent-hba.yml
     - import_tasks: C07-RH07-pem-agent-install.yml
-  when: NODE_TYPE in ['primary', 'standby'] and PEM_AGENT
+  when: NODE_TYPE in ['primary', 'standby', 'bartserver'] and PEM_AGENT
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 

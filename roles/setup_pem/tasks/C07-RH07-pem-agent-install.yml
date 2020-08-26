@@ -73,7 +73,7 @@
   register: output
   changed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' in output.stdout"
   failed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' not in output.stdout"
-  when: not server_registered.stat.exists
+  when: not server_registered.stat.exists and NODE_TYPE in ['primary','standby']
   become: yes
 
 - name: Create lock file for avoiding duplication
@@ -83,7 +83,7 @@
   when: not server_registered.stat.exists and output.changed
   become: yes
 
-- name: Reload the PG Service
+- name: Start the PEM Service
   systemd:
     name: "{{ PEM_AGENT_SERVICE }}"
     daemon_reload: yes
