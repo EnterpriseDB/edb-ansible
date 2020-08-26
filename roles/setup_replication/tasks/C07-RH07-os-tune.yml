@@ -2,7 +2,7 @@
 
 - name: Enumerate disks
   command: lsblk --raw --noheadings --nodeps --output NAME
-  registe: block_devices
+  register: block_devices
   check_mode: no
 
 - name: Update the block devices

@@ -61,7 +61,7 @@
         --server-port {{ PG_PORT }} \
         --server-database {{ PG_DATABASE }} \
         --server-user {{ PG_PEM_AGENT_USER }} \
-        --server-service-name postgresql-12 \
+        --server-service-name {{ PG_SERVICE }} \
         --efm-cluster-name efm  \
         --efm-install-path {{ EFM_BIN_PATH }} \
         --asb-host-name 127.0.0.1 \
