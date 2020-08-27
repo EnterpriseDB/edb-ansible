@@ -12,6 +12,7 @@ PG_PEM_ADMIN_USER: "pemadmin"
 PG_PEM_ADMIN_PASSWORD: ""
 PG_PEM_AGENT_USER: "pemagent"
 PG_PEM_AGENT_PASSWORD: ""
+PG_USER: "enterprisedb"
 
 # PEM Data Dir
 PG_HOME: "/usr/edb/as{{ PG_VERSION }}" 

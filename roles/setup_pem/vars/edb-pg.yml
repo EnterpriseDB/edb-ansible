@@ -13,6 +13,7 @@ PG_PEM_ADMIN_PASSWORD: ""
 
 PG_PEM_AGENT_USER: "pemagent"
 PG_PEM_AGENT_PASSWORD: ""
+PG_USER: "postgres"
 # PEM Data Dir
 PG_HOME: "/usr/pgsql-{{ PG_VERSION }}"
 PG_BIN_PATH: "{{ PG_HOME }}/bin"
