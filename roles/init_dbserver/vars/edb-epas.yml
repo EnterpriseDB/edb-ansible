@@ -96,6 +96,10 @@ PG_POSTGRES_DEFAULT_CONF_PARAMS:
   - { name: autovacuum_vacuum_cost_limit, value: 3000 }
   - { name: idle_in_transaction_session_timeout, value: 10 min }
   - { name: syslog_ident, value: edb }
+  - { name: shared_preload_libraries, value: $libdir/dbms_pipe,$libdir/edb_gen,$libdir/dbms_aq,$libdir/edb_wait_states }
 
 PG_POSTGRES_CONF_PARAMS: ""
 PG_ALLOW_IP_ADDRESSES: ""
+PG_EXTENSIONS: 
+    - { "name": "edb_wait_states", "database": "edb" }
+    - { "name": "edb_wait_states", "database": "postgres" }

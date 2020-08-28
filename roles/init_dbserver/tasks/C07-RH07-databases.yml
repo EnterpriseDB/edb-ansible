@@ -11,6 +11,7 @@
     maintenance_db: "{{ PG_DATABASE }}"
     state: present
     login_user: "{{ PG_OWNER }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
   become: yes
   become_user: "{{ PG_OWNER }}"
   with_items: "{{ PG_DATABASES }}"

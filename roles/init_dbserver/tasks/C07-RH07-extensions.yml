@@ -1,19 +1,17 @@
 ---
 
-- name: Create optional Users
-  postgresql_user:
+- name: Create Postgres extensions
+  postgresql_ext:
     name: "{{ line_item.name }}"
-    password: "{{ line_item.pass | default(omit) }}"
-    encrypted: "{{ line_item.encrypted | default(omit) }}"
     port: "{{ PG_PORT }}"
-    db: "{{ PG_DATABASE }}"
+    db: "{{ line_item.database }}"
+    cascade: yes
     state: present
     login_user: "{{ PG_OWNER }}"
     login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
-  no_log: true
   become: yes
   become_user: "{{ PG_OWNER }}"
-  with_items: "{{ PG_USERS }}"
+  with_items: "{{ PG_EXTENSIONS }}"
   loop_control:
     loop_var: line_item
-  when: PG_USERS|length > 0
+  when: PG_EXTENSIONS|length > 0
