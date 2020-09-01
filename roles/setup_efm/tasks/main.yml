@@ -57,7 +57,7 @@
 - name: Prepare EFM node list
   set_fact:
     EFM_NODES_LIST: "{{ EFM_NODES_LIST + line_items + ':7800 ' }}"
-  with_items: "{{ ALL_NODE_IPS }}"
+  with_items: "{{ EFM_NODES_PRIVATE_IP }}"
   loop_control:
     loop_var: line_items
 
@@ -115,4 +115,5 @@
 - name: Reset FORCE/SKIPP_EFM_INSTALL based on the user input
   set_fact:
     FORCE_EFM_INSTALL: false
+    EFM_NODES_LIST: ""
   register: output

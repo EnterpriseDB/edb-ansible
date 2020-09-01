@@ -30,6 +30,25 @@
     loop_var: line_items
   register: hba_update
 
+- name: Update localhost addresses entries into pg_hba file
+  postgresql_pg_hba:
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: hostssl
+    users: "{{ PG_USER }}"
+    source: "{{ line_items.ip_addr }}"
+    databases: "{{ line_items.database }}"
+    method: scram-sha-256
+    state: present
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  when: PG_USER|length > 0
+  with_items:
+    - { ip_addr: "127.0.0.1/32", database: "all" }
+    - { ip_addr: "::1/128", database: "all" }
+    - { ip_addr: "{{ PEM_SERVER_PRIVATE_IP }}", database: "all" }
+  loop_control:
+    loop_var: line_items
+
 - name: Reload the PG Service
   systemd:
     name: "{{ PG_SERVICE }}"

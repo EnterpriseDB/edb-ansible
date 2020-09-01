@@ -62,10 +62,12 @@ Content of the hosts.yml file:
           public_ip: xxx.xxx.xxx.xxx
         standby1:
           node_type: standby1
+          replication_type: synchronous
           private_ip: xxx.xxx.xxx.xxx
           public_ip: xxx.xxx.xxx.xxx
         standby2:
           node_type: standby2
+          replication_type: synchronous
           private_ip: xxx.xxx.xxx.xxx
           public_ip: xxx.xxx.xxx.xxx
         witness:
@@ -96,13 +98,18 @@ Below is an example of how to include the setup_efm role:
   
       #initializing some variables
       vars:
-        PRIMARY: ""
+        PEM_SERVER_PRIVATE_IP: ""
+        PRIMARY_PRIVATE_IP: ""
+        PRIMARY_PUBLIC_IP: ""
         STANDBY_NAMES: []
         ALL_NODE_IPS: []
+        EFM_NODES_PRIVATE_IP: []
+        EFM_NODES_PUBLIC_IP: []
 
       pre_tasks:
         # Define or re-define any variables previously assigned
-        - set_fact:
+        - name: Initialize the user defined variables
+          set_fact:
             OS: "OS"
             PG_TYPE: "PG_TYPE"
             PG_VERSION: "PG_VERSION"
@@ -110,13 +117,27 @@ Below is an example of how to include the setup_efm role:
             PG_DATA: "/data/pgdata"
             PG_EFM_USER: "efm"
             PG_EFM_USER_PASSWORD: "efm"
+            EFM_CUSTOM_PARAMETERS:
+                  - { name: script.notification, value: "/usr/edb/efm-3.10/bin/notification.sh" }
+            EFM_SCRIPTS:
+                  - { file: "~/edb-ansible-all/notification.sh", remote_file: "/usr/edb/efm-3.10/bin/notification.sh", owner: "root", group: "root", mode: 777 }
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
-            PRIMARY: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
+            PEM_SERVER_PRIVATE_IP: "{{ PEM_SERVER_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'pemserver') else PEM_SERVER_PRIVATE_IP }}"
+            PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
+            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
           with_dict: "{{ servers }}"
-          
-        - set_fact:
+         
+        - name: Gather primary and standby nodes for EFM
+          set_fact:
+            EFM_NODES_PRIVATE_IP: "{{ EFM_NODES_PRIVATE_IP + [item.value.private_ip] }}"
+            EFM_NODES_PUBLIC_IP: "{{ EFM_NODES_PUBLIC_IP + [item.value.public_ip] }}"
+          when: item.value.node_type in ['primary', 'standby']
+          with_dict: "{{ servers }}"
+
+        - name: Gather the standby names
+          set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
-          when: item.value.node_type != 'primary'
+          when: item.value.node_type == 'standby'
           with_dict: "{{ servers }}"
           
       tasks:

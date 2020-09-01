@@ -9,7 +9,7 @@
 
 - name: Add slot_name in pg_basebackup
   set_fact:
-    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --slot=' }}{{ item.value.private_ip | replace('.','_') }}"
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --slot=' }}{{ item.key }}"
 
 - name: set replication user information
   set_fact:

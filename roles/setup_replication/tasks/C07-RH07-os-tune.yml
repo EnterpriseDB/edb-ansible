@@ -4,6 +4,7 @@
   command: lsblk --raw --noheadings --nodeps --output NAME
   register: block_devices
   check_mode: no
+  changed_when: false
 
 - name: Update the block devices
   shell: |
@@ -11,6 +12,7 @@
   with_items: "{{ block_devices.stdout_lines }}"
   loop_control:
     loop_var: line_item
+  changed_when: false
 
 - name: Ensure /etc/tuned/edb directory exists
   file:

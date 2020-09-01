@@ -92,14 +92,18 @@ Below is an example of how to include the init_dbserver role:
   
       #initializing some variables
       vars:
+        PEM_SERVER_PRIVATE_IP: ""
         PRIMARY_PRIVATE_IP: ""
         PRIMARY_PUBLIC_IP: ""
         STANDBY_NAMES: []
         ALL_NODE_IPS: []
+        EFM_NODES_PRIVATE_IP: []
+        EFM_NODES_PUBLIC_IP: []
 
       pre_tasks:
         # Define or re-define any variables previously assigned
-        - set_fact:
+        - name: Initialize the user defined variables
+          set_fact:
             OS: "OS"
             PG_TYPE: "PG_TYPE"
             PG_VERSION: "PG_VERSION"
@@ -108,11 +112,20 @@ Below is an example of how to include the init_dbserver role:
 
             # Variables related to internal processing
             ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
+            PEM_SERVER_PRIVATE_IP: "{{ PEM_SERVER_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'pemserver') else PEM_SERVER_PRIVATE_IP }}"
             PRIMARY_PRIVATE_IP: "{{ PRIMARY + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY }}"
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
           with_dict: "{{ servers }}"
-          
-        - set_fact:
+         
+        - name: Gather primary and standby nodes for EFM
+          set_fact:
+            EFM_NODES_PRIVATE_IP: "{{ EFM_NODES_PRIVATE_IP + [item.value.private_ip] }}"
+            EFM_NODES_PUBLIC_IP: "{{ EFM_NODES_PUBLIC_IP + [item.value.public_ip] }}"
+          when: item.value.node_type in ['primary', 'standby']
+          with_dict: "{{ servers }}"
+ 
+        - name: name: Gather the standby names
+          set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
           when: item.value.node_type == 'standby'
           with_dict: "{{ servers }}"

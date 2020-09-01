@@ -86,7 +86,8 @@ Below is an example of how to include the setup_repo role:
 
       pre_tasks:
         # Define or re-define any variables previously assigned
-        - set_fact:
+        - name: Initialize the user defined variables
+          set_fact:
             # 'CentOS7' or 'RHEL7'
             OS: "CentOS7"
             # 'PG' or 'EPAS'

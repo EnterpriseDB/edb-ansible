@@ -64,7 +64,6 @@ PG_SUPERUSER_PASSWORD: ""
 PG_INITDB: "{{ PG_BIN_PATH }}/initdb --auth=peer --auth-host=scram-sha-256"
 PG_INITDB_OPTIONS: " --data-checksums "
 
-
 # Global configuration options that will be set via ALTER SYSTEM in postgresql.auto.conf
 PG_POSTGRES_DEFAULT_CONF_PARAMS:
   - {name: "unix_socket_directories", value: "{{ PG_UNIX_SOCKET_DIRECTORIES | join(',') }}"}
@@ -96,10 +95,17 @@ PG_POSTGRES_DEFAULT_CONF_PARAMS:
   - { name: autovacuum_vacuum_cost_limit, value: 3000 }
   - { name: idle_in_transaction_session_timeout, value: 10 min }
   - { name: syslog_ident, value: edb }
-  - { name: shared_preload_libraries, value: $libdir/dbms_pipe,$libdir/edb_gen,$libdir/dbms_aq,$libdir/edb_wait_states }
+    
 
 PG_POSTGRES_CONF_PARAMS: ""
 PG_ALLOW_IP_ADDRESSES: ""
 PG_EXTENSIONS: 
     - { "name": "edb_wait_states", "database": "edb" }
     - { "name": "edb_wait_states", "database": "postgres" }
+
+PG_SHARED_LIBRARIES_LIST:
+  - "$libdir/dbms_pipe"
+  - "$libdir/edb_gen"
+  - "$libdir/dbms_aq"
+  - "$libdir/edb_wait_states"
+

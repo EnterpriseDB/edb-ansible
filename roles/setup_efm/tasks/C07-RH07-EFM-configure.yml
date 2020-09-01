@@ -41,17 +41,17 @@
     do
        CHECK=$(grep -q "${node}" ${EFM_NODE_FILE} && echo "found" \
                       || echo "not_found" )
-       [[ "${CHECK}" = "not_found" ]] && NEED_UPDATE=0  || NEED_UPDATE=1
+       [[ "${CHECK}" = "not_found" ]] && NEED_UPDATE=0 || NEED_UPDATE=1
+      if [[ ${NEED_UPDATE} -eq 0 ]]
+      then
+        echo "{{ EFM_NODES_LIST }}" > ${EFM_NODE_FILE}
+        echo "node_updated"
+      fi
     done
-    if [[ ${NEED_UPDATE} -eq 0 ]]
-    then
-       echo "{{ EFM_NODES_LIST }}" > ${EFM_NODE_FILE}
-       echo "node_updated"
-    fi
   args:
     executable: /bin/bash
-  register: output
-  changed_when: "'node_updated' in output.stdout"
+  register: efm_nodes
+  changed_when: "'node_updated' in efm_nodes.stdout"
   become: yes
 
 - name: Generate EFM encrypted Password
@@ -94,6 +94,25 @@
   become: yes
   register: properties_changes
 
+- name: Stop the EFM service on all the nodes if change in nodes file or properties
+  shell: |
+    # We are doing systemctl instead of systemd module
+    # because we want to run this regardless of failure
+    set -o pipefail
+    /bin/systemctl stop "{{ EFM_SERVICE }}"
+  args:
+    executable: /bin/bash
+  register: efm_output
+  failed_when: false
+  become: yes
+  delegate_to: "{{ node_ip }}"
+  with_items: "{{ EFM_NODES_PUBLIC_IP }}"
+  loop_control:
+    loop_var: node_ip
+  when:
+    - NODE_TYPE == 'primary'
+    - properties_changes.changed or efm_nodes.changed
+
 - name: Start EFM service
   systemd:
     name: "{{ EFM_SERVICE }}"
@@ -107,7 +126,7 @@
     enabled: yes
     state: restarted
   become: yes
-  when: properties_changes.changed
+  when: properties_changes.changed or efm_nodes.changed
 
 - name: Allow efm node on all the host
   shell: |

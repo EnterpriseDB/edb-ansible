@@ -90,7 +90,8 @@ Below is an example of how to include the install_dbserver role:
         # Define and assign any variables that
         # have been previously defined in role
         # or that are new
-        - set_fact:
+        - name: Initialize the user defined variables
+          set_fact:
             OS: "CentOS7"
             PG_TYPE: "PG"
             PG_VERSION: "12"

@@ -25,6 +25,18 @@
   become_user: "{{ PG_OWNER }}"
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
 
+- name: Create a .pgpass on primary
+  copy:
+    dest: ~/.pgpass
+    content: |
+        *:{{ PG_PORT }}:*:{{ PG_REPLICATION_USER }}:{{ PG_REPLICATION_USER_PASSWORD }}
+    mode: 0600
+    owner: "{{ PG_OWNER }}"
+    group: "{{ PG_OWNER }}"
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
+
 - name: Find the HBA File location on primary
   postgresql_query:
     login_user: "{{ PG_OWNER }}"
@@ -86,8 +98,7 @@
     db: "{{ PG_DATABASE }}"
   become: yes
   become_user: "{{ PG_OWNER }}"
-  when: line_items != PRIMARY_PRIVATE_IP
-  with_items: "{{ ALL_NODE_IPS  }}"
+  with_items: "{{ STANDBY_NAMES }}"
   loop_control:
     loop_var: line_items
   delegate_to: "{{ PRIMARY_PUBLIC_IP }}"

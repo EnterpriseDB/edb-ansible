@@ -45,6 +45,18 @@
     loop_var: line_item
   register: unix_socket_update
 
+- name: Configure primary_slot_name
+  postgresql_set:
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    port: "{{ PG_PORT }}"
+    db: "{{ PG_DATABASE }}"
+    login_user: "{{ PG_OWNER }}"
+    name: "primary_slot_name"
+    value: "{{ item.key }}"
+  become: true
+  become_user: "{{ PG_OWNER }}"
+  register: unix_socket_update
+
 - name: Configure log_file_name
   postgresql_set:
     login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"

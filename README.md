@@ -270,6 +270,8 @@ Below is an example of how to include the setup_repo role:
         PRIMARY_PUBLIC_IP: ""
         STANDBY_NAMES: []
         ALL_NODE_IPS: []
+        EFM_NODES_PRIVATE_IP: []
+        EFM_NODES_PUBLIC_IP: []
 
       # Internal processing purposes only
       pre_tasks:
@@ -294,6 +296,13 @@ Below is an example of how to include the setup_repo role:
             PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
           with_dict: "{{ servers }}"
           
+        - name: Gather the primary and standby EFM nodes
+          set_fact:
+            EFM_NODES_PRIVATE_IP: "{{ EFM_NODES_PRIVATE_IP + [item.value.private_ip] }}"
+            EFM_NODES_PUBLIC_IP: "{{ EFM_NODES_PUBLIC_IP + [item.value.public_ip] }}"
+          when: item.value.node_type == 'standby'
+          with_dict: "{{ servers }}"
+
         - name: Gather the standby names
           set_fact:
             STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"

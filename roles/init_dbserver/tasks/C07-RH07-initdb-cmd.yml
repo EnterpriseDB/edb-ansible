@@ -37,6 +37,8 @@
   when: PG_UNIX_SOCKET_DIRECTORIES|length > 0
   with_items:
     - { From: '#unix_socket_directories =', To: "unix_socket_directories = '{{ PG_UNIX_SOCKET_DIRECTORIES | join(',') }}'"}
+    - { From: 'shared_preload_libraries =', To: "shared_preload_libraries = '{{ PG_SHARED_LIBRARIES_LIST | join(',') }}'"}
+    - { From: '#shared_preload_libraries =', To: "shared_preload_libraries = '{{ PG_SHARED_LIBRARIES_LIST | join(',') }}'"}
   loop_control:
     loop_var: line_item
   become: yes
