@@ -9,10 +9,10 @@
 
   collections:
     -  edb_devops.edb_postgres
-     
+
   vars_files:
     - hosts.yml
-    
+
   #initializing internal variables
   vars:
       PEM_SERVER_PRIVATE_IP: ""
@@ -22,10 +22,11 @@
       ALL_NODE_IPS: []
       EFM_NODES_PRIVATE_IP: []
       EFM_NODES_PUBLIC_IP: []
-      
+
   # Internal processing purposes only
   pre_tasks:
-    - set_fact:
+    - name: Initialize the user defined variables
+      set_fact:
         OS: "RHEL7"
         PG_VERSION: "12"
         PG_TYPE: "PG"
@@ -47,11 +48,12 @@
       when: item.value.node_type in ['primary', 'standby']
       with_dict: "{{ servers }}"
 
-    - set_fact:
+    - name: Gather the standby names
+      set_fact:
         STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
       when: item.value.node_type == 'standby'
       with_dict: "{{ servers }}"
-      
+
   tasks:
     - name: Iterate through role with items from hosts file
       include_role:
