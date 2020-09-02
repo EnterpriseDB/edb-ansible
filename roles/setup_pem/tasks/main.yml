@@ -71,6 +71,7 @@
     - import_tasks: C07-RH07-pem-server-user.yml
     - import_tasks: C07-RH07-pem-server-install.yml
     - import_tasks: C07-RH07-pem-server-hba.yml
+    - import_tasks: C07-RH07-pem-server-probe-alert.yml
   when: NODE_TYPE in ['pemserver']
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
@@ -80,6 +81,7 @@
     - import_tasks: C07-RH07-pem-agent-user.yml
     - import_tasks: C07-RH07-pem-agent-hba.yml
     - import_tasks: C07-RH07-pem-agent-install.yml
+    - import_tasks: C07-RH07-pem-server-probe-alert.yml
   when: NODE_TYPE in ['primary', 'standby', 'bartserver'] and PEM_AGENT
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
