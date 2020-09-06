@@ -91,6 +91,8 @@
     - import_tasks: C07-RH07-update-conf-hba.yml
     - import_tasks: C07-RH07-extensions.yml
     - import_tasks: C07-RH07-user-privilege.yml
+    - import_tasks: C07-RH07-copy-sql-scripts.yml
+    - import_tasks: C07-RH07-sql-scripts.yml
   when: NODE_TYPE in ['primary', 'pemserver']
   delegate_to: "{{ item.value.public_ip }}"
 

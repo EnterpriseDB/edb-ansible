@@ -28,7 +28,6 @@
     login_user: "{{ PG_OWNER }}"
     login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
     port: "{{ PG_PORT }}"
-  no_log: true
   become: yes
   become_user: "{{ PG_OWNER }}"
   with_items: "{{ PG_GRANT_ROLES }}"

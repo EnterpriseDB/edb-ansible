@@ -109,3 +109,9 @@ PG_GRANT_ROLES: ""
 #PG_GRANT_ROLES:
 # - { "role": "pg_monitor", "user": "efm", "grant": yes }
 #
+PG_SQL_SCRIPTS: ""
+# - {"file_path": "/usr/edb/as12/share/edb-sample.sql", db: "dbname"}
+
+PG_COPY_SQL_SCRIPTS: ""
+# - {"file": "/tmp/sample.sql", "remote_file": "/usr/edb/as12/share", "owner": "owner", "group": "group", "mode": "mode" }
+

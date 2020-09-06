@@ -1,0 +1,14 @@
+---
+
+- name: Copying the PG_COPY_SQL_SCRIPTS
+  copy:
+      src: "{{ line_item.file }}"
+      dest: "{{ line_item.remote_file }}"
+      owner: "{{ line_item.owner }}"
+      group: "{{ line_item.group }}"
+      mode: "{{ line_item.mode }}"
+  with_items: "{{ PG_COPY_SQL_SCRIPTS }}"
+  loop_control:
+      loop_var: line_item
+  when: PG_COPY_SQL_SCRIPTS|length > 0
+  become: yes
