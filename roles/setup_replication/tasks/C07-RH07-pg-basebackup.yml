@@ -19,6 +19,12 @@
 - name: set host and port
   set_fact:
     PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --host=' + PRIMARY_PRIVATE_IP + ' --port=' + PG_PORT }}"
+  when: not USE_HOSTNAME
+
+- name: set host and port
+  set_fact:
+    PG_BASEBACKUP: "{{ PG_BASEBACKUP + ' --host=' + PRIMARY_HOST_NAME + ' --port=' + PG_PORT }}"
+  when: USE_HOSTNAME
 
 - name: Use other supplied options if given
   set_fact:

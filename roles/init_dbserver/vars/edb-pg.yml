@@ -101,3 +101,11 @@ PG_POSTGRES_CONF_PARAMS: ""
 PG_ALLOW_IP_ADDRESSES: ""
 PG_EXTENSIONS: ""
 PG_SHARED_LIBRARIES_LIST: ""
+
+PG_GRANT_PRIVILEGES: ""
+PG_GRANT_ROLES: ""
+#PG_GRANT_PRIVILEGES:
+#    - { "type": "function", "grant": yes, "privileges": "EXECUTE", "schema": "pg_catalog", "objects": "pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()", "roles": "rewinduser", "database": "edb" }
+#PG_GRANT_ROLES:
+# - { "role": "pg_monitor", "user": "efm", "grant": yes }
+#

@@ -9,6 +9,9 @@ PG_LOG: "/var/log/edb"
 PG_WAL: ""
 PG_LOG_FILENAME: "edb-%a.log"
 
+USE_HOSTNAME: False
+PRIMARY_HOST_NAME: ""
+
 USER_HOMEDIR: "~/"
 LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
 PG_OWNER: "enterprisedb"

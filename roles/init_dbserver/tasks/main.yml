@@ -90,6 +90,7 @@
     - import_tasks: C07-RH07-databases.yml
     - import_tasks: C07-RH07-update-conf-hba.yml
     - import_tasks: C07-RH07-extensions.yml
+    - import_tasks: C07-RH07-user-privilege.yml
   when: NODE_TYPE in ['primary', 'pemserver']
   delegate_to: "{{ item.value.public_ip }}"
 

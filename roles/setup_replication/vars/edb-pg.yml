@@ -10,6 +10,8 @@ PG_WAL: ""
 PG_LOG_FILENAME: "postgresql-%a.log"
 
 USER_HOMEDIR: "~/"
+USE_HOSTNAME: False
+PRIMARY_HOST_NAME: ""
 
 LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
 RANDOM_STRING: ""

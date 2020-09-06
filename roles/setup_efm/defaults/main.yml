@@ -2,10 +2,11 @@
 # EFM Credentials
 OS: ""
 PG_VERSION: ""
-EFM_VERSION: "3.10" 
+EFM_VERSION: "4.0" 
 
 FORCE_EFM_INSTALL: false
 USER_HOMEDIR: "~/"
+USE_HOSTNAME: False
 
 PG_EFM_USER: "efm"
 PG_EFM_USER_PASSWORD: ""
@@ -18,6 +19,9 @@ PG_BIN_PATH: "/usr/pgsql-{{ PG_VERSION }}/bin"
 EFM_NOTIFICATION_EMAIL: "unknown@gmail.com"
 EFM_SERVICE: "edb-efm-{{ EFM_VERSION }}"
 EFM_NODES_LIST: ""
+EFM_NODES_HOSTS_LIST: ""
+ALL_NODE_HOSTNAMES: ""
+EFM_HOSTS_LIST: ""
 
 PG_OWNER: "postgres"
 PG_EFM_DATABASE: "postgres"

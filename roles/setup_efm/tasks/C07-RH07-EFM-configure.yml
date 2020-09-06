@@ -52,6 +52,31 @@
     executable: /bin/bash
   register: efm_nodes
   changed_when: "'node_updated' in efm_nodes.stdout"
+  when: not USE_HOSTNAME
+  become: yes
+
+- name: Update private IPs in efm.nodes file
+  shell: |
+    set -o pipefail
+    set -eu
+    EFM_NODE_FILE="{{ EFM_NODE_FILE }}"
+    NEED_UPDATE=1
+    for node in {{ EFM_HOSTS_LIST }}
+    do
+       CHECK=$(grep -q "${node}" ${EFM_NODE_FILE} && echo "found" \
+                      || echo "not_found" )
+       [[ "${CHECK}" = "not_found" ]] && NEED_UPDATE=0 || NEED_UPDATE=1
+      if [[ ${NEED_UPDATE} -eq 0 ]]
+      then
+        echo "{{ EFM_HOSTS_LIST }}" > ${EFM_NODE_FILE}
+        echo "node_updated"
+      fi
+    done
+  args:
+    executable: /bin/bash
+  register: efm_nodes
+  changed_when: "'node_updated' in efm_nodes.stdout"
+  when: USE_HOSTNAME
   become: yes
 
 - name: Generate EFM encrypted Password
@@ -89,6 +114,24 @@
     - { name: bind.address, value: "{{ item.value.private_ip }}:7800"}
     - { name: application.name, value: "{{ item.key }}" }
     - { name: is.witness, value: "{{ EFM_WITNESS }}" }
+  when: not USE_HOSTNAME
+  loop_control:
+   loop_var: line_item
+  become: yes
+  register: properties_changes
+
+- name: Update EFM efm.properties File
+  lineinfile:
+    path: /etc/edb/efm-{{ EFM_VERSION }}/efm.properties
+    regexp: "{{ line_item.name + '=' }}"
+    line: "{{ line_item.name + '=' + line_item.value|string }}"
+    state: present
+  with_items:
+    - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+    - { name: bind.address, value: "{{ item.value.hostname }}:7800"}
+    - { name: application.name, value: "{{ item.key }}" }
+    - { name: is.witness, value: "{{ EFM_WITNESS }}" }
+  when: USE_HOSTNAME
   loop_control:
    loop_var: line_item
   become: yes
@@ -147,4 +190,27 @@
   register: output
   changed_when: "'successful' in output.stdout"
   failed_when: "'Failed allow-node' in output.stdout"
+  when: not USE_HOSTNAME
+  become: yes
+
+- name: Allow efm node on all the host
+  shell: |
+    set -o pipefail
+    set -eu
+    CLUSTER_STATUS="$( {{ EFM_BIN_PATH }}/efm cluster-status-json efm |jq '.allowednodes'" )
+    for ip_address in {{ ALL_NODE_HOSTNAMES|join(' ') }}
+    do
+       CHECK=$( echo "${CLUSTER_STATUS}"|grep ${ip_address}|wc -l )
+       if [[ ${CHECK} -eq 0 ]]
+       then
+          {{ EFM_BIN_PATH }}/efm allow-node efm ${ip_address} && echo "successful" \
+            || echo "Failed allow-node"
+       fi
+    done
+  args:
+    executable: /bin/bash
+  register: output
+  changed_when: "'successful' in output.stdout"
+  failed_when: "'Failed allow-node' in output.stdout"
+  when: USE_HOSTNAME
   become: yes

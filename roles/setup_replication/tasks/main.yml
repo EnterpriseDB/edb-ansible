@@ -29,6 +29,11 @@
   when: OS != 'CentOS7' and OS != 'RHEL7' or
         PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
 
+- name: Set USE_HOSTNAME based on variable condition and users input
+  set_fact:
+    USE_HOSTNAME: False
+  when: USE_HOSTNAME and PRIMARY_HOST_NAME|length < 1
+
 # Configure Variables
 - name: Display details of Node to Configure
   block:
@@ -41,7 +46,9 @@
              Postgres Type = {{ PG_TYPE }},
              ALL_NODE_IPS = {{ ALL_NODE_IPS }},
              PRIMARY_PRIVATE_IP = {{ PRIMARY_PRIVATE_IP }},
-            STANDBY_NAMES = {{ STANDBY_NAMES }}"
+             PRIMARY_HOST_NAME = {{ PRIMARY_HOST_NAME }},
+             USE_HOSTNAME = {{ USE_HOSTNAME }},
+             STANDBY_NAMES = {{ STANDBY_NAMES }}"
 
 # Setting variables available in all nodes
 - name: Assign variables
