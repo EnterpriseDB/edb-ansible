@@ -64,7 +64,7 @@
 - name: Set USE_HOSTNAME based on variable condition and users input
   set_fact:
     USE_HOSTNAME: False
-  when: EFM_NODES_HOSTS_LIST|length < 1 or ALL_NODE_HOSTNAMES|length < 1  
+  when: EFM_NODES_HOSTS_LIST|length < 1 or ALL_NODE_HOSTNAMES|length < 1
 
 # Display Details of Node to Install
 - name: Display current Node to Install
