@@ -55,7 +55,7 @@
 - name: Install pem server
   shell: |
     set -o pipefail
-    set -u
+    set -eu
     sed -i 's/md5/scram-sha-256/g' {{ PEM_SERVER_BIN_PATH }}/configure-pem-server.sh
     sed -i 's/host    all/hostssl    all/g' {{ PEM_SERVER_BIN_PATH }}/configure-pem-server.sh
     ln -s {{ PG_SSL_DIR }}/ca_key.key {{ PG_DATA }}/ca_key.key
