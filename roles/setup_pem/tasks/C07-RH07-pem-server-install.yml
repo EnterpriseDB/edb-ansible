@@ -61,6 +61,7 @@
     ln -f -s {{ PG_SSL_DIR }}/ca_key.key {{ PG_DATA }}/ca_key.key
     ln -f -s {{ PG_SSL_DIR }}/ca_certificate.crt {{ PG_DATA }}/ca_certificate.crt
     {{ PEM_SERVER_BIN_PATH }}/configure-pem-server.sh \
+                         --pemagent-certificate-path ~/.pem/ \
                          --db-install-path {{ PG_HOME }} \
                          --cidr-address {{ PEM_ALLOWED_CONNECTIONS }} \
                          --db-unitfile {{ PG_SERVICE }} \
