@@ -14,3 +14,4 @@
   loop_control:
     loop_var: line_item
   when: PG_SQL_SCRIPTS|length > 0
+  ignore_errors: yes

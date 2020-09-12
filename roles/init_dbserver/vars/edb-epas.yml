@@ -102,12 +102,17 @@ PG_ALLOW_IP_ADDRESSES: ""
 PG_EXTENSIONS: 
     - { "name": "edb_wait_states", "database": "edb" }
     - { "name": "edb_wait_states", "database": "postgres" }
+    - { "name": "pg_stat_statements", "database": "edb" }
+    - { "name": "pg_stat_statements", "database": "postgres" }
 
 PG_SHARED_LIBRARIES_LIST:
   - "$libdir/dbms_pipe"
   - "$libdir/edb_gen"
   - "$libdir/dbms_aq"
   - "$libdir/edb_wait_states"
+  - "$libdir/sql-profiler"
+  - "$libdir/index_advisor"
+  - "$libdir/pg_stat_statements"
 
 PG_GRANT_PRIVILEGES: ""
 PG_GRANT_ROLES: ""
