@@ -1,0 +1,9 @@
+- name: Update /etc/hosts file
+  lineinfile:
+     path: "/etc/hosts"
+     line: "{{ line_item }}"
+  when: ETC_HOSTS_LISTS|length > 1
+  with_items: "{{ ETC_HOSTS_LISTS }}"
+  loop_control:
+     loop_var: line_item
+  become: yes

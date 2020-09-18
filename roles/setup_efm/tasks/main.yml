@@ -88,6 +88,14 @@
   when: item.value.force_efm_install is defined
   register: output
 
+- name: Update etc_hosts based on USE_HOSTNAME
+  block:
+    - import_tasks: C07-RH07-update-etc-hosts.yml
+  become: yes
+  when:
+    - USE_HOSTNAME
+  delegate_to: "{{ item.value.public_ip }}"
+
 - name: Prepare EFM node list based on hostname
   set_fact:
     EFM_HOSTS_LIST: "{{ EFM_HOSTS_LIST + line_items + ':7800 ' }}"

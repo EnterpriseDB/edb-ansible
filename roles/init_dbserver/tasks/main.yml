@@ -65,6 +65,13 @@
   include_vars: edb-ssl.yml
   when: PG_SSL
 
+- name: Update etc_hosts based on USE_HOSTNAME
+  block:
+    - import_tasks: C07-RH07-update-etc-hosts.yml
+  become: yes
+  when: USE_HOSTNAME
+  delegate_to: "{{ item.value.public_ip }}"
+
 - name: Check and configure the primary node
   block:
     - import_tasks: C07-RH07-os-tune.yml

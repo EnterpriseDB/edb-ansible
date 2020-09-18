@@ -8,6 +8,7 @@ PG_SSL_DIR: "/etc/edb/certs"
 PG_SSL_GENERATE: True
 
 FORCE_INITIALIZE: false
+USE_HOSTNAME: False
 
 USER_HOMEDIR: "~/"
 
@@ -115,3 +116,4 @@ PG_SQL_SCRIPTS: ""
 PG_COPY_SQL_SCRIPTS: ""
 # - {"file": "/tmp/sample.sql", "remote_file": "/usr/edb/as12/share", "owner": "owner", "group": "group", "mode": "mode" }
 
+ETC_HOSTS_LISTS: ""

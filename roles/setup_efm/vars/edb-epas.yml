@@ -70,3 +70,11 @@ EFM_SCRIPTS: ""
 EFM_PROPERTIES: "/etc/edb/efm-{{ EFM_VERSION }}/efm.properties"
 EFM_NODE_FILE: "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes"
 EFM_BIN_PATH: "/usr/edb/efm-{{ EFM_VERSION }}/bin"
+
+# Common variables require for the role
+PRIMARY_PRIVATE_IP: ""
+PRIMARY_PUBLIC_IP: ""
+ALL_NODE_IPS: []
+EFM_NODES_PRIVATE_IP: []
+EFM_NODES_PUBLIC_IP: []
+ETC_HOSTS_LISTS: ""

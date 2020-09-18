@@ -72,6 +72,15 @@
 
 # Postgres
 
+- name: Update etc_hosts based on USE_HOSTNAME
+  block:
+    - import_tasks: C07-RH07-update-etc-hosts.yml
+  become: yes
+  when: 
+    - USE_HOSTNAME
+    - NODE_TYPE == 'standby'
+  delegate_to: "{{ item.value.public_ip }}"
+
 - name: Update the SSL based on the options
   block:
     - import_tasks: C07-RH07-ssl-configure.yml

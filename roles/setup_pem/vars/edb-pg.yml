@@ -56,3 +56,10 @@ PEM_AGENT_SERVICE_NAME: "pem-server-agent"
 
 # 1: Web Servce and Database, 2: Web Services, 3: Database
 PEM_INSTALLATION_TYPE: "1"
+
+# Common variables require for the role
+PEM_SERVER_PRIVATE_IP: ""
+PEM_SERVER_PUBLIC_IP: ""
+PRIMARY_PRIVATE_IP: ""
+PRIMARY_PUBLIC_IP: ""
+ETC_HOSTS_LISTS: ""

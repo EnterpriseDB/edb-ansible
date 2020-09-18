@@ -47,6 +47,15 @@
              PG_DATA = {{ PG_DATA }},
              Public IP = {{ item.value.public_ip }}"
 
+
+- name: Update etc_hosts based on USE_HOSTNAME
+  block:
+    - import_tasks: C07-RH07-update-etc-hosts.yml
+  become: yes
+  when:
+    - USE_HOSTNAME
+  delegate_to: "{{ item.value.public_ip }}"
+
 - name: Set FORCE_INSTALL based on the user input
   set_fact:
     FORCE_INSTALL: "{{ item.value.force_install }}"

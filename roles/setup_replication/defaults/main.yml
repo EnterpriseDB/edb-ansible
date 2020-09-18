@@ -57,3 +57,9 @@ PG_ALLOW_IP_ADDRESSES: ""
 #       - { databases:'db1,db2,db3', ip_addresses: "127.0.0.1/32", users: "enterprisedb,postgres" }
 #       - { databases:'db2', ip_addresses: "127.0.0.1/32", users: "enterprisedb,postgres" }
 
+# Common variables require for the role
+PRIMARY_PRIVATE_IP: ""
+PRIMARY_PUBLIC_IP: ""
+PRIMARY_HOST_NAME: ""
+STANDBY_NAMES: []
+ALL_NODE_IPS: []
