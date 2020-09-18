@@ -96,16 +96,6 @@ Below is an example of how to include the setup_efm role:
       vars_files:
         - hosts.yml
   
-      #initializing some variables
-      vars:
-        PEM_SERVER_PRIVATE_IP: ""
-        PRIMARY_PRIVATE_IP: ""
-        PRIMARY_PUBLIC_IP: ""
-        STANDBY_NAMES: []
-        ALL_NODE_IPS: []
-        EFM_NODES_PRIVATE_IP: []
-        EFM_NODES_PUBLIC_IP: []
-
       pre_tasks:
         # Define or re-define any variables previously assigned
         - name: Initialize the user defined variables
@@ -121,26 +111,12 @@ Below is an example of how to include the setup_efm role:
                   - { name: script.notification, value: "/usr/edb/efm-3.10/bin/notification.sh" }
             EFM_SCRIPTS:
                   - { file: "~/edb-ansible-all/notification.sh", remote_file: "/usr/edb/efm-3.10/bin/notification.sh", owner: "root", group: "root", mode: 777 }
-            ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
-            PEM_SERVER_PRIVATE_IP: "{{ PEM_SERVER_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'pemserver') else PEM_SERVER_PRIVATE_IP }}"
-            PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
-            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
-          with_dict: "{{ servers }}"
-         
-        - name: Gather primary and standby nodes for EFM
-          set_fact:
-            EFM_NODES_PRIVATE_IP: "{{ EFM_NODES_PRIVATE_IP + [item.value.private_ip] }}"
-            EFM_NODES_PUBLIC_IP: "{{ EFM_NODES_PUBLIC_IP + [item.value.public_ip] }}"
-          when: item.value.node_type in ['primary', 'standby']
-          with_dict: "{{ servers }}"
-
-        - name: Gather the standby names
-          set_fact:
-            STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
-          when: item.value.node_type == 'standby'
-          with_dict: "{{ servers }}"
-          
+                  
       tasks:
+        - name: Iterate through role with items from hosts file
+          include_role:
+            name: process_vars
+          with_dict: "{{ servers }}"    
         - name: Iterate through role with items from hosts file
           include_role:
             name: setup_efm
