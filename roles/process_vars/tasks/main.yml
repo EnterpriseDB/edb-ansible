@@ -37,10 +37,10 @@
       EFM_NODES_PUBLIC_IP: "{{ EFM_NODES_PUBLIC_IP + [item.value.public_ip] }}"
   when: item.value.node_type in ['primary', 'standby']
 
-- name: Gather hostnames for EFM 
+- name: Gather hostnames for EFM
   set_fact:
       EFM_NODES_HOSTS_LIST: "{{ EFM_NODES_HOSTS_LIST + [item.value.hostname] }}"
-  when: 
+  when:
     - item.value.hostname is defined
     - item.value.node_type in ['primary', 'standby']
 

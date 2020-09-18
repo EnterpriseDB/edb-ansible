@@ -76,7 +76,7 @@
   block:
     - import_tasks: C07-RH07-update-etc-hosts.yml
   become: yes
-  when: 
+  when:
     - USE_HOSTNAME
     - NODE_TYPE == 'standby'
   delegate_to: "{{ item.value.public_ip }}"
