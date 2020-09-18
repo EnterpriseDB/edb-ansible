@@ -287,6 +287,10 @@ Below is an example of how to include the setup_repo role:
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
+            name: process_vars
+          with_dict: "{{ servers }}"      
+        - name: Iterate through role with items from hosts file
+          include_role:
             name: setup_repo
           with_dict: "{{ servers }}"
         - name: Iterate through install role with items from hosts file
