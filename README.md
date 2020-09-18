@@ -13,6 +13,10 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 Roles
 -----
 
+### process_vars:
+
+A role for processing the hosts.yml file and setting the required variables for other dependent roles.
+
 ### setup_repo: 
 A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
 
@@ -264,15 +268,6 @@ Below is an example of how to include the setup_repo role:
       vars_files:
         - hosts.yml
 
-      vars:
-        PEM_SERVER_PRIVATE_IP: ""
-        PRIMARY_PRIVATE_IP: ""
-        PRIMARY_PUBLIC_IP: ""
-        STANDBY_NAMES: []
-        ALL_NODE_IPS: []
-        EFM_NODES_PRIVATE_IP: []
-        EFM_NODES_PUBLIC_IP: []
-
       # Internal processing purposes only
       pre_tasks:
         # Define or re-define any variables previously assigned
@@ -289,26 +284,6 @@ Below is an example of how to include the setup_repo role:
             EDB_YUM_PASSWORD: ""
             STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
             
-            # Variables processing roles
-            ALL_NODE_IPS: "{{ ALL_NODE_IPS + [item.value.private_ip] }}"
-            PEM_SERVER_PRIVATE_IP: "{{ PEM_SERVER_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'pemserver') else PEM_SERVER_PRIVATE_IP }}"
-            PRIMARY_PRIVATE_IP: "{{ PRIMARY_PRIVATE_IP + item.value.private_ip if(item.value.node_type == 'primary') else PRIMARY_PRIVATE_IP }}"
-            PRIMARY_PUBLIC_IP: "{{ PRIMARY_PUBLIC_IP  + item.value.public_ip if(item.value.node_type == 'primary') else PRIMARY_PUBLIC_IP }}"
-          with_dict: "{{ servers }}"
-          
-        - name: Gather the primary and standby EFM nodes
-          set_fact:
-            EFM_NODES_PRIVATE_IP: "{{ EFM_NODES_PRIVATE_IP + [item.value.private_ip] }}"
-            EFM_NODES_PUBLIC_IP: "{{ EFM_NODES_PUBLIC_IP + [item.value.public_ip] }}"
-          when: item.value.node_type == 'standby'
-          with_dict: "{{ servers }}"
-
-        - name: Gather the standby names
-          set_fact:
-            STANDBY_NAMES: "{{ STANDBY_NAMES + [item.key] }}"
-          when: item.value.node_type == 'standby'
-          with_dict: "{{ servers }}"
-
       tasks:
         - name: Iterate through role with items from hosts file
           include_role:
