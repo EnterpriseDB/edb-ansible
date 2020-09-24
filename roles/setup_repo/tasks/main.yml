@@ -5,12 +5,12 @@
 - name: Display support for Operating System
   block:
     - debug:
-        msg: "Operating System = {{ OS }} is not supported. Only 'CentOS7' and 'RHEL7'."
-  when: (OS != 'CentOS7' and OS != 'RHEL7')
+        msg: "Operating System = {{ OS }} is not supported."
+  when: OS not in SUPPORTED_OS
 
 # End Playbook if the provided Operating System is not valid
 - meta: end_play
-  when: (OS != 'CentOS7' and OS != 'RHEL7')
+  when: OS not in SUPPORTED_OS
 
 # Display if Database Engine is not supported
 - name: Display if Database Engine is supported

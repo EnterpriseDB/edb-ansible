@@ -8,6 +8,7 @@
       - python-ipaddress
     state: present
   become: yes
+  when: OS != 'CentOS8' and OS != 'RHEL8'
 
 - name: Install EPAS Packages
   yum:

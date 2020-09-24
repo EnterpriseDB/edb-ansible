@@ -13,20 +13,20 @@
 - name: Display support for Operating System
   block:
     - debug:
-        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
-  when: OS != 'CentOS7' and OS != 'RHEL7'
+        msg: "Operating System = {{ OS }} not supported."
+  when: OS not in SUPPORTED_OS
 
 # Display if the Operating System is supported
 - name: Display support for Operating System
   block:
     - debug:
         msg: "EPAS/PG Version = {{ OS }} not supported. Only '10', '11' and '12'."
-  when: PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
+  when: PG_VERSION not in SUPPORTED_PG_VERSION
 
 # End Playbook if the Type of Install, Operating System or Postgres Version are not supported
 - meta: end_play
-  when: (OS != 'CentOS7' and OS != 'RHEL7') or
-        (PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12')
+  when: OS not in SUPPORTED_OS or
+        PG_VERSION not in SUPPORTED_PG_VERSION
 
 # Configure Variables
 
