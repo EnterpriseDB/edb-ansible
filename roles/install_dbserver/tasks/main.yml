@@ -42,13 +42,20 @@
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 
+- name: Install and Configure Postgres Packages for CentOS8 or RHEL8
+  block:
+    - include_tasks: C08-RH08-{{ PG_TYPE }}-install.yml
+  become: yes
+  when: OS == 'CentOS8' or OS == 'RHEL8'
+  delegate_to: "{{ item.value.public_ip }}"
+  
 - name: Install and Configure Postgres on CentOS7 or RHEL7
   block:
     - include_tasks: C07-RH07-{{ PG_TYPE }}-install.yml
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
   
-- name: Install and Configure Postgres on CentOS7 or RHEL7
+- name: Install and Configure Postgres on CentOS8 or RHEL8
   block:
     - include_tasks: C08-RH08-{{ PG_TYPE }}-install.yml
   become: yes

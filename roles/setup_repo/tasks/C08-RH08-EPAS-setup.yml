@@ -1,0 +1,49 @@
+---
+
+- name: Install and enable the latest version of edb repo
+  dnf:
+    name: "{{ EPEL_REPO8 }}"
+    enablerepo: edb
+    state: present
+  
+#- name: Disable signature for 'edb' repo
+#  shell: |
+#    #/bin/bash
+#    sudo dnf config-manager --set-disabled edb
+#  args:
+#    executable: /bin/bash
+#  become: yes
+
+#- name: Force Subscription Registration RHEL8
+#  shell: |
+#    #/bin/bash
+#    sudo subscription-manager register --force
+#  args:
+#    executable: /bin/bash
+#  become: yes
+
+#- name: Force Subscription Registration RHEL8
+#  shell: |
+#    #/bin/bash
+#    sudo subscription-manager register --force
+#  args:
+#    executable: /bin/bash
+#  become: yes
+
+#- name: RHEL8 Subscription Manager Subscribe
+#  shell: |
+#    #/bin/bash
+#    sudo subscription-manager subscribe
+#  args:
+#    executable: /bin/bash
+#  become: yes
+
+#- name: Set RHEL8 Subscription Manager
+#  shell: |
+#    #/bin/bash
+#    #sudo dnf config-manager --set-disabled edb
+#    #sudo subscription-manager refresh
+#    sudo subscription-manager release --set 8    
+#  args:
+#    executable: /bin/bash
+#  become: yes

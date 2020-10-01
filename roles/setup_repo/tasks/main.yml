@@ -57,6 +57,13 @@
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 
+- name: RHEL8
+  block:
+    - include_tasks: C08-RH08-EPAS-setup.yml
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+  when: OS == 'RHEL8'  
+   
 - name: Install and Configure Postgres on CentOS7 or RHEL7
   block:
     - include_tasks: C07-RH07-PG-setuprepos.yml
