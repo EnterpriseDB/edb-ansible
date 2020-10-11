@@ -13,10 +13,6 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 Roles
 -----
 
-### process_vars:
-
-A role for processing the hosts.yml file and setting the required variables for other dependent roles.
-
 ### setup_repo: 
 A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
 
@@ -73,16 +69,30 @@ Similar to `init_dbserver` role, `setup_replication` has following variables for
 5. `pg_replication_user`: Replication user for replicating data between primary and standby. *Default is repuser*
 6. `pg_replication_user_password`: Replication user password. *Default auto generated and stored on localhost under ~/.edb/<pg_replication_user_password>_pass*
 
+
+For more information on the role, please refer roles README
+[README.md](./roles/setup_replication/README.md)
+
 ### setup_efm:
 
 A role for setting up EDB Failover Manager for Postgres/EPAS HA cluster.
 
 In the playbook, user can choose the specific roles based on their requirement.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_efm/README.md)
 
 ### setup_pem
 
 This role helps in setting PEM Server and deployment of PEM Agent on the PG/EPAS servers.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_pem/README.md)
 
+
+## manage_dbserver
+
+This role helps in managing the HA cluster and covers common tasks.
+For more information on the role, please refer roles README
+[README.md](./roles/manage_dbserver/README.md)
 
 Prerequisites
 ----------------
