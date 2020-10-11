@@ -1,102 +1,71 @@
 ---
-# Tasks file for edb.postgres.install Role
+# tasks file for edb.postgres.install role
 
-- name: Reference EPAS Variables
-  include_vars: edb-epas.yml
-  when: PG_TYPE == 'EPAS'
+- name: reference ariables
+  include_vars: "{{ pg_type }}.yml"
 
-- name: Reference PG Variables
-  include_vars: edb-pg.yml
-  when: PG_TYPE == 'PG'
-
-# Display if the Operating System is supported
-- name: Display support for Operating System
+# display if the operating system is supported
+- name: display support for operating system
   block:
     - debug:
-        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
-  when: OS != 'CentOS7' and OS != 'RHEL7'
+        msg: "operating system = {{ os }} not supported."
+  when: os not in supported_os
 
-# Display if the Operating System is supported
-- name: Display support for Operating System
+# display if the operating system is supported
+- name: display support for operating system
   block:
     - debug:
-        msg: "EPAS/PG Version = {{ OS }} not supported. Only '10', '11' and '12'."
-  when: PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
+        msg: "epas/pg version = {{ os }} not supported. only '10', '11' and '12'."
+  when: pg_version not in supported_pg_version
 
-# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
+# end playbook if the type of install, operating system or postgres version are not supported
 - meta: end_play
-  when: (OS != 'CentOS7' and OS != 'RHEL7') or
-        (PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12')
+  when: os not in supported_os or
+        pg_version not in supported_pg_version
 
-# Configure Variables
-
-# Setting variables available for all nodes
-- name: Set Node Type
+- name: Prepare etc_hosts_lists
   set_fact:
-    NODE_TYPE: "{{ item.value.node_type }}"
-  register: output
-
-# Display Details of Node to Install
-- name: Display current Node to Install
-  block:
-    - debug:
-        msg:
-            "Operating System = {{ OS }}:
-             PG_TYPE = {{ PG_TYPE }},
-             Node Type = {{ NODE_TYPE }},
-             PG_DATA = {{ PG_DATA }},
-             Public IP = {{ item.value.public_ip }}"
-
-
-- name: Update etc_hosts based on USE_HOSTNAME
-  block:
-    - import_tasks: C07-RH07-update-etc-hosts.yml
-  become: yes
+    etc_hosts_list: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
   when:
-    - USE_HOSTNAME
-  delegate_to: "{{ item.value.public_ip }}"
+    - item.value.hostname is defined
+    - use_hostname
+  with_dict: "{{ servers }}"
 
-- name: Set FORCE_INSTALL based on the user input
+- name: Get the pem_server_private/public_ip
   set_fact:
-    FORCE_INSTALL: "{{ item.value.force_install }}"
-  when: item.value.force_install is defined
-  register: output
+    pem_server_private_ip: "{{ item.value.private_ip }}"
+    pem_server_public_ip: "{{ item.value.public_ip }}"
+  when: item.value.node_type == 'pemserver'
+  with_dict: "{{ servers }}"
 
-- name: Set PEM_AGENT based on the user input
+- name: Get the primary_private/public_ip
   set_fact:
-    PEM_AGENT: "{{ item.value.pem_agent }}"
-  when: item.value.pem_agent is defined
-  register: output
+    primary_private_ip: "{{ item.value.private_ip }}"
+    primary_public_ip: "{{ item.value.public_ip }}"
+  when: item.value.node_type == 'primary'
+  with_dict: "{{ servers }}"
 
-- name: Remove PEM server based on force_install
-  block:
-    - import_tasks: C07-RH07-pem-server-rm-install.yml
-  when: FORCE_INSTALL
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Prepare hba host ip lists
+  include_tasks: prepare_hba_value_list.yml
+  when: item.value.node_type in ['primary','standby']
+  with_dict: "{{ servers }}"
 
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - import_tasks: C07-RH07-pem-server-user.yml
-    - import_tasks: C07-RH07-pem-server-install.yml
-    - import_tasks: C07-RH07-pem-server-hba.yml
-    - import_tasks: C07-RH07-pem-server-probe-alert.yml
-  when: NODE_TYPE in ['pemserver']
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Execute setup_pem for all nodes
+  include_tasks: setup_pem.yml
+  with_dict: "{{ servers }}"
 
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - import_tasks: C07-RH07-pem-agent-user.yml
-    - import_tasks: C07-RH07-pem-agent-hba.yml
-    - import_tasks: C07-RH07-pem-agent-install.yml
-    - import_tasks: C07-RH07-pem-server-probe-alert.yml
-  when: NODE_TYPE in ['primary', 'standby', 'bartserver'] and PEM_AGENT
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Update pem probes and alerts
+  import_tasks: pem_server_probe_alert.yml
+  delegate_to: "{{ pem_server_public_ip }}"
 
-- name: Reset FORCE/SKIP_PEM_INSTALL based on the user input
+- name: Reset the variables
   set_fact:
-    PEM_AGENT: false
-    FORCE_INSTALL: false
-  register: output
+    pem_server_private_ip: ""
+    pem_server_public_ip: ""
+    primary_private_ip: ""
+    primary_public_ip: ""
+    etc_hosts_lists: []
+    input_password: ""
+    pg_allow_ip_addresses: []
+    pem_server_hba_local_entry: []
+    pem_agent_hba_local_entry: []

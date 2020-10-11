@@ -1,0 +1,10 @@
+---
+- name: Prepare the list
+  set_fact:
+    temp_list:
+       - name: "{{ item.key }}"
+         slot_type: physical
+
+- name: Prepare array of list
+  set_fact:
+    standby_physical_slots: "{{ standby_physical_slots + [temp_list] }}"

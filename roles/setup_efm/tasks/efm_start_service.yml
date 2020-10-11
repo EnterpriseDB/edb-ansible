@@ -1,0 +1,8 @@
+---
+- name: Start the efm service on all nodes
+  systemd:
+    name: "{{ efm_service }}"
+    enabled: yes
+    state: started
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"

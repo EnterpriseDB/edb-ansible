@@ -1,0 +1,95 @@
+---
+
+- name: Check if we PEM server is already configured
+  stat:
+    path: "/etc/httpd/conf.d/edb-ssl-pem.conf"
+  become: yes
+  register: pem_configured
+
+- name: Allow access to localhost
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_conf
+  vars:
+    pg_hba_ip_addresses:
+        - contype: host
+          user: "{{ pg_owner }}"
+          source: "127.0.0.1/32"
+
+- name: Install pem server
+  shell: |
+    set -o pipefail
+    set -eu
+    sed -i 's/md5/scram-sha-256/g' {{ pem_server_bin_path }}/configure-pem-server.sh
+    sed -i 's/host    all/hostssl    all/g' {{ pem_server_bin_path }}/configure-pem-server.sh
+    {{ pem_server_bin_path }}/configure-pem-server.sh \
+                         --pemagent-certificate-path ~/.pem/ \
+                         --db-install-path {{ pg_home }} \
+                         --cidr-address {{ pem_allowed_connections }} \
+                         --db-unitfile {{ pg_service }} \
+                         --host {{ item.value.private_ip }} \
+                         --port {{ pg_port }} \
+                         --superuser {{ pg_pem_admin_user }} \
+                         --superpassword {{ pg_pem_admin_password }} \
+                         --type {{ pem_installation_type }}
+    systemctl stop {{ pem_agent_service }}
+    rm -f /var/log/pem/worker.log
+  args:
+    executable: /bin/bash
+  register: output
+  changed_when: "'PEM server can be accessed at https:' in output.stdout"
+  failed_when: "'Error' in output.stdout"
+  when: not pem_configured.stat.exists
+  become: yes
+
+- name: Update access to localhost on ssl
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_conf
+  vars:
+    pg_hba_ip_addresses:
+        - contype: host
+          user: "{{ pg_owner }}"
+          source: "127.0.0.1/32"
+          state: "absent"
+        - user: "{{ pg_owner }}"
+          source: "127.0.0.1/32"
+  when: not pem_configured.stat.exists
+
+- name: Update agent to use hostssl
+  include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+       - query: "UPDATE pem.agent_server_binding SET sslmode='prefer' WHERE agent_id=1 AND server_id=1;"
+         db: "pem"
+  when: not pem_configured.stat.exists
+
+- name: Start the PEM agent Service
+  systemd:
+    name: "{{ pem_agent_service }}"
+    daemon_reload: yes
+    state: started
+  when: not pem_configured.stat.exists
+  become: yes
+
+- name: Assign pg_monitor privilges
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_privileges
+  vars:
+    pg_grant_roles:
+      - role: pg_monitor
+        user: "{{ pg_pem_admin_user }}"
+  when: not pem_configured.stat.exists
+
+- name: Reduce the privileges of PEM user
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+  vars:
+    pg_users:
+      - name: "{{ pg_pem_admin_user }}"
+        role_attr_flags: nosuperuser,nocreatedb
+  when: not pem_configured.stat.exists

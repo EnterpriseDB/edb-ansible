@@ -1,0 +1,12 @@
+---
+
+- name: update pem server for unnecessary alerts/probes
+  include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "{{ pem_probe_query }}"
+        db: "pem"
+      - query: "{{ pem_alert_query }}"
+        db: "pem"

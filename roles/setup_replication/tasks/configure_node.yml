@@ -1,0 +1,33 @@
+---
+- name: Add password in pgpass
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_pgpass
+  vars:
+    pg_pgpass_values:
+       - user: "{{ pg_replication_user }}"
+         password: "{{ pg_replication_user_password }}"
+         create: yes
+  no_log: yes
+
+- name: create standby
+  shell: |
+    PGAPPNAME={{ item.key }} {{ pg_basebackup }}
+  args:
+    creates: "{{ pg_data }}/PG_VERSION"
+  become: yes
+  become_user: "{{ pg_owner }}"
+
+- name: Start the services
+  systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: yes
+    state: started
+  become: yes
+
+- name: Update standby hba config
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_conf
+  vars:
+    pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"

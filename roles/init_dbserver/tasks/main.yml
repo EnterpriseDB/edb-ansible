@@ -1,109 +1,44 @@
 ---
-# Tasks file for edb.postgres.install Role
+# tasks file for edb.postgres.install role
 
-# Reference EPAS Variables
-- name: Reference EPAS Variables
-  include_vars: edb-epas.yml
-  when: PG_TYPE == 'EPAS'
+# reference epas variables
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}.yml"
 
-- name: Reference EPAS Variables
-  include_vars: edb-pg.yml
-  when: PG_TYPE == 'PG'
-
-# Display if the Operating System is supported
-- name: Display support for Operating System
-  block:
-    - debug:
-        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
-  when: OS != 'CentOS7' and OS != 'RHEL7'
-
-# Display if the Database Version is not supported
-- name: Display supported versions for Database Engine
-  block:
-    - debug:
-        msg: "Database Engine Version = {{ PG_VERSION }} not supported."
-  when: PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
-
-# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
-- meta: end_play
-  when: OS != 'CentOS7' and OS != 'RHEL7' or
-        PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
-
-# Configure Variables
-- name: Display current Node to Install
-  block:
-    - debug:
-        msg:
-            "Operating System = {{ OS }}:
-             Postgres Version = {{ PG_VERSION }},
-             Database Engine = {{ PG_TYPE }},
-             Public IP = {{ item.value.public_ip }}"
-
-# Setting variables available for all nodes
-# Any of the variables existing can be updated and configured
-
-- name: Set Node Type
-  set_fact:
-    NODE_TYPE: "{{ item.value.node_type }}"
-  register: output
-
-- name: set FORCE_INITIALIZE based on the user input
-  set_fact:
-    FORCE_INITIALIZE: "{{ item.value.force_initialize }}"
-  when: item.value.force_initialize is defined
-  register: output
-
-# main blog for tasks
-- name: Force cleanup based on force_initialize
-  block:
-    - include_tasks: C07-RH07-rm-initialize.yml
-  when: FORCE_INITIALIZE and NODE_TYPE in ['primary','pemserver']
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Reference EPAS Variables
+- name: Reference ssl variables
   include_vars: edb-ssl.yml
-  when: PG_SSL
+  when: pg_ssl
 
-- name: Update etc_hosts based on USE_HOSTNAME
+# display if the operating system is supported
+- name: Display support for operating system
   block:
-    - import_tasks: C07-RH07-update-etc-hosts.yml
-  become: yes
-  when: USE_HOSTNAME
-  delegate_to: "{{ item.value.public_ip }}"
+    - debug:
+        msg: "operating system = {{ os }} not supported."
+  when: os not in supported_os
 
-- name: Check and configure the primary node
+# display if the database version is not supported
+- name: Display supported versions for database engine
   block:
-    - import_tasks: C07-RH07-os-tune.yml
-    - import_tasks: C07-RH07-check-service.yml
-    - import_tasks: C07-RH07-create-directories.yml
-    - import_tasks: C07-RH07-initdb-cmd.yml
-    - import_tasks: C07-RH07-update-service.yml
-    - import_tasks: C07-RH07-configure-node.yml
-  become: yes
-  when: NODE_TYPE in ['primary','pemserver']
-  delegate_to: "{{ item.value.public_ip }}"
+    - debug:
+        msg: "database engine version = {{ pg_version }} not supported."
+  when: pg_version not in supported_pg_version
 
-- name: Configure SSL based on PG_SSL parameter
-  block:
-    - import_tasks: C07-RH07-ssl-configure.yml
-  become: yes
-  when: NODE_TYPE in ['primary','pemserver'] and PG_SSL
-  delegate_to: "{{ item.value.public_ip }}"
+# end playbook if the type of install, operating system or postgres version are not supported
+- meta: end_play
+  when: os not in supported_os or
+        pg_version not in supported_pg_version
 
-- name: Apply any user defined settings, users, databases and configurations
-  block:
-    - import_tasks: C07-RH07-users.yml
-    - import_tasks: C07-RH07-databases.yml
-    - import_tasks: C07-RH07-update-conf-hba.yml
-    - import_tasks: C07-RH07-extensions.yml
-    - import_tasks: C07-RH07-user-privilege.yml
-    - import_tasks: C07-RH07-copy-sql-scripts.yml
-    - import_tasks: C07-RH07-sql-scripts.yml
-  when: NODE_TYPE in ['primary', 'pemserver']
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Reset FORCE/SKIP_INITIALIZE based on the user input
+- name: Gather the host and information for /etc/hosts
   set_fact:
-    FORCE_INITIALIZE: false
-  register: output
+    etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
+  when: item.value.hostname is defined
+  with_dict: "{{ servers }}"
+
+- name: Include the init_dbserver
+  include_tasks: init_dbserver.yml
+  when: item.value.node_type in ['primary','pemserver']
+  with_dict:  "{{ servers }}"
+
+- name: Reset etc_hosts_list variable
+  set_fact:
+    etc_hosts_lists: []

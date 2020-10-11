@@ -1,0 +1,15 @@
+[main]
+summary=Tuned profiles for EnterpriseDB Postgres Advanced Server
+[cpu]
+governor=performance
+energy_perf_bias=performance
+min_perf_pct=100
+[disk]
+readahead=>4096
+[sysctl]
+vm.overcommit_memory=2
+vm.swappiness=1
+vm.dirty_ratio=30
+vm.dirty_background_ratio=10
+[vm]
+transparent_hugepages=never

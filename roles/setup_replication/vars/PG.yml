@@ -1,0 +1,36 @@
+---
+# default empty rpm repo
+# port constants
+
+# postgres constants
+pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_log: "/var/log/postgres"
+pg_wal: ""
+pg_log_filename: "postgresql-%a.log"
+
+use_hostname: false
+primary_host_name: ""
+
+pg_owner: "postgres"
+pg_group: "postgres"
+pg_ssl: true
+pg_port: 5432
+pg_replication_user: "repuser"
+pg_replication_user_password: ""
+synchronous_standby_names: ""
+
+random_string: ""
+    
+pg_database: "edb"
+pg_service: "edb-as-{{ pg_version }}"
+
+pg_user_home: "/var/lib/edb"
+pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
+pg_basebackup: "{{ pg_bin_path }}/pg_basebackup -Fp -R -l standby --wal-method=stream"
+pg_basebackup_options: ""
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+

@@ -5,61 +5,35 @@
 - name: Display support for Operating System
   block:
     - debug:
-        msg: "Operating System = {{ OS }} is not supported. Only 'CentOS7' and 'RHEL7'."
-  when: (OS != 'CentOS7' and OS != 'RHEL7')
+        msg: "Operating System = {{ os }} is not supported."
+  when: os not in supported_os
 
 # End Playbook if the provided Operating System is not valid
 - meta: end_play
-  when: (OS != 'CentOS7' and OS != 'RHEL7')
+  when: os not in supported_os
 
 # Display if Database Engine is not supported
 - name: Display if Database Engine is supported
   block:
     - debug:
-        msg: "Database Engine = {{ PG_TYPE }} is not supported."
-  when: (PG_TYPE != 'PG' and PG_TYPE != 'EPAS')
+        msg: "Database Engine = {{ pg_type }} is not supported."
+  when: pg_type not in supported_pg_type
 
 # End Playbook if provided Database Engine is not supported
 - meta: end_play
-  when: (PG_TYPE != 'PG' and PG_TYPE != 'EPAS')
+  when: pg_type not in supported_pg_type
 
 # Display if Credentials are valid
 - name: Validate Credentials
   block:
     - debug:
-        msg: "YUM User Name = {{ EDB_YUM_USERNAME }} or Password = {{ EDB_YUM_PASSWORD }} are not valid!."
-  when: (EDB_YUM_USERNAME | length < 1 or EDB_YUM_PASSWORD | length < 1)
+        msg: "YUM User Name = {{ yum_username }} or Password = {{ yum_password }} are not valid!."
+  when: (yum_username | length < 1 or yum_password | length < 1)
 
 # End Playbook if Credentials are not valid
 - meta: end_play
-  when: (EDB_YUM_USERNAME | length < 1 or EDB_YUM_PASSWORD | length < 1)
+  when: (yum_username | length < 1 or yum_password | length < 1)
 
-
-- name: Set FORCE_INSTALL based on the user input
-  set_fact:
-      FORCE_INSTALL: "{{ item.value.force_install }}"
-  when: item.value.force_install is defined
-  register: output
-
-# Display details of IP Address being processed
-- name: Details of Node being processed
-  block:
-    - debug:
-        msg: "Operating System = {{ OS }}:
-             Database Engine = {{ PG_TYPE }},
-             Public IP = {{ item.value.public_ip }}"
-
-
-- name: Cleanup the repos based on force_install
-  block:
-    - include_tasks: C07-RH07-{{ PG_TYPE }}-rm-repos.yml
-  when: FORCE_INSTALL
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - include_tasks: C07-RH07-PG-setuprepos.yml
-    - include_tasks: C07-RH07-EPAS-setuprepos.yml
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Include the setup_repo
+  include_tasks: setup_repo.yml
+  with_dict:  "{{ servers }}"

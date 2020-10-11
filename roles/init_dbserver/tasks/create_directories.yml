@@ -1,0 +1,74 @@
+---
+- name: Ensure postgres data directory exists
+  file:
+    path: "{{ pg_data }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
+  become: yes
+
+- name: Ensure postgres log directory exists
+  file:
+    path: "{{ pg_log }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
+  become: yes
+  when: pg_log|length > 0 and not pg_data in pg_log
+
+- name: Ensure postgres wal directory exists
+  file:
+    path: "{{ pg_wal }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
+  become: yes
+  when: pg_wal|length > 0 and not pg_data in pg_wal
+
+- name: Create unix socket domain directories
+  file:
+    path: "{{ line_item }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 02775
+    state: directory
+  with_items: "{{ pg_unix_socket_directories }}"
+  loop_control:
+    loop_var: line_item
+  become: yes
+  when: pg_unix_socket_directories|length > 0
+
+- name: Create hidden edb directory if not exists
+  file:
+    path: "{{ pass_dir }}"
+    mode: 0700
+    state: directory
+  become: no
+  delegate_to: localhost
+
+- name: Check if we have symlink for default data directory location
+  stat:
+    path: "{{ pg_default_data }}"
+  register: sym
+
+- name: Ensure default data directory is deleted if pg_data is not default
+  file:
+    path: "{{ pg_default_data }}"
+    state: absent
+  when:
+    - pg_default_data != pg_data
+    - not sym.stat.islnk
+  become: yes
+
+- name: Ensure pg_data has symlink to default if pg_data is not default
+  file:
+    src: "{{ pg_data }}"
+    dest: "{{ pg_default_data }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    state: link
+  when: pg_default_data != pg_data
+  become: yes

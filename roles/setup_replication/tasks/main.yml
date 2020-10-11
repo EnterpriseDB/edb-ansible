@@ -1,110 +1,89 @@
 ---
-# Tasks file for edb.postgres.install Role
+# tasks file for edb.postgres.install role
 
-# Reference EPAS Variables
-- name: Reference EPAS Variables
-  include_vars: edb-epas.yml
-  when: PG_TYPE == 'EPAS'
+# reference epas variables
+- name: reference epas variables
+  include_vars: "{{ pg_type }}.yml"
 
-- name: Reference EPAS Variables
-  include_vars: edb-pg.yml
-  when: PG_TYPE == 'PG'
-
-# Display if the Operating System is supported
-- name: Display support for Operating System
+# display if the operating system is supported
+- name: display support for operating system
   block:
     - debug:
-        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
-  when: OS != 'CentOS7' and OS != 'RHEL7'
+        msg: "operating system = {{ os }} not supported."
+  when: os not in supported_os
 
-# Display if the Database Version is not supported
-- name: Display supported versions for Database Engine
+# display if the database version is not supported
+- name: display supported versions for database engine
   block:
     - debug:
-        msg: "Database Engine Version = {{ PG_VERSION }} not supported."
-  when: PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
+        msg: "database engine version = {{ pg_version }} not supported."
+  when: pg_version not in supported_pg_version
 
-# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
+# end playbook if the type of install, operating system or postgres version are not supported
 - meta: end_play
-  when: OS != 'CentOS7' and OS != 'RHEL7' or
-        PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12'
+  when: os not in supported_os or
+        pg_version not in supported_pg_version
 
-- name: Set USE_HOSTNAME based on variable condition and users input
+- name: Prepare etc_hosts_lists
   set_fact:
-    USE_HOSTNAME: False
-  when: USE_HOSTNAME and PRIMARY_HOST_NAME|length < 1
+    etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
+  when: item.value.hostname is defined
+  with_dict: "{{ servers }}"
 
-# Configure Variables
-- name: Display details of Node to Configure
-  block:
-    - debug:
-        msg:
-            "Operating System = {{ OS }}:
-             Postgres Version = {{ PG_VERSION }},
-             Node Type = {{ item.value.node_type }},
-             Public IP = {{ item.value.public_ip }},
-             Postgres Type = {{ PG_TYPE }},
-             ALL_NODE_IPS = {{ ALL_NODE_IPS }},
-             PRIMARY_PRIVATE_IP = {{ PRIMARY_PRIVATE_IP }},
-             PRIMARY_HOST_NAME = {{ PRIMARY_HOST_NAME }},
-             USE_HOSTNAME = {{ USE_HOSTNAME }},
-             STANDBY_NAMES = {{ STANDBY_NAMES }}"
-
-# Setting variables available in all nodes
-- name: Assign variables
+- name: Get the primary information
   set_fact:
-    NODE_TYPE: "{{ item.value.node_type }}"
-    PUBLIC_IP: "{{ item.value.public_ip }}"
-  register: output
+    primary_private_ip: "{{ item.value.private_ip }}"
+    primary_public_ip: "{{ item.value.public_ip }}"
+  when: item.value.node_type == 'primary'
+  with_dict: "{{ servers }}"
 
-- name: set FORCE_REPLICATION based on the user input
+- name: Get primary hostname
   set_fact:
-      FORCE_REPLICATION: "{{ item.value.force_replication }}"
-  when: item.value.force_replication is defined
-  register: output
-
-- name: Force cleanup based on force_replication
-  block:
-    - include_tasks: C07-RH07-rm-replication.yml
-  when: NODE_TYPE == 'standby' and FORCE_REPLICATION
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-# Postgres
-
-- name: Update etc_hosts based on USE_HOSTNAME
-  block:
-    - import_tasks: C07-RH07-update-etc-hosts.yml
-  become: yes
+    primary_host_name: "{{ item.value.hostname }}"
   when:
-    - USE_HOSTNAME
-    - NODE_TYPE == 'standby'
-  delegate_to: "{{ item.value.public_ip }}"
+    - item.value.hostname is defined
+    - item.value.node_type == 'primary'
+  with_dict: "{{ servers }}"
 
-- name: Update the SSL based on the options
-  block:
-    - import_tasks: C07-RH07-ssl-configure.yml
-  become: yes
-  when: NODE_TYPE == 'standby' and PG_SSL and PG_SSL_GENERATE
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Prepare slot names array
+  include_tasks: prepare_standby_slots_list.yml
+  when: item.value.node_type == 'standby'
+  with_dict: "{{ servers }}"
 
-- name: Build standby service check
-  block:
-    - import_tasks: C07-RH07-os-tune.yml
-    - import_tasks: C07-RH07-check-service.yml
-    - import_tasks: C07-RH07-create-directories.yml
-    - import_tasks: C07-RH07-update-primary.yml
-    - import_tasks: C07-RH07-pg-basebackup.yml
-    - import_tasks: C07-RH07-update-service.yml
-    - import_tasks: C07-RH07-configure-node.yml
-    - import_tasks: C07-RH07-sql-standby-names.yml
-    - import_tasks: C07-RH07-post-standby-primary.yml
-    - import_tasks: C07-RH07-update-conf-hba.yml
-  become: yes
-  when: NODE_TYPE == 'standby'
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Prepare host ip lists based on allow_node_ips
+  include_tasks: prepare_hba_value_list.yml
+  when: item.value.node_type in ['primary','standby']
+  with_dict: "{{ servers }}"
 
-- name: Reset FORCE_REPLICATION based on the user input
+- name: Prepare synchronous_standby_names
   set_fact:
-      FORCE_REPLICATION: false
+    synchronous_standbys: "{{ synchronous_standbys + [item.key] }}"
+  when:
+    - item.value.node_type == 'standby'
+    - item.value.replication_type == 'synchronous'
+  with_dict: "{{ servers }}"
+
+- name: Update primary for replication
+  import_tasks: primary_settings.yml
+  delegate_to: "{{ primary_public_ip }}"
+
+- name: Include the setup_replication
+  include_tasks: setup_replication.yml
+  when: item.value.node_type == 'standby'
+  with_dict:  "{{ servers }}"
+
+- name: Update primary for replication
+  import_tasks: primary_synchronous_param.yml
+  when: synchronous_standbys|length > 0
+  delegate_to: "{{ primary_public_ip }}"
+
+- name: Reset the the variables based on the user input
+  set_fact:
+      primary_private_ip: ""
+      primary_public_ip: ""
+      primary_host_name: ""
+      standby_names: []
+      pg_allow_ip_addresses: []
+      standby_physical_slots: []
+      etc_hosts_lists: []
   register: output

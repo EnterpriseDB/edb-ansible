@@ -1,0 +1,200 @@
+---
+- name: check if we have ca key exists or not
+  stat:
+    path: "{{ pg_data }}/ca_key.key"
+  become: yes
+  register: ssl_ca_key
+
+- name: check if we have ca certificate exists or not
+  stat:
+    path: "{{ pg_data }}/ca_certificate.crt"
+  become: yes
+  register: ssl_ca_certificate
+
+- name: check if we have root.crt exists or not
+  stat:
+    path: "{{ pg_data }}/root.crt"
+  become: yes
+  register: ssl_root_crt
+
+- name: check if we have root crl exists or not
+  stat:
+    path: "{{ pg_data }}/root.crl"
+  become: yes
+  register: ssl_root_crl
+
+- name: check if we have server.key exists or not
+  stat:
+    path: "{{ pg_data }}/server.key"
+  become: yes
+  register: ssl_server_key
+
+- name: check if we have server.crt exists or not
+  stat:
+    path: "{{ pg_data }}/server.crt"
+  become: yes
+  register: ssl_server_crt
+
+- name: create ssl extension in pg_database
+  postgresql_ext:
+    name: sslutils
+    login_user: "{{ pg_owner }}"
+    port: "{{ pg_port }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    db: "{{ pg_database }}"
+    state: present
+  become: yes
+  become_user: "{{ pg_owner }}"
+
+- name: create ssl cert key
+  postgresql_query:
+    login_user: "{{ pg_owner }}"
+    port: "{{ pg_port }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    query: "select public.openssl_rsa_generate_key(4096);"
+    db: "{{ pg_database }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  when: not ssl_ca_key.stat.exists
+  register: sql_output
+
+- name: ca key variable
+  set_fact:
+    ca_key: "{{ sql_output.query_result[0].openssl_rsa_generate_key }}"
+  when: not ssl_ca_key.stat.exists
+
+- name: create ca key file in pg_data
+  copy:
+    dest: "{{ pg_data }}/ca_key.key"
+    content: "{{ ca_key }}"
+    mode: 0600
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+  when: not ssl_ca_key.stat.exists
+  become: yes
+
+- name: create a certificate authority key
+  postgresql_query:
+    login_user: "{{ pg_owner }}"
+    port: "{{ pg_port }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    query: "select public.openssl_csr_to_crt(openssl_rsa_key_to_csr( '{{ ca_key }}',
+                                      '{{ cert_common_name }}', '{{ cert_country }}',
+                                      '{{ cert_state }}', '{{ cert_city }}', '{{ cert_org_unit }}',
+                                      '{{ cert_email }}'), null, '{{ pg_data }}/ca_key.key');"
+    db: "{{ pg_database }}"
+  when: not ssl_ca_certificate.stat.exists
+  become: yes
+  become_user: "{{ pg_owner }}"
+  register: sql_output
+
+- name: ca certificate variable
+  set_fact:
+    ca_certificate: "{{ sql_output.query_result[0].openssl_csr_to_crt }}"
+  when: not ssl_ca_certificate.stat.exists
+
+- name: create ca certificate file in pg_data
+  copy:
+    dest: "{{ pg_data }}/ca_certificate.crt"
+    content: "{{ ca_certificate }}"
+    mode: 0600
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+  when: not ssl_ca_certificate.stat.exists
+  become: yes
+
+- name: create root.crt using ca certificate file in pg_data
+  copy:
+    dest: "{{ pg_data }}/root.crt"
+    content: "{{ ca_certificate }}"
+    mode: 0600
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+  when: not ssl_root_crt.stat.exists
+  become: yes
+
+- name: create a root.crl
+  postgresql_query:
+    login_user: "{{ pg_owner }}"
+    port: "{{ pg_port }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    query: "select public.openssl_rsa_generate_crl('{{ pg_data }}/ca_certificate.crt','{{ pg_data }}/ca_key.key');"
+    db: "{{ pg_database }}"
+  when: not ssl_root_crl.stat.exists
+  become: yes
+  become_user: "{{ pg_owner }}"
+  register: sql_output
+
+- name: create root.crl
+  copy:
+    dest: "{{ pg_data }}/root.crl"
+    content: "{{ sql_output.query_result[0].openssl_rsa_generate_crl }}"
+    mode: 0600
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+  when: not ssl_root_crl.stat.exists
+  become: yes
+
+- name: create ssl server key
+  postgresql_query:
+    login_user: "{{ pg_owner }}"
+    port: "{{ pg_port }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    query: "select public.openssl_rsa_generate_key(4096);"
+    db: "{{ pg_database }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  when: not ssl_server_key.stat.exists
+  register: sql_output
+
+- name: server key variable
+  set_fact:
+    server_key: "{{ sql_output.query_result[0].openssl_rsa_generate_key }}"
+  when: not ssl_server_key.stat.exists
+
+- name: create server key file in pg_data
+  copy:
+    dest: "{{ pg_data }}/server.key"
+    content: "{{ server_key }}"
+    mode: 0600
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+  when: not ssl_server_key.stat.exists
+  become: yes
+
+- name: create a server cert
+  postgresql_query:
+    login_user: "{{ pg_owner }}"
+    port: "{{ pg_port }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    query: "select public.openssl_csr_to_crt(openssl_rsa_key_to_csr( '{{ server_key }}',
+                                      '{{ cert_common_name }}', '{{ cert_country }}',
+                                      '{{ cert_state }}', '{{ cert_city }}', '{{ cert_org_unit }}',
+                                      '{{ cert_email }}'), null, '{{ pg_data }}/ca_key.key');"
+    db: "{{ pg_database }}"
+  when: not ssl_server_crt.stat.exists
+  become: yes
+  become_user: "{{ pg_owner }}"
+  register: sql_output
+
+- name: ca certificate variable
+  set_fact:
+    server_certificate: "{{ sql_output.query_result[0].openssl_csr_to_crt }}"
+  when: not ssl_server_crt.stat.exists
+
+- name: create ca certificate file in pg_data
+  copy:
+    dest: "{{ pg_data }}/server.crt"
+    content: "{{ server_certificate }}"
+    mode: 0600
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+  when: not ssl_server_crt.stat.exists
+  become: yes
+
+- name: Call manage_dbserver tasks for ssl update
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_conf
+  vars:
+    pg_postgres_conf_params: "{{ pg_ssl_postgres_conf_params }}"
