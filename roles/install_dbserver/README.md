@@ -1,7 +1,7 @@
 install_dbserver
 =========
 
-This Ansible Galaxy Role Installs Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11 and 12 on Instances previously configured. 
+This Ansible Galaxy Role Installs Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, 12 and 13 on Instances previously configured. 
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -18,7 +18,7 @@ Requirements
 The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
-2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install
+2. community.general Ansible Module - Utilized when creating aditional users during a Postgres Install
 3. edb-devops.postgres -> setup_repo role for setting the repository on the systems
 
 Role Variables
@@ -27,10 +27,15 @@ Role Variables
 When executing the role via ansible these are the required variables:
 
 * os
+
   Operating Systems supported are: CentOS7 and RHEL7
+
 * pg_version
+
   Postgres Versions supported are: 10, 11 and 12
+
 * pg_type
+  
   Database Engine supported are: PG and EPAS
 
 These and other variables can be assigned in the 'pre_tasks' definition of the section: 'How to include the 'install_dbserver' role in your Playbook'
@@ -51,7 +56,6 @@ Hosts file content
 ----------------
 
 Content of the hosts.yml file:
-
 
 
       servers:
@@ -94,7 +98,7 @@ Below is an example of how to include the install_dbserver role:
           set_fact:
             os: "CentOS7"
             pg_type: "PG"
-            pg_version: "12"
+            pg_version: 12
 
       roles:
         - install_dbserver
@@ -138,17 +142,17 @@ CentOS/RHEL: Community Postgresql with command line parameters
 ----------------
 
 
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL77 pg_version=12 pg_type=EPAS"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS8 pg_version=12 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL78 pg_version=12 pg_type=EPAS"
+    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=PG"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL77 pg_version=12 pg_type=EPAS"
+    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS8 pg_version=12 pg_type=PG"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL78 pg_version=12 pg_type=EPAS"
 
 
 CentOS/RHEL 7/8: Community Postgresql without command line parameters
 ----------------
 
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
+    ansible-playbook playbook.yml -u centos --private-key <key.pem>
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem>
 
 License
 -------
