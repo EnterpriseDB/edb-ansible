@@ -19,7 +19,7 @@ This role allows users to pass following variables which helps managing day to d
  
 Example:
  
-  
+```  
 pg_postgres_conf_params: ""
   - name: listen_addresses
     value: "*"
@@ -85,6 +85,7 @@ pg_databases: ""
     - name: edb_gis
       owner: edb
       encoding: UTF-8
+```
 
 Example Playbook
 ----------------
