@@ -1,0 +1,59 @@
+---
+# Default empty RPM Repo
+# Port Constants
+
+# POSTGRES Constants
+PG_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"
+PG_DEFAULT_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"
+PG_LOG: "/var/log/postgres"
+PG_WAL: ""
+PG_LOG_FILENAME: "postgresql-%a.log"
+
+USER_HOMEDIR: "~/"
+USE_HOSTNAME: False
+PRIMARY_HOST_NAME: ""
+
+LOCAL_SSL_DIR: "{{ USER_HOMEDIR + '/.edb/primaryssl' }}"
+RANDOM_STRING: ""
+SYNCHRONOUS_STANDBY_NAMES: ""
+PG_OWNER: "postgres"
+PG_GROUP: "postgres"
+PG_SSL: True
+PG_SSL_DIR: "/etc/edb/certs"
+PG_SSL_GENERATE: True
+PG_PORT: "5432"
+PG_REPLICATION_USER: "repuser"
+PG_REPLICATION_USER_PASSWORD: ""
+    
+PG_DATABASE: "postgres"
+PG_SERVICE: "postgresql-{{ PG_VERSION }}"
+
+PG_USER_HOME: "/var/lib/pgsql"
+PG_BIN_PATH: "/usr/pgsql-{{ PG_VERSION }}/bin"
+PG_BASEBACKUP: "{{ PG_BIN_PATH }}/pg_basebackup -Fp -R"
+PG_BASEBACKUP_OPTIONS: ""
+
+# Unix socket domain directories
+PG_UNIX_SOCKET_DIRECTORIES:
+  - "/var/run/postgresql"
+
+PG_POSTGRES_CONF_PARAMS: ""
+# Example 
+# PG_POSTGRES_CONF_PARAMS:
+#       - { name: 'parameter_name', value: 'value of the parameter' }
+#       - { name: 'parameter_name', value: 'value of the parameter' }
+#
+PG_ALLOW_IP_ADDRESSES: ""
+#Example
+# PG_ALLOW_IP_ADDRESSES: 
+#       - { databases:'db1,db2,db3', ip_addresses: "127.0.0.1/32", users: "enterprisedb,postgres" }
+#       - { databases:'db2', ip_addresses: "127.0.0.1/32", users: "enterprisedb,postgres" }
+
+# Common variables require for the role
+PRIMARY_PRIVATE_IP: ""
+PRIMARY_PUBLIC_IP: ""
+PRIMARY_HOST_NAME: ""
+STANDBY_NAMES: []
+ALL_NODE_IPS: []
+
+ETC_HOSTS_LISTS: ""

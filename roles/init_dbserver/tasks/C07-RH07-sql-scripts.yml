@@ -1,0 +1,17 @@
+---
+
+- name: Execute PG_SQL_SCRIPTS
+  postgresql_query:
+    path_to_script: "{{ line_item.file_path }}"
+    db: "{{ line_item.db }}"
+    port: "{{ PG_PORT }}"
+    login_user: "{{ PG_OWNER }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+  no_log: true
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items: "{{ PG_SQL_SCRIPTS }}"
+  loop_control:
+    loop_var: line_item
+  when: PG_SQL_SCRIPTS|length > 0
+  ignore_errors: yes

@@ -15,20 +15,41 @@
   pre_tasks:
       - name: Initialize the user defined variables
         set_fact:
-            os: "CentOS7"
-            pg_version: 12
-            pg_type: "PG"
-            pg_data: "/data/pgdata"
-            pg_wal: "/data/pg_wal"
-            yum_username: ""
-            yum_password: ""
-            standby_quorum_types: "ANY" # Quorum type can be ANY or FIRST
+            OS: "CentOS7"
+            PG_VERSION: "12"
+            PG_TYPE: "PG"
+            PG_DATA: "/data/pgdata"
+            PG_WAL: "/data/pg_wal"
+            EDB_YUM_USERNAME: ""
+            EDB_YUM_PASSWORD: ""
+            STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
 
-  roles:
-    - setup_repo
-    - install_dbserver
-    - init_dbserver
-    - setup_replication
-    - setup_efm
-    - setup_pem
-    - manage_dbserver
+  tasks:
+    - name: Iterate through repo role with items from hosts file
+      include_role:
+        name: process_vars
+      with_dict: "{{ servers }}"
+    - name: Iterate through repo role with items from hosts file
+      include_role:
+        name: setup_repo
+      with_dict: "{{ servers }}"
+    - name: Iterate through install role with items from hosts file
+      include_role:
+        name: install_dbserver
+      with_dict: "{{ servers }}"
+    - name: Iterate through initialize role with items from hosts file
+      include_role:
+        name: init_dbserver
+      with_dict: "{{ servers }}"
+    - name: Iterate through replication role with items from hosts file
+      include_role:
+        name: setup_replication
+      with_dict: "{{ servers }}"
+    - name: Iterate through efm install role with items from hosts file
+      include_role:
+        name: setup_efm
+      with_dict: "{{ servers }}"
+    - name: Iterate through pem install role with items from hosts file
+      include_role:
+        name: setup_pem
+      with_dict: "{{ servers }}"

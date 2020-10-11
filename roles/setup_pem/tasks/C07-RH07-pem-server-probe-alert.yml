@@ -1,0 +1,58 @@
+- name: Set query variables for PEM probe
+  set_fact:
+    probe_query: "UPDATE
+    pem.probe
+SET
+    enabled_by_default = TRUE
+WHERE
+    internal_name NOT IN ('slony_replication', 'xdb_smr_mmr_replication', 'sql_protect')
+    AND target_type_id = 200
+    AND enabled_by_default = FALSE;"
+    alert_query: "UPDATE
+    pem.alert a
+SET
+    enabled = FALSE
+FROM
+    pem.alert_template t
+WHERE
+    a.template_id = t.id
+    AND (t.display_name ~ '^Last'
+        OR t.display_name ~ '^Largest index'
+        OR t.display_name = 'Database size in server'
+        OR t.display_name ~ 'Alert Errors')
+    AND t.is_auto_create = TRUE
+    AND a.enabled;"
+  register: output
+
+- name: Update PEM Server for unnecessary alerts/probes
+  postgresql_query:
+    login_user: "{{ PG_PEM_ADMIN_USER }}"
+    login_password: "{{ PG_PEM_ADMIN_PASSWORD }}"
+    login_host: "{{ PEM_SERVER_PRIVATE_IP }}"
+    port: "{{ PG_PORT }}"
+    query: "{{ line_items.query }}"
+    db: "pem"
+  with_items:
+     - { "query": "{{ probe_query }}" }
+     - { "query": "{{ alert_query }}" }
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  loop_control:
+    loop_var: line_items
+  when: NODE_TYPE in ['primary', 'standby']
+
+- name: Update PEM Server for unnecessary alerts/probes
+  postgresql_query:
+    login_user: "{{ PG_OWNER }}"
+    port: "{{ PG_PORT }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    query: "{{ line_items.query }}"
+    db: "pem"
+  with_items:
+     - { "query": "{{ probe_query }}" }
+     - { "query": "{{ alert_query }}" }
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  loop_control:
+    loop_var: line_items
+  when: NODE_TYPE == 'pemserver'

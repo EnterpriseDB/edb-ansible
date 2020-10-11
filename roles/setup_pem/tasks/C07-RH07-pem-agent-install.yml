@@ -1,0 +1,91 @@
+---
+
+- name: Install require packages for PEM
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages: "{{ PEM_AGENT_PACKAGE }}"
+  become: yes
+
+- name: Check if agent was registered
+  stat:
+    path: "{{ PEM_AGENT_BIN_PATH }}/../etc/.agentregistered"
+  become: yes
+  register: pemagent_configured
+
+- name: Check if agent key was registered
+  stat:
+    path: "{{ PEM_AGENT_BIN_PATH }}/../etc/.{{ item.key }}registered"
+  become: yes
+  register: server_registered
+
+- name: Install pem agent
+  shell: |
+    set -o pipefail
+    set -eu
+    PEM_SERVER_PASSWORD={{ PG_PEM_ADMIN_PASSWORD }} {{ PEM_AGENT_BIN_PATH }}/pemworker \
+                                               --register-agent \
+                                               --display-name {{ item.key }} \
+                                               --pem-user {{ PG_PEM_ADMIN_USER }} \
+                                               --pem-server {{ PEM_SERVER_PRIVATE_IP }} \
+                                               --pem-port {{ PG_PORT }} \
+                                               --allow_server_restart true \
+                                               --allow-batch-probes true \
+                                               --batch-script-user root
+  args:
+    executable: /bin/bash
+  register: output
+  changed_when: "'Postgres Enterprise Manager Agent registered successfully!' in output.stdout"
+  failed_when: "'Postgres Enterprise Manager Agent registered successfully!' not in output.stdout"
+  when: not pemagent_configured.stat.exists
+  become: yes
+
+- name: Create lock file for avoiding duplication
+  file:
+    path: "{{ PEM_AGENT_BIN_PATH }}/../etc/.agentregistered"
+    state: touch
+  when: not pemagent_configured.stat.exists and output.changed
+  become: yes
+
+- name: Register server with agent
+  shell: |
+    set -o pipefail
+    set -eu
+    PEM_SERVER_PASSWORD={{ PG_PEM_ADMIN_PASSWORD }} \
+    PEM_MONITORED_SERVER_PASSWORD={{ PG_PEM_AGENT_PASSWORD }} \
+    {{ PEM_AGENT_BIN_PATH }}/pemworker \
+        --register-server \
+        --display-name {{ item.key }} \
+        --pem-user {{ PG_PEM_ADMIN_USER }} \
+        --server-addr {{ item.value.private_ip }} \
+        --server-port {{ PG_PORT }} \
+        --server-database {{ PG_DATABASE }} \
+        --server-user {{ PG_USER }} \
+        --server-service-name {{ PG_SERVICE }} \
+        --efm-cluster-name efm  \
+        --efm-install-path {{ EFM_BIN_PATH }} \
+        --asb-host-name 127.0.0.1 \
+        --asb-host-user {{ PG_PEM_AGENT_USER }} \
+        --asb-ssl-mode prefer \
+        --remote-monitoring no
+  args:
+    executable: /bin/bash
+  register: output
+  changed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' in output.stdout"
+  failed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' not in output.stdout"
+  when: not server_registered.stat.exists and NODE_TYPE in ['primary','standby']
+  become: yes
+
+- name: Create lock file for avoiding duplication
+  file:
+    path: "{{ PEM_AGENT_BIN_PATH }}/../etc/.{{ item.key }}registered"
+    state: touch
+  when: not server_registered.stat.exists and output.changed
+  become: yes
+
+- name: Start the PEM Service
+  systemd:
+    name: "{{ PEM_AGENT_SERVICE }}"
+    daemon_reload: yes
+    state: started
+  become: yes

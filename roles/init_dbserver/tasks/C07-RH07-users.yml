@@ -1,0 +1,19 @@
+---
+
+- name: Create optional Users
+  postgresql_user:
+    name: "{{ line_item.name }}"
+    password: "{{ line_item.pass | default(omit) }}"
+    encrypted: "{{ line_item.encrypted | default(omit) }}"
+    port: "{{ PG_PORT }}"
+    db: "{{ PG_DATABASE }}"
+    state: present
+    login_user: "{{ PG_OWNER }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+  no_log: true
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  with_items: "{{ PG_USERS }}"
+  loop_control:
+    loop_var: line_item
+  when: PG_USERS|length > 0

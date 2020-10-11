@@ -1,35 +1,52 @@
 ---
-# efm credentials
-os: ""
-pg_version: ""
-efm_version: 4.0 
+# EFM Credentials
+OS: ""
+PG_VERSION: ""
+EFM_VERSION: "4.0" 
 
-force_efm_install: false
-pass_dir: "~/.edb"
-use_hostname: false
+FORCE_EFM_INSTALL: false
+USER_HOMEDIR: "~/"
+USE_HOSTNAME: False
 
-pg_efm_user: "efm"
-pg_efm_user_password: ""
-pg_ssl: true
+PG_EFM_USER: "efm"
+PG_EFM_USER_PASSWORD: ""
+PG_SSL: True
 
-efm_service: "edb-efm-{{ efm_version }}"
-efm_nodes_list: ""
-# common variables require for the role
-etc_hosts_lists: []
-primary_public_ip: ""
-input_password: ""
-pg_allow_ip_addresses: []
+# EFM Data Dir
+PG_DATA: "/var/lib/pgsql/{{ PG_VERSION }}/data"
+PG_BIN_PATH: "/usr/pgsql-{{ PG_VERSION }}/bin"
 
-efm_default_parameters:
-  - { name: db.user, value: "{{ pg_efm_user }}"}
-  - { name: db.port, value: "{{ pg_port }}"}
-  - { name: db.database, value: "{{ pg_efm_database }}"}
-  - { name: db.service.owner, value: "{{ pg_owner }}"}
-  - { name: db.service.name, value: "{{ pg_service }}"}
-  - { name: db.bin, value: "{{ pg_bin_path }}"}
-  - { name: db.recovery.dir, value: "{{ pg_data }}"}
-  - { name: db.data.dir, value: "{{ pg_data }}"}
-  - { name: user.email, value: "unknown@gmail.com"}
+EFM_NOTIFICATION_EMAIL: "unknown@gmail.com"
+EFM_SERVICE: "edb-efm-{{ EFM_VERSION }}"
+EFM_NODES_LIST: ""
+EFM_NODES_HOSTS_LIST: ""
+ALL_NODE_HOSTNAMES: ""
+EFM_HOSTS_LIST: ""
+
+PG_OWNER: "postgres"
+PG_EFM_DATABASE: "postgres"
+
+# Unix socket domain directories
+PG_UNIX_SOCKET_DIRECTORIES:
+   - "/var/run/postgresql"
+
+
+# Postgres Port
+PG_PORT: 5432
+
+# Postgres Service
+PG_SERVICE: "postgresql-{{ PG_VERSION }}"
+
+EFM_PARAMETERS:
+  - { name: db.user, value: "{{ PG_EFM_USER }}"}
+  - { name: db.port, value: "{{ PG_PORT }}"}
+  - { name: db.database, value: "{{ PG_EFM_DATABASE }}"}
+  - { name: db.service.owner, value: "{{ PG_OWNER }}"}
+  - { name: db.service.name, value: "{{ PG_SERVICE }}"}
+  - { name: db.bin, value: "{{ PG_BIN_PATH }}"}
+  - { name: db.recovery.dir, value: "{{ PG_DATA }}"}
+  - { name: db.data.dir, value: "{{ PG_DATA }}"}
+  - { name: user.email, value: "{{ EFM_NOTIFICATION_EMAIL }}"}
   - { name: auto.allow.hosts, value: true}
   - { name: stable.nodes.file, value: true}
   - { name: update.physical.slots.period, value: "5" }
@@ -39,32 +56,24 @@ efm_default_parameters:
   - { name: remote.timeout, value: "5" }
   - { name: node.timeout, value: "5" }
 
-# example of efm_custom_parameters:
-# efm_parameters:
-#   - name: script.notification
-#     value: "/usr/edb/efm-3.10/bin/notification.sh"
-efm_parameters: ""
+# Example of EFM_CUSTOM_PARAMETERS:
+# # EFM_CUSTOM_PARAMETERS:
+# #   - { name: script.notification, value: "/usr/edb/efm-3.10/bin/notification.sh" }
+EFM_CUSTOM_PARAMETERS: ""
 
-efm_properties: "/etc/edb/efm-{{ efm_version }}/efm.properties"
-efm_node_file: "/etc/edb/efm-{{ efm_version }}/efm.nodes"
-efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
+# Exammple of EFM_SCRIPTS
+# # EFM_SCRIPTS:
+# #   - { file: "~/edb-ansible-all/notification.sh", remote_file: "/usr/edb/efm-3.10/bin/notification.sh", owner: "root", group: "root", mode: 777 }
+EFM_SCRIPTS: ""
+EFM_PROPERTIES: "/etc/edb/efm-{{ EFM_VERSION }}/efm.properties"
+EFM_NODE_FILE: "/etc/edb/efm-{{ EFM_VERSION }}/efm.nodes"
+EFM_BIN_PATH: "/usr/edb/efm-{{ EFM_VERSION }}/bin"
 
-supported_os:
-  - CentOS7
-  - CentOS8
-  - RHEL7
-  - RHEL8
+# Common variables require for the role
+PRIMARY_PRIVATE_IP: ""
+PRIMARY_PUBLIC_IP: ""
+ALL_NODE_IPS: []
+EFM_NODES_PRIVATE_IP: []
+EFM_NODES_PUBLIC_IP: []
 
-supported_pg_type:
-  - EPAS
-  - PG
-
-supported_pg_version:
-  - 10
-  - 11
-  - 12
-  - 13
-
-supported_efm_version:
-  - 4.0
-  - 3.10
+ETC_HOSTS_LISTS: ""

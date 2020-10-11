@@ -1,0 +1,40 @@
+---
+- name: Set PG_REPLICATION_USER_PASSWORD if not provided
+  set_fact:
+    PG_EFM_USER_PASSWORD: "{{ lookup('password', '{{ USER_HOMEDIR }}/.edb/{{ PG_EFM_USER }}_pass chars=ascii_letters') }}"
+  when: PG_EFM_USER_PASSWORD|length < 1
+  become: no
+  delegate_to: localhost
+
+- name: Create EDB efm role if not exists
+  postgresql_user:
+    name: "{{ PG_EFM_USER }}"
+    password: "{{ PG_EFM_USER_PASSWORD }}"
+    role_attr_flags: REPLICATION
+    groups:
+      - pg_read_all_settings
+    login_user: "{{ PG_OWNER }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    db: "{{ PG_EFM_DATABASE }}"
+    port: "{{ PG_PORT }}"
+    state: present
+  no_log: True
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"
+
+- name: GRANT execute privilege on system functions to EFM user
+  postgresql_privs:
+    type: function
+    state: present
+    db: "{{ PG_EFM_DATABASE }}"
+    port: "{{ PG_PORT }}"
+    login_user: "{{ PG_OWNER }}"
+    login_unix_socket: "{{ PG_UNIX_SOCKET_DIRECTORIES[0] }}"
+    privs: EXECUTE
+    schema: pg_catalog
+    objs: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
+    roles: "{{ PG_EFM_USER }}"
+  become: yes
+  become_user: "{{ PG_OWNER }}"
+  delegate_to: "{{ PRIMARY_PUBLIC_IP }}"

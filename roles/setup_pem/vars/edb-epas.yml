@@ -1,0 +1,62 @@
+---
+# PEM Credentials
+OS: ""
+PG_VERSION: ""
+
+FORCE_INSTALL: false
+PEM_AGENT: false
+
+USER_HOMEDIR: "~/"
+
+PG_PEM_ADMIN_USER: "pemadmin"
+PG_PEM_ADMIN_PASSWORD: ""
+PG_PEM_AGENT_USER: "pemagent"
+PG_PEM_AGENT_PASSWORD: ""
+PG_USER: "enterprisedb"
+
+# PEM Data Dir
+PG_HOME: "/usr/edb/as{{ PG_VERSION }}" 
+PG_BIN_PATH: "{{ PG_HOME }}/bin"
+PG_SSL: True
+PG_SSL_DIR: "/etc/edb/certs"
+
+PG_OWNER: "enterprisedb"
+PG_DATABASE: "edb"
+
+# EFM information
+EFM_VERSION: "4.0"
+EFM_BIN_PATH: "/usr/edb/efm-{{ EFM_VERSION }}/bin"
+
+# Unix socket domain directories
+PG_UNIX_SOCKET_DIRECTORIES:
+   - "/var/run/edb"
+
+
+# Postgres Port
+PG_PORT: 5444
+
+# Postgres Service
+PG_SERVICE: "edb-as-{{ PG_VERSION }}"
+
+PEM_SERVER_PACKAGES:
+    - edb-pem
+PEM_AGENT_PACKAGE:
+    - edb-pem-agent
+
+PEM_AGENT_SERVICE: pemagent
+
+PEM_SERVER_BIN_PATH: "/usr/edb/pem/bin"
+PEM_AGENT_BIN_PATH: "/usr/edb/pem/agent/bin"
+
+PEM_ALLOWED_CONNECTIONS: "0.0.0.0/0"
+PEM_AGENT_CERTIFICATE_PATH: "/etc/edb/certs/pem"
+
+# 1: Web Servce and Database, 2: Web Services, 3: Database
+PEM_INSTALLATION_TYPE: "1"
+
+# Common variables require for the role
+PEM_SERVER_PRIVATE_IP: ""
+PEM_SERVER_PUBLIC_IP: ""
+PRIMARY_PRIVATE_IP: ""
+PRIMARY_PUBLIC_IP: ""
+ETC_HOSTS_LISTS: ""

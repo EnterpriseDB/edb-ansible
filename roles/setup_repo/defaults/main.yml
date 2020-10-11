@@ -6,34 +6,16 @@
 # After 06/23/2020 - Redesigned EDB Portal
 
 # EDB RPM Repo
-edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
+EDB_RPMREPO: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
 
 # Postgresql Repos
-pg_rpm_repo7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-pg_rpm_repo8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+PG_RPMREPO: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
 # epel Repo
-epel_repo_7: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
-epel_repo_8: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm"
+EPEL_REPO7: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
 
-os: ""
-pg_type: "PG"
-yum_username: ""
-yum_password: ""
-force_install: false
-
-supported_os:
-  - CentOS7
-  - CentOS8
-  - RHEL7
-  - RHEL8
-
-supported_pg_type:
-  - EPAS
-  - PG
-
-supported_pg_version:
-  - 10
-  - 11
-  - 12
-  - 13
+OS: ""
+PG_TYPE: "PG"
+EDB_YUM_USERNAME: ""
+EDB_YUM_PASSWORD: ""
+FORCE_INSTALL: false

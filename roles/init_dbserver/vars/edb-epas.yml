@@ -1,0 +1,132 @@
+---
+OS: ""
+PG_TYPE: "EPAS"
+PG_VERSION: "12"
+
+FORCE_INITIALIZE: false
+
+USER_HOMEDIR: "~/"
+USE_HOSTNAME: False
+
+PG_SSL: True
+PG_SSL_DIR: "/etc/edb/certs"
+PG_SSL_GENERATE: True
+# Postgres Settings
+PG_WAL: ""
+PG_DATA: "/var/lib/edb/as{{ PG_VERSION }}/data"
+PG_DEFAULT_DATA: "/var/lib/edb/as{{ PG_VERSION }}/data"
+PG_ENCODING: "UTF-8"
+# Encoding details
+PG_LOCALE: "en_US"
+
+# Log directory and Filename
+PG_LOG: "/var/log/edb"
+PG_LOG_FILENAME: "edb-%a.log"
+
+# Databases
+PG_DATABASES: []
+# List of Databases Example
+#PG_DATABASES:
+# - name: pgdatabase
+
+# Users
+PG_USERS: []
+# List of Users Example
+#PG_USERS:
+#- name: pg1
+#  pass: pg1
+#  encrypted: yes
+
+# Postgres Service
+PG_SERVICE: "edb-as-{{ PG_VERSION }}"
+
+# Required & optional directories
+PG_USER_HOME: "/var/lib/edb"
+PG_BIN_PATH: "/usr/edb/as{{ PG_VERSION }}/bin"
+
+# Unix socket domain directories
+PG_UNIX_SOCKET_DIRECTORIES:
+  - "/var/run/edb"
+
+# Postgres Port
+PG_PORT: 5444
+
+# Postgres Database
+PG_DATABASE: "postgres"
+
+# Postgres User
+PG_OWNER: "enterprisedb"
+PG_GROUP: "enterprisedb"
+
+# Postgres SuperUser
+PG_SUPERUSER: "enterprisedb"
+PG_RANDOM_PASSWORD: false
+PG_SUPERUSER_PASSWORD: ""
+PG_INITDB: "{{ PG_BIN_PATH }}/initdb --auth=peer --auth-host=scram-sha-256"
+PG_INITDB_OPTIONS: " --data-checksums "
+
+# Global configuration options that will be set via ALTER SYSTEM in postgresql.auto.conf
+PG_POSTGRES_DEFAULT_CONF_PARAMS:
+  - {name: "unix_socket_directories", value: "{{ PG_UNIX_SOCKET_DIRECTORIES | join(',') }}"}
+  - {name: "listen_addresses", value: "*" }
+  - { name: wal_level, value: replica }
+  - { name: max_wal_senders, value: 10 }
+  - { name: hot_standby, value: on }
+  - { name: max_replication_slots, value: 10 }
+  - { name: wal_compression, value: on }
+  - { name: wal_log_hints, value: on }
+  - { name: checkpoint_timeout, value: 15min }
+  - { name: checkpoint_completion_target, value: 0.9 }
+  - { name: archive_mode, value: on }
+  - { name: archive_command, value: '/bin/true' }
+  - { name: random_page_cost, value: 1.1 }
+  - { name: cpu_tuple_cost, value: 0.03 }
+  - { name: logging_collector, value: on }
+  - { name: log_line_prefix, value: '%m [%p-%l] %u@%d app=%a ' }
+  - { name: log_truncate_on_rotation, value: on }
+  - { name: log_rotation_size, value: '1GB' }
+  - { name: log_lock_waits, value: on }
+  - { name: log_connections, value: on }
+  - { name: log_disconnections, value: on }
+  - { name: log_error_verbosity, value: "default" }
+  - { name: log_statement, value: ddl }
+  - { name: log_temp_files, value: 0 }
+  - { name: log_autovacuum_min_duration, value: 0 }
+  - { name: autovacuum_max_workers, value: 5 }
+  - { name: autovacuum_vacuum_cost_limit, value: 3000 }
+  - { name: idle_in_transaction_session_timeout, value: 10 min }
+  - { name: syslog_ident, value: edb }
+    
+
+PG_POSTGRES_CONF_PARAMS: ""
+PG_ALLOW_IP_ADDRESSES: ""
+PG_EXTENSIONS: 
+    - { "name": "edb_wait_states", "database": "edb" }
+    - { "name": "edb_wait_states", "database": "postgres" }
+    - { "name": "pg_stat_statements", "database": "edb" }
+    - { "name": "pg_stat_statements", "database": "postgres" }
+
+PG_SHARED_LIBRARIES_LIST:
+  - "$libdir/dbms_pipe"
+  - "$libdir/edb_gen"
+  - "$libdir/dbms_aq"
+  - "$libdir/edb_wait_states"
+  - "$libdir/sql-profiler"
+  - "$libdir/index_advisor"
+  - "$libdir/pg_stat_statements"
+
+PG_GRANT_PRIVILEGES: ""
+PG_GRANT_ROLES: ""
+#PG_GRANT_PRIVILEGES:
+#    - { "type": "function", "grant": yes, "privileges": "EXECUTE", "schema": "pg_catalog", "objects": "pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()", "roles": "rewinduser", "database": "edb" }
+#PG_GRANT_ROLES:
+# - { "role": "pg_monitor", "user": "efm", "grant": yes }
+
+PG_SQL_SCRIPTS: ""
+# - {"file_path": "/usr/edb/as12/share/edb-sample.sql", db: "dbname"}
+
+PG_COPY_SQL_SCRIPTS: ""
+# - {"file": "/tmp/sample.sql", "remote_file": "/usr/edb/as12/share", "owner": "owner", "group": "group", "mode": "mode" }
+#
+
+ETC_HOSTS_LISTS: ""
