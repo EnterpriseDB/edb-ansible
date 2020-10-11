@@ -18,8 +18,10 @@ Requirements
 The only dependencies required for this ansible galaxy role are:
 
 1. Ansible
-2. postgresql_set Ansible Module - Utilized when creating aditional users during a Postgres Install
-3. setup_repo and install_dbserver - These roles must have been previously executed on the cluster
+2. community.general Ansible Module - Utilized when creating aditional users during a Postgres Install. Only on primary nodes.
+3. setup_repo - for repository installation
+4. install_dbserver - for installation of PostgreSQL/EPAS binaries.
+
 
 Role Variables
 --------------
@@ -32,7 +34,7 @@ When executing the role via ansible there are two required variables:
 
 * <strong> <em> pg_version </em> </strong>
 
-  Postgres Versions supported are: 10, 11 and 12
+  Postgres Versions supported are: 10, 11, 12 and 13
 
 * <strong> <em> pg_type </em> </strong>
 
