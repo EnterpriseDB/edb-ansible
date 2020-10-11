@@ -143,9 +143,9 @@ CentOS/RHEL: Community Postgresql with command line parameters
 
 
     ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL77 pg_version=12 pg_type=EPAS"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL7 pg_version=12 pg_type=EPAS"
     ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS8 pg_version=12 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL78 pg_version=12 pg_type=EPAS"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS"
 
 
 CentOS/RHEL 7/8: Community Postgresql without command line parameters
