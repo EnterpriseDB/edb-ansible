@@ -26,15 +26,15 @@ Role Variables
 
 When executing the role via ansible these are the required variables:
 
-* os
+* <strong> <em> os </em> </strong>
 
   Operating Systems supported are: CentOS7 and RHEL7
 
-* pg_version
+* <strong> <em> pg_version </em> </strong>
 
   Postgres Versions supported are: 10, 11 and 12
 
-* pg_type
+* <strong> <em> pg_type </em> </strong>
   
   Database Engine supported are: PG and EPAS
 
