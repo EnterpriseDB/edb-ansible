@@ -1,38 +1,168 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+manage_dbserver role is for managing the database cluster. It makes the managing of the database cluster by giving key tasks. In all the roles, we have used the tasks given in the this role.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Following are the dependencies and requirement of this role. 
+1. Ansible
+2. community.general Ansible Module - Utilized when creating aditional users during a Postgres Install
+
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+This role allows users to pass following variables which helps managing day to day tasks:
+1. pg_postgres_conf_params: Using this parameters user can set the database parameters
+ 
+Example:
+ 
+  
+pg_postgres_conf_params: ""
+  - name: listen_addresses
+    value: "*"
 
-Dependencies
-------------
+pg_hba_ip_addresses: 
+  - contype: "host"
+    users: "all"
+    databases: "all"
+    method: "scram-sha-256"
+    source: "127.0.0.1/32"
+    state: present
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+pg_slots: ""
+  - name: "physcial_slot"
+    slot_type: "physical"
+    state: present
+  - name: "logical_slot"
+    slot_type: "logical"
+    output_plugin: "test_decoding"
+    state: present
+    database: "edb"
+
+pg_extensions: ""
+    - name: "postgis"
+      database: "edb"
+      state: present
+
+pg_grant_privileges:
+    - roles: "efm_user"
+      database: "edb"
+      privileges: execute
+      schema: pg_catalog
+      objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
+      type: function
+
+pg_grant_roles:
+    - role: pg_monitor
+      user: enterprisedb
+
+pg_sql_scripts:
+    - file_path: "/usr/edb/as12/share/edb-sample.sql"
+      db: edb
+      
+pg_copy_files: ""
+    - file: "./test.sh"
+      remote_file: "/var/lib/edb/test.sh"
+      owner: efm
+      group: efm
+      mode: 0700
+
+pg_query: ""
+    - query: "Update test set a=b"
+      db: edb 
+
+pg_pgpass_values: ""
+    - host: "127.0.0.1"
+      database: edb
+      user: enterprisedb
+      password: <password>
+      state: present
+
+pg_databases: ""
+    - name: edb_gis
+      owner: edb
+      encoding: UTF-8
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+
+Hosts file content
+----------------
+
+Content of the hosts.yml file:
+
+
+
+      servers:
+        main1:
+          node_type: primary
+          public_ip: xxx.xxx.xxx.xxx
+        standby11:
+          node_type: standby
+          public_ip: xxx.xxx.xxx.xxx
+        standby12:
+          node_type: standby
+          public_ip: xxx.xxx.xxx.xxx
+
+How to include the 'manage_dbserver' role in your Playbook
+----------------
+
+Below is an example of how to include the init_dbserver role:
+
+
+
+    - hosts: localhost
+      name: Install EFM on Instances
+      #connection: local
+      become: true
+      gather_facts: no
+
+      collections:
+        - edb_devops.postgres
+
+      vars_files:
+        - hosts.yml
+
+      pre_tasks:
+        # Define or re-define any variables previously assigned
+        - name: Initialize the user defined variables
+          set_fact:
+            os: "CentOS7"
+            pg_type: "EPAS"
+            pg_version: 12
+            pg_data: "/data/pgdata"
+            pg_postgres_conf_params: ""
+              - name: listen_addresses
+                value: "*"
+
+            pg_hba_ip_addresses:
+              - contype: "host"
+                users: "all"
+                databases: "all"
+                method: "scram-sha-256"
+                source: "127.0.0.1/32"
+                state: present
+
+            pg_slots:
+              - name: "physcial_slot"
+                slot_type: "physical"
+                state: present
+              - name: "logical_slot"
+                slot_type: "logical"
+                output_plugin: "test_decoding"
+                state: present
+                database: "edb"
+
       roles:
-         - { role: username.rolename, x: 42 }
+         - manage_dbserver
 
 License
 -------
 
 BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
