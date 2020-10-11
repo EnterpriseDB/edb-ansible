@@ -1,4 +1,4 @@
-Role Name
+manage_dbserver
 =========
 
 manage_dbserver role is for managing the database cluster. It makes the managing of the database cluster by giving key tasks. In all the roles, we have used the tasks given in the this role.
