@@ -295,6 +295,8 @@ Community Postgresql
 | ------------------------- |:--:|:--:|:--:|:--:|
 | Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Debian | :x: | :x: | :x: | :x: |
 | Ubuntu | :x: | :x: | :x: | :x: |
 | SLES | :x: | :x: | :x: | :x: |
@@ -306,6 +308,8 @@ Enterprise DB Postgresql Advanced Server
 | ------------------------- |:--:|:--:|:--:|:--:|
 | Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Debian | :x: | :x: | :x: | :x: |
 | Ubuntu | :x: | :x: | :x: | :x: |
 | SLES | :x: | :x: | :x: | :x: |
