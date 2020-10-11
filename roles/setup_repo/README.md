@@ -24,13 +24,20 @@ Role Variables
 
 When executing the role via ansible these are the required variables:
 
-* os
+* os:
+
   Operating Systems supported are: Centos7 and RHEL7
-* pg_type
+
+* pg_type:
+
   Database Engine supported are: PG and EPAS
-* yum_username
+
+* yum_username:
+
   If you have pg_type = EPAS, then you need to include yum_username
-* yum_password
+
+* yum_password:
+
   If you have pg_type = EPAS, then you need to include yum_password
 
 
