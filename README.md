@@ -88,7 +88,7 @@ For more information on the role, please refer roles README
 [README.md](./roles/setup_pem/README.md)
 
 
-## manage_dbserver
+### manage_dbserver
 
 This role helps in managing the HA cluster and covers common tasks.
 For more information on the role, please refer roles README
