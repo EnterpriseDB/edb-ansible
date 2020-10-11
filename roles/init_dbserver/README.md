@@ -1,7 +1,7 @@
 init_dbserver
 =========
 
-This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11 and 12 on Instances previously configured. 
+This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, 12 and 13 on instances previously configured. 
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -26,11 +26,16 @@ Role Variables
 
 When executing the role via ansible there are two required variables:
 
-* os
+* <strong> <em> os </em> </strong>
+
   Operating Systems supported are: CentOS7 and RHEL7
-* pg_version
+
+* <strong> <em> pg_version </em> </strong>
+
   Postgres Versions supported are: 10, 11 and 12
-* pg_type
+
+* <strong> <em> pg_type </em> </strong>
+
   Database Engine supported are: PG and EPAS
 
 These and other variables can be assigned in the 'pre_tasks' definition of the section: 'How to include the 'init_dbserver' role in your Playbook'
@@ -38,8 +43,8 @@ These and other variables can be assigned in the 'pre_tasks' definition of the s
 
 
 The rest of the variables can be configured and are available in the:
-* [roles/init_dbserver/vars/edb-pg.yml](./vars/edb-pg.yml) 
-* [roles/init_dbserver/vars/edb-epas.yml](./vars/edb-epas.yml) 
+* [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml) 
+* [roles/init_dbserver/vars/PG.yml](./vars/PG.yml) 
 
 
 
@@ -48,6 +53,7 @@ Dependencies
 
 The init_dbserver role does depend on the following roles:
 
+* community.general
 * install_dbserver
 * setup_repo
 
@@ -97,7 +103,6 @@ Below is an example of how to include the init_dbserver role:
             os: "CentOS7"
             pg_type: "EPAS"
             pg_version: 12
-            efm_version: 4.0
             pg_data: "/data/pgdata"
 
       roles:
@@ -115,18 +120,22 @@ Database Engines Supported
 Community Postgresql
 ----------------
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 
@@ -136,68 +145,22 @@ Enterprise DB Postgresql Advanced Server
 Playbook Execution Examples
 ----------------
 
-CentOS 7: Community Postgresql with command line parameters
+CentOS/RHEL: Community Postgresql with command line parameters
 ----------------
 
 
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS7 pg_version=10 pg_typeE=PG"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS7 pg_version=11 pg_type=PG"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=PG"
+    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=PG"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL77 pg_version=12 pg_type=EPAS"
+    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS8 pg_version=12 pg_type=PG"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL78 pg_version=12 pg_type=EPAS"
 
-CentOS 7: EDB Advanced Server with command line parameters
+
+CentOS/RHEL 7/8: Community Postgresql without command line parameters
 ----------------
 
+    ansible-playbook playbook.yml -u centos --private-key <key.pem>
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem>
 
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS7 pg_version=10 pg_type=EPAS"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS7 pg_version=11 pg_type=EPAS"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=EPAS"
-
-
-RHEL 7: Community Postgresql with command line parameters
-----------------
-
-
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL7 pg_version=10 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL7 pg_version=11 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL7 pg_version=12 pg_type=PG"
-
-
-RHEL 7: Enterprise Postgresql with command line parameters
-----------------
-
-
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL7 pg_version=10 pg_type=EPAS"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL7 pg_version=11 pg_type=EPAS"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="os=RHEL7 pg_version=12 pg_type=EPAS"
-
-
-CentOS 7: Community Postgresql without command line parameters
-----------------
-
-
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-
-
-CentOS 7: Enterprise Postgresql without command line parameters
-----------------
-
-
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem>
-
-
-RHEL 7: Community Postgresql without command line parameters
-----------------
-
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-
-
-RHEL 7: Enterprise Postgresql without command line parameters
-----------------
-
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
-
-
- 
 
 
 License
