@@ -1,10 +1,10 @@
 setup_efm
 =========
 
-This Ansible Galaxy Role Installs EFM versions: 3.7, 3.8 and 3.9 on Instances previously configured.
+This Ansible Galaxy Role Installs EFM versions: 3.7, 3.8, 3.9 and 4.0 on instances previously configured.
 
 **Note:**
-The role only installs EPAS: 10, 11 or 12 along with EFM: 3.7, 3.8 or 3.9 across multiple nodes.
+The role only installs EPAS: 10, 11, 12 or 4.0 along with EFM: 3.7, 3.8, 3.9 or 4.0 across multiple nodes.
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -12,10 +12,11 @@ The role only installs EPAS: 10, 11 or 12 along with EFM: 3.7, 3.8 or 3.9 across
 **Note:**
 The role does not configure EDB Postgres Advanced Server or PostgreSQL for replication it only installs EDB Postgres Failover Manager (EFM) across multiple nodes and configure database nodes for EFM monitornig and HA management.
 If you want to configure EDB Advanced Server Cluster of PostgreSQL, then please use the 'setup_replication' module:
-1. setup_repo : For installing the EPAS/PG repository
-2. install_dbserver: For installing the EPAS/PG binaries
-3. init_dbserver: For initializing the EPAS/PG data directory and configuring a primary/master node.
-4. setup_replication: For creating the standby.
+1. community.general 
+2. setup_repo : For installing the EPAS/PG repository
+3. install_dbserver: For installing the EPAS/PG binaries
+4. init_dbserver: For initializing the EPAS/PG data directory and configuring a primary/master node.
+5. setup_replication: For creating the standby.
 
 **The ansible playbook must be executed under an account that has full privileges.**
 
@@ -31,19 +32,25 @@ Role Variables
 
 When executing the role via ansible the variables listed below are required:
 
-* OS
-  Operating Systems supported are: CentOS7 and RHEL7
-* PG_TYPE
-  Install Type supported are: EPAS
-* PG_VERSION
-  EPAS Versions supported are: 10, 11 and 12
-* EFM_VERSION
-  EFM Versions supported are: 3.7, 3.8 and 3.9
+When executing the role via ansible these are the required variables:
 
+* <strong> <em> os </em> </strong>
+
+  Operating Systems supported are: CentOS7, RHEL7, CentOS8 and RHEL8
+
+* <strong> <em> pg_version </em> </strong>
+
+  Postgres Versions supported are: 10, 11, 12 and 13
+
+* <strong> <em> pg_type </em> </strong>
+
+  Database Engine supported are: PG and EPAS
 
 
 The rest of the variables can be configured and are available in the:
 * [roles/setup_efm/defaults/main.yml](./defaults/main.yml) 
+* [roles/setup_efm/vars/EPAS.yml](./vars/EPAS.yml) 
+* [roles/setup_efm/vars/PG.yml](./vars/PG.yml) 
 
 Dependencies
 ------------
@@ -100,143 +107,76 @@ Below is an example of how to include the setup_efm role:
         # Define or re-define any variables previously assigned
         - name: Initialize the user defined variables
           set_fact:
-            OS: "OS"
-            PG_TYPE: "PG_TYPE"
-            PG_VERSION: "PG_VERSION"
-            EFM_VERSION: "EFM_VERSION"
-            PG_DATA: "/data/pgdata"
-            PG_EFM_USER: "efm"
-            PG_EFM_USER_PASSWORD: "efm"
-            EFM_CUSTOM_PARAMETERS:
-                  - { name: script.notification, value: "/usr/edb/efm-3.10/bin/notification.sh" }
-            EFM_SCRIPTS:
-                  - { file: "~/edb-ansible-all/notification.sh", remote_file: "/usr/edb/efm-3.10/bin/notification.sh", owner: "root", group: "root", mode: 777 }
+            os: "os"
+            pg_type: "pg_type"
+            pg_version: "pg_version"
+            efm_version: "efm_version"
+            pg_data: "/data/pgdata"
+            pg_efm_user: "efm"
+            pg_efm_user_password: "efm"
+            efm_parameters:
+                  - name: script.notification
+                    value: "/usr/edb/efm-3.10/bin/notification.sh"
                   
-      tasks:
-        - name: Iterate through role with items from hosts file
-          include_role:
-            name: process_vars
-          with_dict: "{{ servers }}"    
-        - name: Iterate through role with items from hosts file
-          include_role:
-            name: setup_efm
-          with_dict: "{{ servers }}"
-
+      roles:
+        - setup_efm
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
 All the variables are available at:
-- [roles/setup_efm/vars/edb-epas.yml](./vars/edb-epas.yml) 
-- [roles/setup_efm/vars/edb-pg.yml](./vars/edb-pg.yml) 
+- [roles/setup_efm/vars/EPAS.yml](./vars/EPAS.yml) 
+- [roles/setup_efm/vars/PG.yml](./vars/PG.yml) 
 
 
 Database Engines Supported
 ----------------
 
-EnterpriseDB Failover Manager 3.7:
+EnterpriseDB Failover Manager 3.7/3.8/3.10/4.0:
 ----------------
 
-| Postgres | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Postgres | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
 
-- :white_check_mark: - Tested and supported
-- :x: - Not supported
-
-
-
-| Enterprise Postgres Advanced Server | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-
-- :white_check_mark: - Tested and supported
-- :x: - Not supported
-
-
-
-EnterpriseDB Failover Manager 3.8:
+Enterprise DB Postgresql Advanced Server
 ----------------
 
-| Postgres | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Enterprise Postgres Advanced Server | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 - :x: - Not supported
 
-
-
-| Enterprise Postgres Advanced Server | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-
-- :white_check_mark: - Tested and supported
-- :x: - Not supported
-
-
-
-EnterpriseDB Failover Manager 3.9:
-----------------
-
-| Postgres | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-
-- :white_check_mark: - Tested and supported
-- :x: - Not supported
-
-
-
-| Enterprise Postgres Advanced Server | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-
-- :white_check_mark: - Tested and supported
-- :x: - Not supported
 
 
 
 Playbook Execution Examples
 ----------------
 
-Postgresql - CentOS 7:
+CentOS/RHEL: Community Postgresql with command line parameters
 ----------------
 
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=PG PG_VERSION=10 EFM_VERSION=3.7"
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=PG PG_VERSION=11 EFM_VERSION=3.9"
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=PG PG_VERSION=12 EFM_VERSION=3.9"
+
+    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=PG efm_version=4.0"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL7 pg_version=12 pg_type=EPAS efm_version=4.0"
+    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS8 pg_version=12 pg_type=PG efm_version=4.0"
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS efm_version=4.0"
 
 
-Postgresql - RHEL 7:
+CentOS/RHEL 7/8: Community Postgresql without command line parameters
 ----------------
 
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=PG PG_VERSION=10 EFM_VERSION=3.7"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=PG PG_VERSION=11 EFM_VERSION=3.8"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=PG PG_VERSION=12 EFM_VERSION=3.9"
+    ansible-playbook playbook.yml -u centos --private-key <key.pem>
+    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem>
 
-
-
-EnterpriseDB Postgresql Advanced Server - CentOS 7:
-----------------
-
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=EPAS PG_VERSION=10 EFM_VERSION=3.7"
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=EPAS PG_VERSION=11 EFM_VERSION=3.9"
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="OS=CentOS7 PG_TYPE=EPAS PG_VERSION=12 EFM_VERSION=3.9"
-
-
-EnterpriseDB Postgresql Advanced Server - RHEL 7:
-----------------
-
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=EPAS PG_VERSION=10 EFM_VERSION=3.7"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=EPAS PG_VERSION=11 EFM_VERSION=3.8"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="OS=RHEL7 PG_TYPE=EPAS PG_VERSION=12 EFM_VERSION=3.9"
 
 
 
