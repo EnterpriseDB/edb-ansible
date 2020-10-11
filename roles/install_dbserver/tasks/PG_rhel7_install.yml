@@ -1,0 +1,17 @@
+---
+
+- name: Install Postgres
+  yum:
+    name:
+      - glibc-common
+      - ca-certificates
+      - python-pycurl
+      - libselinux-python
+      - python-psycopg2
+      - python-ipaddress
+      - postgresql{{ pg_version }}
+      - postgresql{{ pg_version }}-server
+      - postgresql{{ pg_version }}-contrib
+      - sslutils_{{ pg_version }}
+    state: present
+  become: yes

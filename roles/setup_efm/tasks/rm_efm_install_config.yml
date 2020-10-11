@@ -1,0 +1,30 @@
+---
+- name: Stop EFM service
+  systemd:
+    name: "{{ EFM_SERVICE }}"
+    state: stopped
+  become: yes
+
+- name: Remove EFM properties File
+  file:
+    path: /etc/edb/efm-{{ EFM_VERSION }}/efm.properties
+    state: absent
+  become: yes
+
+- name: Remove EFM nodes File
+  file:
+    path: /etc/edb/efm-{{ EFM_VERSION }}/efm.nodes
+    state: absent
+  become: yes
+
+- name: Remove .efmpass
+  file:
+    path: /etc/edb/efm-{{ EFM_VERSION }}/.efmpass
+    state: absent
+  become: yes
+
+- name: Remove .allowed
+  file:
+    path: /etc/edb/efm-{{ EFM_VERSION }}/.allowed
+    state: absent
+  become: yes

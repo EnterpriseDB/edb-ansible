@@ -1,0 +1,51 @@
+---
+
+- name: Generate the pg_replication_user_password
+  include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pg_replication_user }}"
+    input_password: "{{ pg_replication_user_password }}"
+  no_log: true
+  when: pg_replication_user_password|length < 1
+
+- name: Set pg_replication_user_password
+  set_fact:
+     pg_replication_user_password: "{{ input_password }}"
+  when: pg_replication_user_password|length < 1
+
+- name: Set postgres replication users's database cluster password
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+  vars:
+    pg_users:
+       - name: "{{ pg_replication_user }}"
+         pass: "{{ pg_replication_user_password }}"
+         role_attr_flags: replication
+
+- name: Set postgres replication users's database cluster password
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_pgpass
+  vars:
+    pg_pgpass_values:
+        - user: "{{ pg_replication_user }}"
+          password: "{{ pg_replication_user_password }}"
+          create: yes
+  no_log: yes
+
+- name: Update primary hba config
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_conf
+  vars:
+    pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
+
+- name: Create physical slots of the standbys
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_slots
+  vars:
+    pg_slots: "{{ standby_physical_slots }}"

@@ -1,9 +1,0 @@
----
-
-- name: Install Additional Python Packages for CentOS8/RHEL8
-  yum:
-    name:
-      - python3-pip
-      - python3-psycopg2
-    state: present
-  become: yes

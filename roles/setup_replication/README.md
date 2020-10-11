@@ -19,11 +19,11 @@ Role Variables
 
 When executing the role via ansible there are three required variables:
 
-* OS
+* os
   Operating Systems supported are: CentOS7 and RHEL7
-* PG_VERSION
+* pg_version
   Postgres Versions supported are: 10, 11 and 12
-* PG_TYPE
+* pg_type
   The type of postgres : EPAS or PG
 
 The rest of the variables can be configured and are available in the:
@@ -82,21 +82,13 @@ Below is an example of how to include the setup_replication role:
         # Define or re-define any variables previously assigned
         - name: Initialize the user defined variables
           set_fact:
-            OS: "OS"
-            PG_TYPE: "PG_TYPE"
-            PG_VERSION: "PG_VERSION"
-            EFM_VERSION: "EFM_VERSION"
-            PG_DATA: "/data/pgdata"
+            os: "os"
+            pg_type: "pg_type"
+            pg_version: "pg_version"
+            pg_data: "/data/pgdata"
 
-      tasks:
-        - name: Iterate through role with items from hosts file
-          include_role:
-            name: process_vars
-          with_dict: "{{ servers }}"      
-        - name: Iterate through role with items from hosts file
-          include_role:
-            name: setup_replication
-          with_dict: "{{ servers }}"
+      roles:
+        - setup_replication
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
@@ -134,18 +126,18 @@ CentOS 7 with command line parameters:
 ----------------
 
 
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_VERSION=10 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_VERSION=11 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 PG_VERSION=12 PG_TYPE=EPAS"
+    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 pg_version=10 pg_type=EPAS"
+    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 pg_version=11 pg_type=EPAS"
+    ansible-playbook playbook.yml -u centos -- private-key <key.pem> --extra-vars="OS=CentOS7 pg_version=12 pg_type=EPAS"
   
 
 RHEL 7 with command line parameters:
 ----------------
 
 
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_VERSION=10 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_VERSION=11 PG_TYPE=EPAS"
-    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 PG_VERSION=12 PG_TYPE=EPAS"
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 pg_version=10 pg_type=EPAS"
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 pg_version=11 pg_type=EPAS"
+    ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem> --extra-vars="OS=RHEL7 pg_version=12 pg_type=EPAS"
 
 
 CentOS 7 without command line parameters:

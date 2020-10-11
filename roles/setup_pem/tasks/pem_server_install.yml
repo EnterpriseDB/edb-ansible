@@ -1,0 +1,14 @@
+---
+- name: Install require packages for PEM server
+  yum:
+    name: "{{ pem_server_packages }}"
+    state: present
+  when: os in [ 'CentOS7','RHEL7']
+  become: yes
+
+- name: Install require packages for PEM server
+  dnf:
+    name: "{{ pem_server_packages }}"
+    state: present
+  when: os in [ 'CentOS8','RHEL8']
+  become: yes

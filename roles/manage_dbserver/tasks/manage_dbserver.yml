@@ -1,0 +1,33 @@
+---
+# tasks file for manage_dbserver
+
+
+# Display variables
+- name: Display current Node to Install
+  block:
+    - debug:
+        msg:
+            "Operating System = {{ os }}:
+             Postgres Version = {{ pg_version }},
+             Database Engine = {{ pg_type }},
+             Public IP = {{ item.value.public_ip }}"
+
+# Call the manage dbserver tasks
+- name: Include manage dbserver tasks
+  block:
+    - import_tasks: manage_users.yml
+    - import_tasks: manage_db.yml
+    - import_tasks: manage_extensions.yml
+    - import_tasks: manage_privileges.yml
+    - import_tasks: copy_files.yml
+    - import_tasks: execute_sql_scripts.yml
+  when: item.value.node_type in ['primary', 'pemserver']
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Include update_postgres_conf
+  block:
+    - import_tasks: manage_pgpass.yml
+    - import_tasks: manage_slots.yml
+    - import_tasks: manage_postgres_conf.yml
+  when: item.value.node_type in ['pemserver', 'primary', 'standby']
+  delegate_to: "{{ item.value.public_ip }}"

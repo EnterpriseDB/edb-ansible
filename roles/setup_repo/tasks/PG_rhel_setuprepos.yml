@@ -1,0 +1,18 @@
+---
+- name: install epel and pg repo
+  yum:
+    name:
+      - "{{ epel_repo_7 }}"
+      - "{{ pg_rpm_repo_7 }}"
+    state: present
+  when: os in ['CentOS7','RHEL8']
+  become: yes
+
+- name: Install epel and PG repo
+  dnf:
+    name:
+      - "{{ epel_repo_8 }}"
+      - "{{ pg_rpm_repo8 }}"
+    state: present
+  when: os in ['CentOS7','RHEL8']
+  become: yes

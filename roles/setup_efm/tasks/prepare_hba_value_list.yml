@@ -1,0 +1,21 @@
+---
+- name: Prepare the list
+  set_fact:
+    temp_list:
+       - contype: "host"
+         users: "{{ pg_efm_user }}"
+         source: "{{ item.value.private_ip }}/32"
+         databases: "{{ pg_efm_database }}"
+  when: not pg_ssl
+
+- name: Prepare the list
+  set_fact:
+    temp_list:
+       - users: "{{ pg_efm_user }}"
+         source: "{{ item.value.private_ip }}/32"
+         databases: "{{ pg_efm_database }}"
+  when: pg_ssl
+
+- name: Prepare array of list
+  set_fact:
+    pg_allow_ip_addresses: "{{ pg_allow_ip_addresses + [temp_list] }}"

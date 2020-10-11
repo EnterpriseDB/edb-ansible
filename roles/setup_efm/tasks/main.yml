@@ -1,141 +1,98 @@
 ---
-# Tasks file for edb.postgres.install Role
+# tasks file for edb.postgres.install role
 
-- name: Reference EPAS Variables
-  include_vars: edb-epas.yml
-  when: PG_TYPE == 'EPAS'
+- name: Reference variables
+  include_vars: "{{ pg_type }}.yml"
 
-- name: Reference PG Variables
-  include_vars: edb-pg.yml
-  when: PG_TYPE == 'PG'
-
-# Display if the Operating System is supported
-- name: Display support for Operating System
+# display if the operating system is supported
+- name: Display support for operating system
   block:
     - debug:
-        msg: "Operating System = {{ OS }} not supported."
-  when: OS not in SUPPORTED_OS
+        msg: "operating system = {{ os }} not supported."
+  when: os not in supported_os
 
-# Display if the Operating System is supported
-- name: Display support for Operating System
+# display if the operating system is supported
+- name: Display support for operating system
   block:
     - debug:
-        msg: "EPAS/PG Version = {{ OS }} not supported. Only '10', '11' and '12'."
-  when: PG_VERSION not in SUPPORTED_PG_VERSION
+        msg: "epas/pg version = {{ os }} not supported. only '10', '11' and '12'."
+  when: pg_version not in supported_pg_version
 
-# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
+# end playbook if the type of install, operating system or postgres version are not supported
 - meta: end_play
-  when: OS not in SUPPORTED_OS or
-        PG_VERSION not in SUPPORTED_PG_VERSION
+  when: os not in supported_os or
+        pg_version not in supported_pg_version
 
-# Display if EFM version is supported
-- name: Display support for EFM
+# display if efm version is supported
+- name: Display support for efm
   block:
     - debug:
-        msg: "EFM Version = {{ EFM_VERSION }} not supported."
-  when: EFM_VERSION not in SUPPORTED_EFM_VERSION
+        msg: "efm version = {{ efm_version }} not supported."
+  when: efm_version not in supported_efm_version
 
-# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
+# end playbook if the type of install, operating system or postgres version are not supported
 - meta: end_play
-  when: EFM_VERSION not in SUPPORTED_EFM_VERSION
+  when: efm_version not in supported_efm_version
 
-# Configure Variables
+# configure variables
 
-# Setting variables available for all nodes
-- name: Set Node Type
+- name: Prepare etc_hosts_lists
   set_fact:
-    NODE_TYPE: "{{ item.value.node_type }}"
-  register: output
-
-- name: Set EFM nodes and witness Type
-  set_fact:
-    EFM_INSTALL_VERSION : "{{ EFM_VERSION | replace('.','') }}"
-    EFM_WITNESS: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
-  register: output
-
-- name: Prepare EFM node list
-  set_fact:
-    EFM_NODES_LIST: "{{ EFM_NODES_LIST + line_items + ':7800 ' }}"
-  with_items: "{{ EFM_NODES_PRIVATE_IP }}"
-  loop_control:
-    loop_var: line_items
-
-- name: Set USE_HOSTNAME based on variable condition and users input
-  set_fact:
-    USE_HOSTNAME: False
-  when: EFM_NODES_HOSTS_LIST|length < 1 or ALL_NODE_HOSTNAMES|length < 1
-
-# Display Details of Node to Install
-- name: Display current Node to Install
-  block:
-    - debug:
-        msg:
-            "Operating System = {{ OS }}:
-             PG_TYPE = {{ PG_TYPE }},
-             Node Type = {{ NODE_TYPE }},
-             PG_DATA = {{ PG_DATA }},
-             EFM_SERVICE = {{ EFM_SERVICE }},
-             EFM_NODES_LIST = {{ EFM_NODES_LIST }},
-             USE_HOSTNAME = {{ USE_HOSTNAME }},
-             EFM_WITNESS =  {{ EFM_WITNESS }},
-             PG_EFM_USER = {{ PG_EFM_USER }},
-             Public IP = {{ item.value.public_ip }}"
-
-- name: Set FORCE_EFM_INSTALL based on the user input
-  set_fact:
-    FORCE_EFM_INSTALL: "{{ item.value.force_efm_install }}"
-  when: item.value.force_efm_install is defined
-  register: output
-
-- name: Update etc_hosts based on USE_HOSTNAME
-  block:
-    - import_tasks: C07-RH07-update-etc-hosts.yml
-  become: yes
+    etc_hosts_list: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
   when:
-    - USE_HOSTNAME
-  delegate_to: "{{ item.value.public_ip }}"
+    - item.value.hostname is defined
+    - use_hostname
+  with_dict: "{{ servers }}"
 
-- name: Prepare EFM node list based on hostname
+- name: Set efm nodes and witness type
   set_fact:
-    EFM_HOSTS_LIST: "{{ EFM_HOSTS_LIST + line_items + ':7800 ' }}"
-  with_items: "{{ EFM_NODES_HOSTS_LIST }}"
-  loop_control:
-    loop_var: line_items
-  when: USE_HOSTNAME
+    efm_install_version : "{{ efm_version | replace('.','') }}"
+    efm_witness: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
+    primary_public_ip: "{{ primary_public_ip + item.value.public_ip if (item.value.node_type == 'primary') else primary_public_ip }}"
+  with_dict: "{{ servers }}"
   register: output
 
-- name: Remove before we start as per force_install
-  block:
-    - include_tasks: C07-RH07-EFM-rm-install-configure.yml
-  become: yes
-  when: FORCE_EFM_INSTALL
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Make sure EFM user exists and have right privileges.
-  block:
-    - include_tasks: C07-RH07-EFM-user.yml
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - import_tasks: C07-RH07-EFM-hba.yml
-  when: NODE_TYPE in ['primary','standby']
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - import_tasks: C07-RH07-EFM-install.yml
-    - import_tasks: C07-RH07-EFM-configure.yml
-    - import_tasks: C07-RH07-EFM-scripts-parameters.yml
-  when: NODE_TYPE in ['primary','standby']
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Reset FORCE/SKIPP_EFM_INSTALL based on the user input
+- name: Prepare efm node list
   set_fact:
-    FORCE_EFM_INSTALL: false
-    EFM_NODES_LIST: ""
-    EFM_HOSTS_LIST: ""
-  register: output
+    efm_nodes_list: "{{ efm_nodes_list + item.value.private_ip + ':7800 ' }}"
+  when:
+    - item.value.node_type in ['primary','standby']
+    - not use_hostname
+  with_dict: "{{ servers }}"
+
+- name: Prepare efm node list based on hostname
+  set_fact:
+    efm_nodes_list: "{{ efm_nodes_list + item.value.private_ip + ':7800 ' }}"
+  when:
+    - item.value.node_type in ['primary','standby']
+    - item.value.hostname is defined
+    - use_hostname
+  with_dict: "{{ servers }}"
+
+- name: Prepare hba host ip lists
+  include_tasks: prepare_hba_value_list.yml
+  when: item.value.node_type in ['primary','standby']
+  with_dict: "{{ servers }}"
+
+- name: Ensure we have efm user in primary database
+  import_tasks: create_efm_user.yml
+  delegate_to: "{{ primary_public_ip }}"
+
+- name: Add localhost in hba ip list
+  import_tasks: localhost_hba_value_list.yml
+
+- name: Configure efm
+  include_tasks: setup_efm.yml
+  when: item.value.node_type in ['primary','standby']
+  with_dict: "{{ servers }}"
+
+- name: Efm parameters settings
+  include_tasks: efm_cluster_set_params.yml
+
+- name: Reset the variables used in this role
+  set_fact:
+     efm_nodes_list: ""
+     etc_hosts_lists: []
+     primary_public_ip: ""
+     input_password: ""
+     pg_allow_ip_addresses: []

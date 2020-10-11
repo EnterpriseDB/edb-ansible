@@ -1,0 +1,19 @@
+---
+- name: install efm dependencies
+  yum:
+    name:
+      - java-1.8.0-openjdk
+      - mailx
+      - edb-efm{{ efm_install_version }}
+  when: os in [ 'CentOS7','RHEL7']
+  become: yes
+
+- name: install efm dependencies
+  dnf:
+    name:
+      - java-1.8.0-openjdk
+      - mailx
+      - edb-efm{{ efm_install_version }}
+  when: os in ['CentOS8','RHEL8']
+  become: yes
+

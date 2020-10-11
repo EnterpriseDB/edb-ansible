@@ -5,59 +5,23 @@
 - name: Display support for Operating System
   block:
     - debug:
-        msg: "Operating System = {{ OS }} not supported."
-  when: OS not in SUPPORTED_OS
+        msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
 
 # Display if the Database Version is not supported
 - name: Display supported versions for Database Engine
   block:
     - debug:
-        msg: "Database Engine Version = {{ PG_VERSION }} not supported."
-  when: PG_VERSION not in SUPPORTED_PG_VERSION
+        msg: "Database Engine Version = {{ pg_version }} not supported.
+             Supported versions are {{ supported_pg_version }}"
+  when: pg_version not in supported_pg_version
 
 # End Playbook if the Type of Install, Operating System or Postgres Version are not supported
 - meta: end_play
-  when: OS not in SUPPORTED_OS or
-        PG_VERSION not in SUPPORTED_PG_VERSION
+  when: os not in supported_os or
+        pg_version not in supported_pg_version
 
-- name: Set force_install based on the user input
-  set_fact:
-    FORCE_INSTALL: "{{ item.value.force_install }}"
-  when: item.value.force_install is defined
-  register: output
-
-# Display details of Node being processed
-- name: Display current Node to Install
-  block:
-    - debug:
-        msg: "Operating System = {{ OS }}:
-             Postgres Version = {{ PG_VERSION }},
-             Database Engine = {{ PG_TYPE }},
-             Public IP = {{ item.value.public_ip }}"
-
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - include_tasks: C07-RH07-{{ PG_TYPE }}-rm-install.yml
-  when: FORCE_INSTALL
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Install and Configure Postgres Packages for CentOS8 or RHEL8
-  block:
-    - include_tasks: C08-RH08-{{ PG_TYPE }}-install.yml
-  become: yes
-  when: OS == 'CentOS8' or OS == 'RHEL8'
-  delegate_to: "{{ item.value.public_ip }}"
-  
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - include_tasks: C07-RH07-{{ PG_TYPE }}-install.yml
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-  
-- name: Install and Configure Postgres on CentOS8 or RHEL8
-  block:
-    - include_tasks: C08-RH08-{{ PG_TYPE }}-install.yml
-  become: yes
-  when: OS == 'CentOS8' or OS == 'RHEL8'
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Include the install_dbserver
+  include_tasks: install_dbserver.yml
+  when: item.value.node_type in ['primary','standby','pemserver']
+  with_dict:  "{{ servers }}"

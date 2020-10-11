@@ -1,0 +1,14 @@
+---
+- name: Install require packages for PEM agent
+  yum:
+    name: "{{ pem_agent_package }}"
+    state: present
+  when: os in [ 'CentOS7','RHEL7']
+  become: yes
+
+- name: Install require packages for PEM agent
+  dnf:
+    name: "{{ pem_agent_package }}"
+    state: present
+  when: os in [ 'CentOS8','RHEL8']
+  become: yes

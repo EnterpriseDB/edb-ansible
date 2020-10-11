@@ -1,0 +1,27 @@
+---
+- name: Stop the PG service if it's running
+  systemd:
+    name: edb-as-{{ pg_version }}
+    state: stopped
+  become: yes
+  ignore_errors: true
+
+- name: Remove EPAS Packages
+  yum:
+    name:
+      - python-pip
+      - python-psycopg2
+      - python-ipaddress
+      - edb-as{{ pg_version }}-server
+      - edb-as{{ pg_version }}-server-core
+      - edb-as{{ pg_version }}-server-edb-modules
+      - edb-as{{ pg_version }}-server-contrib
+      - edb-as{{ pg_version }}-server-libs
+      - edb-as{{ pg_version }}-server-client
+      - edb-as{{ pg_version }}-server-llvmjit
+      - edb-as{{ pg_version }}-server-sslutils
+      - edb-as{{ pg_version }}-server-indexadvisor
+      - edb-as{{ pg_version }}-server-sqlprofiler
+      - edb-as{{ pg_version }}-server-sqlprotect
+    state: removed
+  become: yes

@@ -1,0 +1,20 @@
+---
+- name: Create databases
+  postgresql_db:
+    name: "{{ line_item.name }}"
+    owner: "{{ line_item.owner | default(pg_owner) }}"
+    encoding: "{{ line_item.encoding | default(omit) }}"
+    lc_collate: "{{ line_item.lc_collate | default(omit) }}"
+    lc_ctype: "{{ line_item.lc_ctype | default(omit) }}"
+    template: "line_item.template | default('template0')"
+    port: "{{ pg_port }}"
+    maintenance_db: "{{ pg_database }}"
+    state: "{{ line_item.state | default('present') }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  with_items: "{{ pg_databases }}"
+  loop_control:
+    loop_var: line_item
+  when: pg_databases|length > 0
