@@ -39,7 +39,7 @@
 - name: Update primary hba config
   include_role:
     name: manage_dbserver
-    tasks_from: manage_postgres_conf
+    tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
 

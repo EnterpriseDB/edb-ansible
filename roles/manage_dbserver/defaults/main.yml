@@ -27,3 +27,4 @@ input_user: ""
 input_password: ""
 
 pg_databases: ""
+params_restart_required: false

@@ -1,21 +1,5 @@
 ---
-- name: Check user defined parameters and update
-  postgresql_set:
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    db: "{{ pg_database }}"
-    login_user: "{{ pg_owner }}"
-    name: "{{ line_item.name }}"
-    value: "{{ line_item.value }}"
-  when: pg_postgres_conf_params|length > 0
-  with_items: "{{ pg_postgres_conf_params }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
-  loop_control:
-    loop_var: line_item
-  register: params
-
-- name: Find the hba file location on primary
+- name: Find the hba file location
   postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
@@ -52,14 +36,3 @@
     state: reloaded
   become: yes
   when: hba_update.changed
-        or (params.changed and not params.restart_required)
-
-- name: Restart the pg service
-  systemd:
-    name: "{{ pg_service }}"
-    daemon_reload: yes
-    state: restarted
-  become: yes
-  when:
-    - params.changed
-    - params.restart_required

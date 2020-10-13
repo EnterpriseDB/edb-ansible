@@ -195,6 +195,6 @@
 - name: Call manage_dbserver tasks for ssl update
   include_role:
     name: manage_dbserver
-    tasks_from: manage_postgres_conf
+    tasks_from: manage_postgres_params.yml
   vars:
     pg_postgres_conf_params: "{{ pg_ssl_postgres_conf_params }}"

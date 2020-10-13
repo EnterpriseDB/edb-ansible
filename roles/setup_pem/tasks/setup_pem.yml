@@ -58,7 +58,6 @@
 
 - name: Install and configure postgres on centos7 or rhel7
   block:
-    - import_tasks: pem_agent_hba.yml
     - import_tasks: pem_agent_install.yml
     - import_tasks: pem_agent_config.yml
   when:
@@ -68,7 +67,9 @@
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Register database on primary and standby
-  import_tasks: pem_agent_register_db.yml
+  block:
+    - import_tasks: pem_agent_hba.yml
+    - import_tasks: pem_agent_register_db.yml
   when:
     - item.value.node_type in ['primary','standby']
     - pem_agent

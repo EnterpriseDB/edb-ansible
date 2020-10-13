@@ -14,7 +14,7 @@
 - name: Call manage_dbserver tasks for synchronous_standby_names
   include_role:
     name: manage_dbserver
-    tasks_from: manage_postgres_conf
+    tasks_from: manage_postgres_params
   vars:
     pg_postgres_conf_params:
          - name: synchronous_standby_names

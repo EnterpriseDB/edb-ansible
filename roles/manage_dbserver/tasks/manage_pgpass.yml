@@ -20,5 +20,6 @@
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
     mode: 0600
+  when: pg_pgpass_values|length > 0
   become: yes
   become_user: "{{ pg_owner }}"

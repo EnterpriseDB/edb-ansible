@@ -28,6 +28,7 @@
   block:
     - import_tasks: manage_pgpass.yml
     - import_tasks: manage_slots.yml
-    - import_tasks: manage_postgres_conf.yml
+    - import_tasks: manage_postgres_params.yml
+    - import_tasks: manage_hba_conf.yml
   when: item.value.node_type in ['pemserver', 'primary', 'standby']
   delegate_to: "{{ item.value.public_ip }}"

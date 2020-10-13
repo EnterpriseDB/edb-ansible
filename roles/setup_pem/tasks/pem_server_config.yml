@@ -9,7 +9,7 @@
 - name: Allow access to localhost
   include_role:
     name: manage_dbserver
-    tasks_from: manage_postgres_conf
+    tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses:
         - contype: host
@@ -45,16 +45,17 @@
 - name: Update access to localhost on ssl
   include_role:
     name: manage_dbserver
-    tasks_from: manage_postgres_conf
+    tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses:
         - contype: host
           user: "{{ pg_owner }}"
           source: "127.0.0.1/32"
-          state: "absent"
+          state: absent
         - user: "{{ pg_owner }}"
           source: "127.0.0.1/32"
-  when: not pem_configured.stat.exists
+          state: present
+#  when: not pem_configured.stat.exists
 
 - name: Update agent to use hostssl
   include_role:
