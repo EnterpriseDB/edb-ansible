@@ -33,10 +33,6 @@
     - params.changed 
     - not params_restart_required
 
-- debug:
-     msg: " params.result: {{ params.results }}
-            params_restart_required: {{ params_restart_required }}"
-
 - name: Restart the pg service
   systemd:
     name: "{{ pg_service }}"

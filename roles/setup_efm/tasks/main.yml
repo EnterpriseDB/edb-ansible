@@ -62,7 +62,7 @@
 
 - name: Prepare efm node list based on hostname
   set_fact:
-    efm_nodes_list: "{{ efm_nodes_list + item.value.private_ip + ':7800 ' }}"
+    efm_nodes_list: "{{ efm_nodes_list + item.value.hostname + ':7800 ' }}"
   when:
     - item.value.node_type in ['primary','standby']
     - item.value.hostname is defined
