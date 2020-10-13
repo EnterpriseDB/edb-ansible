@@ -1,9 +1,4 @@
 ---
-- name: Update efm.nodes file
-  lineinfile:
-    path: "{{ efm_node_file }}"
-    line: "{{ efm_nodes_list }}"
-  register: efm_nodes_update
 
 - name: Generate efm encrypted password
   shell: |

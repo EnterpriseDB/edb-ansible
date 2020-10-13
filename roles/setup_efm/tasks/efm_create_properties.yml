@@ -5,12 +5,6 @@
   become: yes
   register: stat_efm_properties
 
-- name: Check if we have efm.nodes file or not
-  stat:
-    path: "{{ efm_properties }}"
-  become: yes
-  register: stat_efm_nodes
-
 - name: Create efm properties file
   copy:
     src: "{{ efm_properties }}.in"
@@ -21,12 +15,12 @@
   when: not stat_efm_properties.stat.exists
   become: yes
 
-- name: Create efm nodes file
-  copy:
-    src: "{{ efm_node_file }}.in"
+- name: Copy the efm.nodes.template to the server
+  template:
+    src: efm.nodes.template
     dest: "{{ efm_node_file }}"
     owner: "{{ pg_efm_user }}"
     group: "{{ pg_efm_user }}"
-    remote_src: yes
-  when: not stat_efm_nodes.stat.exists
+    mode: 0644
   become: yes
+  register: efm_nodes_update
