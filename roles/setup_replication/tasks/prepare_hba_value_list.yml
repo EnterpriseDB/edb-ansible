@@ -6,6 +6,10 @@
          users: "{{ pg_replication_user }}"
          source: "{{ item.value.private_ip }}/32"
          databases: replication
+       - contype: "host"
+         users: "{{ pg_replication_user }}"
+         source: "{{ item.value.private_ip }}/32"
+         databases: "{{ pg_database }}"
   when: not pg_ssl
 
 - name: Prepare the list
@@ -14,6 +18,9 @@
        - users: "{{ pg_replication_user }}"
          source: "{{ item.value.private_ip }}/32"
          databases: replication
+       - users: "{{ pg_replication_user }}"
+         source: "{{ item.value.private_ip }}/32"
+         databases: "{{ pg_database }}"
   when: pg_ssl
 
 - name: Prepare array of list
