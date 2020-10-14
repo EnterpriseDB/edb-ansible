@@ -18,7 +18,9 @@
 - name: Register the restart requirements
   set_fact:
     params_restart_required: True
-  when: line_item.restart_required
+  when: 
+    - pg_postgres_conf_params|length > 0
+    - line_item.restart_required
   with_items: "{{ params.results }}"
   loop_control:
     loop_var: line_item
@@ -30,6 +32,7 @@
     state: reloaded
   become: yes
   when:
+    - pg_postgres_conf_params|length > 0
     - params.changed 
     - not params_restart_required
 
@@ -40,6 +43,7 @@
     state: restarted
   become: yes
   when:
+    - pg_postgres_conf_params|length > 0
     - params.changed
     - params_restart_required is defined
     - params_restart_required
