@@ -169,8 +169,8 @@ You can access the root folder of the repository by entering the command below:
 **This approach does not automatically make the 'edb_postgres' collection available to your playbooks.**
 
 
-#Hosts file content
 
+# Hosts file content
 
 Content of the hosts.yml file:
 
@@ -199,7 +199,8 @@ Content of the hosts.yml file:
 
 
 
-#How to include the roles in your Playbook
+
+# How to include the roles in your Playbook
 
 Below is an example of how to include roles for a deployment in a playbook:
 
@@ -241,7 +242,9 @@ Below is an example of how to include roles for a deployment in a playbook:
 **You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or PEM or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication', 'setup_efm', 'setup_pem' or 'manage_dbserver'.**
 
 
-#Default user and passwords
+
+
+# Default user and passwords
 
 The following will occur should a password not be provided for the following accounts:
 
@@ -261,14 +264,16 @@ The following will occur should a password not be provided for the following acc
 
 
 
-#Playbook examples:
+
+# Playbook examples:
 
 
 Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postgres Advanced Server, Centos7 or RHEL7 are provided and located within the ```playbook-examples``` directory.
 
 
 
-#Executing the playbook:
+
+# Executing the playbook:
 
 * Centos7/8
 
@@ -279,9 +284,11 @@ Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postg
        `ansible-playbook -private-key=<yourprivatekey> playbook.yml -u ec2-user`
 
 
-#Database Engines Supported
 
-##Community Postgresql
+
+# Database Engines Supported
+
+## Community Postgresql
 
 | Distribution | 10 | 11 | 12 |13|
 | ------------------------- |:--:|:--:|:--:|:--:|
@@ -293,7 +300,7 @@ Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postg
 | Ubuntu | :x: | :x: | :x: | :x: |
 | SLES | :x: | :x: | :x: | :x: |
 
-##Enterprise DB Postgresql Advanced Server
+## Enterprise DB Postgresql Advanced Server
 
 
 | Distribution | 10 | 11 | 12 |13|
@@ -310,11 +317,11 @@ Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postg
 - :x: - Not tested and not supported
 
 
-#License
+# License
 
 BSD
 
-#Author Information
+# Author Information
 Author: 
 * Doug Ortiz
 * Vibhor Kumar (Reviewer)
