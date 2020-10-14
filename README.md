@@ -94,8 +94,7 @@ This role helps in managing the HA cluster and covers common tasks.
 For more information on the role, please refer roles README
 [README.md](./roles/manage_dbserver/README.md)
 
-Prerequisites
-----------------
+# Pre-Requisites:
 For correctly installed and configuration of the cluster following are requirements:
 
 1. Following are ports which should be opened for communication between the servers
@@ -108,35 +107,39 @@ For correctly installed and configuration of the cluster following are requireme
 
 2. Ansible (on the machine on which playbook will be executed).
 3. Operating system privileged user (user with sudo privilege) on all the servers/virtual machines.
+4. Instances for the Postgres or EPAS cluster should have at least 2 CPUs and 4 GB of RAM 
+5. The instance utilized for deploying with ansible can be a minimal instance
 
-**Note**: In our examples, we have used `centos` user for Centos os and `ec2_user` for RHEL os as a privileged user.
+**Note**: In our examples, we have used `centos` user for Centos OS and `ec2_user` for RHEL OS as a privileged user.
 
-Installation Steps
-----------------
+# INSTALLATION
 
-The `edb_postgres` Ansible collection can be installed by two different steps:
+* To install Ansible: **[Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)**
+    ![Installing Ansible](./demos/Ansible_2.5_Installation.gif)
+* A CLI or SDK depending on the Cloud vendor to utilize is required: 
+  * To install the Amazon Web Services CLI please refer to: **[Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)**
+  * To install the Microsoft Azure CLI please refer to: **[Installing the AZURE CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)**
+  * To install the Google Cloud SDK please refer to: **[Installing the Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)**
 
-* [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-* Installing the `edb_postgres` Ansible Collection
-* Downloading the `edb_postgres` repository source code from the repository in GitHub
-* Cloning the `edb_postgres` repository source code from the repository in GitHub
 
+The `edb_ansible` Ansible collection can be installed in 3 different approaches:
 
-### Installing the `edb_postgres` Ansible Collection
+### Installing the `edb_postgres` Ansible Collection from Ansible Galaxy
 
 Installing the `edb_postgres` Ansible Collection is done by following the steps below:
 
-      ansible-galaxy collection install edb_devops.edb_postgres --force
+      * Open the command line
+      * Type:
+        `ansible-galaxy collection install edb_devops.edb_postgres --force`
+      * Press *Enter*
 
-**This step does automatically make the `edb_postgres` collection available to your playbooks.**
+**This approach automatically makes the `edb_postgres` collection available to your playbooks.**
 
 **A message indicating where the collection is installed will be displayed by ansible-galaxy. The collection code should be automatically made readily available for you.**
 
 **By default the location of your installed collection is: ~/.ansible/collections/ansible_collections**
 
-
-
-### Downloading the `edb_postgres` repository source code from the repository in GitHub
+### Downloading the `edb-ansible` repository source code from the repository in GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
@@ -146,26 +149,28 @@ Downloading the code from the repository can be accomplished by following the st
 
 **After the code has been downloaded, the code will be available as a zip file which requires being unzipped to your desired target destination.**
 
-**This step does not automatically make the `postgres` collection available to your playbooks.**
+**This approach does not automatically make the `postgres` collection available to your playbooks.**
 
 
 ### Cloning the `edb_postgres` repository source code from the repository GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
-      git clone git@github.com:EnterpriseDB/edb-ansible.git
+      `git clone git@github.com:EnterpriseDB/edb-ansible.git`
 
 **After the code has been downloaded, the code will be available in your current directory within a directory named: 'edb-ansible'.**
 
 You can access the root folder of the repository by entering the command below:
 
-      cd edb-ansible
+      `cd edb-ansible`
 
-**This step does not automatically make the 'edb_postgres' collection available to your playbooks.**
+**This approach requires: Permissions to the github repository.**
+
+**This approach does not automatically make the 'edb_postgres' collection available to your playbooks.**
 
 
-Hosts file content
-----------------
+
+# Hosts file content
 
 Content of the hosts.yml file:
 
@@ -194,17 +199,13 @@ Content of the hosts.yml file:
 
 
 
-How to include the roles in your Playbook
-----------------
 
-Below is an example of how to include the setup_repo role:
+# How to include the roles in your Playbook
+
+Below is an example of how to include roles for a deployment in a playbook:
 
     - hosts: localhost
-      # Un-comment to specify which python interpreter to utilize
-      #vars:
-      #  ansible_python_interpreter: /usr/bin/python2
-      name: Install, Configure, Initialize and Replication EDB Postgres Advanced Server 12 and EFM 10 on Instances
-      #connection: local
+      name: Configure Postgres or EPAS on Instances
       become: true
       gather_facts: no
    
@@ -214,21 +215,17 @@ Below is an example of how to include the setup_repo role:
       vars_files:
         - hosts.yml
 
-      # Internal processing purposes only
       pre_tasks:
-        # Define or re-define any variables previously assigned
-        - name: Initialize the user defined variables
-          set_fact:
-            # 'Centos7' or 'RHEL7'
-            os: "Centos7"
-            # 'PG' or 'EPAS'
-            pg_type: "EPAS"
-            pg_data: "/data/pgdata"
-            pg_wal: "/data/pg_wal"
-            # Ensure you enter your credentials when utilizing EDB custom repositories
-            yum_username: ""
-            yum_password: ""
-            standby_quorum_type: "ANY" # Quorum type can be ANY or FIRST
+          - name: Initialize the user defined variables
+            set_fact:
+                os: "CentOS7"
+                pg_version: 12
+                pg_type: "PG"
+                pg_data: "/data/pgdata"
+                pg_wal: "/data/pg_wal"
+                yum_username: ""
+                yum_password: ""
+                standby_quorum_types: "ANY" # Quorum type can be ANY or FIRST
             
       roles:
        - setup_repo
@@ -237,15 +234,18 @@ Below is an example of how to include the setup_repo role:
        - setup_replication
        - setup_efm
        - setup_pem
+       - manage_dbserver
  
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
-**You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or PEM or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication' or 'setup_efm' or setup_pem.**
+**You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or PEM or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication', 'setup_efm', 'setup_pem' or 'manage_dbserver'.**
 
 
-Default user and passwords
-----------------
+
+
+# Default user and passwords
+
 The following will occur should a password not be provided for the following accounts:
 
 ```
@@ -264,32 +264,31 @@ The following will occur should a password not be provided for the following acc
 
 
 
-Playbook examples:
-----------------
+
+# Playbook examples:
+
 
 Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postgres Advanced Server, Centos7 or RHEL7 are provided and located within the ```playbook-examples``` directory.
 
 
 
-Executing the playbook:
-----------------
 
-Centos7/8
+# Executing the playbook:
 
-      ansible-playbook -private-key=<yourprivatekey> playbook.yml -u centos
+* Centos7/8
 
-RHEL7/8
+      `ansible-playbook -private-key=<yourprivatekey> playbook.yml -u centos`
 
-       ansible-playbook -private-key=<yourprivatekey> playbook.yml -u ec2-user
+* RHEL7/8
 
-
+       `ansible-playbook -private-key=<yourprivatekey> playbook.yml -u ec2-user`
 
 
-Database Engines Supported
-----------------
 
-Community Postgresql
-----------------
+
+# Database Engines Supported
+
+## Community Postgresql
 
 | Distribution | 10 | 11 | 12 |13|
 | ------------------------- |:--:|:--:|:--:|:--:|
@@ -301,8 +300,8 @@ Community Postgresql
 | Ubuntu | :x: | :x: | :x: | :x: |
 | SLES | :x: | :x: | :x: | :x: |
 
-Enterprise DB Postgresql Advanced Server
-----------------
+## Enterprise DB Postgresql Advanced Server
+
 
 | Distribution | 10 | 11 | 12 |13|
 | ------------------------- |:--:|:--:|:--:|:--:|
@@ -318,13 +317,11 @@ Enterprise DB Postgresql Advanced Server
 - :x: - Not tested and not supported
 
 
-License
--------
+# License
 
 BSD
 
-Author Information
-------------------
+# Author Information
 Author: 
 * Doug Ortiz
 * Vibhor Kumar (Reviewer)
