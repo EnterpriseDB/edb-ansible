@@ -20,10 +20,7 @@
         os: "Centos7"
         pg_type: "EPAS"
         pg_version: 12
-        efm_version: "r.0"
-        pg_data: "/data/pgdata"
-        pg_efm_user: "efm"
-        pg_efm_user_password: "efm"
+        efm_version: "4.0"
 
   roles:
     - setup_repo

@@ -1,5 +1,5 @@
 ---
-#ansible-playbook --private-key=<id_rsa> R07_firewalld_stop.yml -u ec2-user -vv
+#ansible-playbook --private-key=<id_rsa> rhel_firewalld_rule.yml -u ec2-user -vv
 - hosts: localhost
 #  vars:
 #    ansible_python_interpreter: /usr/bin/python2
