@@ -12,7 +12,7 @@
   dnf:
     name:
       - "{{ epel_repo_8 }}"
-      - "{{ pg_rpm_repo8 }}"
+      - "{{ pg_rpm_repo_8 }}"
     state: present
   when: os in ['CentOS7','RHEL8']
   become: yes
