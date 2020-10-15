@@ -16,6 +16,7 @@ pg_ssl: true
 # efm information
 efm_version: "4.0"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
+efm_cluster_name: "efm"
 
 pem_agent_package:
       - edb-pem-agent

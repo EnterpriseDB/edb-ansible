@@ -21,7 +21,7 @@
         --server-database {{ pg_database }} \
         --server-user {{ pg_user }} \
         --server-service-name {{ pg_service }} \
-        --efm-cluster-name efm  \
+        --efm-cluster-name {{ efm_cluster_name }}  \
         --efm-install-path {{ efm_bin_path }} \
         --asb-host-name 127.0.0.1 \
         --asb-host-user {{ pg_pem_agent_user }} \
