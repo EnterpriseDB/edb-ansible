@@ -5,7 +5,7 @@
       - "{{ epel_repo_7 }}"
       - "{{ pg_rpm_repo_7 }}"
     state: present
-  when: os in ['CentOS7','RHEL8']
+  when: os in ['CentOS7','RHEL7']
   become: yes
 
 - name: Install epel and PG repo
