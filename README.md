@@ -115,7 +115,6 @@ For correctly installed and configuration of the cluster following are requireme
 # INSTALLATION
 
 * To install Ansible: **[Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)**
-    ![Installing Ansible](./demos/Ansible_2.5_Installation.gif)
 * A CLI or SDK depending on the Cloud vendor to utilize is required: 
   * To install the Amazon Web Services CLI please refer to: **[Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)**
   * To install the Microsoft Azure CLI please refer to: **[Installing the AZURE CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)**
