@@ -2,7 +2,7 @@
 
 os: ""
 pg_type: "PG"
-pg_version: "12"
+pg_version: 12
 force_install: false
 supported_os:
   - CentOS7
