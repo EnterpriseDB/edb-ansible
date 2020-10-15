@@ -19,8 +19,8 @@ log_line_prefix = '%m [%p%l] %u@%d app=%a '
 log_truncate_on_rotation = on
 log_rotation_size = '1GB'
 log_lock_waits = on
-log_connections = on
-log_disconnections = on
+log_connections = off
+log_disconnections = off
 log_error_verbosity = default
 log_statement = ddl
 log_temp_files = 0
@@ -29,4 +29,3 @@ autovacuum_max_workers = 5
 autovacuum_vacuum_cost_limit = 3000
 idle_in_transaction_session_timeout = 10min
 syslog_ident = edb
-shared_preload_libraries = '{{ pg_shared_libraries_list | join(",") }}'
