@@ -46,3 +46,5 @@ pg_group: "postgres"
 pg_superuser: "postgres"
 pg_superuser_password: ""
 pg_random_password: false
+pg_shared_libraries_list:
+  - "$libdir/pg_stat_statements"

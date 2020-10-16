@@ -42,6 +42,7 @@
 
 - name: Configure ssl based on pg_ssl parameter
   block:
+    - import_tasks: pg_ssl_check.yml
     - import_tasks: pg_ssl_config.yml
   become: yes
   when:
