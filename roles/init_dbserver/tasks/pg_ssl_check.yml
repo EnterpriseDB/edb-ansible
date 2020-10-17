@@ -36,12 +36,11 @@
   register: ssl_server_crt
 
 - name: create ssl extension in pg_database
-  postgresql_ext:
-    name: sslutils
-    login_user: "{{ pg_owner }}"
-    port: "{{ pg_port }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    db: "{{ pg_database }}"
-    state: present
-  become: yes
-  become_user: "{{ pg_owner }}"
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_extensions
+  vars:
+    pg_extensions:
+      - name: sslutils
+        database: "{{ pg_database }}"
+        state: present
