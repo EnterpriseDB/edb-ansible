@@ -1,10 +1,10 @@
 setup_efm
 =========
 
-This Ansible Galaxy Role Installs EFM versions: 3.7, 3.8, 3.9 and 4.0 on instances previously configured.
+This Ansible Galaxy Role Installs EFM versions: 3.10 and 4.0 on instances previously configured.
 
 **Note:**
-The role only installs EPAS: 10, 11, 12 or 4.0 along with EFM: 3.7, 3.8, 3.9 or 4.0 across multiple nodes.
+The role only installs EPAS: 10, 11, 12 or 4.0 along with EFM: 3.9 or 4.0 across multiple nodes.
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -40,7 +40,7 @@ When executing the role via ansible these are the required variables:
 
 * <strong> <em> pg_version </em> </strong>
 
-  Postgres Versions supported are: 10, 11, 12 and 13
+  Postgres Versions supported are: 10, 11, and 12
 
 * <strong> <em> pg_type </em> </strong>
 
@@ -113,7 +113,7 @@ Below is an example of how to include the setup_efm role:
             efm_version: "efm_version"
             efm_parameters:
                   - name: script.notification
-                    value: "/usr/edb/efm-3.10/bin/notification.sh"
+                    value: "/usr/edb/efm-4.0/bin/notification.sh"
                   
       roles:
         - setup_efm
@@ -129,25 +129,25 @@ All the variables are available at:
 Database Engines Supported
 ----------------
 
-EnterpriseDB Failover Manager 3.7/3.8/3.10/4.0:
+EnterpriseDB Failover Manager 3.10/4.0:
 ----------------
 
-| Postgres | 10 | 11 | 12 | 13 |
+| Postgres | 10 | 11 | 12 |
 | ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------
 
-| Enterprise Postgres Advanced Server | 10 | 11 | 12 | 13 |
+| Enterprise Postgres Advanced Server | 10 | 11 | 12 |
 | ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :x:| :x:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 - :x: - Not supported

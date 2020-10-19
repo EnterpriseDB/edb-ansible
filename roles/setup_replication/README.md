@@ -1,7 +1,7 @@
 
 setup_replication
 =========
-This Ansible Galaxy Role configures Replication on Postgres or EnterpriseDB Postgres Advanced Server versions: 10, 11, 12 and 13 on instances previously configured.
+This Ansible Galaxy Role configures Replication on Postgres or EnterpriseDB Postgres Advanced Server versions: 10, 11, and 12 on instances previously configured.
 
 
 Requirements

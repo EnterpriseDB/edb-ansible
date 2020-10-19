@@ -1,7 +1,7 @@
 init_dbserver
 =========
 
-This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, 12 and 13 on instances previously configured. 
+This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, and 12 on instances previously configured. 
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -34,7 +34,7 @@ When executing the role via ansible there are two required variables:
 
 * <strong> <em> pg_version </em> </strong>
 
-  Postgres Versions supported are: 10, 11, 12 and 13
+  Postgres Versions supported are: 10, 11, and 12
 
 * <strong> <em> pg_type </em> </strong>
 
