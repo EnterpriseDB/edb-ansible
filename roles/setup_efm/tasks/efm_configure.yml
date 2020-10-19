@@ -34,6 +34,11 @@
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
 
+- name: Prepare final parameters list
+  set_fact:
+    efm_node_parameters: "{{ efm_node_parameters + efm_physical_slot_param }}"
+  when: pg_version > 11
+
 - name: Update efm efm.properties file
   lineinfile:
     path: /etc/edb/efm-{{ efm_version }}/efm.properties

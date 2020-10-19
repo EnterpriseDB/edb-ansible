@@ -15,18 +15,18 @@ primary_host_name: ""
 pg_owner: "postgres"
 pg_group: "postgres"
 pg_ssl: true
-pg_port: 5432
+pg_port: "5432"
 pg_replication_user: "repuser"
 pg_replication_user_password: ""
 synchronous_standby_names: ""
 
 random_string: ""
     
-pg_database: "edb"
-pg_service: "edb-as-{{ pg_version }}"
+pg_database: "postgres"
+pg_service: "postgresql-{{ pg_version }}"
 
-pg_user_home: "/var/lib/edb"
-pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
+pg_user_home: "/var/lib/pgsql"
+pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
 pg_basebackup: "{{ pg_bin_path }}/pg_basebackup -Fp -R -l standby --wal-method=stream"
 pg_basebackup_options: ""
 

@@ -21,7 +21,7 @@ pg_unix_socket_directories:
    - "/var/run/postgresql"
 
 # postgres port
-pg_port: 5444
+pg_port: 5432
 
 # postgres service
 pg_service: "postgresql-{{ pg_version }}"
