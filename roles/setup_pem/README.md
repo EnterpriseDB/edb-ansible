@@ -115,8 +115,7 @@ Below is an example of how to include the setup_pem role:
             os: "os"
             pg_type: "pg_type"
             pg_version: pg_version
-            efm_version: "4.0"
-            pg_data: "/data/pgdata"
+            efm_version: 4.0
           
       roles:
         - setup_pem

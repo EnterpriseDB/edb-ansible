@@ -20,11 +20,8 @@
         os: "Centos7"
         pg_version: "12"
         pg_type: "EPAS"
-        pg_data: "/data/pgdata"
-        pg_wal: "/data/pg_wal"
         yum_username: ""
         yum_password: ""
-        standby_quorum_type: "any"   # quorum type can be any or first
   roles:
     - setup_repo
     - install_dbserver

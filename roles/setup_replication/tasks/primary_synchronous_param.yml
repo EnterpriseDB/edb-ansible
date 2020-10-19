@@ -2,11 +2,11 @@
 
 - name: Set synchronous_standby_names
   set_fact:
-    synchronous_standby_names: "{{ synchronous_standbys | join(',') }}"
+    synchronous_standby_names: "{{ ' ' + synchronous_standbys|length|string() + '(' + synchronous_standbys | join(',') + ')' }}"
 
 - name: Add standby quorum string
   set_fact:
-    synchronous_standby_names: "{{ standby_quorum_type + '(' + synchronous_standby_names + ')' }}"
+    synchronous_standby_names: "{{ standby_quorum_type + synchronous_standby_names  }}"
   when:
     - standby_quorum_type|length > 0
     - synchronous_standby_names|length > 0

@@ -105,7 +105,6 @@ Below is an example of how to include the init_dbserver role:
             os: "CentOS7"
             pg_type: "EPAS"
             pg_version: 12
-            pg_data: "/data/pgdata"
 
       roles:
         - init_dbserver
@@ -122,22 +121,22 @@ Database Engines Supported
 Community Postgresql
 ----------------
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :x:| :x:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 

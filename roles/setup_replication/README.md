@@ -26,7 +26,7 @@ When executing the role via ansible there are three required variables:
 
 * <strong> <em> pg_version </em> </strong>
 
-  Postgres Versions supported are: 10, 11, 12, and 13
+  Postgres Versions supported are: 10, 11, 12
 
 * <strong> <em> pg_type </em> </strong>
 
@@ -93,7 +93,6 @@ Below is an example of how to include the setup_replication role:
             os: "os"
             pg_type: "pg_type"
             pg_version: "pg_version"
-            pg_data: "/data/pgdata"
 
       roles:
         - setup_replication
@@ -112,22 +111,22 @@ Database Engines Supported
 Community Postgresql
 ----------------
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :x:| :x:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
 
 
 Playbook Execution Examples

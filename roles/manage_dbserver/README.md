@@ -137,7 +137,6 @@ Below is an example of how to include the init_dbserver role:
             os: "CentOS7"
             pg_type: "EPAS"
             pg_version: 12
-            pg_data: "/data/pgdata"
             pg_postgres_conf_params: ""
               - name: listen_addresses
                 value: "*"

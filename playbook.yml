@@ -17,12 +17,9 @@
         set_fact:
             os: "CentOS7"
             pg_version: 12
-            pg_type: "PG"
-            pg_data: "/data/pgdata"
-            pg_wal: "/data/pg_wal"
+            pg_type: "EPAS"
             yum_username: ""
             yum_password: ""
-            standby_quorum_types: "ANY" # Quorum type can be ANY or FIRST
 
   roles:
     - setup_repo

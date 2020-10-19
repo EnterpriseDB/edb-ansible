@@ -1,7 +1,7 @@
 install_dbserver
 =========
 
-This Ansible Galaxy Role Installs Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, 12 and 13 on Instances previously configured. 
+This Ansible Galaxy Role Installs Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, and 12 on Instances previously configured. 
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -114,22 +114,22 @@ Database Engines Supported
 Community Postgresql
 ----------------
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :x:| :x:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 

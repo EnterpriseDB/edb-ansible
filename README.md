@@ -224,7 +224,7 @@ Below is an example of how to include roles for a deployment in a playbook:
                 pg_wal: "/data/pg_wal"
                 yum_username: ""
                 yum_password: ""
-                standby_quorum_types: "ANY" # Quorum type can be ANY or FIRST
+                standby_quorum_type: "ANY" # Quorum type can be ANY or FIRST
             
       roles:
        - setup_repo
@@ -289,28 +289,28 @@ Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postg
 
 ## Community Postgresql
 
-| Distribution | 10 | 11 | 12 |13|
-| ------------------------- |:--:|:--:|:--:|:--:|
-| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian | :x: | :x: | :x: | :x: |
-| Ubuntu | :x: | :x: | :x: | :x: |
-| SLES | :x: | :x: | :x: | :x: |
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian | :x: | :x: | :x: |
+| Ubuntu | :x: | :x: | :x: |
+| SLES | :x: | :x: | :x: |
 
 ## Enterprise DB Postgresql Advanced Server
 
 
-| Distribution | 10 | 11 | 12 |13|
-| ------------------------- |:--:|:--:|:--:|:--:|
-| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Centos 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
-| Debian | :x: | :x: | :x: | :x: |
-| Ubuntu | :x: | :x: | :x: | :x: |
-| SLES | :x: | :x: | :x: | :x: |
+| Distribution | 10 | 11 | 12 |
+| ------------------------- |:--:|:--:|:--:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| 
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :x:| :x:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
+| Debian | :x: | :x: | :x: |
+| Ubuntu | :x: | :x: | :x: |
+| SLES | :x: | :x: | :x: |
 
 - :white_check_mark: - Tested and supported
 - :x: - Not tested and not supported

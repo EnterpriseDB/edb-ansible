@@ -69,12 +69,12 @@ Content of the hosts.yml file:
           public_ip: xxx.xxx.xxx.xxx
         standby1:
           node_type: standby1
-          replication_type: synchronous
+          replication_type: asynchronous
           private_ip: xxx.xxx.xxx.xxx
           public_ip: xxx.xxx.xxx.xxx
         standby2:
           node_type: standby2
-          replication_type: synchronous
+          replication_type: asynchronous
           private_ip: xxx.xxx.xxx.xxx
           public_ip: xxx.xxx.xxx.xxx
         witness:
@@ -111,9 +111,6 @@ Below is an example of how to include the setup_efm role:
             pg_type: "pg_type"
             pg_version: "pg_version"
             efm_version: "efm_version"
-            pg_data: "/data/pgdata"
-            pg_efm_user: "efm"
-            pg_efm_user_password: "efm"
             efm_parameters:
                   - name: script.notification
                     value: "/usr/edb/efm-3.10/bin/notification.sh"
