@@ -32,7 +32,7 @@
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     query: "select public.openssl_csr_to_crt(
-                       public.openssl_rsa_key_to_csr( 
+                       public.openssl_rsa_key_to_csr(
                              '{{ ca_key }}',
                              '{{ cert_common_name }}',
                              '{{ cert_country }}',
@@ -132,7 +132,7 @@
     query: "select public.openssl_csr_to_crt(
                        public.openssl_rsa_key_to_csr(
                                   '{{ server_key }}',
-                                  '{{ cert_common_name }}', 
+                                  '{{ cert_common_name }}',
                                   '{{ cert_country }}',
                                   '{{ cert_state }}',
                                   '{{ cert_city }}',
