@@ -38,9 +38,9 @@
   set_fact:
     efm_node_parameters: "{{ efm_node_parameters + efm_physical_slot_param }}"
   when:
-    - pg_version > 11
+    - pg_version|int > 11
     - pg_type == "EPAS"
-    - efm_version > 3.10
+    - efm_version|int > 3.10
 
 - name: Update efm efm.properties file
   lineinfile:

@@ -16,23 +16,23 @@
   block:
     - debug:
         msg: "epas/pg version = {{ os }} not supported. only '10', '11' and '12'."
-  when: pg_version not in supported_pg_version
+  when: pg_version|int not in supported_pg_version
 
 # end playbook if the type of install, operating system or postgres version are not supported
 - meta: end_play
   when: os not in supported_os or
-        pg_version not in supported_pg_version
+        pg_version|int not in supported_pg_version
 
 # display if efm version is supported
 - name: Display support for efm
   block:
     - debug:
         msg: "efm version = {{ efm_version }} not supported."
-  when: efm_version not in supported_efm_version
+  when: efm_version|int not in supported_efm_version
 
 # end playbook if the type of install, operating system or postgres version are not supported
 - meta: end_play
-  when: efm_version not in supported_efm_version
+  when: efm_version|int not in supported_efm_version
 
 # configure variables
 

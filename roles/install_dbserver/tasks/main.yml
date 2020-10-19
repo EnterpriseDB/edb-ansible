@@ -2,6 +2,7 @@
 # Tasks file for install_dbserver Role
 
 # Display if the Operating System is supported
+
 - name: Display support for Operating System
   block:
     - debug:
@@ -14,12 +15,12 @@
     - debug:
         msg: "Database Engine Version = {{ pg_version }} not supported.
              Supported versions are {{ supported_pg_version }}"
-  when: pg_version not in supported_pg_version
+  when: pg_version|int not in supported_pg_version
 
 # End Playbook if the Type of Install, Operating System or Postgres Version are not supported
 - meta: end_play
   when: os not in supported_os or
-        pg_version not in supported_pg_version
+        pg_version|int not in supported_pg_version
 
 - name: Include the install_dbserver
   include_tasks: install_dbserver.yml

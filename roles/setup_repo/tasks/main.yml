@@ -2,6 +2,7 @@
 # Tasks file for edb_postgres_repo Role
 
 # Display if the Operating System is supported
+
 - name: Display support for Operating System
   block:
     - debug:
