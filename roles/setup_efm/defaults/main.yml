@@ -71,7 +71,6 @@ supported_pg_version:
   - 10
   - 11
   - 12
-  - 13
 
 supported_efm_version:
   - 4.0
