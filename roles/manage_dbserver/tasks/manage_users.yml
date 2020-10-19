@@ -14,7 +14,7 @@
     state: "{{ line_item.state | default('present') }}"
     login_user: "{{ pg_owner }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-#  no_log: true
+  no_log: true
   become: yes
   become_user: "{{ pg_owner }}"
   with_items: "{{ pg_users }}"

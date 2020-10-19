@@ -149,8 +149,8 @@ Enterprise DB Postgresql Advanced Server
 | ------------------------- |:--:|:--:|:--:|:--:|
 | CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|:white_check_mark:|
+| CentOS 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 - :x: - Not supported

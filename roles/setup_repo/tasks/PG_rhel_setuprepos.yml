@@ -4,6 +4,7 @@
     name:
       - "{{ epel_repo_7 }}"
       - "{{ pg_rpm_repo_7 }}"
+      - "{{ edb_rpm_repo }}"
     state: present
   when: os in ['CentOS7','RHEL7']
   become: yes
@@ -13,6 +14,14 @@
     name:
       - "{{ epel_repo_8 }}"
       - "{{ pg_rpm_repo_8 }}"
+      - "{{ edb_rpm_repo }}"
     state: present
   when: os in ['CentOS8','RHEL8']
+  become: yes
+
+- name: Set Credentials for EDB Yum Repo
+  replace:
+    path: /etc/yum.repos.d/edb.repo
+    regexp: '<username>:<password>'
+    replace: "{{ yum_username }}:{{ yum_password }}"
   become: yes
