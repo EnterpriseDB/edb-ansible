@@ -220,11 +220,8 @@ Below is an example of how to include roles for a deployment in a playbook:
                 os: "CentOS7"
                 pg_version: 12
                 pg_type: "PG"
-                pg_data: "/data/pgdata"
-                pg_wal: "/data/pg_wal"
                 yum_username: ""
                 yum_password: ""
-                standby_quorum_type: "ANY" # Quorum type can be ANY or FIRST
             
       roles:
        - setup_repo
