@@ -1,7 +1,7 @@
 init_dbserver
 =========
 
-This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, and 12 on instances previously configured. 
+This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, 12 and 13 on instances previously configured. 
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -34,7 +34,7 @@ When executing the role via ansible there are two required variables:
 
 * <strong> <em> pg_version </em> </strong>
 
-  Postgres Versions supported are: 10, 11, and 12
+  Postgres Versions supported are: 10, 11, 12 and 13
 
 * <strong> <em> pg_type </em> </strong>
 
@@ -121,12 +121,12 @@ Database Engines Supported
 Community Postgresql
 ----------------
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------

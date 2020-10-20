@@ -20,9 +20,21 @@
         msg: "Database Engine = {{ pg_type }} is not supported."
   when: pg_type not in supported_pg_type
 
+# Display if Database Engine is not supported on RHEL8/CentOS8
+- name: Display if Database Engine is supported
+  block:
+    - debug:
+        msg: "Database Engine = {{ pg_type }} {{ pg_version }} 
+             is not supported on RHEL8/CentOS8."
+  when: 
+    - pg_type == 'EPAS' and pg_version|int < 12
+    - os in ['RHEL8','CentOS8']
+
 # End Playbook if provided Database Engine is not supported
 - meta: end_play
   when: pg_type not in supported_pg_type
+        or (pg_type == 'EPAS' and pg_version|int < 12
+            and os in ['RHEL8','CentOS8'])
 
 # Display if Credentials are valid
 - name: Validate Credentials

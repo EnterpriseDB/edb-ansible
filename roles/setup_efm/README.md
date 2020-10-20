@@ -4,7 +4,7 @@ setup_efm
 This Ansible Galaxy Role Installs EFM versions: 3.10 and 4.0 on instances previously configured.
 
 **Note:**
-The role only installs EPAS: 10, 11, 12 or 4.0 along with EFM: 3.9 or 4.0 across multiple nodes.
+The role only installs EPAS: 10, 11, 12 or 13 along with EFM: 3.10 or 4.0 across multiple nodes.
 
 **Not all Distribution or versions are supported on all the operating systems available.**
 **For more details refer to the: 'Database Engines Supported' section**
@@ -40,7 +40,7 @@ When executing the role via ansible these are the required variables:
 
 * <strong> <em> pg_version </em> </strong>
 
-  Postgres Versions supported are: 10, 11, and 12
+  Postgres Versions supported are: 10, 11, 12 and 13
 
 * <strong> <em> pg_type </em> </strong>
 
@@ -132,12 +132,12 @@ Database Engines Supported
 EnterpriseDB Failover Manager 3.10/4.0:
 ----------------
 
-| Postgres | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Postgres | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------
