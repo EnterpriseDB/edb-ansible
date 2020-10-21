@@ -21,29 +21,11 @@
     state: directory
   become: yes
 
-- name: Create tuned.conf for Postgres
-  lineinfile:
-    path: "/etc/tuned/edb/tuned.conf"
-    line: "{{ line_item }}"
-    create: yes
-  with_items:
-    - "[main]"
-    - "summary=Tuned profiles for EnterpriseDB Postgres Advanced Server"
-    - "[cpu]"
-    - "governor=performance"
-    - "energy_perf_bias=performance"
-    - "min_perf_pct=100"
-    - "[disk]"
-    - "readahead=>4096"
-    - "[sysctl]"
-    - "vm.overcommit_memory=2"
-    - "vm.swappiness=1"
-    - "vm.dirty_ratio=30"
-    - "vm.dirty_background_ratio=10"
-    - "[vm]"
-    - "transparent_hugepages=never"
-  loop_control:
-      loop_var: line_item
+- name: Copy the tuned.conf.template to the server
+  template:
+    src: tuned.conf.template
+    dest: /etc/tuned/edb/tuned.conf
+    mode: 0600
   register: edb_tuned
   become: yes
 

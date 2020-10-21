@@ -1,0 +1,45 @@
+---
+#ansible-playbook --private-key=<id_rsa> rhel_firewalld_rule.yml -u ec2-user -vv
+- hosts: localhost
+#  vars:
+#    ansible_python_interpreter: /usr/bin/python2
+  name: Stop Firewalld service on Remote Hosts
+  #connection: local
+  connection: ssh
+  become: true
+  gather_facts: no
+
+  vars_files:
+    - hosts.yml
+
+  tasks:
+    - name: Display current Node to Install
+      block:
+        - debug:
+            msg: "Private IP = {{ item.value.private_ip }},
+                Public IP = {{ item.value.public_ip }}"
+          with_dict: "{{ servers }}"
+
+    - name: Update the firewalld to allow connections on 5444
+      firewalld:
+        port: 5444/tcp
+        permanent: yes
+        state: enabled
+      delegate_to: "{{ item.value.public_ip }}"
+      with_dict: "{{ servers }}"
+
+    - name: Update the firewalld to allow connections on 5432
+      firewalld:
+        port: 5432/tcp
+        permanent: yes
+        state: enabled
+      delegate_to: "{{ item.value.public_ip }}"
+      with_dict: "{{ servers }}"
+
+    - name: Update the firewalld to allow connections on 7800-7810
+      firewalld:
+        port: 7800-7810/tcp
+        permanent: yes
+        state: enabled
+      delegate_to: "{{ item.value.public_ip }}"
+      with_dict: "{{ servers }}"

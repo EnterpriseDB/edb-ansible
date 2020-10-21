@@ -1,0 +1,30 @@
+---
+# defaults file for manage_dbserver
+pg_version: 12
+pg_type: "PG"
+
+pass_dir: "~/.edb"
+passfile: ""
+pg_postgres_conf_params: ""
+# Example:
+# - name: listen_addresses
+#   value: "*"
+
+pg_hba_ip_addresses: ""
+pg_slots: ""
+pg_extensions: ""
+pg_grant_privileges: ""
+pg_grant_roles: ""
+pg_sql_scripts: ""
+pg_copy_files: ""
+pg_query: ""
+
+pg_pgpass_values: ""
+pg_users: ""
+
+# initialize input_vars variables
+input_user: ""
+input_password: ""
+
+pg_databases: ""
+params_restart_required: false

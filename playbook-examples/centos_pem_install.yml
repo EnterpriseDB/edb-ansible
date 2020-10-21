@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  #vars:
+  #  ansible_python_interpreter: /usr/bin/python2
+  name: setup pem on instances
+  #connection: local
+  become: true
+  gather_facts: false
+
+  collections:
+    - edb_devops.edb_postgres
+
+  vars_files:
+    - hosts.yml
+
+ pre_tasks:
+    # define or re-define any variables previously assigned
+    - name: initialize the user defined variables
+      set_fact:
+        os: "Centos7"
+        pg_type: "EPAS"
+        pg_version: 12
+        efm_version: "4.0"
+
+  roles:
+    - setup_repo
+    - install_dbserver
+    - init_dbserver
+    - setup_pem

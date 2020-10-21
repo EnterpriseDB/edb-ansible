@@ -1,0 +1,45 @@
+---
+# display details of node to install
+- name: Display current node to install
+  block:
+    - debug:
+        msg:
+            "operating system = {{ os }}:
+             pg_type = {{ pg_type }},
+             pg_data = {{ pg_data }},
+             efm_service = {{ efm_service }},
+             efm_nodes_list = {{ efm_nodes_list }},
+             use_hostname = {{ use_hostname }},
+             efm_witness =  {{ efm_witness }},
+             pg_efm_user = {{ pg_efm_user }},
+             public ip = {{ item.value.public_ip }}"
+
+- name: Set force_efm_install based on the user input
+  set_fact:
+    force_efm_install: "{{ item.value.force_efm_install }}"
+  when: item.value.force_efm_install is defined
+  register: output
+
+- name: Update etc_hosts based on use_hostname
+  block:
+    - import_tasks: linux_update_etc_hosts.yml
+  become: yes
+  when:
+    - use_hostname
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Remove before we start as per force_install
+  block:
+    - include_tasks: rm_efm_install_config.yml
+  become: yes
+  when: force_efm_install
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Install and configure postgres on centos7 or rhel7
+  block:
+    - import_tasks: efm_hba.yml
+    - import_tasks: efm_install.yml
+    - import_tasks: efm_create_properties.yml
+    - import_tasks: efm_configure.yml
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"

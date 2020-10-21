@@ -1,0 +1,9 @@
+---
+# tasks file for manage_dbserver
+
+- name: Reference EPAS Variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Manage dbserver.yml
+  include_tasks: manage_dbserver.yml
+  with_dict:  "{{ servers }}"

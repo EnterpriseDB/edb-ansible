@@ -1,0 +1,53 @@
+---
+- name: Check user defined parameters and update
+  postgresql_set:
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    db: "{{ pg_database }}"
+    login_user: "{{ pg_owner }}"
+    name: "{{ line_item.name }}"
+    value: "{{ line_item.value }}"
+  when: pg_postgres_conf_params|length > 0
+  with_items: "{{ pg_postgres_conf_params }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  loop_control:
+    loop_var: line_item
+  register: params
+
+- name: Register the restart requirements
+  set_fact:
+    params_restart_required: True
+  when:
+    - pg_postgres_conf_params|length > 0
+    - line_item.restart_required
+  with_items: "{{ params.results }}"
+  loop_control:
+    loop_var: line_item
+
+- name: Reload the pg service
+  systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: yes
+    state: reloaded
+  become: yes
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - not params_restart_required
+
+- name: Restart the pg service
+  systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: yes
+    state: restarted
+  become: yes
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - params_restart_required is defined
+    - params_restart_required
+
+- name: Reset the restart_required
+  set_fact:
+    params_restart_required: false

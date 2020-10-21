@@ -13,10 +13,6 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 Roles
 -----
 
-### process_vars:
-
-A role for processing the hosts.yml file and setting the required variables for other dependent roles.
-
 ### setup_repo: 
 A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
 
@@ -27,9 +23,9 @@ A role for setting up the EDB and PG Community and EPEL repositories. For instal
 ```
 
 This role requires following compulsory parameters:
-* `PG_TYPE`: "EPAS" or "PG"
-* `EDB_YUM_USERNAME`: EDB repository's username
-* `EDB_YUM_PASSWORD`: EDB yum repository's password.
+* `pg_type`: "EPAS" or "PG"
+* `yum_username`: EDB repository's username
+* `yum_password`: EDB yum repository's password.
 
 For access to EDB repository, you can use following link: [EDB yum access](https://www.enterprisedb.com/user/register?destination=/repository-access-request%3Fdestination%3Dnode/1255704%26resource%3D1255704%26ma_formid%3D2098)
 
@@ -38,8 +34,8 @@ For access to EDB repository, you can use following link: [EDB yum access](https
 
 A role for installing EPAS/PG database server packages. This role installs the EPAS/PG packages, depending on the values of the following variables in the playbook.yml:
 
-1. `PG_TYPE`: EPAS/PG 
-2. And `PG_VERSION`: EPAS/PG major version number
+1. `pg_type`: EPAS/PG 
+2. And `pg_version`: EPAS/PG major version number
 
 
 ### init_dbserver: 
@@ -48,108 +44,57 @@ A role for initializing the PG/EPAS cluster(data) directory.
 
 This role allows users to pass following variables:
 
-1. `PG_TYPE`: EPAS/PG
-2. `PG_VERSION`: EPAS/PG Version. *Default is 12.*
-3. `PG_DATA`: EPAS/PG data directory. *Default is /var/lib/edb/as{PG_VERSION}/data*
-4. `PG_WAL`: EPAS/PG wal location. *Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal*
-5. `PG_SSL`: For configuration of data directory with SSL
-6. `PG_SSL_DIR`: Location of ssl files. *Due to security reasons, default location is /etc/edb/certs.*
-**Note**: In case, users want to use their certificates, then it is recommended to set `PG_SSL_GENERATE` to false and place their certificate in /etc/edb/certs directory or directory.
-7. `PG_SSL_GENERATE`: *Default is True. Allow role to generate SSL certificates with the initialization of the database cluster.*
-9. `PG_ENCODING`: Database encoding. *Default "UTF-8"*
-10. `PG_SUPERUSER`: PostgreSQL superuser name. *Default is enterprisedb for EPAS and postgres for PG*
-11. `PG_SUPERUSER_PASSWORD`: Password for PG_SUPERUSER. *Default is auto generated password with 20 characters. Password will be stored in ~/.edb with name <PG_SUPERUSER>_pass.*
+1. `pg_type`: EPAS/PG
+2. `pg_version`: EPAS/PG Version. *Default is 12.*
+3. `pg_data`: EPAS/PG data directory. *Default is /var/lib/edb/as{pg_version}/data*
+4. `pg_wal`: EPAS/PG wal location. *Default is /var/lib/edb/as{pg_version}/data/pg_wal*
+5. `pg_ssl`: For configuration of data directory with SSL
 
 For more information on variables, please refer to the following variables file:
-1. EPAS variables: [init_dbserver/vars/edb-epas.yml](./init_dbserver/vars/edb-epas.yml) 
-2. And, PG variables: [init_dbserver/vars/edb-pg.yml](./init_dbserver/edb-pg.yml)
+1. EPAS variables: [init_dbserver/vars/EPAS.yml](./init_dbserver/vars/EPAS.yml) 
+2. And, PG variables: [init_dbserver/vars/PG.yml](./init_dbserver/PG.yml)
 
-In case user wants to manage normal database users, then they can use following naming conventions in the playbook:
-
-```
-PG_USERS
-    - name: app1_user
-      pass: password
-    - name: app2_user
-      pass: password
-```
-      
-For user defined databases:
-
-```
-PG_DATABASES:
-    - name: app_db1
-      owner: app_user1
-```
-      
-In case a user wants to pass set specific PG/EPAS parameters, the following variables can be set in playbook:
-
-```
-PG_POSTGRES_CONF_PARAMS:
-    - { name: "maintenance_work_mem", value: "1GB" }
-    - { name: "work_mem", value: "1024MB" }
-```
-
-For setting specific `pg_hba.conf` rule, following variable can be used:
-
-```
-PG_ALLOW_IP_ADDRESSES:
-    - { user: "user1,user2", ip_address: "172.0.0.1/16", databases: "db1,db2" }
-    - { user: "user3,user4", ip_address: "172.128.0.1/16", databases: "db3,db4" }
-```
+For more information on the role, please refer roles README
+[README.md](./roles/init_dbserver/README.md)
     
 ### setup_replication:
 
 A role for setting up the replication (synchronous/asynchronous).
 Similar to `init_dbserver` role, `setup_replication` has following variables for managing the EPAS/PG.
 
-1. `PG_TYPE`: EPAS/PG
-2. `PG_VERSION`: EPAS/PG Version. *Default is 12.*
-3. `PG_DATA`: EPAS/PG data directory. *Default is /var/lib/edb/as{PG_VERSION}/data*
-4. `PG_WAL`: EPAS/PG wal location. *Default is /var/lib/edb/as{PG_VERSION}/data/pg_wal*
-5. `PG_REPLICATION_USER`: Replication user for replicating data between primary and standby. *Default is repuser*
-6. `PG_REPLICATION_USER_PASSWORD`: Replication user password. *Default auto generated and stored on localhost under ~/.edb/<PG_REPLICATION_USER_PASSWORD>_pass*
-7.  For EPAS/PG postgresql.conf parameters.
+1. `pg_type`: EPAS/PG
+2. `pg_version`: EPAS/PG Version. *Default is 12.*
+3. `pg_data`: EPAS/PG data directory. *Default is /var/lib/edb/as{pg_version}/data*
+4. `pg_wal`: EPAS/PG wal location. *Default is /var/lib/edb/as{pg_version}/data/pg_wal*
+5. `pg_replication_user`: Replication user for replicating data between primary and standby. *Default is repuser*
+6. `pg_replication_user_password`: Replication user password. *Default auto generated and stored on localhost under ~/.edb/<pg_replication_user_password>_pass*
 
-```
-PG_POSTGRES_CONF_PARAMS:
-    - { name: "maintenance_work_mem", value: "1GB" }
-    - { name: "work_mem", value: "1024MB" }
-```
 
-For setting specific `pg_hba.conf` rule, following variable can be used:
-6. 
-```
-PG_ALLOW_IP_ADDRESSES:
-    - { user: "user1,user2", ip_address: "172.0.0.1/16", databases: "db1,db2" }
-    - { user: "user3,user4", ip_address: "172.128.0.1/16", databases: "db3,db4" }
-```
-    
+For more information on the role, please refer roles README
+[README.md](./roles/setup_replication/README.md)
 
 ### setup_efm:
 
 A role for setting up EDB Failover Manager for Postgres/EPAS HA cluster.
-If user wants to push any scripts for EFM, following variable can be use:
-```
-EFM_SCRIPTS:
-    - { file: "~/edb-ansible-all/notification.sh", remote_file: "/usr/edb/efm-3.10/bin/notification.sh", owner: "root", group: "root", mode: 777 }
-```
-
-If user wants to modify specific EFM parameters, following variable would help:
-```
-EFM_CUSTOM_PARAMETERS:
-     - { name: script.notification, value: "/usr/edb/efm-3.10/bin/notification.sh" }
-```
 
 In the playbook, user can choose the specific roles based on their requirement.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_efm/README.md)
 
 ### setup_pem
 
 This role helps in setting PEM Server and deployment of PEM Agent on the PG/EPAS servers.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_pem/README.md)
 
 
-Prerequisites
-----------------
+### manage_dbserver
+
+This role helps in managing the HA cluster and covers common tasks.
+For more information on the role, please refer roles README
+[README.md](./roles/manage_dbserver/README.md)
+
+# Pre-Requisites:
 For correctly installed and configuration of the cluster following are requirements:
 
 1. Following are ports which should be opened for communication between the servers
@@ -162,35 +107,38 @@ For correctly installed and configuration of the cluster following are requireme
 
 2. Ansible (on the machine on which playbook will be executed).
 3. Operating system privileged user (user with sudo privilege) on all the servers/virtual machines.
+4. Instances for the Postgres or EPAS cluster should have at least 2 CPUs and 4 GB of RAM 
+5. The instance utilized for deploying with ansible can be a minimal instance
 
-**Note**: In our examples, we have used `centos` user for CentOS OS and `ec2_user` for RHEL OS as a privileged user.
+**Note**: In our examples, we have used `centos` user for Centos OS and `ec2_user` for RHEL OS as a privileged user.
 
-Installation Steps
-----------------
+# INSTALLATION
 
-The `edb_postgres` Ansible collection can be installed by two different steps:
-
-* [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-* Installing the `edb_postgres` Ansible Collection
-* Downloading the `edb_postgres` repository source code from the repository in GitHub
-* Cloning the `edb_postgres` repository source code from the repository in GitHub
+* To install Ansible: **[Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)**
+* A CLI or SDK depending on the Cloud vendor to utilize is required: 
+  * To install the Amazon Web Services CLI please refer to: **[Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)**
+  * To install the Microsoft Azure CLI please refer to: **[Installing the AZURE CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)**
+  * To install the Google Cloud SDK please refer to: **[Installing the Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)**
 
 
-### Installing the `edb_postgres` Ansible Collection
+The `edb_ansible` Ansible collection can be installed in 3 different approaches:
+
+### Installing the `edb_postgres` Ansible Collection from Ansible Galaxy
 
 Installing the `edb_postgres` Ansible Collection is done by following the steps below:
 
-      ansible-galaxy collection install edb_devops.edb_postgres --force
+      * Open the command line
+      * Type:
+        `ansible-galaxy collection install edb_devops.edb_postgres --force`
+      * Press *Enter*
 
-**This step does automatically make the `edb_postgres` collection available to your playbooks.**
+**This approach automatically makes the `edb_postgres` collection available to your playbooks.**
 
 **A message indicating where the collection is installed will be displayed by ansible-galaxy. The collection code should be automatically made readily available for you.**
 
 **By default the location of your installed collection is: ~/.ansible/collections/ansible_collections**
 
-
-
-### Downloading the `edb_postgres` repository source code from the repository in GitHub
+### Downloading the `edb-ansible` repository source code from the repository in GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
@@ -200,26 +148,28 @@ Downloading the code from the repository can be accomplished by following the st
 
 **After the code has been downloaded, the code will be available as a zip file which requires being unzipped to your desired target destination.**
 
-**This step does not automatically make the `postgres` collection available to your playbooks.**
+**This approach does not automatically make the `postgres` collection available to your playbooks.**
 
 
 ### Cloning the `edb_postgres` repository source code from the repository GitHub
 
 Downloading the code from the repository can be accomplished by following the steps below:
 
-      git clone git@github.com:EnterpriseDB/edb-ansible.git
+      `git clone git@github.com:EnterpriseDB/edb-ansible.git`
 
 **After the code has been downloaded, the code will be available in your current directory within a directory named: 'edb-ansible'.**
 
 You can access the root folder of the repository by entering the command below:
 
-      cd edb-ansible
+      `cd edb-ansible`
 
-**This step does not automatically make the 'edb_postgres' collection available to your playbooks.**
+**This approach requires: Permissions to the github repository.**
+
+**This approach does not automatically make the 'edb_postgres' collection available to your playbooks.**
 
 
-Hosts file content
-----------------
+
+# Hosts file content
 
 Content of the hosts.yml file:
 
@@ -248,17 +198,13 @@ Content of the hosts.yml file:
 
 
 
-How to include the roles in your Playbook
-----------------
 
-Below is an example of how to include the setup_repo role:
+# How to include the roles in your Playbook
+
+Below is an example of how to include roles for a deployment in a playbook:
 
     - hosts: localhost
-      # Un-comment to specify which python interpreter to utilize
-      #vars:
-      #  ansible_python_interpreter: /usr/bin/python2
-      name: Install, Configure, Initialize and Replication EDB Postgres Advanced Server 12 and EFM 10 on Instances
-      #connection: local
+      name: Configure Postgres or EPAS on Instances
       become: true
       gather_facts: no
    
@@ -268,68 +214,42 @@ Below is an example of how to include the setup_repo role:
       vars_files:
         - hosts.yml
 
-      # Internal processing purposes only
       pre_tasks:
-        # Define or re-define any variables previously assigned
-        - name: Initialize the user defined variables
-          set_fact:
-            # 'CentOS7' or 'RHEL7'
-            OS: "CentOS7"
-            # 'PG' or 'EPAS'
-            PG_TYPE: "EPAS"
-            PG_DATA: "/data/pgdata"
-            PG_WAL: "/data/pg_wal"
-            # Ensure you enter your credentials when utilizing EDB custom repositories
-            EDB_YUM_USERNAME: ""
-            EDB_YUM_PASSWORD: ""
-            STANDBY_QUORUM_TYPE: "ANY" # Quorum type can be ANY or FIRST
+          - name: Initialize the user defined variables
+            set_fact:
+                os: "CentOS7"
+                pg_version: 12
+                pg_type: "PG"
+                yum_username: ""
+                yum_password: ""
             
-      tasks:
-        - name: Iterate through role with items from hosts file
-          include_role:
-            name: process_vars
-          with_dict: "{{ servers }}"      
-        - name: Iterate through role with items from hosts file
-          include_role:
-            name: setup_repo
-          with_dict: "{{ servers }}"
-        - name: Iterate through install role with items from hosts file
-          include_role:
-            name: install_dbserver
-          with_dict: "{{ servers }}"
-        - name: Iterate through initialize role with items from hosts file
-          include_role:
-            name: init_dbserver
-          with_dict: "{{ servers }}"
-        - name: Iterate through replication role with items from hosts file
-          include_role:
-            name: setup_replication
-          with_dict: "{{ servers }}"
-        - name: Iterate through efm install role with items from hosts file
-          include_role:
-            name: setup_efm
-          with_dict: "{{ servers }}"
-        - name: Iterate through efm install role with items from hosts file
-          include_role:
-            name: setup_pem
-          with_dict: "{{ servers }}"
+      roles:
+       - setup_repo
+       - install_dbserver
+       - init_dbserver
+       - setup_replication
+       - setup_efm
+       - setup_pem
+       - manage_dbserver
  
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
-**You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or PEM or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication' or 'setup_efm' or setup_pem.**
+**You can customize the above example to install 'Postgres', 'EPAS', 'EFM' or PEM or limit what roles you would like to execute: 'setup_repo', 'install_dbserver', 'init_dbserver', 'setup_replication', 'setup_efm', 'setup_pem' or 'manage_dbserver'.**
 
 
-Default user and passwords
-----------------
+
+
+# Default user and passwords
+
 The following will occur should a password not be provided for the following accounts:
 
 ```
-* PG_SUPERUSER
-* PG_REPLICATION_USER
-* PG_EFM_USER
-* PG_PEM_AGENT_USER
-* PG_PEM_ADMIN_USER
+* pg_superuser
+* pg_replication_user
+* pg_efm_user
+* pg_pem_agent_user
+* pg_pem_admin_user
 ```
 
 **Note:**
@@ -340,62 +260,64 @@ The following will occur should a password not be provided for the following acc
 
 
 
-Playbook examples:
-----------------
 
-Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postgres Advanced Server, CentOS7 or RHEL7 are provided and located within the ```playbook-examples``` directory.
+# Playbook examples:
 
 
-
-Executing the playbook:
-----------------
-
-CentOS7
-
-      ansible-playbook -private-key=<yourprivatekey> playbook.yml -u centos
-
-RHEL7
-
-       ansible-playbook -private-key=<yourprivatekey> playbook.yml -u ec2-user
+Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postgres Advanced Server, Centos7 or RHEL7 are provided and located within the ```playbook-examples``` directory.
 
 
 
 
-Database Engines Supported
-----------------
+# Executing the playbook:
 
-Community Postgresql
-----------------
+* Centos7/8
+
+      `ansible-playbook -private-key=<yourprivatekey> playbook.yml -u centos`
+
+* RHEL7/8
+
+       `ansible-playbook -private-key=<yourprivatekey> playbook.yml -u ec2-user`
+
+
+
+
+# Database Engines Supported
+
+## Community Postgresql
+
+| Distribution | 10 | 11 | 12 | 13|
+| ------------------------- |:--:|:--:|:--:|:--:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian | :x: | :x: | :x: | :x: |
+| Ubuntu | :x: | :x: | :x: | :x: |
+| SLES | :x: | :x: | :x: | :x: |
+
+## Enterprise DB Postgresql Advanced Server
+
 
 | Distribution | 10 | 11 | 12 |
 | ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| 
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :x:| :x:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
 | Debian | :x: | :x: | :x: |
 | Ubuntu | :x: | :x: | :x: |
 | SLES | :x: | :x: | :x: |
 
-Enterprise DB Postgresql Advanced Server
-----------------
-
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian | :x: | :x: | :x: |
-| Ubuntu | :x: | :x: | :x: |
-| SLES | :x: | :x: | :x: |
 - :white_check_mark: - Tested and supported
 - :x: - Not tested and not supported
 
 
-License
--------
+# License
 
 BSD
 
-Author Information
-------------------
+# Author Information
 Author: 
 * Doug Ortiz
 * Vibhor Kumar (Reviewer)

@@ -1,6 +1,19 @@
 ---
 
-OS: ""
-PG_TYPE: "PG"
-PG_VERSION: "12"
-FORCE_INSTALL: false
+os: ""
+pg_type: "PG"
+pg_version: 12
+force_install: false
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+supported_pg_type:
+  - EPAS
+  - PG
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13

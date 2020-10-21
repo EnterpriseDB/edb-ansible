@@ -24,14 +24,21 @@ Role Variables
 
 When executing the role via ansible these are the required variables:
 
-* OS
-  Operating Systems supported are: CentOS7 and RHEL7
-* PG_TYPE
+* os:
+
+  Operating Systems supported are: Centos7 and RHEL7
+
+* pg_type:
+
   Database Engine supported are: PG and EPAS
-* EDB_YUM_USERNAME
-  If you have PG_TYPE = EPAS, then you need to include EDB_YUM_USERNAME
-* EDB_YUM_PASSWORD
-  If you have PG_TYPE = EPAS, then you need to include EDB_YUM_PASSWORD
+
+* yum_username:
+
+  If you have pg_type = EPAS, then you need to include yum_username
+
+* yum_password:
+
+  If you have pg_type = EPAS, then you need to include yum_password
 
 
 
@@ -88,20 +95,16 @@ Below is an example of how to include the setup_repo role:
         # Define or re-define any variables previously assigned
         - name: Initialize the user defined variables
           set_fact:
-            # 'CentOS7' or 'RHEL7'
-            OS: "CentOS7"
+            # 'Centos7' or 'RHEL7'
+            os: "Centos7"
             # 'PG' or 'EPAS'
-            PG_TYPE: "EPAS"
+            pg_type: "EPAS"
             # Enter credentials below
-            EDB_YUM_USERNAME: ""
-            EDB_YUM_PASSWORD: ""
-          with_dict: "{{ servers }}"
+            yum_username: ""
+            yum_password: ""
 
-      tasks:
-        - name: Iterate through role with items from hosts file
-          include_role:
-            name: setup_repo
-          with_dict: "{{ servers }}"
+      roles:
+        - setup_repo
 
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
@@ -116,18 +119,22 @@ Database Engines Supported
 Community Postgresql
 ----------------
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 Enterprise DB Postgresql Advanced Server
 ----------------
 
 | Distribution | 10 | 11 | 12 |
 | ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Centos 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 
@@ -138,7 +145,7 @@ Playbook Execution Examples
 ----------------
 
 
-RHEL 7: Community Postgresql
+RHEL 7/8: Community Postgresql
 ----------------
 
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
@@ -146,7 +153,7 @@ RHEL 7: Community Postgresql
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>
 
 
-RHEL 7: Enterprise Postgresql
+RHEL 7/8: Enterprise Postgresql
 ----------------
 
     ansible-playbook playbook.yml -u ec2-user -- private-key <key.pem>

@@ -1,0 +1,40 @@
+- name: Set force_install based on the user input
+  set_fact:
+    force_install: "{{ item.value.force_install }}"
+  when: item.value.force_install is defined
+  register: output
+
+# Display details of Node being processed
+- name: Display current Node to Install
+  block:
+    - debug:
+        msg: "Operating System = {{ os }}:
+             Postgres Version = {{ pg_version }},
+             Database Engine = {{ pg_type }},
+             Public IP = {{ item.value.public_ip }}"
+
+- name: Install and Configure Postgres on CentOS7 or RHEL7
+  block:
+    - include_tasks: "{{ pg_type }}_rhel_rm_install.yml"
+  when: force_install and
+        os in ['CentOS7', 'RHEL7']
+  become: yes
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Install and Configure Postgres on CentOS7 or RHEL7
+  block:
+    - include_tasks: "{{ pg_type }}_rhel7_install.yml"
+  become: yes
+  when: os in ['CentOS7', 'RHEL7']
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Install and Configure Postgres on CentOS8 or RHEL8
+  block:
+    - include_tasks: "{{ pg_type }}_rhel8_install.yml"
+  become: yes
+  when: os in ['CentOS8', 'RHEL8']
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: reset force install based on the user input
+  set_fact:
+      force_install: false

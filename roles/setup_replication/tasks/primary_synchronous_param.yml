@@ -1,0 +1,22 @@
+---
+
+- name: Set synchronous_standby_names
+  set_fact:
+    synchronous_standby_names: "{{ ' ' + synchronous_standbys|length|string() + '(' + synchronous_standbys | join(',') + ')' }}"
+
+- name: Add standby quorum string
+  set_fact:
+    synchronous_standby_names: "{{ standby_quorum_type + synchronous_standby_names  }}"
+  when:
+    - standby_quorum_type|length > 0
+    - synchronous_standby_names|length > 0
+
+- name: Call manage_dbserver tasks for synchronous_standby_names
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params:
+         - name: synchronous_standby_names
+           value: "{{ synchronous_standby_names }}"
+  when: synchronous_standby_names|length > 0

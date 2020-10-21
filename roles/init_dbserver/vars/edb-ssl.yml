@@ -1,6 +1,24 @@
-CERT_COMMON_NAME: "PEM"
-CERT_COUNTRY: "US"
-CERT_STATE: "MA"
-CERT_CITY: "Bedford"
-CERT_ORG_UNIT: "EDB Postgres Enterprise Manager"
-CERT_EMAIL: "support@enterprisedb.com"
+---
+cert_common_name: "PEM"
+cert_country: "US"
+cert_state: "MA"
+cert_city: "Bedford"
+cert_org_unit: "EDB Postgres Enterprise Manager"
+cert_email: "support@enterprisedb.com"
+
+pg_ssl_postgres_conf_params: 
+  - { name: "ssl", value: "on" }
+  - { name: "ssl_ca_file", value: "{{ pg_data }}/root.crt" }
+  - { name: "ssl_key_file", value: "{{ pg_data }}/server.key" }
+  - { name: "ssl_cert_file", value: "{{ pg_data }}/server.crt" }
+  - { name: "ssl_crl_file", value: "{{ pg_data }}/root.crl" }
+
+#pg_ssl_ip_addresses:
+#  - { contype: "host", source: "127.0.0.1/32", state: absent }
+#  - { contype: "host", source: "::1/128", state: absent }
+#  - { contype: "host", source: "127.0.0.1/32", databases: "replication", state: absent }
+#  - { contype: "host", source: "::1/128", database: "replication", state: absent }
+#  - { contype: "hostssl", source: "127.0.0.1/32"}
+#  - { contype: "hostssl", source: "::1/128"}
+#  - { contype: "hostssl", source: "127.0.0.1/32", databases: "replication" }
+#  - { contype: "hostssl", source: "::1/128", database: "replication" }

@@ -1,0 +1,13 @@
+---
+- name: install efm dependencies
+  yum:
+    name: "{{ efm_packages }}"
+  when: os in [ 'CentOS7','RHEL7']
+  become: yes
+
+- name: install efm dependencies
+  dnf:
+    name: "{{ efm_packages }}"
+  when: os in ['CentOS8','RHEL8']
+  become: yes
+

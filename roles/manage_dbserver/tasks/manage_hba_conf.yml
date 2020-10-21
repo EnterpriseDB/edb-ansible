@@ -1,0 +1,38 @@
+---
+- name: Find the hba file location
+  postgresql_query:
+    login_user: "{{ pg_owner }}"
+    port: "{{ pg_port }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    query: "show hba_file;"
+    db: "{{ pg_database }}"
+  when: pg_hba_ip_addresses|length > 0
+  become: yes
+  become_user: "{{ pg_owner }}"
+  register: hba_info
+
+- name: Manage ip address entries into pg_hba file
+  postgresql_pg_hba:
+    dest: "{{ hba_info.query_result[0].hba_file }}"
+    contype: "{{ line_item.contype | default('hostssl') }}"
+    users: "{{ line_item.users | default ('all') }}"
+    source: "{{ line_item.source }}"
+    databases: "{{ line_item.databases | default('all') }}"
+    method: "{{ line_item.method | default('scram-sha-256') }}"
+    state: "{{ line_item.state | default('present') }}"
+    create: true
+  become: yes
+  become_user: "{{ pg_owner }}"
+  when: pg_hba_ip_addresses|length > 0
+  with_items: "{{ pg_hba_ip_addresses }}"
+  loop_control:
+      loop_var: line_item
+  register: hba_update
+
+- name: Reload the pg service
+  systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: yes
+    state: reloaded
+  become: yes
+  when: hba_update.changed

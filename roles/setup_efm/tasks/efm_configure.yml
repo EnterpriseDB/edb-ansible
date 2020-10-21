@@ -1,0 +1,70 @@
+---
+
+- name: Generate efm encrypted password
+  shell: |
+    {{ efm_bin_path }}/efm encrypt {{ efm_cluster_name }} --from-env
+  args:
+    executable: /bin/bash
+  environment:
+    EFMPASS: "{{ pg_efm_user_password }}"
+  register: pass_opt
+  changed_when: pass_opt.rc == 0
+  become: yes
+  failed_when: "'EFMPASS password not found.' in pass_opt.stdout"
+
+- name: Prepare the necessary parameters
+  set_fact:
+    efm_node_parameters:
+        - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+        - { name: bind.address, value: "{{ item.value.private_ip }}:7800"}
+        - { name: application.name, value: "{{ item.key }}" }
+        - { name: is.witness, value: "{{ efm_witness }}" }
+  when: not use_hostname
+
+- name: Prepare the necessary parameters
+  set_fact:
+    efm_node_parameters:
+        - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+        - { name: bind.address, value: "{{ item.value.hostname }}:7800"}
+        - { name: application.name, value: "{{ item.key }}" }
+        - { name: is.witness, value: "{{ efm_witness }}" }
+  when: use_hostname
+
+- name: Prepare final parameters list
+  set_fact:
+    efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
+
+- name: Prepare final parameters list
+  set_fact:
+    efm_node_parameters: "{{ efm_node_parameters + efm_physical_slot_param }}"
+  when:
+    - pg_version|int > 11
+    - pg_type == "EPAS"
+    - efm_version|int > 3.10
+
+- name: Update efm efm.properties file
+  lineinfile:
+    path: /etc/edb/efm-{{ efm_version }}/efm.properties
+    regexp: "{{ line_item.name + '=' }}"
+    line: "{{ line_item.name + '=' + line_item.value|string }}"
+    state: present
+  with_items: "{{ efm_node_parameters }}"
+  loop_control:
+   loop_var: line_item
+  become: yes
+  register: properties_changes
+
+- name: Start efm service
+  systemd:
+    name: "{{ efm_service }}"
+    enabled: yes
+    state: started
+  become: yes
+
+- name: Restart efm service
+  systemd:
+    name: "{{ efm_service }}"
+    enabled: yes
+    state: restarted
+  become: yes
+  when: efm_nodes_update.changed

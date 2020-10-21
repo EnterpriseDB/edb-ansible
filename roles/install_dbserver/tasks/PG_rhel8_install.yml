@@ -1,0 +1,26 @@
+---
+- name: Disable builtin postgresql module
+  shell: |
+    # Disable the built-in PostgreSQL module:
+    dnf -qy module disable postgresql
+  args:
+    executable: /bin/bash
+  register: disable_builtin_postgres
+  changed_when: disable_builtin_postgres.rc == 0
+  failed_when: disable_builtin_postgres.rc != 0
+  become: yes
+
+- name: Install Postgres
+  dnf:
+    name:
+      - glibc-common
+      - ca-certificates
+      - python3-pycurl
+      - python3-libselinux
+      - python3-psycopg2
+      - postgresql{{ pg_version }}-server
+      - postgresql{{ pg_version }}-contrib
+      - postgresql{{ pg_version }}-devel
+      - sslutils_{{ pg_version }}
+    state: present
+  become: yes

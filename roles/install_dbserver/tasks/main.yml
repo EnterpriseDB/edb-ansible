@@ -2,48 +2,39 @@
 # Tasks file for install_dbserver Role
 
 # Display if the Operating System is supported
+
 - name: Display support for Operating System
   block:
     - debug:
-        msg: "Operating System = {{ OS }} not supported. Only 'CentOS7' and 'RHEL7'."
-  when: (OS != 'CentOS7' and OS != 'RHEL7')
+        msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
 
 # Display if the Database Version is not supported
 - name: Display supported versions for Database Engine
   block:
     - debug:
-        msg: "Database Engine Version = {{ PG_VERSION }} not supported."
-  when: (PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12')
+        msg: "Database Engine Version = {{ pg_version }} not supported.
+             Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+# Display if Database Engine is not supported on RHEL8/CentOS8
+- name: Display if Database Engine is supported
+  block:
+    - debug:
+        msg: "Database Engine = {{ pg_type }} {{ pg_version }}
+             is not supported on RHEL8/CentOS8."
+  when:
+    - pg_type == 'EPAS' and pg_version|int < 12
+    - os in ['RHEL8','CentOS8']
 
 # End Playbook if the Type of Install, Operating System or Postgres Version are not supported
 - meta: end_play
-  when: (OS != 'CentOS7' and OS != 'RHEL7') or
-        (PG_VERSION != '10' and PG_VERSION != '11' and PG_VERSION != '12')
+  when: os not in supported_os or
+        pg_version|int not in supported_pg_version
+        or (pg_type == 'EPAS' and pg_version|int < 12
+            and os in ['RHEL8','CentOS8'])
 
-- name: Set force_install based on the user input
-  set_fact:
-    FORCE_INSTALL: "{{ item.value.force_install }}"
-  when: item.value.force_install is defined
-  register: output
-
-# Display details of Node being processed
-- name: Display current Node to Install
-  block:
-    - debug:
-        msg: "Operating System = {{ OS }}:
-             Postgres Version = {{ PG_VERSION }},
-             Database Engine = {{ PG_TYPE }},
-             Public IP = {{ item.value.public_ip }}"
-
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - include_tasks: C07-RH07-{{ PG_TYPE }}-rm-install.yml
-  when: FORCE_INSTALL
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Install and Configure Postgres on CentOS7 or RHEL7
-  block:
-    - include_tasks: C07-RH07-{{ PG_TYPE }}-install.yml
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Include the install_dbserver
+  include_tasks: install_dbserver.yml
+  when: item.value.node_type in ['primary','standby','pemserver']
+  with_dict:  "{{ servers }}"
