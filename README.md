@@ -51,8 +51,8 @@ This role allows users to pass following variables:
 5. `pg_ssl`: For configuration of data directory with SSL
 
 For more information on variables, please refer to the following variables file:
-1. EPAS variables: [init_dbserver/vars/EPAS.yml](./init_dbserver/vars/EPAS.yml) 
-2. And, PG variables: [init_dbserver/vars/PG.yml](./init_dbserver/PG.yml)
+1. EPAS variables: [roles/init_dbserver/vars/EPAS.yml](./roles/init_dbserver/vars/EPAS.yml)
+2. And, PG variables: [roles/init_dbserver/vars/PG.yml](./roles/init_dbserver/vars/PG.yml)
 
 For more information on the role, please refer roles README
 [README.md](./roles/init_dbserver/README.md)
