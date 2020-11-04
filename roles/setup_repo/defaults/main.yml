@@ -7,10 +7,12 @@
 
 # EDB RPM Repo
 edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
+edb_gpg_key_8: "https://yum.enterprisedb.com/ENTERPRISEDB-GPG-KEY"
 
 # Postgresql Repos
 pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+pg_gpg_key_8: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
 
 # epel Repo
 epel_repo_7: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"

@@ -16,6 +16,13 @@
   when: os in ['CentOS8','RHEL8']
   become: yes
 
+- name: Download EDB GPG key
+  rpm_key:
+    state: present
+    key: "{{ edb_gpg_key_8 }}"
+  when: os in ['CentOS8','RHEL8']
+  become: yes
+
 - name: Install epel and EDB repo
   dnf:
     name:
