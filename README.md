@@ -13,7 +13,7 @@ This Ansible Galaxy Collection sets up and configures the repositories from whic
 Roles
 -----
 
-### setup_repo: 
+### setup_repo:
 A role for setting up the EDB and PG Community and EPEL repositories. For installation of these repositories, role needs outbound connections to internet, mainly connection to the following sites:
 
 ```
@@ -30,17 +30,17 @@ This role requires following compulsory parameters:
 For access to EDB repository, you can use following link: [EDB yum access](https://www.enterprisedb.com/user/register?destination=/repository-access-request%3Fdestination%3Dnode/1255704%26resource%3D1255704%26ma_formid%3D2098)
 
 
-### install_dbserver: 
+### install_dbserver:
 
 A role for installing EPAS/PG database server packages. This role installs the EPAS/PG packages, depending on the values of the following variables in the playbook.yml:
 
-1. `pg_type`: EPAS/PG 
+1. `pg_type`: EPAS/PG
 2. And `pg_version`: EPAS/PG major version number
 
 
-### init_dbserver: 
+### init_dbserver:
 
-A role for initializing the PG/EPAS cluster(data) directory. 
+A role for initializing the PG/EPAS cluster(data) directory.
 
 This role allows users to pass following variables:
 
@@ -56,7 +56,7 @@ For more information on variables, please refer to the following variables file:
 
 For more information on the role, please refer roles README
 [README.md](./roles/init_dbserver/README.md)
-    
+
 ### setup_replication:
 
 A role for setting up the replication (synchronous/asynchronous).
@@ -98,16 +98,16 @@ For more information on the role, please refer roles README
 For correctly installed and configuration of the cluster following are requirements:
 
 1. Following are ports which should be opened for communication between the servers
-    
+
     * Postgres:                           5432
     * EDB Postgres Advanced Server Port:  5444
     * EDB Failover Manager:               7800-7810
-  
-  **Note**: If you have firewall enabled on the server, then please allow the access through above ports. 
+
+  **Note**: If you have firewall enabled on the server, then please allow the access through above ports.
 
 2. Ansible (on the machine on which playbook will be executed).
 3. Operating system privileged user (user with sudo privilege) on all the servers/virtual machines.
-4. Instances for the Postgres or EPAS cluster should have at least 2 CPUs and 4 GB of RAM 
+4. Instances for the Postgres or EPAS cluster should have at least 2 CPUs and 4 GB of RAM
 5. The instance utilized for deploying with ansible can be a minimal instance
 
 **Note**: In our examples, we have used `centos` user for Centos OS and `ec2_user` for RHEL OS as a privileged user.
@@ -115,7 +115,7 @@ For correctly installed and configuration of the cluster following are requireme
 # INSTALLATION
 
 * To install Ansible: **[Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)**
-* A CLI or SDK depending on the Cloud vendor to utilize is required: 
+* A CLI or SDK depending on the Cloud vendor to utilize is required:
   * To install the Amazon Web Services CLI please refer to: **[Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)**
   * To install the Microsoft Azure CLI please refer to: **[Installing the AZURE CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)**
   * To install the Google Cloud SDK please refer to: **[Installing the Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)**
@@ -207,7 +207,7 @@ Below is an example of how to include roles for a deployment in a playbook:
       name: Configure Postgres or EPAS on Instances
       become: true
       gather_facts: no
-   
+
       collections:
         - edb_devops.postgres
 
@@ -222,7 +222,7 @@ Below is an example of how to include roles for a deployment in a playbook:
                 pg_type: "PG"
                 yum_username: ""
                 yum_password: ""
-            
+
       roles:
        - setup_repo
        - install_dbserver
@@ -231,7 +231,7 @@ Below is an example of how to include roles for a deployment in a playbook:
        - setup_efm
        - setup_pem
        - manage_dbserver
- 
+
 
 **Defining and adding variables can be done in the set_fact of the pre-tasks.**
 
@@ -255,7 +255,7 @@ The following will occur should a password not be provided for the following acc
 **Note:**
 
 * The `~/.edb` folder and contained files are secured by assigning the permissions to `user` executing the playbook.
-* A password of 20 characters will be automatically created under: `~/.edb` folder. 
+* A password of 20 characters will be automatically created under: `~/.edb` folder.
 * The naming convention for the password file is: `<username>_pass`
 
 
@@ -301,7 +301,7 @@ Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postg
 
 | Distribution | 10 | 11 | 12 |
 | ------------------------- |:--:|:--:|:--:|
-| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| 
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Centos 8 | :x:| :x:| :white_check_mark:|
 | Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
@@ -318,9 +318,9 @@ Examples of utilizing the playbooks for installing: Postgres, EnterpriseDB Postg
 BSD
 
 # Author Information
-Author: 
+Author:
 * Doug Ortiz
 * Vibhor Kumar (Reviewer)
-* Collection Name: postgres 
-* DevOps 
+* Collection Name: postgres
+* DevOps
 * doug.ortiz@enterprisedb.com www.enterprisedb.com
