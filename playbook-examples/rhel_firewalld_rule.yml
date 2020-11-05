@@ -25,6 +25,7 @@
         port: 5444/tcp
         permanent: yes
         state: enabled
+        immediate: true
       delegate_to: "{{ item.value.public_ip }}"
       with_dict: "{{ servers }}"
 
@@ -33,6 +34,7 @@
         port: 5432/tcp
         permanent: yes
         state: enabled
+        immediate: true
       delegate_to: "{{ item.value.public_ip }}"
       with_dict: "{{ servers }}"
 
@@ -41,5 +43,6 @@
         port: 7800-7810/tcp
         permanent: yes
         state: enabled
+        immediate: true
       delegate_to: "{{ item.value.public_ip }}"
       with_dict: "{{ servers }}"
