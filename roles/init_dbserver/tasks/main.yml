@@ -16,11 +16,12 @@
         msg: "operating system = {{ os }} not supported."
   when: os not in supported_os
 
-# display if the database version is not supported
-- name: Display supported versions for database engine
+# Display if the Database Version is not supported
+- name: Display supported versions for Database engine
   block:
     - debug:
-        msg: "database engine version = {{ pg_version }} not supported."
+        msg: "Database Engine Version = {{ pg_version }} not supported.
+             Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 # end playbook if the type of install, operating system or postgres version are not supported
