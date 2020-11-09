@@ -24,9 +24,9 @@
 - name: Display if Database Engine is supported
   block:
     - debug:
-        msg: "Database Engine = {{ pg_type }} {{ pg_version }} 
+        msg: "Database Engine = {{ pg_type }} {{ pg_version }}
              is not supported on RHEL8/CentOS8."
-  when: 
+  when:
     - pg_type == 'EPAS' and pg_version|int < 12
     - os in ['RHEL8','CentOS8']
 
