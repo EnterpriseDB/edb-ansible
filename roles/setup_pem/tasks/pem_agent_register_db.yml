@@ -6,6 +6,21 @@
   become: yes
   register: server_registered
 
+- name: Get the pg_pem_agent_password
+  include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pg_pem_agent_user }}"
+    input_password: "{{ pg_pem_agent_password }}"
+  no_log: true
+  when: pg_pem_agent_password|length < 1
+
+- name: Set pg_pem_agent_password
+  set_fact:
+     pg_pem_agent_password: "{{ input_password }}"
+  when: pg_pem_agent_password|length < 1
+
 - name: register server with agent
   shell: |
     set -o pipefail
