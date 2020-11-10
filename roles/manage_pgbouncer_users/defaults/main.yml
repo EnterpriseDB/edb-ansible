@@ -1,0 +1,18 @@
+---
+# PgBouncer system user & group
+pgbouncer_user: "pgbouncer"
+pgbouncer_group: "pgbouncer"
+
+# Authentication file path
+pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
+# User names & passwords list
+pgbouncer_auth_user_list: []
+
+# PID file
+pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8

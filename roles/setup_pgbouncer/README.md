@@ -1,0 +1,295 @@
+# setup_pgbouncer
+
+This role is for installing and configuring PgBouncer. PgBouncer is a
+lightweight connection pooler for PostgreSQL.
+
+## Requirements
+
+Following are the dependencies and requirement of this role.
+  1. Ansible
+  2. `edb-devops.postgres` -> `setup_repo` role for setting the repository on
+     the systems.
+
+## Role Variables
+
+When executing the role via ansible these are the required variables:
+
+  * ***os***
+
+    Operating Systems supported are: CentOS7, CentOS8, RHEL7 and RHEL8
+
+The rest of the variables can be configured and are available in the:
+* [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
+
+Below is the documentation of the rest of the variables:
+
+### `pgbouncer_listen_port`
+
+Which port to listen on. Applies to both TCP and Unix sockets. Default: `6432`
+
+Example:
+```yaml
+pgbouncer_listen_port: 6432
+```
+
+### `pgbouncer_listen_addr`
+
+Specifies a list of addresses where to listen for TCP connections. You may also
+use `*` meaning “listen on all addresses”. Addresses can be specified
+numerically (IPv4/IPv6) or by name. Default: `*`
+
+Example:
+```yaml
+pgbouncer_listen_addr: "*"
+```
+
+### `pgbouncer_user`
+
+System user account that runs PgBouncer process and owns its configuration
+files. Default: `pgbouncer`
+
+Example:
+```yaml
+pgbouncer_user: "pgbouncer"
+```
+
+### `pgbouncer_group`
+
+System group that PgBouncer system user is part of. Default: `pgbouncer`
+
+Example:
+```yaml
+pgbouncer_group: "pgbouncer"
+```
+
+### `pgbouncer_default_pool_size`
+
+How many server connections to allow per user/database pair. Can be overridden
+in the per-database configuration. Default: `20`
+
+Example:
+```yaml
+pgbouncer_default_pool_size: 20
+```
+
+### `pgbouncer_max_client_conn`
+
+Maximum number of client connections allowed. Default: `100`
+
+Example:
+```yaml
+pgbouncer_max_client_conn: 100
+```
+
+### `pgbouncer_fd_limit`
+
+File descriptor limits. Default: `2048`
+
+Example:
+```yaml
+pgbouncer_fd_limit: 2048
+```
+
+### `pgbouncer_pool_mode`
+
+Pooling mode. Could be `session`, `transaction` or `statement`.
+Default: `session`
+
+Example:
+```yaml
+pgbouncer_pool_mode: "session"
+```
+
+### `pgbouncer_server_reset_query`
+
+Query sent to server on connection release, before making it available to
+other clients. Default: `DISCARD ALL`
+
+Example:
+```yaml
+pgbouncer_server_reset_query: "DISCARD ALL"
+```
+
+### `pgbouncer_admin_users`
+
+Comma-separated list of database users that are allowed to connect and run all
+commands on the console. Default: `pgbouncer_admin`
+
+Example:
+```yaml
+pgbouncer_admin_users: "pgbouncer_admin"
+```
+
+### `pgbouncer_stats_users`
+
+Comma-separated list of database users that are allowed to connect and run
+read-only queries on the console. Default: `pgbouncer_stats`
+
+Example:
+```yaml
+pgbouncer_stats_users: "pgbouncer_stats"
+```
+
+### `pgbouncer_auth_type`
+
+How to authenticate users. Could be `pam`, `hba`, `cert`, `md5`,
+`scram-sha-256`, `plain`, `trust` or `any`. Default: `scram-sha-256`
+
+Example:
+```yaml
+pgbouncer_auth_type: "scram-sha-256"
+```
+
+### `pgbouncer_auth_file`
+
+The path of the file to load user names and passwords from.
+Default: `/etc/pgbouncer/userlist.txt`
+
+Example:
+```yaml
+pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
+```
+
+### `pgbouncer_auth_user`
+
+PostgreSQL user used to run the query `auth_query` in the database when the
+user is not found in the authentication file.
+Default: `not defined`
+
+Example:
+```yaml
+pgbouncer_auth_user: "pgbouncer"
+```
+
+### `pgbouncer_auth_query`
+
+Query to load user’s password from database. Default: `not defined`
+
+Example:
+```yaml
+pgbouncer_auth_query: "SELECT usename, passwd FROM pg_shadow WHERE usename = $1"
+```
+
+### `pgbouncer_config_file`
+
+Main configuration file path. Default: `/etc/pgbouncer/pgbouncer.ini`
+
+Example:
+```yaml
+pgbouncer_config_file: "/etc/pgbouncer/pgbouncer.ini"
+```
+
+### `pgbouncer_pid_file`
+
+PID file path. Default: `/run/pgbouncer/pgbouncer.pid`
+
+Example:
+```yaml
+pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
+```
+
+### `pgbouncer_log_file`
+
+Log file path. Default: `/var/log/pgbouncer/pgbouncer.log`
+
+Example:
+```yaml
+pgbouncer_log_file: "/var/log/pgbouncer/pgbouncer.log"
+```
+
+### `pgbouncer_syslog`
+
+Toggles syslog on/off. Default: `0`
+
+Example:
+```yaml
+pgbouncer_syslog: 0
+```
+
+### `pgbouncer_syslog_ident`
+
+Under what name to send logs to syslog. Default: `pgbouncer`
+
+Example:
+```yaml
+pgbouncer_syslog_ident: "pgbouncer"
+```
+
+### `pgbouncer_databases_file`
+
+Configuration file path that contains databases (connection pools)
+configuration.
+Default: `/etc/pgbouncer/databases.ini`
+
+Example:
+```yaml
+pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
+```
+
+### `pgbouncer_systemd_unit_file`
+
+Systemd unit configuration file path.
+Default: `/etc/systemd/system/pgbouncer.service.d/pgbouncer.conf`
+
+Example:
+```yaml
+pgbouncer_systemd_unit_file: "/etc/systemd/system/pgbouncer.service.d/pgbouncer.conf"
+```
+
+## Dependencies
+
+This role does not have any dependencies, but packages repositories should have
+been configured beforehand with the `setup_repo` role.
+
+## Example Playbook
+
+### Hosts file content
+
+To deploy PgBouncer as a standalone application on a dedicated host,
+`node_type` should be set up to `pgbouncer`. When deploying PgBouncer alongside
+a Postgres instance, the key `pgbouncer` should be set up to `true`.
+
+`hosts.yml` content example:
+```yaml
+---
+servers:
+  pooler:
+    node_type: pgbouncer
+    public_ip: xxx.xxx.xxx.xxx
+  main:
+    node_type:  primary
+    public_ip: xxx.xxx.xxx.xxx
+    private_ip: xxx.xxx.xxx.xxx
+    pgbouncer: true
+```
+
+### How to include the `setup_pgbouncer` role in your Playbook
+
+Below is an example of how to include the `setup_pgbouncer` role:
+```yaml
+---
+- hosts: localhost
+  name: Setup PgBouncer connection pooler
+  become: true
+  gather_facts: no
+
+  collections:
+    - edb_devops.edb_postgres
+
+  vars_files:
+    - hosts.yml
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        os: "CentOS8"
+        pg_version: 13
+        pg_type: "PG"
+
+  roles:
+    - setup_pgbouncer
+```
+
+## License
+
+BSD

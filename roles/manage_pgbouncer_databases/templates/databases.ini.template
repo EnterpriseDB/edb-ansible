@@ -1,0 +1,7 @@
+[databases]
+{% if pgbouncer_databases_list is defined %}
+{% for db_item in pgbouncer_databases_list %}
+{{ db_item.dbname }} = {% if db_item.host is defined %}host={{ db_item.host }}{% endif %}{% if db_item.port is defined %} port={{ db_item.port }}{% endif %}{% if db_item.pool_size is defined %} pool_size={{ db_item.pool_size }}{% endif %}{% if db_item.pool_mode is defined %} pool_mode={{ db_item.pool_mode }}{% endif %}{% if db_item.max_db_connections is defined %} max_db_connections={{ db_item.max_db_connections }}{% endif %}{% if db_item.reserve_pool is defined %} reserve_pool={{ db_item.reserve_pool }}{% endif %}
+
+{% endfor %}
+{% endif %}

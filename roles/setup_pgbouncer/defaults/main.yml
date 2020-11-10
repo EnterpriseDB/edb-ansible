@@ -1,0 +1,71 @@
+---
+# RPM package name
+pgbouncer_package_name: "pgbouncer"
+
+# PgBouncer listen port & address
+pgbouncer_listen_port: 6432
+pgbouncer_listen_addr: "*"
+
+# PgBouncer system user & group
+pgbouncer_user: "pgbouncer"
+pgbouncer_group: "pgbouncer"
+
+# Pool size and maximum  number of client connections
+pgbouncer_default_pool_size: 20
+pgbouncer_max_client_conn: 100
+
+# Maximum limit of file descriptors that pgbouncer can open
+pgbouncer_fd_limit: 2048
+
+# Pool mode
+pgbouncer_pool_mode: "session"
+
+# Reset query
+pgbouncer_server_reset_query: "DISCARD ALL"
+
+# PgBouncer administration & statistics users
+pgbouncer_admin_users: "pgbouncer_admin"
+pgbouncer_stats_users: "pgbouncer_stats"
+
+# PgBouncer authentication part
+pgbouncer_auth_type: "scram-sha-256"
+pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
+
+# User authentication with auth_query
+# pgbouncer_auth_user: "pgbouncer"
+# pgbouncer_auth_query: "SELECT usename, passwd FROM pg_shadow WHERE usename = $1"
+
+# Configuration file
+pgbouncer_config_file: "/etc/pgbouncer/pgbouncer.ini"
+# PID file
+pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
+# Log file
+pgbouncer_log_file: "/var/log/pgbouncer/pgbouncer.log"
+pgbouncer_syslog: 0
+pgbouncer_syslog_ident: "pgbouncer"
+
+# Databases configuration file
+pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
+# Systemd unit file
+pgbouncer_systemd_unit_file: "/etc/systemd/system/pgbouncer.service.d/pgbouncer.conf"
+
+available_pool_mode:
+  - transaction
+  - session
+  - query
+
+available_auth_type:
+  - pam
+  - hba
+  - cert
+  - md5
+  - scram-sha-256
+  - plain
+  - trust
+  - any
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
