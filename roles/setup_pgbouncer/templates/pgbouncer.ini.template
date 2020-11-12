@@ -1,0 +1,24 @@
+[pgbouncer]
+pidfile = {{ pgbouncer_pid_file }}
+
+logfile = {{ pgbouncer_log_file }}
+syslog = {{ pgbouncer_syslog }}
+syslog_ident = {{ pgbouncer_syslog_ident }}
+
+listen_addr = {{ pgbouncer_listen_addr }}
+listen_port = {{ pgbouncer_listen_port }}
+
+auth_type = {{ pgbouncer_auth_type }}
+auth_file = {{ pgbouncer_auth_file }}
+{% if pgbouncer_auth_user is defined %}auth_user = {{ pgbouncer_auth_user }}{% endif %}
+{% if pgbouncer_auth_query is defined %}auth_query = {{ pgbouncer_auth_query }}{% endif %}
+
+admin_users = {{ pgbouncer_admin_users }}
+stats_users = {{ pgbouncer_stats_users }}
+
+pool_mode = {{ pgbouncer_pool_mode }}
+server_reset_query = {{ pgbouncer_server_reset_query }}
+max_client_conn = {{ pgbouncer_max_client_conn }}
+default_pool_size = {{ pgbouncer_default_pool_size }}
+
+%include {{ pgbouncer_databases_file }}
