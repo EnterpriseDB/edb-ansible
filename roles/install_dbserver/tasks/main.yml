@@ -1,38 +1,27 @@
 ---
 # Tasks file for install_dbserver Role
 
-# Display if the Operating System is supported
-
-- name: Display support for Operating System
-  block:
-    - debug:
-        msg: "Operating System = {{ os }} not supported."
+# Check if the Operating System is supported
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
-# Display if the Database Version is not supported
-- name: Display supported versions for Database Engine
-  block:
-    - debug:
-        msg: "Database Engine Version = {{ pg_version }} not supported.
-             Supported versions are {{ supported_pg_version }}"
+# Check if the Database Version is supported
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-# Display if Database Engine is not supported on RHEL8/CentOS8
-- name: Display if Database Engine is supported
-  block:
-    - debug:
-        msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-             is not supported on RHEL8/CentOS8."
+# Check if Database Engine is supported on RHEL8/CentOS8
+- name: Check if Database Engine is supported
+  fail:
+    msg: "Database Engine = {{ pg_type }} {{ pg_version }}
+          is not supported on RHEL8/CentOS8."
   when:
     - pg_type == 'EPAS' and pg_version|int < 12
     - os in ['RHEL8','CentOS8']
-
-# End Playbook if the Type of Install, Operating System or Postgres Version are not supported
-- meta: end_play
-  when: os not in supported_os or
-        pg_version|int not in supported_pg_version
-        or (pg_type == 'EPAS' and pg_version|int < 12
-            and os in ['RHEL8','CentOS8'])
 
 - name: Include the install_dbserver
   include_tasks: install_dbserver.yml
