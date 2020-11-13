@@ -85,13 +85,29 @@ This role helps in setting PEM Server and deployment of PEM Agent on the PG/EPAS
 For more information on the role, please refer roles README
 [README.md](./roles/setup_pem/README.md)
 
-
 ### manage_dbserver
 
 This role helps in managing the HA cluster and covers common tasks.
 For more information on the role, please refer roles README
 [README.md](./roles/manage_dbserver/README.md)
 
+### setup_pgbouncer
+
+This role install and configure a new PgBouncer connection pooler.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_pgbouncer/README.md)
+
+### manage_pgbouncer_databases
+
+This role helps in managing PgBouncer connection pools list.
+For more information on the role, please refer roles README
+[README.md](./roles/manage_pgbouncer_databases/README.md)
+
+### manage_pgbouncer_users
+
+This role helps in managing PgBouncer credentials list.
+For more information on the role, please refer roles README
+[README.md](./roles/manage_pgbouncer_users/README.md)
 
 ## Pre-Requisites
 
@@ -181,23 +197,29 @@ Content of the `hosts.yml` file:
           node_type: pemserver
           public_ip: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
+        pooler:
+          node_type: pgbouncer
+          public_ip: xxx.xxx.xxx.xxx
         primary1:
           node_type: primary
           public_ip: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
-          pem_agent: True
+          pem_agent: true
+          pgbouncer: true
         standby11:
           node_type: standby
           public_ip: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
-          pem_agent: True
+          pem_agent: true
+          pgbouncer: true
         standby12:
           node_type: standby
           public_ip: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
-          pem_agent: True
+          pem_agent: true
+          pgbouncer: true
 ```
 
 
@@ -234,13 +256,18 @@ Below is an example of how to include roles for a deployment in a playbook:
        - setup_efm
        - setup_pem
        - manage_dbserver
+       - setup_pgbouncer
+       - manage_pgbouncer_users
+       - manage_pgbouncer_databases
 ```
 
 Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
 limit what roles you would like to execute: `setup_repo`, `install_dbserver`,
-`init_dbserver`, `setup_replication`, `setup_efm`, `setup_pem` or `manage_dbserver`.
+`init_dbserver`, `setup_replication`, `setup_efm`, `setup_pem`,
+`manage_dbserver`, `setup_pgbouncer`, `manage_pgbouncer_users` or
+`manage_pgbouncer_databases`.
 
 
 ## Default user and passwords

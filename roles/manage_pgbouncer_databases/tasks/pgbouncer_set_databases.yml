@@ -1,0 +1,14 @@
+---
+- name: Generate PgBouncer databases configuration file {{ pgbouncer_databases_file }}
+  template:
+    backup: yes
+    dest: "{{ pgbouncer_databases_file }}"
+    owner: "{{ pgbouncer_user }}"
+    group: "{{ pgbouncer_group }}"
+    src: databases.ini.template
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Reload PgBouncer configuration
+  shell:
+    cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
+  delegate_to: "{{ item.value.public_ip }}"

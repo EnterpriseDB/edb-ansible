@@ -1,0 +1,5 @@
+{% if pgbouncer_auth_user_list is defined %}
+{% for user_item in pgbouncer_auth_user_list %}
+"{{ user_item.username }}" "{{ user_item.password }}"
+{% endfor %}
+{% endif %}

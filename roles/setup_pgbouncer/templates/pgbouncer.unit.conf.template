@@ -1,0 +1,9 @@
+[Service]
+User={{ pgbouncer_user }}
+Group={{ pgbouncer_group }}
+
+# Path to the init file
+Environment=BOUNCERCONF={{ pgbouncer_config_file }}
+
+PIDFile={{ pgbouncer_pid_file }}
+LimitNOFILE={{ pgbouncer_fd_limit }}

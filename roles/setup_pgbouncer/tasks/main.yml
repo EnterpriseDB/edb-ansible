@@ -1,0 +1,32 @@
+---
+# Tasks file for setup_pgbouncer Role
+
+# Check if the Operating System is supported
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+# Check if global pool_mode is valid
+- name: Check PgBouncer pool_mode configuration value
+  fail:
+    msg: "PgBouncer pooling mode = {{ pgbouncer_pool_mode }} not valid.
+         Available pooling modes are {{ available_pool_mode }}"
+  when: pgbouncer_pool_mode not in available_pool_mode
+
+# Check if global auth_type is valid
+- name: Check PgBouncer auth_type configuration value
+  fail:
+    msg: "PgBouncer authentication type = {{ pgbouncer_auth_type }} not valid.
+         Available authentication types are {{ available_auth_type }}"
+  when: pgbouncer_auth_type not in available_auth_type
+
+- name: Include the pgbouncer_install
+  include_tasks: pgbouncer_install.yml
+  when: item.value.pgbouncer is true or item.value.node_type == 'pgbouncer'
+  with_dict:  "{{ servers }}"
+
+- name: Include the pgbouncer_setup
+  include_tasks: pgbouncer_setup.yml
+  when: item.value.pgbouncer is true or item.value.node_type == 'pgbouncer'
+  with_dict:  "{{ servers }}"
