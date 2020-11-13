@@ -4,36 +4,25 @@
 - name: Reference variables
   include_vars: "{{ pg_type }}.yml"
 
-# display if the operating system is supported
-- name: Display support for operating system
-  block:
-    - debug:
-        msg: "operating system = {{ os }} not supported."
+# Check if the Operating System is supported
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
-# Display if the Database Version is not supported
-- name: Display supported versions for Database Engine
-  block:
-    - debug:
-        msg: "Database Engine Version = {{ pg_version }} not supported.
-             Supported versions are {{ supported_pg_version }}"
+# Check if the Database Version is supported
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-# end playbook if the type of install, operating system or postgres version are not supported
-- meta: end_play
-  when: os not in supported_os or
-        pg_version|int not in supported_pg_version
-
-# display if efm version is supported
-- name: Display support for efm
-  block:
-    - debug:
-        msg: "efm version = {{ efm_version }} not supported."
-  when: efm_version|int not in supported_efm_version
-
-# end playbook if the type of install, operating system or postgres version are not supported
-- meta: end_play
-  when: efm_version|int not in supported_efm_version
+# Check if efm version is supported
+- name: Check support for efm
+  fail:
+    msg: "efm version = {{ efm_version }} not supported.
+         Supported versions are {{ supported_efm_version }}"
+  when: efm_version not in supported_efm_version
 
 # configure variables
 
