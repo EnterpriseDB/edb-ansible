@@ -5,9 +5,9 @@ lightweight connection pooler for PostgreSQL.
 
 ## Requirements
 
-Following are the dependencies and requirement of this role.
+Following are the requirements of this role.
   1. Ansible
-  2. `edb-devops.postgres` -> `setup_repo` role for setting the repository on
+  2. `edb_devops.postgres` -> `setup_repo` role for setting the repository on
      the systems.
 
 ## Role Variables
@@ -19,7 +19,8 @@ When executing the role via ansible these are the required variables:
     Operating Systems supported are: CentOS7, CentOS8, RHEL7 and RHEL8
 
 The rest of the variables can be configured and are available in the:
-* [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
+
+  * [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
 Below is the documentation of the rest of the variables:
 
@@ -293,3 +294,12 @@ Below is an example of how to include the `setup_pgbouncer` role:
 ## License
 
 BSD
+
+## Author information
+
+Author:
+
+  * Julien Tachoires
+  * Vibhor Kumar (Reviewer)
+  * EDB Postgres
+  * julien.tachoires@enterprisedb.com www.enterprisedb.com
