@@ -1,125 +1,117 @@
-init_dbserver
-=========
+# init_dbserver
 
-This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql Advanced Server versions: 10, 11, 12 and 13 on instances previously configured. 
+This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql
+Advanced Server versions: 10, 11, 12 and 13 on instances previously configured.
 
-**Not all Distribution or versions are supported on all the operating systems available.**
-**For more details refer to the: 'Database Engines Supported' section**
+**Not all Distribution or versions are supported on all the operating systems
+available.**
+
+For more details refer to the: *Database engines supported* section.
 
 **Note:**
-The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server for replication it only installs Postgres or EnterpriseDB Postgres Advanced Server across multiple nodes: Main and Standby.
-Should there be a need to configure a Postgres or EnterpriseDB Postgres Advanced Server Cluster for replication you can utilize the **setup_replication** role.
+The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server
+for replication it only installs Postgres or EnterpriseDB Postgres Advanced
+Server across multiple nodes: Main and Standby.
+Should there be a need to configure a Postgres or EnterpriseDB Postgres
+Advanced Server Cluster for replication you can utilize the `setup_replication`
+role.
 
-**The ansible playbook must be executed under an account that has full privileges.**
+**The ansible playbook must be executed under an account that has full
+privileges.**
 
-Requirements
-------------
+## Requirements
 
 The only dependencies required for this ansible galaxy role are:
 
-1. Ansible
-2. community.general Ansible Module - Utilized when creating aditional users during a Postgres Install. Only on primary nodes.
-3. setup_repo - for repository installation
-4. install_dbserver - for installation of PostgreSQL/EPAS binaries.
+  1. Ansible
+  2. `community.general` Ansible Module - Utilized when creating aditional
+     users during a Postgres Install. Only on primary nodes.
+  3. `edb_devops.postgres` -> `setup_repo` - for repository installation
+  4. `edb_devops.postgres` -> `install_dbserver` - for installation of
+     PostgreSQL/EPAS binaries.
 
+## Role variables
 
-Role Variables
---------------
+When executing the role via ansible there are three required variables:
 
-When executing the role via ansible there are two required variables:
-
-* <strong> <em> os </em> </strong>
+  * ***os***
 
   Operating Systems supported are: CentOS7 and RHEL7
 
-* <strong> <em> pg_version </em> </strong>
+  * ***pg_version***
 
   Postgres Versions supported are: 10, 11, 12 and 13
 
-* <strong> <em> pg_type </em> </strong>
+  * ***pg_type***
 
   Database Engine supported are: PG and EPAS
 
-These and other variables can be assigned in the 'pre_tasks' definition of the section: 'How to include the 'init_dbserver' role in your Playbook'
-
-
+These and other variables can be assigned in the `pre_tasks` definition of the
+section: *How to include the `init_dbserver` role in your Playbook*
 
 The rest of the variables can be configured and are available in the:
-* [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml) 
-* [roles/init_dbserver/vars/PG.yml](./vars/PG.yml) 
 
+  * [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/init_dbserver/vars/PG.yml](./vars/PG.yml)
 
+## Dependencies
 
-Dependencies
-------------
+The `init_dbserver` role does not have any dependencies on any other roles.
 
-The init_dbserver role does depend on the following roles:
+## Example Playbook
 
-* community.general
-* install_dbserver
-* setup_repo
+### Hosts file content
 
-Hosts file content
-----------------
+Content of the `hosts.yml` file:
 
-Content of the hosts.yml file:
+```yaml
+---
+servers:
+  main1:
+    node_type: primary
+    public_ip: xxx.xxx.xxx.xxx
+  standby11:
+    node_type: standby
+    public_ip: xxx.xxx.xxx.xxx
+  standby12:
+    node_type: standby
+    public_ip: xxx.xxx.xxx.xxx
+```
 
+### How to include the `init_dbserver` role in your Playbook
 
+Below is an example of how to include the `init_dbserver` role:
 
-      servers:
-        main1:
-          node_type: primary
-          public_ip: xxx.xxx.xxx.xxx
-        standby11:
-          node_type: standby
-          public_ip: xxx.xxx.xxx.xxx
-        standby12:
-          node_type: standby
-          public_ip: xxx.xxx.xxx.xxx
+```yaml
+---
+- hosts: localhost
+  name: Initialize EPAS instances
+  become: true
+  gather_facts: no
 
+  collections:
+    - edb_devops.postgres
 
+  vars_files:
+    - hosts.yml
 
-How to include the 'init_dbserver' role in your Playbook
-----------------
+  pre_tasks:
+    # Define or re-define any variables previously assigned
+    - name: Initialize the user defined variables
+      set_fact:
+        os: "CentOS7"
+        pg_type: "EPAS"
+        pg_version: 12
 
-Below is an example of how to include the init_dbserver role:
+  roles:
+    - init_dbserver
+```
 
+Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 
+## Database engines supported
 
-    - hosts: localhost
-      name: Install EFM on Instances
-      #connection: local
-      become: true
-      gather_facts: no
-
-      collections:
-        - edb_devops.postgres
-
-      vars_files:
-        - hosts.yml
-  
-      pre_tasks:
-        # Define or re-define any variables previously assigned
-        - name: Initialize the user defined variables
-          set_fact:
-            os: "CentOS7"
-            pg_type: "EPAS"
-            pg_version: 12
-
-      roles:
-        - init_dbserver
-
-**Defining and adding variables can be done in the set_fact of the pre-tasks.**
-
-All the variables are available at:
-- [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml) 
-- [roles/init_dbserver/vars/PG.yml](./vars/PG.yml) 
-
-Database Engines Supported
-----------------
-
-Community Postgresql
-----------------
+### Community PostgreSQL
 
 | Distribution | 10 | 11 | 12 | 13 |
 | ------------------------- |:--:|:--:|:--:|:--:|
@@ -128,8 +120,7 @@ Community Postgresql
 | CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
-Enterprise DB Postgresql Advanced Server
-----------------
+### Enterprise DB Postgres Advanced Server
 
 | Distribution | 10 | 11 | 12 |
 | ------------------------- |:--:|:--:|:--:|
@@ -140,40 +131,33 @@ Enterprise DB Postgresql Advanced Server
 
 - :white_check_mark: - Tested and supported
 
+## Playbook execution examples
 
+```bash
+# To deploy community Postgres version 13 on CentOS7 hosts with the user centos
+$ ansible-playbook playbook.yml \
+  -u centos \
+  --private-key <key.pem> \
+  --extra-vars="os=CentOS7 pg_version=13 pg_type=PG"
+```
+```bash
+# To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user
+$ ansible-playbook playbook.yml \
+  -u ec2-user \
+  --private-key <key.pem> \
+  --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS"
+```
 
-
-Playbook Execution Examples
-----------------
-
-CentOS/RHEL: Community Postgresql with command line parameters
-----------------
-
-
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS7 pg_version=12 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL7 pg_version=12 pg_type=EPAS"
-    ansible-playbook playbook.yml -u centos --private-key <key.pem> --extra-vars="os=CentOS8 pg_version=12 pg_type=PG"
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem> --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS"
-
-
-CentOS/RHEL 7/8: Community Postgresql without command line parameters
-----------------
-
-    ansible-playbook playbook.yml -u centos --private-key <key.pem>
-    ansible-playbook playbook.yml -u ec2-user --private-key <key.pem>
-
-
-
-License
--------
+## License
 
 BSD
 
-Author Information
-------------------
-Author: 
-* Doug Ortiz
-* Vibhor Kumar (Reviewer)
-* EDB Postgres 
-* DevOps 
-* doug.ortiz@enterprisedb.com www.enterprisedb.com
+## Author information
+
+Author:
+
+  * Doug Ortiz
+  * Vibhor Kumar (Reviewer)
+  * EDB Postgres
+  * DevOps
+  * doug.ortiz@enterprisedb.com www.enterprisedb.com
