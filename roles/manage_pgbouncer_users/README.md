@@ -72,10 +72,13 @@ Example:
 pgbouncer_auth_user_list:
   - username: "my_user"
     password: "SCRAM-SHA-256$4096:xxx...xxx"
+    state: present
   - username: "pgbouncer_admin"
     password: "xxxxxx"
+    state: present
   - username: "pgbouncer_stats"
     password: "xxxxxx"
+    state: present
 ```
 
 ## Dependencies
@@ -128,10 +131,13 @@ Below is an example of how to include the `manage_pgbouncer_users` role:
         pgbouncer_auth_user_list:
           - username: "my_user"
             password: "SCRAM-SHA-256$4096:xxx...xxx"
+            state: present
           - username: "pgbouncer_admin"
             password: "xxxxxx"
+            state: present
           - username: "pgbouncer_stats"
             password: "xxxxxx"
+            state: present
 
   roles:
     - manage_pgbouncer_users
