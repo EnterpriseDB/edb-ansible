@@ -16,6 +16,7 @@ pgbouncer_databases_list:
     pool_mode: "session"
     max_db_connections: 100
     reserve_pool: 0
+    state: present
 
 supported_os:
   - CentOS7

@@ -58,7 +58,7 @@
 
 - name: Create empty databases file {{ pgbouncer_databases_file }}
   copy:
-    content: ""
+    content: "[databases]\n"
     dest: "{{ pgbouncer_databases_file }}"
     force: no
     group: "{{ pgbouncer_group }}"
