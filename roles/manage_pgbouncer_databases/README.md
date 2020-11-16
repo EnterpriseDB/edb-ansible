@@ -87,6 +87,7 @@ pgbouncer_databases_list:
     pool_mode: "transaction"
     max_db_connections: 100
     reserve_pool: 10
+    state: present
 ```
 
 ## Dependencies
@@ -144,6 +145,7 @@ Below is an example of how to include the `manage_pgbouncer_databases` role:
             pool_mode: "transaction"
             max_db_connections: 100
             reserve_pool: 10
+            state: present
           - dbname: "db2"
             host: "xxx.xxx.xxx.xxx"
             port: 5432
@@ -151,6 +153,7 @@ Below is an example of how to include the `manage_pgbouncer_databases` role:
             pool_mode: "session"
             max_db_connections: 100
             reserve_pool: 0
+            state: present
 
   roles:
     - manage_pgbouncer_databases
