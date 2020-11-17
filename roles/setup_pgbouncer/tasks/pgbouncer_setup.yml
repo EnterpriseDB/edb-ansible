@@ -54,6 +54,7 @@
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
     src: ./templates/pgbouncer.ini.template
+    mode: 0600
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Create empty databases file {{ pgbouncer_databases_file }}
@@ -81,6 +82,7 @@
     backup: yes
     dest: "{{ pgbouncer_systemd_unit_file }}"
     src: ./templates/pgbouncer.unit.conf.template
+    mode: 0644
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Open TCP port {{ pgbouncer_listen_port }}
