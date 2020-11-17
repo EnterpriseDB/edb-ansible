@@ -345,6 +345,7 @@ BSD
 ## Author Information
 Author:
 * Doug Ortiz
+* Julien Tachoires
 * Vibhor Kumar (Reviewer)
 * Collection Name: postgres
 * DevOps
