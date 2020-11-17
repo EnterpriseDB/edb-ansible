@@ -1,0 +1,34 @@
+
+# Copyright EnterpriseDB Corporation, 2015-2020. All Rights Reserved.
+#
+# You should not modify the unit file in-place, because the file may be
+# overwritten during package upgrades. To customize the unit file, create
+# a copy in /etc/systemd/system/.
+#
+# If you want to use a new cluster name, create a copy of this file
+# under /etc/systemd/system/efm-newname.service and edit the
+# "Environment=CLUSTER=efm" value, specifying the new cluster name.
+# The PIDFile value must also be changed to <cluster name>.pid.
+#
+# For more info about custom unit files, see
+# http://fedoraproject.org/wiki/Systemd#How_do_I_customize_a_unit_file.2F_add_a_custom_unit_file.3F
+
+[Unit]
+Description=EnterpriseDB Failover Manager {{ efm_version }}
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+Type=forking
+TimeoutSec=120
+Environment=CLUSTER={{ efm_cluster_name }}
+User=efm
+PIDFile=/var/run/efm-{{ efm_version }}/{{ efm_cluster_name }}.pid
+
+ExecStart=/bin/bash -c "/usr/edb/efm-{{ efm_version }}/bin/runefm.sh start ${CLUSTER}"
+ExecStop=/bin/bash -c "/usr/edb/efm-{{ efm_version }}/bin/runefm.sh stop ${CLUSTER}"
+
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

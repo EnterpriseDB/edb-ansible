@@ -13,6 +13,7 @@ pg_pem_agent_user: "pemagent"
 pg_pem_agent_password: ""
 pg_ssl: true
 
+pem_server_exists: false
 # efm information
 efm_version: "4.0"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"

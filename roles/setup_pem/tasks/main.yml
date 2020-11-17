@@ -30,6 +30,7 @@
   set_fact:
     pem_server_private_ip: "{{ item.value.private_ip }}"
     pem_server_public_ip: "{{ item.value.public_ip }}"
+    pem_server_exists: true
   when: item.value.node_type == 'pemserver'
   with_dict: "{{ servers }}"
 
@@ -37,20 +38,26 @@
   set_fact:
     primary_private_ip: "{{ item.value.private_ip }}"
     primary_public_ip: "{{ item.value.public_ip }}"
-  when: item.value.node_type == 'primary'
+  when: 
+    - item.value.node_type == 'primary'
+    - pem_server_exists
   with_dict: "{{ servers }}"
 
 - name: Prepare hba host ip lists
   include_tasks: prepare_hba_value_list.yml
-  when: item.value.node_type in ['primary','standby']
+  when: 
+    - item.value.node_type in ['primary','standby']
+    - pem_server_exists
   with_dict: "{{ servers }}"
 
 - name: Execute setup_pem for all nodes
   include_tasks: setup_pem.yml
+  when: pem_server_exists
   with_dict: "{{ servers }}"
 
 - name: Update pem probes and alerts
   import_tasks: pem_server_probe_alert.yml
+  when: pem_server_exists
   delegate_to: "{{ pem_server_public_ip }}"
 
 - name: Reset the variables
