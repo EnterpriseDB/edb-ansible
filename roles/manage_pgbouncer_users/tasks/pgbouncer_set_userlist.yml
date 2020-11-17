@@ -19,3 +19,4 @@
   shell:
     cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
   delegate_to: "{{ item.value.public_ip }}"
+  changed_when: false
