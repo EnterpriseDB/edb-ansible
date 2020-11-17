@@ -7,6 +7,7 @@ pg_user: "enterprisedb"
 
 # pem data dir
 pg_home: "/usr/edb/as{{ pg_version }}" 
+pg_data: "/var/lib/edb/as{{ pg_version }}/data"
 pg_bin_path: "{{ pg_home }}/bin"
 pg_ssl: true
 
