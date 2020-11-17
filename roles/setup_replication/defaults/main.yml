@@ -37,3 +37,7 @@ supported_pg_version:
   - 11
   - 12
   - 13
+
+supported_node_type:
+  - primary
+  - standby

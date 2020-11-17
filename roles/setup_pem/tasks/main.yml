@@ -1,7 +1,7 @@
 ---
-# tasks file for edb.postgres.install role
+# tasks file for the setup_pem role
 
-- name: reference ariables
+- name: reference variables
   include_vars: "{{ pg_type }}.yml"
 
 # Check if the Operating System is supported
@@ -23,6 +23,7 @@
   when:
     - item.value.hostname is defined
     - use_hostname
+    - item.value.node_type in supported_node_type
   with_dict: "{{ servers }}"
 
 - name: Get the pem_server_private/public_ip
