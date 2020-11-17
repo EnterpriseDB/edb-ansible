@@ -376,7 +376,8 @@ BSD
 Author:
 
   * Doug Ortiz
-  * Vibhor Kumar (Reviewer)
+  * Julien Tachoires
+  * Vibhor Kumar
   * Collection Name: postgres
   * DevOps
   * doug.ortiz@enterprisedb.com www.enterprisedb.com
