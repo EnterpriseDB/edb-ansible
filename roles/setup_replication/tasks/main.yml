@@ -1,5 +1,5 @@
 ---
-# tasks file for edb.postgres.install role
+# tasks file for the setup_replication role
 
 # reference epas variables
 - name: reference epas variables
@@ -21,7 +21,9 @@
 - name: Prepare etc_hosts_lists
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
-  when: item.value.hostname is defined
+  when:
+    - item.value.hostname is defined
+    - item.node_type in supported_node_type
   with_dict: "{{ servers }}"
 
 - name: Get the primary information
@@ -46,7 +48,7 @@
 
 - name: Prepare host ip lists based on allow_node_ips
   include_tasks: prepare_hba_value_list.yml
-  when: item.value.node_type in ['primary','standby']
+  when: item.value.node_type in supported_node_type
   with_dict: "{{ servers }}"
 
 - name: Prepare synchronous_standby_names
@@ -71,7 +73,7 @@
   when: synchronous_standbys|length > 0
   delegate_to: "{{ primary_public_ip }}"
 
-- name: Reset the the variables based on the user input
+- name: Reset the variables based on the user input
   set_fact:
       primary_private_ip: ""
       primary_public_ip: ""

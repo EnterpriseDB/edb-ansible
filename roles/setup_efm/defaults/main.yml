@@ -73,7 +73,10 @@ supported_pg_version:
   - 12
   - 13
 
-
 supported_efm_version:
   - 4.0
   - 3.10
+
+supported_node_type:
+  - primary
+  - standby

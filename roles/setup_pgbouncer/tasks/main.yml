@@ -23,10 +23,10 @@
 
 - name: Include the pgbouncer_install
   include_tasks: pgbouncer_install.yml
-  when: item.value.pgbouncer is true or item.value.node_type == 'pgbouncer'
+  when: (item.value.pgbouncer is true and item.value.node_type in supported_node_type) or item.value.node_type == 'pgbouncer'
   with_dict:  "{{ servers }}"
 
 - name: Include the pgbouncer_setup
   include_tasks: pgbouncer_setup.yml
-  when: item.value.pgbouncer is true or item.value.node_type == 'pgbouncer'
+  when: (item.value.pgbouncer is true and item.value.node_type in supported_node_type) or item.value.node_type == 'pgbouncer'
   with_dict:  "{{ servers }}"

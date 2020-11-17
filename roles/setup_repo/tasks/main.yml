@@ -1,5 +1,5 @@
 ---
-# Tasks file for edb_postgres_repo Role
+# Tasks file for the setup_repo Role
 
 # Check if the Operating System is supported
 - name: Check support for Operating System
