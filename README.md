@@ -380,4 +380,4 @@ Author:
   * Vibhor Kumar
   * Collection Name: postgres
   * DevOps
-  * doug.ortiz@enterprisedb.com www.enterprisedb.com
+  * edb-devops@enterprisedb www.enterprisedb.com
