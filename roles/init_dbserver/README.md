@@ -157,7 +157,8 @@ BSD
 Author:
 
   * Doug Ortiz
-  * Vibhor Kumar (Reviewer)
+  * Julien Tachoires
+  * Vibhor Kumar
   * EDB Postgres
   * DevOps
-  * doug.ortiz@enterprisedb.com www.enterprisedb.com
+  * edb-devops@enterprisedb www.enterprisedb.com
