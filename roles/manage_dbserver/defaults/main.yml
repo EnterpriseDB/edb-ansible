@@ -28,3 +28,8 @@ input_password: ""
 
 pg_databases: ""
 params_restart_required: false
+
+supported_node_type:
+  - primary
+  - standby
+  - pemserver

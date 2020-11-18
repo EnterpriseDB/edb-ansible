@@ -12,9 +12,9 @@ pg_efm_user: "efm"
 pg_efm_user_password: ""
 pg_ssl: true
 
-efm_service: "edb-efm-{{ efm_version }}"
 efm_nodes_list: ""
 efm_cluster_name: "efm"
+efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
 # common variables require for the role
 etc_hosts_lists: []
 primary_public_ip: ""
@@ -73,7 +73,10 @@ supported_pg_version:
   - 12
   - 13
 
-
 supported_efm_version:
   - 4.0
   - 3.10
+
+supported_node_type:
+  - primary
+  - standby

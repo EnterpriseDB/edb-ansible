@@ -6,4 +6,5 @@
 
 - name: Manage dbserver.yml
   include_tasks: manage_dbserver.yml
+  when: item.value.node_type in supported_node_type
   with_dict:  "{{ servers }}"

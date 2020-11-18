@@ -1,6 +1,5 @@
 ---
-# tasks file for edb.postgres.install role
-
+# tasks file for the setup_efm role
 - name: Reference variables
   include_vars: "{{ pg_type }}.yml"
 
@@ -32,6 +31,7 @@
   when:
     - item.value.hostname is defined
     - use_hostname
+    - item.value.node_type in supported_node_type
   with_dict: "{{ servers }}"
 
 - name: Set efm nodes and witness type
@@ -46,7 +46,7 @@
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + item.value.private_ip + ':7800 ' }}"
   when:
-    - item.value.node_type in ['primary','standby']
+    - item.value.node_type in supported_node_type
     - not use_hostname
   with_dict: "{{ servers }}"
 
@@ -54,14 +54,14 @@
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + item.value.hostname + ':7800 ' }}"
   when:
-    - item.value.node_type in ['primary','standby']
+    - item.value.node_type in supported_node_type
     - item.value.hostname is defined
     - use_hostname
   with_dict: "{{ servers }}"
 
 - name: Prepare hba host ip lists
   include_tasks: prepare_hba_value_list.yml
-  when: item.value.node_type in ['primary','standby']
+  when: item.value.node_type in supported_node_type
   with_dict: "{{ servers }}"
 
 - name: Ensure we have efm user in primary database
@@ -73,7 +73,7 @@
 
 - name: Configure efm
   include_tasks: setup_efm.yml
-  when: item.value.node_type in ['primary','standby']
+  when: item.value.node_type in supported_node_type
   with_dict: "{{ servers }}"
 
 - name: Efm parameters settings

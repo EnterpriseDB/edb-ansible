@@ -6,6 +6,7 @@ pg_version: ""
 pg_user: "postgres"
 # pem data dir
 pg_home: "/usr/pgsql-{{ pg_version }}"
+pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
 pg_bin_path: "{{ pg_home }}/bin"
 pg_ssl: true
 

@@ -29,3 +29,5 @@
     - setup_efm
     - setup_pem
     - manage_dbserver
+    - setup_pgbouncer
+    - manage_pgbouncer_databases

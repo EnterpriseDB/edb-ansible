@@ -1,15 +1,22 @@
 ---
-- name: Generate PgBouncer auth. file {{ pgbouncer_auth_file }}
-  template:
-    backup: yes
-    dest: "{{ pgbouncer_auth_file }}"
+- name: Manage PgBouncer auth. file entries in {{ pgbouncer_auth_file }}
+  lineinfile:
+    path: "{{ pgbouncer_auth_file }}"
+    line: "\"{{ user_item.username }}\" \"{{ user_item.password }}\""
+    regexp: "^\\\"{{ user_item.username | regex_escape() }}\\\".*"
+    state: "{{ user_item.state | default('present') }}"
+    create: yes
+    mode: 0600
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
-    mode: 0600
-    src: userlist.txt.template
+  when: pgbouncer_auth_user_list|length > 0
+  with_items: "{{ pgbouncer_auth_user_list }}"
+  loop_control:
+    loop_var: user_item
   delegate_to: "{{ item.value.public_ip }}"
 
 - name: Reload PgBouncer configuration
   shell:
     cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
   delegate_to: "{{ item.value.public_ip }}"
+  changed_when: false
