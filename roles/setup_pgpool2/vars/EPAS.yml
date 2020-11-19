@@ -1,0 +1,4 @@
+---
+
+pgpool2_version: 4.1
+pgpool2_package_name: "edb-pgpool{{ pgpool2_version | string | replace('.', '') }}"

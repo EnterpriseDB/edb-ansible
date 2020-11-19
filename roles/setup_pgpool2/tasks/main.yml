@@ -1,0 +1,33 @@
+---
+# Tasks file for setup_pgpool2 Role
+
+# reference EPAS/PG variables
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}.yml"
+
+# Check if the Operating System is supported
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+# Check if the Database Version is supported
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+# Check if the pgpoolII version is supported when working with EPAS env.
+- name: Check supported versions for pgpoolII
+  fail:
+    msg: "pgpoolII Version = {{ pgpool2_version }} not supported.
+          Supported versions are {{ supported_pgpool2_version }}"
+  when:
+    - pg_type == "EPAS"
+    - pgpool2_version not in supported_pgpool2_version
+
+- name: Include the pgpool2_install
+  include_tasks: pgpool2_install.yml
+  when: item.value.node_type in supported_node_type
+  with_dict:  "{{ servers }}"

@@ -1,0 +1,5 @@
+---
+
+# We don't have the choice of the version with community PostgreSQL
+pgpool2_version: ""
+pgpool2_package_name: "pgpool-II-{{ pg_version }}"
