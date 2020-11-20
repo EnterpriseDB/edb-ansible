@@ -25,6 +25,45 @@
     create_home: false
   delegate_to: "{{ item.value.public_ip }}"
 
+- name: Create configuration directory {{ pgpool2_configuration_file | dirname }}
+  file:
+    path: "{{ pgpool2_configuration_file | dirname }}"
+    state: directory
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0755
+  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Create logging directory {{ config_dict.logdir | default('') }}
+  file:
+    path: "{{ config_dict.logdir }}"
+    state: directory
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0755
+  delegate_to: "{{ item.value.public_ip }}"
+  when: config_dict.logdir is defined
+
+- name: Create running directory {{ config_dict.pid_file_name | default('') | dirname }}
+  file:
+    path: "{{ config_dict.pid_file_name | dirname }}"
+    state: directory
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0700
+  delegate_to: "{{ item.value.public_ip }}"
+  when: config_dict.pid_file_name is defined
+
+- name: Create oiddir directory {{ config_dict.memqcache_oiddir | default('') }}
+  file:
+    path: "{{ config_dict.memqcache_oiddir }}"
+    state: directory
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0700
+  delegate_to: "{{ item.value.public_ip }}"
+  when: config_dict.memqcache_oiddir is defined
+
 # Build the configuration file
 - include_role:
     name: manage_pgpool2
