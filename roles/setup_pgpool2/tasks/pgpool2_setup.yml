@@ -1,4 +1,14 @@
 ---
+# Generate configuration parameters dictionary
+- name: Generate configuration parameters dictionary
+  set_fact:
+    config_dict: >-
+      {{ config_dict|default({}) | combine( {ci.key: ci.value} ) }}
+  with_items: "{{ pgpool2_configuration }}"
+  loop_control:
+    loop_var: ci
+  when:
+    - ci.state == 'present'
 
 # Build the configuration file
 - include_role:
