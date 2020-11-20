@@ -27,7 +27,7 @@
 
 - name: Prepare etc_hosts_lists
   set_fact:
-    etc_hosts_list: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
+    etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
   when:
     - item.value.hostname is defined
     - use_hostname
@@ -37,7 +37,6 @@
 - name: Set efm nodes and witness type
   set_fact:
     efm_install_version : "{{ efm_version | replace('.','') }}"
-    efm_witness: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
     primary_public_ip: "{{ primary_public_ip + item.value.public_ip if (item.value.node_type == 'primary') else primary_public_ip }}"
   with_dict: "{{ servers }}"
   register: output
