@@ -1,18 +1,5 @@
 ---
 # display details of node to install
-- name: Display current node to install
-  block:
-    - debug:
-        msg:
-            "operating system = {{ os }}:
-             pg_type = {{ pg_type }},
-             pg_data = {{ pg_data }},
-             efm_service = {{ efm_service }},
-             efm_nodes_list = {{ efm_nodes_list }},
-             use_hostname = {{ use_hostname }},
-             efm_witness =  {{ efm_witness }},
-             pg_efm_user = {{ pg_efm_user }},
-             public ip = {{ item.value.public_ip }}"
 
 - name: Set force_efm_install based on the user input
   set_fact:
