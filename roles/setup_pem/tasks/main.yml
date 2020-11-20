@@ -43,6 +43,11 @@
     - pem_server_exists
   with_dict: "{{ servers }}"
 
+- name: Create pemagent user on primary
+  import_tasks: pem_agent_user.yml
+  when: pem_server_exists
+  delegate_to: "{{ primary_public_ip }}"
+
 - name: Prepare hba host ip lists
   include_tasks: prepare_hba_value_list.yml
   when: 
@@ -50,9 +55,18 @@
     - pem_server_exists
   with_dict: "{{ servers }}"
 
-- name: Execute setup_pem for all nodes
-  include_tasks: setup_pem.yml
-  when: pem_server_exists
+- name: Configure pemserver
+  include_tasks: setup_pemserver.yml
+  when: 
+     - item.value.node_type == 'pemserver'
+     - pem_server_exists
+  with_dict: "{{ servers }}"
+
+- name: Execute setup_pemagent for other nodes
+  include_tasks: setup_pemagent.yml
+  when: 
+     - item.value.node_type != 'pemserver'
+     - pem_server_exists
   with_dict: "{{ servers }}"
 
 - name: Update pem probes and alerts
