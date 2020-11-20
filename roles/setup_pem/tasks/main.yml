@@ -38,7 +38,7 @@
   set_fact:
     primary_private_ip: "{{ item.value.private_ip }}"
     primary_public_ip: "{{ item.value.public_ip }}"
-  when: 
+  when:
     - item.value.node_type == 'primary'
     - pem_server_exists
   with_dict: "{{ servers }}"
@@ -50,21 +50,21 @@
 
 - name: Prepare hba host ip lists
   include_tasks: prepare_hba_value_list.yml
-  when: 
+  when:
     - item.value.node_type in ['primary','standby']
     - pem_server_exists
   with_dict: "{{ servers }}"
 
 - name: Configure pemserver
   include_tasks: setup_pemserver.yml
-  when: 
+  when:
      - item.value.node_type == 'pemserver'
      - pem_server_exists
   with_dict: "{{ servers }}"
 
 - name: Execute setup_pemagent for other nodes
   include_tasks: setup_pemagent.yml
-  when: 
+  when:
      - item.value.node_type != 'pemserver'
      - pem_server_exists
   with_dict: "{{ servers }}"
