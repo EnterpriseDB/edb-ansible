@@ -69,3 +69,84 @@
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   with_dict:  "{{ servers }}"
+
+- name: Open listening TCP port {{ config_dict.port | default('') }}
+  firewalld:
+    port: "{{ config_dict.port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  delegate_to: "{{ item.value.public_ip }}"
+  when:
+    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - config_dict.port is defined
+
+- name: Open PCP TCP port {{ config_dict.pcp_port | default('') }}
+  firewalld:
+    port: "{{ config_dict.pcp_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  delegate_to: "{{ item.value.public_ip }}"
+  when:
+    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - config_dict.pcp_port is defined
+
+- name: Open PCP UDP port {{ config_dict.pcp_port | default('') }}
+  firewalld:
+    port: "{{ config_dict.pcp_port }}/udp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  delegate_to: "{{ item.value.public_ip }}"
+  when:
+    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - config_dict.pcp_port is defined
+
+- name: Open Watchdog TCP port {{ config_dict.wd_port | default('') }}
+  firewalld:
+    port: "{{ config_dict.wd_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  delegate_to: "{{ item.value.public_ip }}"
+  when:
+    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - config_dict.wd_port is defined
+    - config_dict.use_watchdog == 'on'
+
+- name: Open Watchdog UDP port {{ config_dict.wd_port | default('') }}
+  firewalld:
+    port: "{{ config_dict.wd_port }}/udp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  delegate_to: "{{ item.value.public_ip }}"
+  when:
+    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - config_dict.wd_port is defined
+    - config_dict.use_watchdog == 'on'
+
+- name: Open Watchdog heartbeat TCP port {{ config_dict.wd_heartbeat_port | default('') }}
+  firewalld:
+    port: "{{ config_dict.wd_heartbeat_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  delegate_to: "{{ item.value.public_ip }}"
+  when:
+    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - config_dict.wd_heartbeat_port is defined
+    - config_dict.use_watchdog == 'on'
+
+- name: Open Watchdog heartbeat UDP port {{ config_dict.wd_heartbeat_port | default('') }}
+  firewalld:
+    port: "{{ config_dict.wd_heartbeat_port }}/udp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  delegate_to: "{{ item.value.public_ip }}"
+  when:
+    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - config_dict.wd_heartbeat_port is defined
+    - config_dict.use_watchdog == 'on'
