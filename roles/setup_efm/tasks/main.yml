@@ -27,7 +27,7 @@
 
 - name: Prepare etc_hosts_lists
   set_fact:
-    etc_hosts_list: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
+    etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
   when:
     - item.value.hostname is defined
     - use_hostname
