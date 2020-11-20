@@ -33,29 +33,6 @@
   when: item.value.pem_agent is defined
   register: output
 
-- name: Remove pem server based on force_pem_install
-  block:
-    - import_tasks: rm_pem_server_install.yml
-  when: force_pem_install
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Install and configure postgres on centos7 or rhel7
-  block:
-    - import_tasks: pem_server_user.yml
-    - import_tasks: pem_server_install.yml
-    - import_tasks: pem_server_config.yml
-    - import_tasks: pem_server_hba.yml
-  when: item.value.node_type == 'pemserver'
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
-- name: Create pemagent user on primary
-  import_tasks: pem_agent_user.yml
-  when: item.value.node_type == 'primary'
-  become: yes
-  delegate_to: "{{ item.value.public_ip }}"
-
 - name: Install and configure postgres on centos7 or rhel7
   block:
     - import_tasks: pem_agent_install.yml
