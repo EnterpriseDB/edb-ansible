@@ -37,7 +37,6 @@
 - name: Set efm nodes and witness type
   set_fact:
     efm_install_version : "{{ efm_version | replace('.','') }}"
-    efm_witness: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
     primary_public_ip: "{{ primary_public_ip + item.value.public_ip if (item.value.node_type == 'primary') else primary_public_ip }}"
   with_dict: "{{ servers }}"
   register: output
