@@ -62,7 +62,7 @@
      - pem_server_exists
   with_dict: "{{ servers }}"
 
-- name: Execute setup_pem for all nodes
+- name: Execute setup_pemagent for other nodes
   include_tasks: setup_pemagent.yml
   when: 
      - item.value.node_type != 'pemserver'

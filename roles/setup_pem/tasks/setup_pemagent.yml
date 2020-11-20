@@ -33,7 +33,7 @@
   when: item.value.pem_agent is defined
   register: output
 
-- name: Install and configure postgres on centos7 or rhel7
+- name: Install and configure pemagent on nodes
   block:
     - import_tasks: pem_agent_install.yml
     - import_tasks: pem_agent_config.yml

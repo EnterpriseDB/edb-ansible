@@ -21,7 +21,7 @@
   become: yes
   delegate_to: "{{ item.value.public_ip }}"
 
-- name: Install and configure postgres on centos7 or rhel7
+- name: Install and configure pemserver
   block:
     - import_tasks: pem_server_user.yml
     - import_tasks: pem_server_install.yml
