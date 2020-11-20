@@ -12,6 +12,10 @@
   become: yes
   failed_when: "'EFMPASS password not found.' in pass_opt.stdout"
 
+- name: Check if we have efm_witness or not
+  set_fact:
+    efm_witness: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
+
 - name: Prepare the necessary parameters
   set_fact:
     efm_node_parameters:
@@ -20,10 +24,6 @@
         - { name: application.name, value: "{{ item.key }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: not use_hostname
-
-- name: Check if we have efm_witness or not
-  set_fact:
-    efm_witness: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
 
 - name: Prepare the necessary parameters
   set_fact:
