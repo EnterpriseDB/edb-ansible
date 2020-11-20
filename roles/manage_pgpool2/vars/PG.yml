@@ -1,0 +1,7 @@
+---
+
+pgpool2_configuration_path: "/etc/pgpool-II-{{ pg_version }}/pgpool.conf"
+pgpool2_user: "enterprisedb"
+pgpool2_group: "enterprisedb"
+
+pgpool2_configuration: []

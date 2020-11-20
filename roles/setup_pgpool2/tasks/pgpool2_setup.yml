@@ -1,0 +1,7 @@
+---
+
+# Build the configuration file
+- include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_configuration
+  with_dict:  "{{ servers }}"

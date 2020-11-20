@@ -1,0 +1,8 @@
+---
+
+pgpool2_version: 4.1
+pgpool2_configuration_path: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pgpool.conf"
+pgpool2_user: "enterprisedb"
+pgpool2_group: "enterprisedb"
+
+pgpool2_configuration: []

@@ -2,3 +2,182 @@
 
 pgpool2_version: 4.1
 pgpool2_package_name: "edb-pgpool{{ pgpool2_version | string | replace('.', '') }}"
+pgpool2_configuration_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pgpool.conf"
+pgpool2_user: "enterprisedb"
+pgpool2_group: "enterprisedb"
+
+pgpool2_configuration:
+  - {key: "pool_conn_dbname", value: "edb", state: absent, quoted: true}
+  - {key: "listen_addresses", value: "*", state: present, quoted: true}
+  - {key: "port", value: 5433, state: present, quoted: false}
+  - {key: "socket_dir", value: "/tmp", state: present, quoted: true}
+  - {key: "listen_backlog_multiplier", value: 2, state: present, quoted: false}
+  - {key: "serialize_accept", value: "off", state: present, quoted: false}
+  - {key: "reserved_connections", value: 0, state: present, quoted: false}
+  - {key: "pcp_listen_addresses", value: "*", state: present, quoted: true}
+  - {key: "pcp_port", value: 9898, state: present, quoted: false}
+  - {key: "pcp_socket_dir", value: "/tmp", state: present, quoted: true}
+  - {key: "backend_hostname0", value: "localhost", state: present, quoted: true}
+  - {key: "backend_port0", value: 5444, state: present, quoted: false}
+  - {key: "backend_weight0", value: 1, state: present, quoted: false}
+  - {key: "backend_data_directory0", value: "/var/lib/edb/as{{ pg_version }}/data", state: present, quoted: true}
+  - {key: "backend_flag0", value: "ALLOW_TO_FAILOVER", state: present, quoted: true}
+  - {key: "backend_application_name0", value: "server0", state: present, quoted: true}
+  - {key: "backend_hostname1", value: "host2", state: absent, quoted: true}
+  - {key: "backend_port1", value: 5433, state: absent, quoted: false}
+  - {key: "backend_weight1", value: 1, state: absent, quoted: false}
+  - {key: "backend_data_directory1", value: "/data1", state: absent, quoted: true}
+  - {key: "backend_flag1", value: "ALLOW_TO_FAILOVER", state: absent, quoted: true}
+  - {key: "backend_application_name1", value: "server1", state: absent, quoted: true}
+  - {key: "enable_pool_hba", value: "off", state: present, quoted: false}
+  - {key: "pool_passwd", value: "pool_passwd", state: present, quoted: true}
+  - {key: "authentication_timeout", value: 60, state: present, quoted: false}
+  - {key: "allow_clear_text_frontend_auth", value: "off", state: present, quoted: false}
+  - {key: "ssl", value: "off", state: present, quoted: false}
+  - {key: "ssl_key", value: "./server.key", state: absent, quoted: true}
+  - {key: "ssl_cert", value: "./server.cert", state: absent, quoted: true}
+  - {key: "ssl_ca_cert", value: "", state: absent, quoted: true}
+  - {key: "ssl_ca_cert_dir", value: "", state: absent, quoted: true}
+  - {key: "ssl_ciphers", value: "HIGH:MEDIUM:+3DES:!aNULL", state: present, quoted: true}
+  - {key: "ssl_prefer_server_ciphers", value: "off", state: present, quoted: false}
+  - {key: "ssl_ecdh_curve", value: "prime256v1", state: present, quoted: true}
+  - {key: "ssl_dh_params_file", value: "", state: present, quoted: true}
+  - {key: "num_init_children", value: 32, state: present, quoted: false}
+  - {key: "max_pool", value: 4, state: present, quoted: false}
+  - {key: "child_life_time", value: 300, state: present, quoted: false}
+  - {key: "child_max_connections", value: 0, state: present, quoted: false}
+  - {key: "connection_life_time", value: 0, state: present, quoted: false}
+  - {key: "client_idle_limit", value: 0, state: present, quoted: false}
+  - {key: "log_destination", value: "stderr", state: present, quoted: true}
+  - {key: "log_line_prefix", value: "%t: pid %p: ", state: present, quoted: true}
+  - {key: "log_connections", value: "off", state: present, quoted: false}
+  - {key: "log_hostname", value: "off", state: present, quoted: false}
+  - {key: "log_statement", value: "off", state: present, quoted: false}
+  - {key: "log_per_node_statement", value: "off", state: present, quoted: false}
+  - {key: "log_client_messages", value: "off", state: present, quoted: false}
+  - {key: "log_standby_delay", value: "none", state: present, quoted: true}
+  - {key: "syslog_facility", value: "LOCAL0", state: present, quoted: true}
+  - {key: "syslog_ident", value: "pgpool", state: present, quoted: true}
+  - {key: "log_error_verbosity", value: "default", state: absent, quoted: false}
+  - {key: "client_min_messages", value: "notice", state: absent, quoted: false}
+  - {key: "log_min_messages", value: "warning", state: absent, quoted: false}
+  - {key: "pid_file_name", value: "/var/run/edb/pgpool{{ pgpool2_version | string }}/edb-pgpool-{{ pgpool2_version | string }}.pid", state: present, quoted: true}
+  - {key: "logdir", value: "/var/log/edb/pgpool{{ pgpool2_version | string }}", state: present, quoted: true}
+  - {key: "connection_cache", value: "on", state: present, quoted: false}
+  - {key: "reset_query_list", value: "ABORT; DISCARD ALL", state: present, quoted: true}
+  - {key: "replication_mode", value: "off", state: present, quoted: false}
+  - {key: "replicate_select", value: "off", state: present, quoted: false}
+  - {key: "insert_lock", value: "on", state: present, quoted: false}
+  - {key: "lobj_lock_table", value: "", state: present, quoted: true}
+  - {key: "replication_stop_on_mismatch", value: "off", state: present, quoted: false}
+  - {key: "failover_if_affected_tuples_mismatch", value: "off", state: present, quoted: false}
+  - {key: "load_balance_mode", value: "off", state: present, quoted: false}
+  - {key: "ignore_leading_white_space", value: "on", state: present, quoted: false}
+  - {key: "white_function_list", value: "", state: present, quoted: true}
+  - {key: "black_function_list", value: "currval,lastval,nextval,setval", state: present, quoted: true}
+  - {key: "black_query_pattern_list", value: "", state: present, quoted: true}
+  - {key: "database_redirect_preference_list", value: "", state: present, quoted: true}
+  - {key: "app_name_redirect_preference_list", value: "", state: present, quoted: true}
+  - {key: "allow_sql_comments", value: "off", state: present, quoted: false}
+  - {key: "disable_load_balance_on_write", value: "transaction", state: present, quoted: true}
+  - {key: "statement_level_load_balance", value: "off", state: present, quoted: false}
+  - {key: "master_slave_mode", value: "off", state: present, quoted: false}
+  - {key: "master_slave_sub_mode", value: "stream", state: present, quoted: true}
+  - {key: "sr_check_period", value: 0, state: present, quoted: false}
+  - {key: "sr_check_user", value: "nobody", state: present, quoted: true}
+  - {key: "sr_check_password", value: "", state: present, quoted: true}
+  - {key: "sr_check_database", value: "postgres", state: present, quoted: true}
+  - {key: "delay_threshold", value: 0, state: present, quoted: false}
+  - {key: "follow_master_command", value: "", state: present, quoted: true}
+  - {key: "health_check_period", value: 0, state: present, quoted: false}
+  - {key: "health_check_timeout", value: 20, state: present, quoted: false}
+  - {key: "health_check_user", value: "nobody", state: present, quoted: true}
+  - {key: "health_check_password", value: "", state: present, quoted: true}
+  - {key: "health_check_database", value: "", state: present, quoted: true}
+  - {key: "health_check_max_retries", value: 0, state: present, quoted: false}
+  - {key: "health_check_retry_delay", value: 1, state: present, quoted: false}
+  - {key: "connect_timeout", value: 10000, state: present, quoted: false}
+  - {key: "health_check_period0", value: 0, state: absent, quoted: false}
+  - {key: "health_check_timeout0", value: 20, state: absent, quoted: false}
+  - {key: "health_check_user0", value: "nobody", state: absent, quoted: true}
+  - {key: "health_check_password0", value: "", state: absent, quoted: true}
+  - {key: "health_check_database0", value: "", state: absent, quoted: true}
+  - {key: "health_check_max_retries0", value: 0, state: absent, quoted: false}
+  - {key: "health_check_retry_delay0", value: 1, state: absent, quoted: false}
+  - {key: "connect_timeout0", value: 10000, state: absent, quoted: false}
+  - {key: "failover_command", value: "", state: present, quoted: true}
+  - {key: "failback_command", value: "", state: present, quoted: true}
+  - {key: "failover_on_backend_error", value: "on", state: present, quoted: false}
+  - {key: "detach_false_primary", value: "off", state: present, quoted: false}
+  - {key: "search_primary_node_timeout", value: 300, state: present, quoted: false}
+  - {key: "auto_failback", value: "off", state: present, quoted: false}
+  - {key: "auto_failback_interval", value: 60, state: present, quoted: false}
+  - {key: "recovery_user", value: "nobody", state: present, quoted: true}
+  - {key: "recovery_password", value: "", state: present, quoted: true}
+  - {key: "recovery_1st_stage_command", value: "", state: present, quoted: true}
+  - {key: "recovery_2nd_stage_command", value: "", state: present, quoted: true}
+  - {key: "recovery_timeout", value: 90, state: present, quoted: false}
+  - {key: "client_idle_limit_in_recovery", value: 0, state: present, quoted: false}
+  - {key: "use_watchdog", value: "off", state: present, quoted: false}
+  - {key: "trusted_servers", value: "", state: present, quoted: true}
+  - {key: "ping_path", value: "/bin", state: present, quoted: true}
+  - {key: "wd_hostname", value: "", state: present, quoted: true}
+  - {key: "wd_port", value: 9000, state: present, quoted: false}
+  - {key: "wd_priority", value: 1, state: present, quoted: false}
+  - {key: "wd_authkey", value: "", state: present, quoted: true}
+  - {key: "wd_ipc_socket_dir", value: "/tmp", state: present, quoted: true}
+  - {key: "delegate_IP", value: "", state: present, quoted: true}
+  - {key: "if_cmd_path", value: "/sbin", state: present, quoted: true}
+  - {key: "if_up_cmd", value: "/usr/bin/sudo /sbin/ip addr add $_IP_$/24 dev eth0 label eth0:0", state: present, quoted: true}
+  - {key: "if_down_cmd", value: "/usr/bin/sudo /sbin/ip addr del $_IP_$/24 dev eth0", state: present, quoted: true}
+  - {key: "arping_path", value: "/usr/sbin", state: present, quoted: true}
+  - {key: "arping_cmd", value: "/usr/bin/sudo /usr/sbin/arping -U $_IP_$ -w 1 -I eth0", state: present, quoted: true}
+  - {key: "clear_memqcache_on_escalation", value: "on", state: present, quoted: false}
+  - {key: "wd_escalation_command", value: "", state: present, quoted: true}
+  - {key: "wd_de_escalation_command", value: "", state: present, quoted: true}
+  - {key: "failover_when_quorum_exists", value: "on", state: present, quoted: false}
+  - {key: "failover_require_consensus", value: "on", state: present, quoted: false}
+  - {key: "allow_multiple_failover_requests_from_node", value: "off", state: present, quoted: false}
+  - {key: "enable_consensus_with_half_votes", value: "off", state: present, quoted: false}
+  - {key: "wd_monitoring_interfaces_list", value: "", state: present, quoted: true}
+  - {key: "wd_lifecheck_method", value: "heartbeat", state: present, quoted: true}
+  - {key: "wd_interval", value: 10, state: present, quoted: false}
+  - {key: "wd_heartbeat_port", value: 9694, state: present, quoted: false}
+  - {key: "wd_heartbeat_keepalive", value: 2, state: present, quoted: false}
+  - {key: "wd_heartbeat_deadtime", value: 30, state: present, quoted: false}
+  - {key: "heartbeat_destination0", value: "host0_ip1", state: present, quoted: true}
+  - {key: "heartbeat_destination_port0", value: 9694, state: present, quoted: false}
+  - {key: "heartbeat_device0", value: "", state: present, quoted: true}
+  - {key: "heartbeat_destination1", value: "host0_ip2", state: absent, quoted: true}
+  - {key: "heartbeat_destination_port1", value: 9694, state: absent, quoted: false}
+  - {key: "heartbeat_device1", value: "", state: absent, quoted: true}
+  - {key: "wd_life_point", value: 3, state: present, quoted: false}
+  - {key: "wd_lifecheck_query", value: "SELECT 1", state: present, quoted: true}
+  - {key: "wd_lifecheck_dbname", value: "template1", state: present, quoted: true}
+  - {key: "wd_lifecheck_user", value: "nobody", state: present, quoted: true}
+  - {key: "wd_lifecheck_password", value: "", state: present, quoted: true}
+  - {key: "other_pgpool_hostname0", value: "host0", state: absent, quoted: true}
+  - {key: "other_pgpool_port0", value: 5432, state: absent, quoted: false}
+  - {key: "other_wd_port0", value: 9000, state: absent, quoted: false}
+  - {key: "other_pgpool_hostname1", value: "host1", state: absent, quoted: true}
+  - {key: "other_pgpool_port1", value: 5432, state: absent, quoted: false}
+  - {key: "other_wd_port1", value: 9000, state: absent, quoted: false}
+  - {key: "relcache_expire", value: 0, state: present, quoted: false}
+  - {key: "relcache_size", value: 256, state: present, quoted: false}
+  - {key: "check_temp_table", value: "catalog", state: present, quoted: false}
+  - {key: "check_unlogged_table", value: "on", state: present, quoted: false}
+  - {key: "enable_shared_relcache", value: "on", state: present, quoted: false}
+  - {key: "relcache_query_target", value: "master", state: present, quoted: false}
+  - {key: "memory_cache_enabled", value: "off", state: present, quoted: false}
+  - {key: "memqcache_method", value: "shmem", state: present, quoted: true}
+  - {key: "memqcache_memcached_host", value: "localhost", state: present, quoted: true}
+  - {key: "memqcache_memcached_port", value: 11211, state: present, quoted: false}
+  - {key: "memqcache_total_size", value: 67108864, state: present, quoted: false}
+  - {key: "memqcache_max_num_cache", value: 1000000, state: present, quoted: false}
+  - {key: "memqcache_expire", value: 0, state: present, quoted: false}
+  - {key: "memqcache_auto_cache_invalidation", value: "on", state: present, quoted: false}
+  - {key: "memqcache_maxcache", value: 409600, state: present, quoted: false}
+  - {key: "memqcache_cache_block_size", value: 1048576, state: present, quoted: false}
+  - {key: "memqcache_oiddir", value: "/var/log/edb/pgpool{{ pgpool2_version | string }}/oiddir", state: present, quoted: true}
+  - {key: "white_memqcache_table_list", value: "", state: present, quoted: true}
+  - {key: "black_memqcache_table_list", value: "", state: present, quoted: true}

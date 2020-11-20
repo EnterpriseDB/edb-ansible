@@ -1,0 +1,17 @@
+---
+- name: Manage pgpool2 configuration file content in {{ pgpool2_configuration_file }}
+  lineinfile:
+    path: "{{ pgpool2_configuration_file }}"
+    line: >-
+      {{ conf_item.key }} = {% if conf_item.quoted %}'{% endif %}{{ conf_item.value }}{% if conf_item.quoted %}'{% endif %}
+    regexp: "^{{ conf_item.key | regex_escape() }}\\s*="
+    state: "{{ conf_item.state | default('present') }}"
+    create: yes
+    mode: 0600
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+  when: pgpool2_configuration|length > 0
+  with_items: "{{ pgpool2_configuration }}"
+  loop_control:
+    loop_var: conf_item
+  delegate_to: "{{ item.value.public_ip }}"

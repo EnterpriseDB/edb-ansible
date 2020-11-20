@@ -31,3 +31,8 @@
   include_tasks: pgpool2_install.yml
   when: item.value.node_type in supported_node_type
   with_dict:  "{{ servers }}"
+
+- name: Include the pgpool2_setup
+  include_tasks: pgpool2_setup.yml
+  when: item.value.node_type in supported_node_type
+  with_dict:  "{{ servers }}"
