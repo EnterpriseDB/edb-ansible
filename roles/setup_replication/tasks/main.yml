@@ -23,7 +23,7 @@
     etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
   when:
     - item.value.hostname is defined
-    - item.node_type in supported_node_type
+    - item.value.node_type in supported_node_type
   with_dict: "{{ servers }}"
 
 - name: Get the primary information
