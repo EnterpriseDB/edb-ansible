@@ -14,4 +14,4 @@
   with_items: "{{ pgpool2_configuration }}"
   loop_control:
     loop_var: conf_item
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"

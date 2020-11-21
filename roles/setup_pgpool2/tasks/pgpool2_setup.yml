@@ -14,7 +14,7 @@
   group:
     name: "{{ pgpool2_group }}"
     state: present
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
 
 - name: Create pgpoolII system user {{ pgpool2_user }}
   user:
@@ -23,7 +23,7 @@
     group: "{{ pgpool2_group }}"
     state: present
     create_home: false
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
 
 - name: Create configuration directory {{ pgpool2_configuration_file | dirname }}
   file:
@@ -32,7 +32,7 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
 
 - name: Create logging directory {{ config_dict.logdir | default('') }}
   file:
@@ -41,7 +41,7 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when: config_dict.logdir is defined
 
 - name: Create running directory {{ config_dict.pid_file_name | default('') | dirname }}
@@ -51,7 +51,7 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0700
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when: config_dict.pid_file_name is defined
 
 - name: Create oiddir directory {{ config_dict.memqcache_oiddir | default('') }}
@@ -61,7 +61,7 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0700
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when: config_dict.memqcache_oiddir is defined
 
 # Build the configuration file
@@ -76,7 +76,7 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.port is defined
@@ -87,7 +87,7 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.pcp_port is defined
@@ -98,7 +98,7 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.pcp_port is defined
@@ -109,7 +109,7 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
@@ -121,7 +121,7 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
@@ -133,7 +133,7 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
@@ -145,7 +145,7 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
