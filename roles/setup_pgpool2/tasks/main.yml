@@ -29,10 +29,14 @@
 
 - name: Include the pgpool2_install
   include_tasks: pgpool2_install.yml
-  when: item.value.node_type in supported_node_type
+  when: server.value.node_type in supported_node_type
   with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
 
 - name: Include the pgpool2_setup
   include_tasks: pgpool2_setup.yml
-  when: item.value.node_type in supported_node_type
+  when: server.value.node_type in supported_node_type
   with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
