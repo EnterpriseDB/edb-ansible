@@ -164,3 +164,24 @@
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
     - config_dict.use_watchdog == 'on'
+
+- name: Create pgpoolII systemd directory
+  file:
+    path: "{{ pgpool2_systemd_unit_file | dirname }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: 0700
+  delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - pg_type == 'PG'
+
+- name: Generate pgpoolII systemd unit file
+  template:
+    backup: yes
+    dest: "{{ pgpool2_systemd_unit_file }}"
+    src: ./templates/pgpool-II.unit.conf.template
+    mode: 0644
+  delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - pg_type == 'PG'
