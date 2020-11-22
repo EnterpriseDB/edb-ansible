@@ -6,10 +6,12 @@ pgpool2_configuration_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | strin
 pgpool2_user: "enterprisedb"
 pgpool2_group: "enterprisedb"
 
-pgpool2_configuration:
+pgpool2_configuration: []
+
+pgpool2_default_configuration:
   - {key: "pool_conn_dbname", value: "edb", state: absent, quoted: true}
-  - {key: "listen_addresses", value: "*", state: present, quoted: true}
-  - {key: "port", value: 5433, state: present, quoted: false}
+  - {key: "listen_addresses", value: "localhost", state: present, quoted: true}
+  - {key: "port", value: 9999, state: present, quoted: false}
   - {key: "socket_dir", value: "/tmp", state: present, quoted: true}
   - {key: "listen_backlog_multiplier", value: 2, state: present, quoted: false}
   - {key: "serialize_accept", value: "off", state: present, quoted: false}

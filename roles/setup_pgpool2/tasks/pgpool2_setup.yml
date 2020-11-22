@@ -1,4 +1,19 @@
 ---
+# Merge pgpool2_default_configuration and pgpool2_configuration
+- set_fact:
+    pgpool2_configuration: >-
+      {{ pgpool2_configuration | default([]) + [
+          merge_item |
+          combine(
+            pgpool2_configuration |
+            selectattr('key', 'match', merge_item.key) |
+            list
+          )
+        ] }}
+  loop: "{{ pgpool2_default_configuration }}"
+  loop_control:
+    loop_var: merge_item
+
 # Generate configuration parameters dictionary
 - name: Generate configuration parameters dictionary
   set_fact:
@@ -68,7 +83,6 @@
 - include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
-  with_dict:  "{{ servers }}"
 
 - name: Open listening TCP port {{ config_dict.port | default('') }}
   firewalld:
