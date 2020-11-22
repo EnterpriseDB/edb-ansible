@@ -6,6 +6,8 @@ pgpool2_package_name: "pgpool-II-{{ pg_version }}"
 pgpool2_configuration_file: "/etc/pgpool-II-{{ pg_version }}/pgpool.conf"
 pgpool2_user: "postgres"
 pgpool2_group: "postgres"
+# Systemd unit file
+pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II-{{ pg_version }}.service.d/pgpool-II-{{ pg_version }}.conf"
 
 pgpool2_configuration: []
 
