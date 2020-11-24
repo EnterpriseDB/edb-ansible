@@ -18,8 +18,8 @@
          --pem-port {{ pg_port }} \
          --allow_server_restart true \
          --allow-batch-probes true \
-         --batch-script-user root
-    touch {{ pem_agent_bin_path }}/../etc/.agentregistered
+         --batch-script-user root \
+    && touch {{ pem_agent_bin_path }}/../etc/.agentregistered
   args:
     executable: /bin/bash
     creates: "{{ pem_agent_bin_path }}/../etc/.agentregistered"

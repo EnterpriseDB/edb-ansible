@@ -41,8 +41,8 @@
         --asb-host-name 127.0.0.1 \
         --asb-host-user {{ pg_pem_agent_user }} \
         --asb-ssl-mode prefer \
-        --remote-monitoring no
-    touch {{ pem_agent_bin_path }}/../etc/.{{ item.key }}registered
+        --remote-monitoring no \
+    && touch {{ pem_agent_bin_path }}/../etc/.{{ item.key }}registered
   args:
     executable: /bin/bash
     creates: "{{ pem_agent_bin_path }}/../etc/.{{ item.key }}registered"
