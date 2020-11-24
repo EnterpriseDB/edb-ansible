@@ -35,7 +35,6 @@
 - set_fact:
     pgpool2_service_name: >-
       {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II-{{ pg_version }}{% endif %}
-  when:
 
 # Initialize variables used to configure load balancing and backends
 - set_fact:
@@ -82,6 +81,16 @@
 - name: Include the pgpool2_setup
   include_tasks:
     file: pgpool2_setup.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when: server.value.node_type in supported_node_type
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_setup_user_auth
+  include_tasks:
+    file: pgpool2_setup_user_auth.yml
     apply:
       delegate_to: "{{ server.value.public_ip }}"
   when: server.value.node_type in supported_node_type

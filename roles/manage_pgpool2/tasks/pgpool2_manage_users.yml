@@ -1,0 +1,45 @@
+---
+- name: Remove users from pool_passwd
+  lineinfile:
+    path: "{{ pgpool2_pool_passwd_path }}"
+    line: >-
+      {{ user_item.name }}:
+    regexp: "^{{ user_item.name | regex_escape() }}\\:"
+    state: "absent"
+  loop: "{{ pgpool2_users }}"
+  loop_control:
+    loop_var: user_item
+  when:
+    - pgpool2_users|length > 0
+    - user_item.state is defined
+    - user_item.state == 'absent'
+
+- name: Add users with SCRAM authentication
+  shell:
+    cmd: >-
+      script -q -c '{{ pgpool2_bin_path }}/pg_enc -k ~/.pgpoolkey -f {{pgpool2_configuration_path}} -u {{user_item.name}} -p -m'
+    stdin: "{{ user_item.pass }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  loop: "{{ pgpool2_users }}"
+  loop_control:
+    loop_var: user_item
+  when:
+    - pgpool2_users|length > 0
+    - user_item.state is not defined or user_item.state == 'present'
+    - user_item.auth == 'scram'
+
+- name: Add users with MD5 authentication
+  shell:
+    cmd: >-
+      script -q -c '{{ pgpool2_bin_path }}/pg_md5 -f {{pgpool2_configuration_path}} -u {{user_item.name}} -p -m'
+    stdin: "{{ user_item.pass }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  loop: "{{ pgpool2_users }}"
+  loop_control:
+    loop_var: user_item
+  when:
+    - pgpool2_users|length > 0
+    - user_item.state is not defined or user_item.state == 'present'
+    - user_item.auth == 'md5'

@@ -1,7 +1,9 @@
 ---
-
 pgpool2_configuration_path: "/etc/pgpool-II-{{ pg_version }}/pgpool.conf"
+pgpool2_pool_passwd_path: "/etc/pgpool-II-{{ pg_version }}/pool_passwd"
 pgpool2_user: "enterprisedb"
 pgpool2_group: "enterprisedb"
+pgpool2_bin_path: "/usr/pgpool-{{ pg_version }}/bin"
 
 pgpool2_configuration: []
+pgpool2_users: []
