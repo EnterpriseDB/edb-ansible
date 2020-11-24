@@ -14,11 +14,6 @@
   loop_control:
     loop_var: merge_item
 
-# Set service name accordingly to pg_type
-- set_fact:
-    pgpool2_service_name: >-
-      {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II-{{ pg_version }}{% endif %}
-
 # Generate configuration parameters dictionary
 - name: Generate configuration parameters dictionary
   set_fact:
@@ -34,7 +29,6 @@
   group:
     name: "{{ pgpool2_group }}"
     state: present
-  delegate_to: "{{ server.value.public_ip }}"
 
 - name: Create pgpoolII system user {{ pgpool2_user }}
   user:
@@ -43,7 +37,6 @@
     group: "{{ pgpool2_group }}"
     state: present
     create_home: false
-  delegate_to: "{{ server.value.public_ip }}"
 
 - name: Create configuration directory {{ pgpool2_configuration_file | dirname }}
   file:
@@ -52,7 +45,6 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
-  delegate_to: "{{ server.value.public_ip }}"
 
 - name: Create logging directory {{ config_dict.logdir | default('') }}
   file:
@@ -61,7 +53,6 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
-  delegate_to: "{{ server.value.public_ip }}"
   when: config_dict.logdir is defined
 
 - name: Create running directory {{ config_dict.pid_file_name | default('') | dirname }}
@@ -71,7 +62,6 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0700
-  delegate_to: "{{ server.value.public_ip }}"
   when: config_dict.pid_file_name is defined
 
 - name: Create oiddir directory {{ config_dict.memqcache_oiddir | default('') }}
@@ -81,13 +71,14 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0700
-  delegate_to: "{{ server.value.public_ip }}"
   when: config_dict.memqcache_oiddir is defined
 
 # Build the configuration file
 - include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
+  vars:
+    pgpool2_configuration_lines: "{{ pgpool2_configuration }}"
 
 - name: Open listening TCP port {{ config_dict.port | default('') }}
   firewalld:
@@ -95,7 +86,6 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.port is defined
@@ -106,7 +96,6 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.pcp_port is defined
@@ -117,7 +106,6 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.pcp_port is defined
@@ -128,7 +116,6 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
@@ -140,7 +127,6 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
@@ -152,7 +138,6 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
@@ -164,7 +149,6 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
@@ -177,7 +161,6 @@
     owner: "root"
     group: "root"
     mode: 0700
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - pg_type == 'PG'
 
@@ -187,7 +170,6 @@
     dest: "{{ pgpool2_systemd_unit_file }}"
     src: ./templates/pgpool-II.unit.conf.template
     mode: 0644
-  delegate_to: "{{ server.value.public_ip }}"
   when:
     - pg_type == 'PG'
 
@@ -195,7 +177,6 @@
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: stopped
-  delegate_to: "{{ server.value.public_ip }}"
 
 - name: Enable and start pgpoolII service
   systemd:
@@ -203,4 +184,3 @@
     enabled: true
     daemon_reload: yes
     state: started
-  delegate_to: "{{ server.value.public_ip }}"
