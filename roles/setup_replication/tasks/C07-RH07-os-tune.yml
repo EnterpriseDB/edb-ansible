@@ -26,6 +26,7 @@
     path: "/etc/tuned/edb/tuned.conf"
     line: "{{ line_item }}"
     create: yes
+    mode: 0400
   with_items:
     - "[main]"
     - "summary=Tuned profiles for EnterpriseDB Postgres Advanced Server"

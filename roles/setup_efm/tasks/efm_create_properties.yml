@@ -17,6 +17,7 @@
     dest: "{{ efm_properties }}"
     owner: "{{ pg_efm_user }}"
     group: "{{ pg_efm_user }}"
+    mode: "0644"
     remote_src: yes
   when: not stat_efm_properties.stat.exists
   become: yes

@@ -6,20 +6,13 @@
     line: "{{ line_item.host|default('*') }}:{{ pg_port }}:{{ line_item.database|default('*') }}:{{ line_item.user }}:{{ line_item.password }}"
     state: "{{ line_item.state | default('present') }}"
     create: "{{ line_item.create | default(omit) }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+    mode: "0600"
   when: pg_pgpass_values|length > 0
   no_log: yes
   with_items: "{{ pg_pgpass_values }}"
   loop_control:
     loop_var: line_item
-  become: yes
-  become_user: "{{ pg_owner }}"
-
-- name: Fix permission on the .pgpass
-  file:
-    path: ~/.pgpass
-    owner: "{{ pg_owner }}"
-    group: "{{ pg_owner }}"
-    mode: 0600
-  when: pg_pgpass_values|length > 0
   become: yes
   become_user: "{{ pg_owner }}"
