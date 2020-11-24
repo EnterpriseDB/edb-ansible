@@ -1,5 +1,4 @@
 ---
-
 # We don't have the choice of the version with community PostgreSQL
 pgpool2_version: ""
 pgpool2_package_name: "pgpool-II-{{ pg_version }}"
@@ -8,6 +7,15 @@ pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 # Systemd unit file
 pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II-{{ pg_version }}.service.d/pgpool-II-{{ pg_version }}.conf"
+
+# Enable load balancing
+pgpool2_load_balancing: true
+
+# Postgres user that pgpool2 will use to check Postgres nodes roles in load
+# balance mode
+pgpool2_sr_check_user: "pgpool2"
+# If empty or not defined, a random password will be generated
+pgpool2_sr_check_password: ""
 
 pgpool2_configuration: []
 

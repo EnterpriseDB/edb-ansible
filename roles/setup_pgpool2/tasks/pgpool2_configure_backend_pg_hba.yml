@@ -1,0 +1,20 @@
+---
+# Add HBA entries allowing connections from pgpoolII server to Postgres node
+- set_fact:
+   hba_entries: >-
+    [
+      {
+        'contype': 'host',
+        'source': '{{ pgpool2_node_ip }}/32'
+      }
+    ]
+  loop: "{{ pgpool2_node_list }}"
+  loop_control:
+    loop_var: pgpool2_node_ip
+
+- name: Allow access to pgpoolII servers
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ hba_entries }}"

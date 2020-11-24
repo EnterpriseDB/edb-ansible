@@ -11,7 +11,6 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
   when: pgpool2_configuration|length > 0
-  with_items: "{{ pgpool2_configuration }}"
+  with_items: "{{ pgpool2_configuration_lines }}"
   loop_control:
     loop_var: conf_item
-  delegate_to: "{{ server.value.public_ip }}"
