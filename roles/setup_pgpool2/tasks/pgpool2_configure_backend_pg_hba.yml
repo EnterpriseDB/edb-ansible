@@ -2,7 +2,7 @@
 # Add HBA entries allowing connections from pgpoolII server to Postgres node
 - set_fact:
    hba_entries: >-
-    [
+    {{ hba_entries | default([]) }} + [
       {
         'contype': 'host',
         'source': '{{ pgpool2_node_ip }}/32'

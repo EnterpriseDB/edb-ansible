@@ -47,6 +47,8 @@
   with_dict:  "{{ servers }}"
   loop_control:
     loop_var: server
+  vars:
+    pgpool2_configuration_lines: "{{ pgpool2_configuration }}"
 
 - name: Include the pgpool2_manage_users
   include_tasks:

@@ -1,7 +1,7 @@
 ---
 - name: Remove users from pool_passwd
   lineinfile:
-    path: "{{ pgpool2_pool_passwd_path }}"
+    path: "{{ pgpool2_pool_passwd_file }}"
     line: >-
       {{ user_item.name }}:
     regexp: "^{{ user_item.name | regex_escape() }}\\:"
@@ -17,7 +17,7 @@
 - name: Add users with SCRAM authentication
   shell:
     cmd: >-
-      script -q -c '{{ pgpool2_bin_path }}/pg_enc -k ~/.pgpoolkey -f {{pgpool2_configuration_path}} -u {{user_item.name}} -p -m'
+      script -q -c '{{ pgpool2_bin_path }}/pg_enc -k ~/.pgpoolkey -f {{pgpool2_configuration_file}} -u {{user_item.name}} -p -m'
     stdin: "{{ user_item.pass }}"
   become: yes
   become_user: "{{ pg_owner }}"
@@ -32,7 +32,7 @@
 - name: Add users with MD5 authentication
   shell:
     cmd: >-
-      script -q -c '{{ pgpool2_bin_path }}/pg_md5 -f {{pgpool2_configuration_path}} -u {{user_item.name}} -p -m'
+      script -q -c '{{ pgpool2_bin_path }}/pg_md5 -f {{pgpool2_configuration_file}} -u {{user_item.name}} -p -m'
     stdin: "{{ user_item.pass }}"
   become: yes
   become_user: "{{ pg_owner }}"
