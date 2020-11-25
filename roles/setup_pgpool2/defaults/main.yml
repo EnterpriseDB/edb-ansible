@@ -1,3 +1,8 @@
+---
+pgpool2_vip: ""
+pgpool2_vip_dev: ""
+pgpool2_watchdog: false
+
 supported_os:
   - CentOS7
   - CentOS8

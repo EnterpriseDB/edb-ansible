@@ -1,0 +1,1 @@
+{{ pgpool2_user }} ALL=(ALL) NOPASSWD: /sbin/ip,/sbin/arping

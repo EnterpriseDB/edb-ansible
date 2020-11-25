@@ -31,6 +31,15 @@
     - pg_type == "EPAS"
     - pgpool2_version not in supported_pgpool2_version
 
+- name: Check watchdog settings
+  fail:
+    msg: "Watchdog settings not valid: pgpool2_vip = '{{ pgpool2_vip }}',
+          pgpool2_vip_dev = '{{ pgpool2_vip_dev }}'"
+  when:
+    - pgpool2_watchdog == true
+    - (pgpool2_vip is not defined or pgpool2_vip|length == 0) or
+      (pgpool2_vip_dev is not defined or pgpool2_vip_dev|length == 0)
+
 # Set service name accordingly to pg_type
 - set_fact:
     pgpool2_service_name: >-
@@ -178,6 +187,22 @@
     - pgpool2_nodes|length > 0
   vars:
     pgpool2_node_list: "{{ pgpool2_nodes }}"
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_setup_watchdog
+  include_tasks:
+    file: pgpool2_setup_watchdog.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+    - pgpool2_watchdog == true
+  vars:
+    pgpool2_node_list: "{{ pgpool2_nodes }}"
+    pgpool2_current_node: "{{ server.value.public_ip }}"
+    config_dict: "{{ pgpool2_config_dict }}"
   with_dict:  "{{ servers }}"
   loop_control:
     loop_var: server
