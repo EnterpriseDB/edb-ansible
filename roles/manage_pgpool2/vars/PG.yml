@@ -1,6 +1,6 @@
 ---
-pgpool2_configuration_file: "/etc/pgpool-II-{{ pg_version }}/pgpool.conf"
-pgpool2_pool_passwd_file: "/etc/pgpool-II-{{ pg_version }}/pool_passwd"
+pgpool2_configuration_file: "/etc/pgpool-II_{{ pg_version }}/pgpool.conf"
+pgpool2_pool_passwd_file: "/etc/pgpool-II_{{ pg_version }}/pool_passwd"
 pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 pgpool2_bin_path: "/usr/pgpool-{{ pg_version }}/bin"
