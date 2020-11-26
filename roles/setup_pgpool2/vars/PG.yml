@@ -8,17 +8,6 @@ pgpool2_group: "postgres"
 # Systemd unit file
 pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II-{{ pg_version }}.service.d/pgpool-II-{{ pg_version }}.conf"
 
-# Enable load balancing
-pgpool2_load_balancing: true
-
-# Postgres user that pgpool2 will use to check Postgres nodes roles in load
-# balance mode
-pgpool2_sr_check_user: "pgpool2"
-# If empty or not defined, a random password will be generated
-pgpool2_sr_check_password: ""
-
-pgpool2_configuration: []
-
 pgpool2_default_configuration:
   - {key: "listen_addresses", value: "*", state: present, quoted: true}
   - {key: "port", value: 9999, state: present, quoted: false}
