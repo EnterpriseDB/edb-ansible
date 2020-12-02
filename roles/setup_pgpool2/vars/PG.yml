@@ -1,15 +1,15 @@
 ---
 # We don't have the choice of the version with community PostgreSQL
 pgpool2_version: ""
-pgpool2_package_name: "pgpool-II_{{ pg_version }}"
-pgpool2_configuration_file: "/etc/pgpool-II_{{ pg_version }}/pgpool.conf"
+pgpool2_package_name: "pgpool-II-{{ pg_version }}"
+pgpool2_configuration_file: "/etc/pgpool-II-{{ pg_version }}/pgpool.conf"
 pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 # Systemd unit file
 pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II-{{ pg_version }}.service.d/pgpool-II-{{ pg_version }}.conf"
 
 # Directory containing SSL keys and certs
-pgpool2_ssl_dir: "/etc/pgpool-II_{{ pg_version }}/ssl"
+pgpool2_ssl_dir: "/etc/pgpool-II-{{ pg_version }}/ssl"
 
 pgpool2_default_configuration:
   - {key: "listen_addresses", value: "*", state: present, quoted: true}
@@ -65,8 +65,8 @@ pgpool2_default_configuration:
   - {key: "log_error_verbosity", value: "default", state: absent, quoted: false}
   - {key: "client_min_messages", value: "notice", state: absent, quoted: false}
   - {key: "log_min_messages", value: "warning", state: absent, quoted: false}
-  - {key: "pid_file_name", value: "/var/run/pgpool-II_{{ pg_version }}/pgpool.pid", state: present, quoted: true}
-  - {key: "logdir", value: "/var/log/pgpool-II_{{ pg_version }}", state: present, quoted: true}
+  - {key: "pid_file_name", value: "/var/run/pgpool-II-{{ pg_version }}/pgpool.pid", state: present, quoted: true}
+  - {key: "logdir", value: "/var/log/pgpool-II-{{ pg_version }}", state: present, quoted: true}
   - {key: "connection_cache", value: "on", state: present, quoted: false}
   - {key: "reset_query_list", value: "ABORT; DISCARD ALL", state: present, quoted: true}
   - {key: "replication_mode", value: "off", state: present, quoted: false}
