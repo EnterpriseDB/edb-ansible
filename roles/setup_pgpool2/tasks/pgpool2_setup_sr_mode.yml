@@ -33,31 +33,31 @@
           'value': 'on',
           'state': 'present',
           'quoted': false
-        }, 
+        },
         {
           'key': 'master_slave_sub_mode',
           'value': 'stream',
           'state': 'present',
           'quoted': false
-        }, 
+        },
         {
           'key': 'sr_check_period',
           'value': 1,
           'state': 'present',
           'quoted': false
-        }, 
+        },
         {
           'key': 'sr_check_user',
           'value': '{{ pgpool2_sr_check_user }}',
           'state': 'present',
           'quoted': true
-        }, 
+        },
         {
           'key': 'sr_check_password',
           'value': '{{ pgpool2_sr_check_password }}',
           'state': 'present',
           'quoted': true
-        } 
+        }
       ]
 
 # Apply configuration changes
@@ -71,3 +71,4 @@
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: restarted
+  become: yes

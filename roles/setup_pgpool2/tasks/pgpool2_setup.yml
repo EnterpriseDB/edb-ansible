@@ -4,6 +4,7 @@
   group:
     name: "{{ pgpool2_group }}"
     state: present
+  become: yes
 
 - name: Create pgpoolII system user {{ pgpool2_user }}
   user:
@@ -12,6 +13,7 @@
     group: "{{ pgpool2_group }}"
     state: present
     create_home: false
+  become: yes
 
 - name: Create configuration directory {{ pgpool2_configuration_file | dirname }}
   file:
@@ -20,6 +22,7 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
+  become: yes
 
 - name: Create logging directory {{ config_dict.logdir | default('') }}
   file:
@@ -29,6 +32,7 @@
     group: "{{ pgpool2_group }}"
     mode: 0755
   when: config_dict.logdir is defined
+  become: yes
 
 - name: Create running directory {{ config_dict.pid_file_name | default('') | dirname }}
   file:
@@ -38,6 +42,7 @@
     group: "{{ pgpool2_group }}"
     mode: 0700
   when: config_dict.pid_file_name is defined
+  become: yes
 
 - name: Create oiddir directory {{ config_dict.memqcache_oiddir | default('') }}
   file:
@@ -47,6 +52,7 @@
     group: "{{ pgpool2_group }}"
     mode: 0700
   when: config_dict.memqcache_oiddir is defined
+  become: yes
 
 # Build the configuration file
 - include_role:
@@ -64,6 +70,7 @@
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.port is defined
+  become: yes
 
 - name: Open PCP TCP port {{ config_dict.pcp_port | default('') }}
   firewalld:
@@ -74,6 +81,7 @@
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.pcp_port is defined
+  become: yes
 
 - name: Open PCP UDP port {{ config_dict.pcp_port | default('') }}
   firewalld:
@@ -84,6 +92,7 @@
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.pcp_port is defined
+  become: yes
 
 - name: Open Watchdog TCP port {{ config_dict.wd_port | default('') }}
   firewalld:
@@ -95,6 +104,7 @@
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
     - pgpool2_watchdog == true
+  become: yes
 
 - name: Open Watchdog UDP port {{ config_dict.wd_port | default('') }}
   firewalld:
@@ -106,6 +116,7 @@
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
     - pgpool2_watchdog == true
+  become: yes
 
 - name: Open Watchdog heartbeat TCP port {{ config_dict.wd_heartbeat_port | default('') }}
   firewalld:
@@ -117,6 +128,7 @@
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
     - pgpool2_watchdog == true
+  become: yes
 
 - name: Open Watchdog heartbeat UDP port {{ config_dict.wd_heartbeat_port | default('') }}
   firewalld:
@@ -128,6 +140,7 @@
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
     - pgpool2_watchdog == true
+  become: yes
 
 - name: Create pgpoolII systemd directory
   file:
@@ -138,6 +151,7 @@
     mode: 0700
   when:
     - pg_type == 'PG'
+  become: yes
 
 - name: Generate pgpoolII systemd unit file
   template:
@@ -147,11 +161,13 @@
     mode: 0644
   when:
     - pg_type == 'PG'
+  become: yes
 
 - name: Stop pgpoolII service
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: stopped
+  become: yes
 
 - name: Enable and start pgpoolII service
   systemd:
@@ -159,3 +175,4 @@
     enabled: true
     daemon_reload: yes
     state: started
+  become: yes
