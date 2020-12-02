@@ -41,12 +41,16 @@
   when: not pgpool2_ssl_root_ca.stat.exists
 
 - name: Create server key
-  shell:
+  command:
     cmd: >-
       openssl genrsa -out {{ pgpool2_ssl_dir }}/server.key
   become: yes
   become_user: "{{ pgpool2_user }}"
   when: not pgpool2_ssl_server_key.stat.exists
+
+- name: Set tmp_dn
+  set_fact:
+    tmp_dn: "{{ pgpool2_ssl_csr_dn }}"
 
 - name: Create certificate request
   shell:
@@ -54,7 +58,7 @@
       openssl req -new \
         -key {{ pgpool2_ssl_dir }}/server.key \
         -out {{ pgpool2_ssl_dir }}/server.csr \
-        -subj "/C={{ pgpool2_ssl_csr_dn.C }}/L={{ pgpool2_ssl_csr_dn.L }}/O={{ pgpool2_ssl_csr_dn.O }}/CN={{ pgpool2_ssl_csr_dn.CN }}/emailAddress={{ pgpool2_ssl_csr_dn.EMAIL }}"
+        -subj "/C={{ tmp_dn.C }}/L={{ tmp_dn.L }}/O={{ tmp_dn.O }}/CN={{ tmp_dn.CN }}/emailAddress={{ tmp_dn.EMAIL }}"
   become: yes
   become_user: "{{ pgpool2_user }}"
   when: not pgpool2_ssl_server_key.stat.exists

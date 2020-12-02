@@ -1,6 +1,7 @@
 ---
 # Add HBA entries allowing connections from pgpoolII server to Postgres node
-- set_fact:
+- name: Initialize the hba_entries variable
+  set_fact:
    hba_entries: >-
     {{ hba_entries | default([]) }} + [
       {

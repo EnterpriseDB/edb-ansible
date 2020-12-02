@@ -32,7 +32,8 @@
     - pgpool2_version not in supported_pgpool2_version
 
 # Set service name accordingly to pg_type
-- set_fact:
+- name: Set service name
+  set_fact:
     pgpool2_service_name: >-
       {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II-{{ pg_version }}{% endif %}
 

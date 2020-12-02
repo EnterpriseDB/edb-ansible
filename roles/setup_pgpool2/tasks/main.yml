@@ -36,23 +36,26 @@
     msg: "Watchdog settings not valid: pgpool2_vip = '{{ pgpool2_vip }}',
           pgpool2_vip_dev = '{{ pgpool2_vip_dev }}'"
   when:
-    - pgpool2_watchdog == true
+    - pgpool2_watchdog is true
     - (pgpool2_vip is not defined or pgpool2_vip|length == 0) or
       (pgpool2_vip_dev is not defined or pgpool2_vip_dev|length == 0)
 
 # Set service name accordingly to pg_type
-- set_fact:
+- name: Set the service name
+  set_fact:
     pgpool2_service_name: >-
       {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II-{{ pg_version }}{% endif %}
 
 # Initialize variables used to configure load balancing and backends
-- set_fact:
+- name: Initialize local variables
+  set_fact:
     pgpool2_backends: []
     pgpool2_nodes: []
     pgpool2_primary_backend: ""
 
 # Build the list of postgres backends
-- set_fact:
+- name: Build the list of Postgres backends
+  set_fact:
     pgpool2_backends: "{{ pgpool2_backends }} + [ '{{ server.value.public_ip }}' ]"
   when:
     - server.value.node_type == 'primary' or server.value.node_type == 'standby'
@@ -60,7 +63,8 @@
   loop_control:
     loop_var: server
 
-- set_fact:
+- name: Set the pgpool2_primary_backend variable
+  set_fact:
     pgpool2_primary_backend: "{{ server.value.public_ip }}"
   when:
     - server.value.node_type == 'primary'
@@ -69,7 +73,8 @@
     loop_var: server
 
 # Build the list of pgpool2 nodes
-- set_fact:
+- name: Build the list of pgpool2 nodes
+  set_fact:
     pgpool2_nodes: "{{ pgpool2_nodes }} + [ '{{ server.value.public_ip }}' ]"
   when:
     - server.value.node_type in supported_node_type
@@ -78,10 +83,12 @@
     loop_var: server
 
 # Merge pgpool2_default_configuration and pgpool2_configuration
-- set_fact:
+- name: Initialize the pgpool2_full_configuration variable
+  set_fact:
     pgpool2_full_configuration: "{{ pgpool2_configuration }}"
 
-- set_fact:
+- name: Merge pgpool2_default_configuration and pgpool2_configuration
+  set_fact:
     pgpool2_full_configuration: >-
       {{ pgpool2_full_configuration | default([]) + [
           merge_item |
@@ -172,7 +179,7 @@
       delegate_to: "{{ server.value.public_ip }}"
   when:
     - server.value.node_type in supported_node_type
-    - pgpool2_ssl == true
+    - pgpool2_ssl is true
   with_dict:  "{{ servers }}"
   loop_control:
     loop_var: server
@@ -184,7 +191,7 @@
       delegate_to: "{{ server.value.public_ip }}"
   when:
     - server.value.node_type in supported_node_type
-    - pgpool2_load_balancing == true
+    - pgpool2_load_balancing is true
   with_dict:  "{{ servers }}"
   loop_control:
     loop_var: server
@@ -210,7 +217,7 @@
       delegate_to: "{{ server.value.public_ip }}"
   when:
     - server.value.node_type in supported_node_type
-    - pgpool2_watchdog == true
+    - pgpool2_watchdog is true
   vars:
     pgpool2_node_list: "{{ pgpool2_nodes }}"
     pgpool2_current_node: "{{ server.value.public_ip }}"

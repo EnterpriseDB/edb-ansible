@@ -16,9 +16,9 @@
   become: yes
 
 - name: Add users with SCRAM authentication
-  shell:
+  command:
     cmd: >-
-      script -q -c '{{ pgpool2_bin_path }}/pg_enc -k ~/.pgpoolkey -f {{pgpool2_configuration_file}} -u {{user_item.name}} -p -m'
+      script -q -c '{{ pgpool2_bin_path }}/pg_enc -k ~/.pgpoolkey -f {{ pgpool2_configuration_file }} -u {{ user_item.name }} -p -m'
     stdin: "{{ user_item.pass }}"
   become: yes
   become_user: "{{ pg_owner }}"
@@ -31,9 +31,9 @@
     - user_item.auth == 'scram'
 
 - name: Add users with MD5 authentication
-  shell:
+  command:
     cmd: >-
-      script -q -c '{{ pgpool2_bin_path }}/pg_md5 -f {{pgpool2_configuration_file}} -u {{user_item.name}} -p -m'
+      script -q -c '{{ pgpool2_bin_path }}/pg_md5 -f {{ pgpool2_configuration_file }} -u {{ user_item.name }} -p -m'
     stdin: "{{ user_item.pass }}"
   become: yes
   become_user: "{{ pg_owner }}"
