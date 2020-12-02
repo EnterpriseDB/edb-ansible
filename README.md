@@ -123,6 +123,18 @@ This role helps in managing PgBouncer credentials list.
 For more information on the role, please refer roles README
 [README.md](./roles/manage_pgbouncer_users/README.md)
 
+### setup_pgpool2
+
+This role install and configure a new PgpoolII connection pooler.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_pgpool2/README.md)
+
+### manage_pgpool2
+
+This role helps in managing Pgpool II user list and configuration.
+For more information on the role, please refer roles README
+[README.md](./roles/manage_pgpool2/README.md)
+
 ## Pre-Requisites
 
 For correctly installed and configuration of the cluster following are requirements:
@@ -293,8 +305,8 @@ Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
 limit what roles you would like to execute: `setup_repo`, `install_dbserver`,
 `init_dbserver`, `setup_replication`, `setup_efm`, `setup_pem`,
-`manage_dbserver`, `setup_pgbouncer`, `manage_pgbouncer_users` or
-`manage_pgbouncer_databases`.
+`manage_dbserver`, `setup_pgbouncer`, `manage_pgbouncer_users`,
+`manage_pgbouncer_databases`, `setup_pgpool2` or `manage_pgpool2`.
 
 ## Default user and passwords
 

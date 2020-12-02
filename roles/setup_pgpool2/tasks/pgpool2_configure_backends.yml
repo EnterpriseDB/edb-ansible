@@ -1,0 +1,61 @@
+---
+# Configure pgpoolII backends
+- name: Build backends configuration
+  set_fact:
+    pgpool2_backends_configuration: >-
+      {{ pgpool2_backends_configuration | default([]) }} + [
+        {
+          'key': 'backend_hostname{{ ansible_loop.index0 }}',
+          'value': '{{ backend_item }}',
+          'state': 'present',
+          'quoted': true
+        },
+        {
+          'key': 'backend_port{{ ansible_loop.index0 }}',
+          'value': '{{ pg_port }}',
+          'state': 'present',
+          'quoted': false
+        },
+        {
+          'key': 'backend_data_directory{{ ansible_loop.index0 }}',
+          'value': '{{ pg_data }}',
+          'state': 'present',
+          'quoted': true
+        },
+        {
+          'key': 'backend_weight{{ ansible_loop.index0 }}',
+          'value': '1',
+          'state': 'present',
+          'quoted': false
+        },
+        {
+          'key': 'backend_application_name{{ ansible_loop.index0 }}',
+          'value': 'server{{ ansible_loop.index0 }}',
+          'state': 'present',
+          'quoted': true
+        },
+        {
+          'key': 'backend_flag{{ ansible_loop.index0 }}',
+          'value': 'ALLOW_TO_FAILOVER',
+          'state': 'present',
+          'quoted': true
+        }
+      ]
+  loop: "{{ pgpool2_backends }}"
+  loop_control:
+    extended: yes
+    loop_var:
+      backend_item
+
+# Apply configuration changes
+- include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_configuration
+  vars:
+    pgpool2_configuration_lines: "{{ pgpool2_backends_configuration }}"
+
+- name: Restart pgpoolII service
+  systemd:
+    name: "{{ pgpool2_service_name }}"
+    state: restarted
+  become: yes

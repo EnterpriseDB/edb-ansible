@@ -1,0 +1,227 @@
+---
+# Tasks file for setup_pgpool2 Role
+
+# reference EPAS/PG variables
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}.yml"
+
+# Include EPAS/PG variables from the initdb_server role
+- name: Reference pg_type variables
+  include_vars: "../../init_dbserver/vars/{{ pg_type }}.yml"
+
+# Check if the Operating System is supported
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+# Check if the Database Version is supported
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+# Check if the pgpoolII version is supported when working with EPAS env.
+- name: Check supported versions for pgpoolII
+  fail:
+    msg: "pgpoolII Version = {{ pgpool2_version }} not supported.
+          Supported versions are {{ supported_pgpool2_version }}"
+  when:
+    - pg_type == "EPAS"
+    - pgpool2_version not in supported_pgpool2_version
+
+- name: Check watchdog settings
+  fail:
+    msg: "Watchdog settings not valid: pgpool2_vip = '{{ pgpool2_vip }}',
+          pgpool2_vip_dev = '{{ pgpool2_vip_dev }}'"
+  when:
+    - pgpool2_watchdog is true
+    - (pgpool2_vip is not defined or pgpool2_vip|length == 0) or
+      (pgpool2_vip_dev is not defined or pgpool2_vip_dev|length == 0)
+
+# Set service name accordingly to pg_type
+- name: Set the service name
+  set_fact:
+    pgpool2_service_name: >-
+      {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II-{{ pg_version }}{% endif %}
+
+# Initialize variables used to configure load balancing and backends
+- name: Initialize local variables
+  set_fact:
+    pgpool2_backends: []
+    pgpool2_nodes: []
+    pgpool2_primary_backend: ""
+
+# Build the list of postgres backends
+- name: Build the list of Postgres backends
+  set_fact:
+    pgpool2_backends: "{{ pgpool2_backends }} + [ '{{ server.value.public_ip }}' ]"
+  when:
+    - server.value.node_type == 'primary' or server.value.node_type == 'standby'
+  with_dict: "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Set the pgpool2_primary_backend variable
+  set_fact:
+    pgpool2_primary_backend: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type == 'primary'
+  with_dict: "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+# Build the list of pgpool2 nodes
+- name: Build the list of pgpool2 nodes
+  set_fact:
+    pgpool2_nodes: "{{ pgpool2_nodes }} + [ '{{ server.value.public_ip }}' ]"
+  when:
+    - server.value.node_type in supported_node_type
+  with_dict: "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+# Merge pgpool2_default_configuration and pgpool2_configuration
+- name: Initialize the pgpool2_full_configuration variable
+  set_fact:
+    pgpool2_full_configuration: "{{ pgpool2_configuration }}"
+
+- name: Merge pgpool2_default_configuration and pgpool2_configuration
+  set_fact:
+    pgpool2_full_configuration: >-
+      {{ pgpool2_full_configuration | default([]) + [
+          merge_item |
+          combine(
+            pgpool2_full_configuration |
+            selectattr('key', 'match', merge_item.key) |
+            list
+          )
+        ] }}
+  loop: "{{ pgpool2_default_configuration | default([]) }}"
+  loop_control:
+    loop_var: merge_item
+
+# Generate configuration parameters dictionary
+- name: Generate configuration parameters dictionary
+  set_fact:
+    pgpool2_config_dict: >-
+      {{ pgpool2_config_dict|default({}) | combine( {ci.key: ci.value} ) }}
+  with_items: "{{ pgpool2_full_configuration }}"
+  loop_control:
+    loop_var: ci
+  when:
+    - ci.state == 'present'
+
+- name: Include the pgpool2_install
+  include_tasks:
+    file: pgpool2_install.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when: server.value.node_type in supported_node_type
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_setup
+  include_tasks:
+    file: pgpool2_setup.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+  vars:
+    config_dict: "{{ pgpool2_config_dict }}"
+
+- name: Include the pgpool2_setup_user_auth
+  include_tasks:
+    file: pgpool2_setup_user_auth.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when: server.value.node_type in supported_node_type
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_configure_backends
+  include_tasks:
+    file: pgpool2_configure_backends.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+    - pgpool2_backends|length > 0
+    - pgpool2_primary_backend|length > 0
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_setup_sr_mode
+  include_tasks:
+    file: pgpool2_setup_sr_mode.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+    - pgpool2_backends|length > 0
+    - pgpool2_primary_backend|length > 0
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_setup_ssl
+  include_tasks:
+    file: pgpool2_setup_ssl.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+    - pgpool2_ssl is true
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_configure_loadbalancing
+  include_tasks:
+    file: pgpool2_configure_loadbalancing.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+    - pgpool2_load_balancing is true
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_configure_backend_pg_hba
+  include_tasks:
+    file: pgpool2_configure_backend_pg_hba.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in ['primary', 'standby']
+    - pgpool2_nodes|length > 0
+  vars:
+    pgpool2_node_list: "{{ pgpool2_nodes }}"
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
+- name: Include the pgpool2_setup_watchdog
+  include_tasks:
+    file: pgpool2_setup_watchdog.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+    - pgpool2_watchdog is true
+  vars:
+    pgpool2_node_list: "{{ pgpool2_nodes }}"
+    pgpool2_current_node: "{{ server.value.public_ip }}"
+    config_dict: "{{ pgpool2_config_dict }}"
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
