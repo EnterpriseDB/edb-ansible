@@ -6,7 +6,7 @@ pgpool2_user: "enterprisedb"
 pgpool2_group: "enterprisedb"
 
 # Directory containing SSL keys and certs
-pgpool2_ssl_dir: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/ssl"
+pgpool2_ssl_dir: "/etc/sysconfig/edb/pgpool-ssl"
 
 pgpool2_default_configuration:
   - {key: "pool_conn_dbname", value: "edb", state: absent, quoted: true}
