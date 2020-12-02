@@ -48,10 +48,12 @@
         }
       ]
 
-- set_fact:
+- name: Initialize pgpool2_other_node_list
+  set_fact:
     pgpool2_other_node_list: []
 
-- set_fact:
+- name: Populate pgpool2_other_node_list
+  set_fact:
     pgpool2_other_node_list: >-
       {{ pgpool2_other_node_list + [ node_item ] }}
   loop: "{{ pgpool2_node_list }}"

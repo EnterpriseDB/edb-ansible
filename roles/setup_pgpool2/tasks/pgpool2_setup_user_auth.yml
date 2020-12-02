@@ -7,8 +7,10 @@
   register: res_echo_home
   become: true
   become_user: "{{ pgpool2_user }}"
+  changed_when: false
 
-- set_fact:
+- name: Set the pgpool2_user_home_dir
+  set_fact:
     pgpool2_user_home_dir: "{{ res_echo_home.stdout }}"
 
 # Ensure home dir exists
@@ -22,7 +24,7 @@
   become: true
 
 # Test if the .pgpoolkey file exist in the home directory
-- name: Test if {{ pgpool2_user_home_dir}}/.pgpoolkey exists
+- name: Test if {{ pgpool2_user_home_dir }}/.pgpoolkey exists
   stat:
     path: "{{ pgpool2_user_home_dir }}/.pgpoolkey"
   register: stat_result

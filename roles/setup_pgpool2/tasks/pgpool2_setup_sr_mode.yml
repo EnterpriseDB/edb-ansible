@@ -2,7 +2,8 @@
 # Configure pgpoolII SR checking and master_slave_mode
 
 # Build random password for pgpool2_sr_user if needed
-- set_fact:
+- name: Build random password for pgpool2_sr_user
+  set_fact:
     pgpool2_sr_check_password: >-
       {{ lookup('password', '/dev/null chars=ascii_letters,digits length=12') }}
   when:

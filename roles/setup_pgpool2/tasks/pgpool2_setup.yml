@@ -103,7 +103,7 @@
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
-    - pgpool2_watchdog == true
+    - pgpool2_watchdog is true
   become: yes
 
 - name: Open Watchdog UDP port {{ config_dict.wd_port | default('') }}
@@ -115,7 +115,7 @@
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_port is defined
-    - pgpool2_watchdog == true
+    - pgpool2_watchdog is true
   become: yes
 
 - name: Open Watchdog heartbeat TCP port {{ config_dict.wd_heartbeat_port | default('') }}
@@ -127,7 +127,7 @@
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
-    - pgpool2_watchdog == true
+    - pgpool2_watchdog is true
   become: yes
 
 - name: Open Watchdog heartbeat UDP port {{ config_dict.wd_heartbeat_port | default('') }}
@@ -139,7 +139,7 @@
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
     - config_dict.wd_heartbeat_port is defined
-    - pgpool2_watchdog == true
+    - pgpool2_watchdog is true
   become: yes
 
 - name: Create pgpoolII systemd directory
