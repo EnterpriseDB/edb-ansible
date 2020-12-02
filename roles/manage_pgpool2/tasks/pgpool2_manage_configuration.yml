@@ -13,3 +13,4 @@
   with_items: "{{ pgpool2_configuration_lines }}"
   loop_control:
     loop_var: conf_item
+  become: yes

@@ -13,6 +13,7 @@
     - pgpool2_users|length > 0
     - user_item.state is defined
     - user_item.state == 'absent'
+  become: yes
 
 - name: Add users with SCRAM authentication
   shell:

@@ -6,6 +6,7 @@
     src: ./templates/pgpool.sudoers.d.conf.template
     dest: /etc/sudoers.d/pgpool
     mode: 0640
+  become: true
 
 - name: Watchdog configuration
   set_fact:
@@ -107,3 +108,4 @@
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: restarted
+  become: true
