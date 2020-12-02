@@ -8,6 +8,9 @@ pgpool2_group: "postgres"
 # Systemd unit file
 pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II-{{ pg_version }}.service.d/pgpool-II-{{ pg_version }}.conf"
 
+# Directory containing SSL keys and certs
+pgpool2_ssl_dir: "/etc/pgpool-II_{{ pg_version }}/ssl"
+
 pgpool2_default_configuration:
   - {key: "listen_addresses", value: "*", state: present, quoted: true}
   - {key: "port", value: 9999, state: present, quoted: false}
