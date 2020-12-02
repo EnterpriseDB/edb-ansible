@@ -165,6 +165,18 @@
   loop_control:
     loop_var: server
 
+- name: Include the pgpool2_setup_ssl
+  include_tasks:
+    file: pgpool2_setup_ssl.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - server.value.node_type in supported_node_type
+    - pgpool2_ssl == true
+  with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
+
 - name: Include the pgpool2_configure_loadbalancing
   include_tasks:
     file: pgpool2_configure_loadbalancing.yml

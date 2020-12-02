@@ -14,6 +14,20 @@ pgpool2_sr_check_password: ""
 
 pgpool2_configuration: []
 
+# Enable SSL
+pgpool2_ssl: true
+# Directory containing SSL keys and certs
+pgpool2_ssl_dir: ""
+
+pgpool2_ssl_csr_dn:
+  CN: "pgpool-server.fqdn"
+  O: ""
+  OU: ""
+  L: ""
+  ST: ""
+  C: ""
+  EMAIL: "example@mail.com"
+
 supported_os:
   - CentOS7
   - CentOS8
