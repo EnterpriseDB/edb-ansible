@@ -10,7 +10,7 @@
 
 - name: Add slot_name in pg_basebackup
   set_fact:
-    pg_basebackup: "{{ pg_basebackup + ' --slot=' }}{{ item.key | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+    pg_basebackup: "{{ pg_basebackup + ' --slot=' }}{{ item.name | regex_replace('[^a-zA-Z0-9_]', '_') }}"
 
 - name: Set replication user information
   set_fact:
