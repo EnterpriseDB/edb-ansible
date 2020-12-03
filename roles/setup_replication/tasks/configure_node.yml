@@ -12,7 +12,7 @@
 
 - name: create standby
   shell: |
-    PGAPPNAME={{ item.key }} {{ pg_basebackup }}
+    PGAPPNAME={{ item.name }} {{ pg_basebackup }}
   args:
     creates: "{{ pg_data }}/PG_VERSION"
   become: yes

@@ -2,7 +2,7 @@
 - name: Prepare the list
   set_fact:
     temp_list:
-       - name: "{{ item.key | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+       - name: "{{ item.name | regex_replace('[^a-zA-Z0-9_]', '_') }}"
          slot_type: physical
 
 - name: Prepare array of list
