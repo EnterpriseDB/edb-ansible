@@ -111,17 +111,11 @@ This role install and configure a new PgBouncer connection pooler.
 For more information on the role, please refer roles README
 [README.md](./roles/setup_pgbouncer/README.md)
 
-### manage_pgbouncer_databases
+### manage_pgbouncer
 
-This role helps in managing PgBouncer connection pools list.
+This role helps in managing PgBouncer connection pools list and users.
 For more information on the role, please refer roles README
-[README.md](./roles/manage_pgbouncer_databases/README.md)
-
-### manage_pgbouncer_users
-
-This role helps in managing PgBouncer credentials list.
-For more information on the role, please refer roles README
-[README.md](./roles/manage_pgbouncer_users/README.md)
+[README.md](./roles/manage_pgbouncer/README.md)
 
 ### setup_pgpool2
 
@@ -296,8 +290,7 @@ Below is an example of how to include roles for a deployment in a playbook:
        - setup_pem
        - manage_dbserver
        - setup_pgbouncer
-       - manage_pgbouncer_users
-       - manage_pgbouncer_databases
+       - manage_pgbouncer
 ```
 
 Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
@@ -305,8 +298,8 @@ Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
 limit what roles you would like to execute: `setup_repo`, `install_dbserver`,
 `init_dbserver`, `setup_replication`, `setup_efm`, `setup_pem`,
-`manage_dbserver`, `setup_pgbouncer`, `manage_pgbouncer_users`,
-`manage_pgbouncer_databases`, `setup_pgpool2` or `manage_pgpool2`.
+`manage_dbserver`, `setup_pgbouncer`, `manage_pgbouncer`, `setup_pgpool2` or
+`manage_pgpool2`.
 
 ## Default user and passwords
 
