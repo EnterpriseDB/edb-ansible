@@ -12,8 +12,6 @@ pgpool2_sr_check_user: "pgpool2"
 # If empty or not defined, a random password will be generated
 pgpool2_sr_check_password: ""
 
-pgpool2_configuration: []
-
 # Enable SSL
 pgpool2_ssl: true
 # Directory containing SSL keys and certs
