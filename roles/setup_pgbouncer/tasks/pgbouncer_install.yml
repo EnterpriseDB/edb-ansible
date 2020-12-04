@@ -4,11 +4,9 @@
     name: "{{ pgbouncer_package_name }}"
   when: os in ['CentOS7', 'RHEL7']
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Install PgBouncer package on CentOS8 or RHEL8
   dnf:
     name: "{{ pgbouncer_package_name }}"
   when: os in ['CentOS8', 'RHEL8']
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
