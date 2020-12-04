@@ -6,13 +6,13 @@
         msg:
             "operating system = {{ os }}:
              postgres version = {{ pg_version }},
-             public ip = {{ item.value.public_ip }},
+             public ip = {{ item.public_ip }},
              standby_names = {{ standby_names }}"
 
 - name: Set force_replication based on the user input
   set_fact:
-      force_replication: "{{ item.value.force_replication }}"
-  when: item.value.force_replication is defined
+      force_replication: "{{ item.force_replication }}"
+  when: item.force_replication is defined
   register: output
 
 - name: Force cleanup based on force_replication
@@ -20,7 +20,7 @@
     - include_tasks: rm_replication.yml
   when: force_replication
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ item.public_ip }}"
 
 # postgres
 
@@ -29,7 +29,7 @@
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
   when: use_hostname
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ item.public_ip }}"
 
 - name: Build standby service check
   block:
@@ -37,7 +37,7 @@
     - import_tasks: pg_basebackup.yml
     - import_tasks: configure_node.yml
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+  delegate_to: "{{ item.public_ip }}"
 
 - name: Reset the the variables based on the user input
   set_fact:
