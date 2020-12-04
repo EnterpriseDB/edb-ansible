@@ -43,7 +43,7 @@
         },
         {
           'key': 'wd_port',
-          'value': '{{ config_dict.wd_port }}',
+          'value': '{{ pgpool2_wd_port }}',
           'quoted': true
         }
       ]
@@ -74,12 +74,12 @@
         },
         {
           'key': 'other_pgpool_port{{ ansible_loop.index0 }}',
-          'value': '{{ config_dict.port }}',
+          'value': '{{ pgpool2_port }}',
           'quoted': false
         },
         {
           'key': 'other_wd_port{{ ansible_loop.index0 }}',
-          'value': '{{ config_dict.wd_port }}',
+          'value': '{{ pgpool2_wd_port }}',
           'quoted': false
         },
         {
@@ -89,7 +89,7 @@
         },
         {
           'key': 'heartbeat_destination_port{{ ansible_loop.index0 }}',
-          'value': '{{ config_dict.wd_heartbeat_port }}',
+          'value': '{{ pgpool2_wd_heartbeat_port }}',
           'quoted': false
         }
       ]

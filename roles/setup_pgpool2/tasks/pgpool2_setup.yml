@@ -24,121 +24,114 @@
     mode: 0755
   become: yes
 
-- name: Create logging directory {{ config_dict.logdir | default('') }}
+- name: Create pgpoolII logging directory {{ pgpool2_logdir }}
   file:
-    path: "{{ config_dict.logdir }}"
+    path: "{{ pgpool2_logdir }}"
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
-  when: config_dict.logdir is defined
+  when: pgpool2_logdir is defined
   become: yes
 
-- name: Create running directory {{ config_dict.pid_file_name | default('') | dirname }}
+- name: Create running directory {{ pgpool2_pid_file_name | default('') | dirname }}
   file:
-    path: "{{ config_dict.pid_file_name | dirname }}"
+    path: "{{ pgpool2_pid_file_name | dirname }}"
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0700
-  when: config_dict.pid_file_name is defined
-  become: yes
-
-- name: Create oiddir directory {{ config_dict.memqcache_oiddir | default('') }}
-  file:
-    path: "{{ config_dict.memqcache_oiddir }}"
-    state: directory
-    owner: "{{ pgpool2_user }}"
-    group: "{{ pgpool2_group }}"
-    mode: 0700
-  when: config_dict.memqcache_oiddir is defined
+  when: pgpool2_pid_file_name is defined
   become: yes
 
 # Build the configuration file
-- include_role:
-    name: manage_pgpool2
-    tasks_from: pgpool2_manage_configuration
-  vars:
-    pgpool2_configuration_lines: "{{ pgpool2_full_configuration }}"
+- name: Build configuration file {{ pgpool2_configuration_file }}
+  template:
+    src: "./templates/pgpool.conf.{{ pg_type }}.template"
+    dest: "{{ pgpool2_configuration_file }}"
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0600
+  become: true
 
-- name: Open listening TCP port {{ config_dict.port | default('') }}
+- name: Open listening TCP port {{ pgpool2_port | default('') }}
   firewalld:
-    port: "{{ config_dict.port }}/tcp"
+    port: "{{ pgpool2_port }}/tcp"
     permanent: yes
     state: enabled
     immediate: true
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
-    - config_dict.port is defined
+    - pgpool2_port is defined
   become: yes
 
-- name: Open PCP TCP port {{ config_dict.pcp_port | default('') }}
+- name: Open PCP TCP port {{ pgpool2_pcp_port | default('') }}
   firewalld:
-    port: "{{ config_dict.pcp_port }}/tcp"
+    port: "{{ pgpool2_pcp_port }}/tcp"
     permanent: yes
     state: enabled
     immediate: true
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
-    - config_dict.pcp_port is defined
+    - pgpool2_pcp_port is defined
   become: yes
 
-- name: Open PCP UDP port {{ config_dict.pcp_port | default('') }}
+- name: Open PCP UDP port {{ pgpool2_pcp_port | default('') }}
   firewalld:
-    port: "{{ config_dict.pcp_port }}/udp"
+    port: "{{ pgpool2_pcp_port }}/udp"
     permanent: yes
     state: enabled
     immediate: true
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
-    - config_dict.pcp_port is defined
+    - pgpool2_pcp_port is defined
   become: yes
 
-- name: Open Watchdog TCP port {{ config_dict.wd_port | default('') }}
+- name: Open Watchdog TCP port {{ pgpool2_wd_port | default('') }}
   firewalld:
-    port: "{{ config_dict.wd_port }}/tcp"
+    port: "{{ pgpool2_wd_port }}/tcp"
     permanent: yes
     state: enabled
     immediate: true
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
-    - config_dict.wd_port is defined
+    - pgpool2_wd_port is defined
     - pgpool2_watchdog is true
   become: yes
 
-- name: Open Watchdog UDP port {{ config_dict.wd_port | default('') }}
+- name: Open Watchdog UDP port {{ pgpool2_wd_port | default('') }}
   firewalld:
-    port: "{{ config_dict.wd_port }}/udp"
+    port: "{{ pgpool2_wd_port }}/udp"
     permanent: yes
     state: enabled
     immediate: true
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
-    - config_dict.wd_port is defined
+    - pgpool2_wd_port is defined
     - pgpool2_watchdog is true
   become: yes
 
-- name: Open Watchdog heartbeat TCP port {{ config_dict.wd_heartbeat_port | default('') }}
+- name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port | default('') }}
   firewalld:
-    port: "{{ config_dict.wd_heartbeat_port }}/tcp"
+    port: "{{ pgpool2_wd_heartbeat_port }}/tcp"
     permanent: yes
     state: enabled
     immediate: true
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
-    - config_dict.wd_heartbeat_port is defined
+    - pgpool2_wd_heartbeat_port is defined
     - pgpool2_watchdog is true
   become: yes
 
-- name: Open Watchdog heartbeat UDP port {{ config_dict.wd_heartbeat_port | default('') }}
+- name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
   firewalld:
-    port: "{{ config_dict.wd_heartbeat_port }}/udp"
+    port: "{{ pgpool2_wd_heartbeat_port }}/udp"
     permanent: yes
     state: enabled
     immediate: true
   when:
     - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
-    - config_dict.wd_heartbeat_port is defined
+    - pgpool2_wd_heartbeat_port is defined
     - pgpool2_watchdog is true
   become: yes
 
