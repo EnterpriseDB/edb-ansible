@@ -1,13 +1,13 @@
-# manage_pgbouncer_users
+# manage_pgbouncer
 
-This role is for managing PgBouncer users.
+This role is for managing PgBouncer database list (connection pools) and users.
 PgBouncer is a lightweight connection pooler for PostgreSQL.
 
 ## Requirements
 
 Following are the dependencies and requirement of this role.
   1. Ansible
-  2. `edb_devops.postgres` -> `setup_pgbouncer` role for setting up PgBouncer
+  2. `edb_devops.postgres` -> `setup_pgbouncer` - role for setting up PgBouncer
      on the systems.
 
 ## Role Variables
@@ -20,7 +20,7 @@ When executing the role via ansible these are the required variables:
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/manage_pgbouncer_users/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
 Below is the documentation of the rest of the variables:
 
@@ -52,6 +52,35 @@ Example:
 pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
 ```
 
+### `pgbouncer_databases_file`
+
+Configuration file path that contains databases (connection pools)
+configuration.
+Default: `/etc/pgbouncer/databases.ini`
+
+Example:
+```yaml
+pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
+```
+
+### `pgbouncer_databases_list`
+
+List of databases (connection pools).
+Default: `[]`
+
+Example:
+```yaml
+pgbouncer_databases_list:
+  - dbname: "my_db"
+    host: "xxx.xxx.xxx.xxx"
+    port: 5432
+    pool_size: 50
+    pool_mode: "transaction"
+    max_db_connections: 100
+    reserve_pool: 10
+    state: present
+```
+
 ### `pgbouncer_auth_file`
 
 The path of the file to load user names and passwords from.
@@ -81,6 +110,7 @@ pgbouncer_auth_user_list:
     state: present
 ```
 
+
 ## Dependencies
 
 This role does not have any dependencies, but a PgBouncer instance should have
@@ -108,13 +138,13 @@ servers:
     pgbouncer: true
 ```
 
-### How to include the `manage_pgbouncer_users` role in your Playbook
+### How to include the `manage_pgbouncer` role in your Playbook
 
-Below is an example of how to include the `manage_pgbouncer_users` role:
+Below is an example of how to include the `manage_pgbouncer` role:
 ```yaml
 ---
 - hosts: localhost
-  name: Manage PgBouncer users
+  name: Manage PgBouncer databases and users
   become: true
   gather_facts: no
 
@@ -128,6 +158,23 @@ Below is an example of how to include the `manage_pgbouncer_users` role:
     - name: Initialize the user defined variables
       set_fact:
         os: "CentOS8"
+        pgbouncer_databases_list:
+          - dbname: "db1"
+            host: "xxx.xxx.xxx.xxx"
+            port: 5432
+            pool_size: 50
+            pool_mode: "transaction"
+            max_db_connections: 100
+            reserve_pool: 10
+            state: present
+          - dbname: "db2"
+            host: "xxx.xxx.xxx.xxx"
+            port: 5432
+            pool_size: 10
+            pool_mode: "session"
+            max_db_connections: 100
+            reserve_pool: 0
+            state: present
         pgbouncer_auth_user_list:
           - username: "my_user"
             password: "SCRAM-SHA-256$4096:xxx...xxx"
@@ -140,7 +187,7 @@ Below is an example of how to include the `manage_pgbouncer_users` role:
             state: present
 
   roles:
-    - manage_pgbouncer_users
+    - manage_pgbouncer_databases
 ```
 
 ## License

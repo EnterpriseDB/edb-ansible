@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: EDB
-  description: Manage PgBouncer users
+  description: Manage PgBouncer
   company: "EnterpriseDB"
 
   # If the issue tracker for your role is not on github, uncomment the

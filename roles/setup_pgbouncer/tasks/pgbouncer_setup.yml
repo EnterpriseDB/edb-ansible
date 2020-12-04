@@ -3,7 +3,7 @@
   group:
     name: "{{ pgbouncer_group }}"
     state: present
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Create PgBouncer system user {{ pgbouncer_user }}
   user:
@@ -12,7 +12,7 @@
     group: "{{ pgbouncer_group }}"
     state: present
     create_home: false
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Create configuration directories
   file:
@@ -27,7 +27,7 @@
     - "{{ pgbouncer_systemd_unit_file | dirname }}"
   loop_control:
     loop_var: dir_item
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Create logging directory {{ pgbouncer_log_file | dirname }}
   file:
@@ -36,7 +36,7 @@
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
     mode: 0755
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Create running directory {{ pgbouncer_pid_file | dirname }}
   file:
@@ -45,7 +45,7 @@
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
     mode: 0700
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Generate PgBouncer configuration file {{ pgbouncer_config_file }}
   template:
@@ -55,7 +55,7 @@
     group: "{{ pgbouncer_group }}"
     src: ./templates/pgbouncer.ini.template
     mode: 0600
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Create empty databases file {{ pgbouncer_databases_file }}
   copy:
@@ -65,7 +65,7 @@
     group: "{{ pgbouncer_group }}"
     owner: "{{ pgbouncer_user }}"
     mode: 0600
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Create empty authentication file {{ pgbouncer_auth_file }}
   copy:
@@ -75,7 +75,7 @@
     group: "{{ pgbouncer_group }}"
     owner: "{{ pgbouncer_user }}"
     mode: 0600
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Generate PgBouncer systemd unit file {{ pgbouncer_systemd_unit_file }}
   template:
@@ -83,7 +83,7 @@
     dest: "{{ pgbouncer_systemd_unit_file }}"
     src: ./templates/pgbouncer.unit.conf.template
     mode: 0644
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Open TCP port {{ pgbouncer_listen_port }}
   firewalld:
@@ -91,14 +91,14 @@
     permanent: yes
     state: enabled
     immediate: true
-  delegate_to: "{{ item.value.public_ip }}"
   when: os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+  become: yes
 
 - name: Stop PgBouncer service
   systemd:
     name: pgbouncer
     state: stopped
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Enable and start PgBouncer service
   systemd:
@@ -106,4 +106,4 @@
     enabled: true
     daemon_reload: yes
     state: started
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes

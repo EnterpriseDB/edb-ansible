@@ -13,10 +13,10 @@
   with_items: "{{ pgbouncer_auth_user_list }}"
   loop_control:
     loop_var: user_item
-  delegate_to: "{{ item.value.public_ip }}"
+  become: yes
 
 - name: Reload PgBouncer configuration
   shell:
     cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
-  delegate_to: "{{ item.value.public_ip }}"
   changed_when: false
+  become: yes
