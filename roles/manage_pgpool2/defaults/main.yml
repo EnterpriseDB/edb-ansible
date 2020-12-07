@@ -1,0 +1,18 @@
+---
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13
+
+supported_node_type:
+  - pgpool2
+
+supported_pgpool2_version:
+  - 4.1

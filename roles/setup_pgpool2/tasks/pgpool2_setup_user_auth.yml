@@ -1,0 +1,44 @@
+---
+# Setup pgpoolII user authentication
+
+# Fetch pgpool2_user home path
+- name: Fetch user {{ pgpool2_user }} home path
+  shell: "echo $HOME"
+  register: res_echo_home
+  become: true
+  become_user: "{{ pgpool2_user }}"
+  changed_when: false
+
+- name: Set the pgpool2_user_home_dir
+  set_fact:
+    pgpool2_user_home_dir: "{{ res_echo_home.stdout }}"
+
+# Ensure home dir exists
+- name: Ensure {{ pgpool2_user_home_dir }} exists
+  file:
+    path: "{{ pgpool2_user_home_dir }}"
+    state: directory
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0700
+  become: true
+
+# Test if the .pgpoolkey file exist in the home directory
+- name: Test if {{ pgpool2_user_home_dir }}/.pgpoolkey exists
+  stat:
+    path: "{{ pgpool2_user_home_dir }}/.pgpoolkey"
+  register: stat_result
+  become: true
+
+# Build random AES key if .pgpoolkey does not exist or is empty
+- name: Build new random AES key
+  copy:
+    dest: "{{ pgpool2_user_home_dir }}/.pgpoolkey"
+    content: >
+      {{ lookup('password', '/dev/null chars=ascii_letters,digit length=128') }}
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0600
+  when:
+    - not stat_result.stat.exists or stat_result.stat.size == 0
+  become: true

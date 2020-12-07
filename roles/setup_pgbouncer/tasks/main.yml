@@ -22,11 +22,23 @@
   when: pgbouncer_auth_type not in available_auth_type
 
 - name: Include the pgbouncer_install
-  include_tasks: pgbouncer_install.yml
-  when: (item.value.pgbouncer is true and item.value.node_type in supported_node_type) or item.value.node_type == 'pgbouncer'
+  include_tasks:
+    file: pgbouncer_install.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - (server.value.pgbouncer is true and server.value.node_type in supported_node_type) or server.value.node_type == 'pgbouncer'
   with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server
 
 - name: Include the pgbouncer_setup
-  include_tasks: pgbouncer_setup.yml
-  when: (item.value.pgbouncer is true and item.value.node_type in supported_node_type) or item.value.node_type == 'pgbouncer'
+  include_tasks:
+    file: pgbouncer_setup.yml
+    apply:
+      delegate_to: "{{ server.value.public_ip }}"
+  when:
+    - (server.value.pgbouncer is true and server.value.node_type in supported_node_type) or server.value.node_type == 'pgbouncer'
   with_dict:  "{{ servers }}"
+  loop_control:
+    loop_var: server

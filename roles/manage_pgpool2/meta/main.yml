@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: EDB
-  description: Manage PgBouncer users
+  description: Manage Pgpool II user list and configuration
   company: "EnterpriseDB"
 
   # If the issue tracker for your role is not on github, uncomment the
@@ -42,7 +42,9 @@ galaxy_info:
     - database
     - postgresql
     - postgres
-    - pgbouncer
+    - pgpool
+    - pooler
+    - connection
     - edb
     - edbinitialize
 
