@@ -42,6 +42,9 @@ efm_default_parameters:
 efm_physical_slot_param:
   - { name: update.physical.slots.period, value: "5" }
 
+efm_cascaded_replica_param:
+  - { name: promotable, value: false }
+  - { name: auto.reconfigure, value: false }
 # example of efm_custom_parameters:
 # efm_parameters:
 #   - name: script.notification

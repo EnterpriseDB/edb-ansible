@@ -46,9 +46,11 @@
     - item.node_type == 'primary'
   loop: "{{ server_list }}"
 
-- name: Prepare slot names array
+- name: Prepare slot names array for primary
   include_tasks: prepare_standby_slots_list.yml
-  when: item.node_type == 'standby'
+  when:
+    - item.node_type == 'standby'
+    - item.upstream_node_private_ip is not defined
   loop: "{{ server_list }}"
 
 - name: Prepare host ip lists based on allow_node_ips

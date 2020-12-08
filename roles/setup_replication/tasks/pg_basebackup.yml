@@ -19,13 +19,31 @@
 
 - name: Set host and port
   set_fact:
+    pg_basebackup: "{{ pg_basebackup + ' --host=' + item.upstream_node_private_ip + ' --port=' + pg_port }}"
+  when:
+    - not use_hostname
+    - item.upstream_node_private_ip is defined
+
+- name: Set host and port
+  set_fact:
+    pg_basebackup: "{{ pg_basebackup + ' --host=' + upstream_hostname + ' --port=' + pg_port }}"
+  when:
+    - use_hostname
+    - item.upstream_node_private_ip is defined
+
+- name: Set host and port
+  set_fact:
     pg_basebackup: "{{ pg_basebackup + ' --host=' + primary_private_ip + ' --port=' + pg_port }}"
-  when: not use_hostname
+  when:
+    - not use_hostname
+    - item.upstream_node_private_ip is not defined
 
 - name: Set host and port
   set_fact:
     pg_basebackup: "{{ pg_basebackup + ' --host=' + primary_host_name + ' --port=' + pg_port }}"
-  when: use_hostname
+  when:
+    - use_hostname
+    - item.upstream_node_private_ip is not defined
 
 - name: Use other supplied options if given
   set_fact:
