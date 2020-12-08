@@ -27,7 +27,7 @@
   block:
     - import_tasks: upstream_node.yml
   when:
-    - item.upstream_node is defined
+    - item.upstream_node_private_ip is defined
 
 - name: Build standby service check
   block:

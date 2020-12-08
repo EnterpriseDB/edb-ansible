@@ -37,12 +37,12 @@
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
-  when: item.value.upstream_node is not defined
+  when: item.value.upstream_node_private_ip is not defined
 
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters + efm_cascaded_replica_param }}"
-  when: item.value.upstream_node is defined
+  when: item.value.upstream_node_private_ip is defined
 
 - name: Prepare final parameters list
   set_fact:

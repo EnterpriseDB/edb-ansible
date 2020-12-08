@@ -50,7 +50,7 @@
   include_tasks: prepare_standby_slots_list.yml
   when:
     - item.node_type == 'standby'
-    - item.upstream_node is not defined
+    - item.upstream_node_private_ip is not defined
   loop: "{{ server_list }}"
 
 - name: Prepare host ip lists based on allow_node_ips
