@@ -1,0 +1,10 @@
+---
+
+- name: Create physical slots of the standbys
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_slots
+  vars:
+    pg_slots:
+       - name: "{{ item.name | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+         slot_type: physical
