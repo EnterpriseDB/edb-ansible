@@ -1,13 +1,5 @@
 ---
 # configure variables
-- name: Display details of node to configure
-  block:
-    - debug:
-        msg:
-            "operating system = {{ os }}:
-             postgres version = {{ pg_version }},
-             public ip = {{ item.public_ip }},
-             standby_names = {{ standby_names }}"
 
 - name: Set force_replication based on the user input
   set_fact:
@@ -30,6 +22,12 @@
   become: yes
   when: use_hostname
   delegate_to: "{{ item.public_ip }}"
+
+- name: Call upstream update based on the upstream node
+  block:
+    - import_tasks: upstream_node.yml
+  when:
+    - item.upstream_node is defined
 
 - name: Build standby service check
   block:

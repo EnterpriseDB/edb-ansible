@@ -1,0 +1,29 @@
+---
+
+- name: Get upstream node public ip
+  set_fact:
+    upstream_public_ip: "{{ server.public_ip }}"
+  when:
+    - item.upstream_node is defined
+    - server.private_ip == item.upstream_node
+    - not use_hostname
+  loop: "{{ server_list }}"
+  loop_control:
+    loop_var: server
+
+
+- name: Get upstream node hostnames
+  set_fact:
+    upstream_hostname: "{{ server.hostname }}"
+  when:
+    - item.upstream_node is defined
+    - server.private_ip == item.upstream_node
+    - use_hostname
+  loop: "{{ server_list }}"
+  loop_control:
+    loop_var: server
+
+- name: Add standby slot in upstream node
+  import_tasks: upstream_node_slots.yml
+  delegate_to: "{{ upstream_public_ip }}"
+

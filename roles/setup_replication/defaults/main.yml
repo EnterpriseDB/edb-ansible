@@ -21,6 +21,8 @@ standby_names: []
 pg_allow_ip_addresses: []
 standby_physical_slots: []
 etc_hosts_lists: []
+upstream_public_ip: ""
+upstream_hostname: ""
 
 supported_os:
   - CentOS7
