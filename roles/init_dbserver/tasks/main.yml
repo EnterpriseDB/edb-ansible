@@ -1,6 +1,10 @@
 ---
 # tasks file for the init_dbserver role
 
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
 # reference epas variables
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}.yml"
@@ -24,16 +28,14 @@
 
 - name: Gather the host and information for /etc/hosts
   set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
-  when:
-    - item.value.hostname is defined
-    - item.value.node_type in supported_node_type
-  with_dict: "{{ servers }}"
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname
 
 - name: Include the init_dbserver
   include_tasks: init_dbserver.yml
-  when: item.value.node_type in supported_node_type
-  with_dict:  "{{ servers }}"
 
 - name: Reset etc_hosts_list variable
   set_fact:

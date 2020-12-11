@@ -1,6 +1,5 @@
 ---
-
-- name: Install epel repo and EDB repo
+- name: Install EPEL and EDB repo for CentOS7/RHEL7
   yum:
     name:
       - "{{ epel_repo_7 }}"
@@ -9,21 +8,21 @@
   when: os in ['CentOS7','RHEL7']
   become: yes
 
-- name: Download epel GPG key
+- name: Download EPEL GPG key for CentOS8/RHEL8
   rpm_key:
     state: present
     key: "{{ epel_gpg_key_8 }}"
   when: os in ['CentOS8','RHEL8']
   become: yes
 
-- name: Download EDB GPG key
+- name: Download EDB GPG key for CentOS8/RHEL8
   rpm_key:
     state: present
     key: "{{ edb_gpg_key_8 }}"
   when: os in ['CentOS8','RHEL8']
   become: yes
 
-- name: Install epel and EDB repo
+- name: Install EPEL and EDB repo for CentOS8/RHEL8
   dnf:
     name:
       - "{{ epel_repo_8 }}"

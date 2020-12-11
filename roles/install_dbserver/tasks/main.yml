@@ -1,5 +1,10 @@
 ---
 # Tasks file for install_dbserver Role
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
 # Check if the Operating System is supported
 - name: Check support for Operating System
   fail:
@@ -24,5 +29,3 @@
 
 - name: Include the install_dbserver
   include_tasks: install_dbserver.yml
-  when: item.value.node_type in supported_node_type
-  with_dict:  "{{ servers }}"
