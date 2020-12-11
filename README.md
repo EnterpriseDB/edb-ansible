@@ -1,5 +1,4 @@
-This is an open source project and are not officially supported by EDB Support. They are maintained and supported by the GitHub members of this repository. 
-Please provide feedback by posting issues and providing pull requests.
+This is an open-source project and is not officially supported by EDB Support. They are maintained and supported by the GitHub members of this repository. Please provide feedback by posting issues and providing pull requests.
 
 # edb_postgres
 
