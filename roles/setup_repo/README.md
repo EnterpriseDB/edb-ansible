@@ -95,8 +95,6 @@ Content example of the `vars.yml` file:
 ---
 pg_type: "PG"
 pg_version: 13
-yum_username: "xxxxxxxx"
-yum_password: "xxxxxxxx"
 ```
 
 ### How to include the `setup_repo` role in your Playbook
@@ -109,16 +107,15 @@ Below is an example of how to include the `setup_repo` role:
   name: Setup Postgres Repositories
   become: yes
   gather_facts: yes
+
+  pre_tasks:
+    set_fact:
+      yum_username: "xxxxxxxx"
+      yum_password: "xxxxxxxx"
+
   roles:
     - setup_repo
 ```
-
-Defining and adding variables can also be done in the `set_fact` of the
-`pre-tasks`.
-
-All the variables are available at:
-
-  - [roles/setup_repo/defaults/main.yml](./defaults/main.yml) 
 
 ## Database engines supported
 
