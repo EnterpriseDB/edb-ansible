@@ -1,3 +1,5 @@
+This is an open-source project and is not officially supported by EDB Support. This repository is maintained and supported by the EDB GitHub members of this repository. Please provide feedback by posting issues and contribute by creating pull requests.
+
 # edb_postgres
 
 This Ansible Galaxy Collection sets up and configures the repositories from
