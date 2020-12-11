@@ -1,6 +1,10 @@
 ---
 # Tasks file for the setup_repo Role
 
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
 # Check if the Operating System is supported
 - name: Check support for Operating System
   fail:
@@ -31,4 +35,3 @@
 
 - name: Include the setup_repo
   include_tasks: setup_repo.yml
-  with_dict:  "{{ servers }}"
