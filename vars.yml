@@ -1,0 +1,5 @@
+---
+pg_type: "PG"
+pg_version: 13
+yum_username: ""
+yum_password: ""

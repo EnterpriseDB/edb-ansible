@@ -223,39 +223,53 @@ $ cd edb-ansible
 **WARNING**: This approach does not automatically make the `edb_postgres`
 collection available to your playbooks.
 
-## Hosts file content
+## Inventory file content
 
-Content of the `hosts.yml` file:
+Content of the `inventory.yml` file:
 
 ```yaml
-      servers:
-        pem-server:
-          node_type: pemserver
-          public_ip: xxx.xxx.xxx.xxx
+---
+all:
+  children:
+    pemserver:
+      hosts:
+        pemserver1:
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
-        pooler:
-          node_type: pgbouncer
-          public_ip: xxx.xxx.xxx.xxx
+    primary:
+      hosts:
         primary1:
-          node_type: primary
-          public_ip: xxx.xxx.xxx.xxx
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           pem_agent: true
-          pgbouncer: true
-        standby11:
-          node_type: standby
-          public_ip: xxx.xxx.xxx.xxx
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
-          pem_agent: true
-          pgbouncer: true
-        standby12:
-          node_type: standby
-          public_ip: xxx.xxx.xxx.xxx
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
-          pem_agent: true
-          pgbouncer: true
+```
+
+## User defined variables
+
+Defining variables can be done using a dedicated file and including this file
+ at execution time with the `ansible-playbook` CLI option:
+
+   * `--extra-vars=@./vars.yml`
+
+Default content of the `vars.yml` file:
+
+```yaml
+---
+pg_type: "PG"
+pg_version: 13
 ```
 
 ## How to include the roles in your Playbook
@@ -263,39 +277,33 @@ Content of the `hosts.yml` file:
 Below is an example of how to include roles for a deployment in a playbook:
 
 ```yaml
-    - hosts: localhost
-      name: Configure Postgres or EPAS on Instances
-      become: true
-      gather_facts: no
+---
+- hosts: all
+  name: Setup RPM repositories
+  become: yes
+  gather_facts: yes
+  pre_tasks:
+    set_fact:
+      yum_username: "xxxxxxxx"
+      yum_password: "xxxxxxxx"
 
-      collections:
-        - edb_devops.postgres
+  roles:
+    - setup_repo
 
-      vars_files:
-        - hosts.yml
+- hosts: primary,standby,pemserver
+  name: Install Postgres binaries
+  become: yes
+  gather_facts: yes
+  roles:
+    - install_dbserver
 
-      pre_tasks:
-          - name: Initialize the user defined variables
-            set_fact:
-                os: "CentOS7"
-                pg_version: 12
-                pg_type: "PG"
-                yum_username: ""
-                yum_password: ""
-
-      roles:
-       - setup_repo
-       - install_dbserver
-       - init_dbserver
-       - setup_replication
-       - setup_efm
-       - setup_pem
-       - manage_dbserver
-       - setup_pgbouncer
-       - manage_pgbouncer
+- hosts: primary,pemserver
+  name: Init Postgres instances
+  become: yes
+  gather_facts: yes
+  roles:
+    - init_dbserver
 ```
-
-Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
 limit what roles you would like to execute: `setup_repo`, `install_dbserver`,
@@ -320,7 +328,7 @@ accounts:
     permissions to `user` executing the playbook.
   * A password of 20 characters will be automatically created under: `~/.edb`
     folder.
-  * The naming convention for the password file is: `<username>_pass`
+  * The naming convention for the password file is: `<host>_<username>_pass`
 
 ## Playbook examples
 
@@ -331,18 +339,18 @@ Postgres Advanced Server, Centos7 or RHEL7 are provided and located within the
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13 on CentOS7 hosts with the user centos
+# To deploy community Postgres version 13 with the user centos
 $ ansible-playbook playbook.yml \
   -u centos \
   --private-key <key.pem> \
-  --extra-vars="os=CentOS7 pg_version=13 pg_type=PG"
+  --extra-vars="pg_version=13 pg_type=PG"
 ```
 ```bash
-# To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user
+# To deploy EPAS version 12 with the user ec2-user
 $ ansible-playbook playbook.yml \
   -u ec2-user \
   --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS"
+  --extra-vars="pg_version=12 pg_type=EPAS yum_user=xxxxx yum_password=xxxxx"
 ```
 
 ## Database engines supported
