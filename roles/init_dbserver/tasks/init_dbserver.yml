@@ -6,15 +6,15 @@
         msg: "operating system = {{ os }}:
              postgres version = {{ pg_version }},
              database engine = {{ pg_type }},
-             public ip = {{ item.value.public_ip }}"
+             public ip = {{ ansible_host }}"
 
 # setting variables available for all nodes
 # any of the variables existing can be updated and configured
 
 - name: Set force_initdb based on the user input
   set_fact:
-    force_initdb: "{{ item.value.force_initdb }}"
-  when: item.value.force_initdb is defined
+    force_initdb: "{{ hostvars[inventory_hostname].force_initdb }}"
+  when: hostvars[inventory_hostname].force_initdb is defined
   register: output
 
 # main blog for tasks
@@ -23,14 +23,12 @@
     - include_tasks: rm_initdb.yml
   when: force_initdb
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Update etc_hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
   when: use_hostname
-  delegate_to:  "{{ item.value.public_ip }}"
 
 - name: Check and configure the node as primary or pemserver
   block:
@@ -38,7 +36,6 @@
     - import_tasks: pg_initdb.yml
     - import_tasks: pg_set_superuser_password.yml
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Configure ssl based on pg_ssl parameter
   block:
@@ -47,7 +44,6 @@
   become: yes
   when:
      - pg_ssl
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Reset force_initdb based on the user input
   set_fact:
