@@ -6,7 +6,7 @@ used the tasks given in the this role.
 
 ## Requirements
 
-Following are the dependencies and requirement of this role. 
+Following are the dependencies and requirement of this role.
 
   1. Ansible
   2. `community.general` Ansible Module - Utilized when creating aditional
@@ -21,9 +21,9 @@ day tasks:
 ### `pg_postgres_conf_params`
 
 Using this parameters user can set the database parameters.
- 
-Example: 
-```yaml  
+
+Example:
+```yaml
 pg_postgres_conf_params:
   - name: listen_addresses
     value: "*"
@@ -34,7 +34,7 @@ pg_postgres_conf_params:
 With this parameter, user can manage HBA (Host Based Authentication) entries.
 
 ```yaml
-pg_hba_ip_addresses: 
+pg_hba_ip_addresses:
   - contype: "host"
     users: "all"
     databases: "all"
@@ -124,7 +124,7 @@ Execute a query on a database.
 ```yaml
 pg_query:
     - query: "Update test set a=b"
-      db: edb 
+      db: edb
 ```
 
 ### `pg_pgpass_values`
@@ -159,23 +159,48 @@ The `manage_dbserver` role does depend on the following roles:
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-Content of the `hosts.yml` file:
+Content of the `inventory.yml` file:
 
 ```yaml
 ---
-servers:
-  main1:
-    node_type: primary
-    public_ip: xxx.xxx.xxx.xxx
-  standby11:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
-  standby12:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: synchronous
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: asynchronous
 ```
+
+### User defined variables
+
+Defining variables can be done using a dedicated file and including this file
+ at execution time with the `ansible-playbook` CLI option:
+
+   * `--extra-vars=@./vars.yml`
+
+Content example of the `vars.yml` file:
+
+```yaml
+---
+pg_type: "PG"
+pg_version: 13
+```
+
 
 ### How to include the `manage_dbserver` role in your Playbook
 
@@ -183,46 +208,33 @@ Below is an example of how to include the `manage_dbserver` role:
 
 ```yaml
 ---
-- hosts: localhost
-  name: Manage DB servers
-  become: true
-  gather_facts: no
-
-  collections:
-    - edb_devops.postgres
-
-  vars_files:
-    - hosts.yml
-
+- hosts: primary,pemserver
+  name: Manage Postgres server
+  become: yes
+  gather_facts: yes
   pre_tasks:
-    # Define or re-define any variables previously assigned
-    - name: Initialize the user defined variables
-      set_fact:
-        os: "CentOS7"
-        pg_type: "EPAS"
-        pg_version: 12
+    set_fact:
+      pg_postgres_conf_params:
+        - name: listen_addresses
+          value: "*"
 
-        pg_postgres_conf_params:
-          - name: listen_addresses
-            value: "*"
+      pg_hba_ip_addresses:
+        - contype: "host"
+          users: "all"
+          databases: "all"
+          method: "scram-sha-256"
+          source: "127.0.0.1/32"
+          state: present
 
-        pg_hba_ip_addresses:
-          - contype: "host"
-            users: "all"
-            databases: "all"
-            method: "scram-sha-256"
-            source: "127.0.0.1/32"
-            state: present
-
-        pg_slots:
-          - name: "physcial_slot"
-            slot_type: "physical"
-            state: present
-          - name: "logical_slot"
-            slot_type: "logical"
-            output_plugin: "test_decoding"
-            state: present
-            database: "edb"
+      pg_slots:
+        - name: "physcial_slot"
+          slot_type: "physical"
+          state: present
+        - name: "logical_slot"
+          slot_type: "logical"
+          output_plugin: "test_decoding"
+          state: present
+          database: "edb"
 
   roles:
     - manage_dbserver
