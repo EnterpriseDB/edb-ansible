@@ -168,7 +168,7 @@ $ ansible-playbook playbook.yml \
   -u centos \
   -i inventory.yml \
   --private-key <key.pem> \
-  --extra-vars="os=CentOS7 pg_version=13 pg_type=PG efm_version=4.0"
+  --extra-vars="pg_version=13 pg_type=PG efm_version=4.0"
 ```
 ```bash
 # To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user EFM version
@@ -177,7 +177,7 @@ $ ansible-playbook playbook.yml \
   -u ec2-user \
   -i inventory.yml \
   --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS efm_version=3.10"
+  --extra-vars="pg_version=12 pg_type=EPAS efm_version=3.10"
 ```
 
 ## License
