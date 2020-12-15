@@ -1,6 +1,6 @@
-# setup_pemserver
+# setup_pemagent
 
-This Ansible Galaxy Role Installs and configure PEM server.
+This Ansible Galaxy Role Installs and configure PEM agents.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -9,8 +9,8 @@ For more details refer to the: *Database engines supported* section.
 
 **Note:**
 The role does not configure EDB Postgres Advanced Server or PostgreSQL for
-replication it only installs Postgres Enterprise Manager (PEM) and configures
-any node to be a PEM server.
+replication it only installs Postgres Enterprise Manager (PEM) agents across
+multiple nodes and configure database nodes for PEM monitorning.
 
 **The ansible playbook must be executed under an account that has full
 privileges.**
@@ -42,11 +42,11 @@ When executing the role via ansible there are three required variables:
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_pemserver/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_pemagent/defaults/main.yml](./defaults/main.yml)
 
 ## Dependencies
 
-The `setup_pemserver` role does not have any dependencies on any other roles.
+The `setup_pemagent` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
@@ -99,26 +99,27 @@ pg_type: "PG"
 pg_version: 13
 ```
 
-## How to include the `setup_pemserver` role in your Playbook
 
-Below is an example of how to include the `setup_pemserver` role:
+## How to include the `setup_pemagent` role in your Playbook
+
+Below is an example of how to include the `setup_pemagent` role:
 
 ```yaml
 ---
-- hosts: pemserver
-  name: Setup PEM server
+- hosts: primary,standby
+  name: Setup PEM agents
   become: yes
   gather_facts: yes
   roles:
-    - setup_pemserver
+    - setup_pemagent
 ```
 
 Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 
 All the variables are available at:
 
-  - [roles/setup_pemserver/vars/EPAS.yml](./vars/EPAS.yml) 
-  - [roles/setup_pemserver/vars/PG.yml](./vars/PG.yml) 
+  - [roles/setup_pemagent/vars/EPAS.yml](./vars/EPAS.yml)
+  - [roles/setup_pemagent/vars/PG.yml](./vars/PG.yml)
 
 ## Database engines supported
 
