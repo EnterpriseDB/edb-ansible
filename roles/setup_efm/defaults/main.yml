@@ -4,6 +4,7 @@ os: ""
 pg_version: ""
 efm_version: 4.0 
 
+disable_logging: true
 force_efm_install: false
 pass_dir: "~/.edb"
 use_hostname: false
@@ -18,6 +19,7 @@ efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
 # common variables require for the role
 etc_hosts_lists: []
 primary_public_ip: ""
+primary_private_ip: ""
 input_password: ""
 pg_allow_ip_addresses: []
 
@@ -38,6 +40,7 @@ efm_default_parameters:
   - { name: local.timeout.final, value: "5" }
   - { name: remote.timeout, value: "5" }
   - { name: node.timeout, value: "5" }
+  - { name: ping.server.ip, value: "localhost"}
 
 efm_physical_slot_param:
   - { name: update.physical.slots.period, value: "5" }
@@ -83,3 +86,4 @@ supported_efm_version:
 supported_node_type:
   - primary
   - standby
+  - witness

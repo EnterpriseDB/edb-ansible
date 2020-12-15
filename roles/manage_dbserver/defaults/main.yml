@@ -6,6 +6,7 @@ pg_type: "PG"
 pass_dir: "~/.edb"
 passfile: ""
 pg_postgres_conf_params: ""
+disable_logging: true
 # Example:
 # - name: listen_addresses
 #   value: "*"

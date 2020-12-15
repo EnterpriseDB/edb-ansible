@@ -18,3 +18,4 @@
   loop_control:
     loop_var: line_item
   when: pg_databases|length > 0
+  no_log: "{{ disable_logging }}"

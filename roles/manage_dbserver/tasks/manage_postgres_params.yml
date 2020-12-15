@@ -13,6 +13,7 @@
   become_user: "{{ pg_owner }}"
   loop_control:
     loop_var: line_item
+  no_log: "{{ disable_logging }}"
   register: params
 
 - name: Register the restart requirements
@@ -24,6 +25,7 @@
   with_items: "{{ params.results }}"
   loop_control:
     loop_var: line_item
+  no_log: "{{ disable_logging }}"
 
 - name: Reload the pg service
   systemd:

@@ -3,6 +3,10 @@
 - name: Reference variables
   include_vars: "{{ pg_type }}.yml"
 
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
 # Check if the Operating System is supported
 - name: Check support for Operating System
   fail:
@@ -25,63 +29,7 @@
 
 # configure variables
 
-- name: Prepare etc_hosts_lists
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [item.value.private_ip + ' ' + item.value.hostname] }}"
-  when:
-    - item.value.hostname is defined
-    - use_hostname
-    - item.value.node_type in supported_node_type
-  with_dict: "{{ servers }}"
-
-- name: Set efm nodes and witness type
-  set_fact:
-    efm_install_version : "{{ efm_version | replace('.','') }}"
-    primary_public_ip: "{{ primary_public_ip + item.value.public_ip if (item.value.node_type == 'primary') else primary_public_ip }}"
-  with_dict: "{{ servers }}"
-  register: output
-
-- name: Prepare efm node list
-  set_fact:
-    efm_nodes_list: "{{ efm_nodes_list + item.value.private_ip + ':7800 ' }}"
-  when:
-    - item.value.node_type in supported_node_type
-    - not use_hostname
-  with_dict: "{{ servers }}"
-
-- name: Prepare efm node list based on hostname
-  set_fact:
-    efm_nodes_list: "{{ efm_nodes_list + item.value.hostname + ':7800 ' }}"
-  when:
-    - item.value.node_type in supported_node_type
-    - item.value.hostname is defined
-    - use_hostname
-  with_dict: "{{ servers }}"
-
-- name: Prepare hba host ip lists
-  include_tasks: prepare_hba_value_list.yml
-  when: item.value.node_type in supported_node_type
-  with_dict: "{{ servers }}"
-
-- name: Ensure we have efm user in primary database
-  import_tasks: create_efm_user.yml
-  delegate_to: "{{ primary_public_ip }}"
-
-- name: Add localhost in hba ip list
-  import_tasks: localhost_hba_value_list.yml
-
 - name: Configure efm
   include_tasks: setup_efm.yml
-  when: item.value.node_type in supported_node_type
-  with_dict: "{{ servers }}"
-
-- name: Efm parameters settings
-  include_tasks: efm_cluster_set_params.yml
-
-- name: Reset the variables used in this role
-  set_fact:
-     efm_nodes_list: ""
-     etc_hosts_lists: []
-     primary_public_ip: ""
-     input_password: ""
-     pg_allow_ip_addresses: []
+  when: supported_node_type is superset(group_names)
+  no_log: "{{ disable_logging }}"

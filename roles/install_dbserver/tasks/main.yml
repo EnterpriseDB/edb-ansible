@@ -29,3 +29,4 @@
 
 - name: Include the install_dbserver
   include_tasks: install_dbserver.yml
+  when: supported_node_type is superset(group_names)

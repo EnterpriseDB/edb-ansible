@@ -1,16 +1,10 @@
+---
+
 - name: Set force install based on the user input
   set_fact:
     force_install: "{{ hostvars[inventory_hostname].force_install }}"
   when: hostvars[inventory_hostname].force_install is defined
   register: output
-
-# display details of ip address being processed
-- name: Details of node being processed
-  block:
-    - debug:
-        msg: "operating system = {{ os }},
-             database engine = {{ pg_type }},
-             public ip = {{ ansible_host }}"
 
 - name: Cleanup the repos based on force_install
   block:

@@ -11,4 +11,3 @@
   when: efm_parameters|length > 0
   become: yes
   register: properties_changes
-  delegate_to: "{{ item.value.public_ip }}"
