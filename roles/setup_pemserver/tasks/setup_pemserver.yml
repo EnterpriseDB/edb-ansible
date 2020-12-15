@@ -1,0 +1,28 @@
+---
+
+- name: update etc_hosts based on use_hostname
+  block:
+    - import_tasks: linux_update_etc_hosts.yml
+  become: yes
+  when:
+    - use_hostname
+
+- name: set force_pem_install based on the user input
+  set_fact:
+    force_pem_install: "{{ hv.force_pem_install }}"
+  when: hv.force_pem_install is defined
+  register: output
+
+- name: Remove pem server based on force_pem_install
+  block:
+    - import_tasks: rm_pem_server_install.yml
+  when: force_pem_install
+  become: yes
+
+- name: Install and configure pemserver
+  block:
+    - import_tasks: pem_server_user.yml
+    - import_tasks: pem_server_install.yml
+    - import_tasks: pem_server_config.yml
+    - import_tasks: pem_server_hba.yml
+  become: yes
