@@ -1,0 +1,24 @@
+---
+
+- name: Prepare pem server local hba entry
+  set_fact:
+    pem_server_hba_local_entry:
+      - user: "+pem_user"
+        source: "{{ pem_allowed_connections }}"
+        databases: "pem"
+        method: "scram-sha-256"
+      - user: "+pem_agent"
+        source: "{{ pem_allowed_connections }}"
+        databases: "pem"
+        method: "cert"
+
+- name: Merge the hba into one
+  set_fact:
+    pem_server_hba_local_entry: "{{ pem_server_hba_local_entry + pg_allow_ip_addresses }}"
+
+- name: Update hba config
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ pem_server_hba_local_entry }}"
