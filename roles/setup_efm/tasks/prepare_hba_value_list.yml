@@ -4,7 +4,7 @@
     temp_list:
        - contype: "host"
          users: "{{ pg_efm_user }}"
-         source: "{{ item.value.private_ip }}/32"
+         source: "{{ node.private_ip }}/32"
          databases: "{{ pg_efm_database }}"
   when: not pg_ssl
 
@@ -12,7 +12,7 @@
   set_fact:
     temp_list:
        - users: "{{ pg_efm_user }}"
-         source: "{{ item.value.private_ip }}/32"
+         source: "{{ node.private_ip }}/32"
          databases: "{{ pg_efm_database }}"
   when: pg_ssl
 

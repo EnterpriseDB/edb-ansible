@@ -14,14 +14,14 @@
 
 - name: Check if we have efm_witness or not
   set_fact:
-    efm_witness: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
+    efm_witness: "{{ 'true' if ('witness' in group_names) else 'false' }}"
 
 - name: Prepare the necessary parameters
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ item.value.private_ip }}:7800"}
-        - { name: application.name, value: "{{ item.key }}" }
+        - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:7800"}
+        - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: not use_hostname
 
@@ -29,20 +29,23 @@
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ item.value.hostname }}:7800"}
-        - { name: application.name, value: "{{ item.key }}" }
+        - { name: bind.address, value: "{{ hostvars[inventory_hostname].hostname }}:7800"}
+        - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: use_hostname
 
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
-  when: item.value.upstream_node_private_ip is not defined
+  when: hostvars[inventory_hostname].upstream_node_private_ip is not defined 
+        or hostvars[inventory_hostname].upstream_node_private_ip == primary_private_ip
 
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters + efm_cascaded_replica_param }}"
-  when: item.value.upstream_node_private_ip is defined
+  when: 
+    - hostvars[inventory_hostname].upstream_node_private_ip is defined
+    - hostvars[inventory_hostname].upstream_node_private_ip != primary_private_ip
 
 - name: Prepare final parameters list
   set_fact:
@@ -62,6 +65,7 @@
   loop_control:
    loop_var: line_item
   become: yes
+  no_log: "{{ disable_logging }}"
   register: properties_changes
 
 - name: Start efm service

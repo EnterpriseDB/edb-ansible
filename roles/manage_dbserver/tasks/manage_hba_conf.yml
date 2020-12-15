@@ -9,6 +9,7 @@
   when: pg_hba_ip_addresses|length > 0
   become: yes
   become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
   register: hba_info
 
 - name: Manage ip address entries into pg_hba file
@@ -27,6 +28,7 @@
   with_items: "{{ pg_hba_ip_addresses }}"
   loop_control:
       loop_var: line_item
+  no_log: "{{ disable_logging }}"
   register: hba_update
 
 - name: Reload the pg service
@@ -35,4 +37,5 @@
     daemon_reload: yes
     state: reloaded
   become: yes
+  no_log: "{{ disable_logging }}"
   when: hba_update.changed

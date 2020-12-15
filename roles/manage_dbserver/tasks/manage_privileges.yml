@@ -16,6 +16,7 @@
   with_items: "{{ pg_grant_privileges }}"
   loop_control:
     loop_var: line_item
+  no_log: "{{ disable_logging }}"
   when: pg_grant_privileges|length > 0
 
 - name: Grant role to users
@@ -32,4 +33,5 @@
   with_items: "{{ pg_grant_roles }}"
   loop_control:
     loop_var: line_item
+  no_log: "{{ disable_logging }}"
   when: pg_grant_roles|length > 0

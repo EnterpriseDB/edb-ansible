@@ -8,11 +8,11 @@
        - user: "{{ pg_replication_user }}"
          password: "{{ pg_replication_user_password }}"
          create: yes
-  no_log: yes
+  no_log: "{{ disable_logging }}"
 
 - name: create standby
   shell: |
-    PGAPPNAME={{ item.name }} {{ pg_basebackup }}
+    PGAPPNAME={{ inventory_hostname }} {{ pg_basebackup }}
   args:
     creates: "{{ pg_data }}/PG_VERSION"
   become: yes
@@ -31,3 +31,4 @@
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
+  no_log: "{{ disable_logging }}"

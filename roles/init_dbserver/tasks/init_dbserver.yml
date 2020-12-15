@@ -1,12 +1,4 @@
 ---
-# configure variables
-- name: Display current node to install
-  block:
-    - debug:
-        msg: "operating system = {{ os }}:
-             postgres version = {{ pg_version }},
-             database engine = {{ pg_type }},
-             public ip = {{ ansible_host }}"
 
 # setting variables available for all nodes
 # any of the variables existing can be updated and configured
@@ -23,6 +15,14 @@
     - include_tasks: rm_initdb.yml
   when: force_initdb
   become: yes
+
+- name: Gather the host and information for /etc/hosts
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname
 
 - name: Update etc_hosts based on use_hostname
   block:
@@ -48,3 +48,5 @@
 - name: Reset force_initdb based on the user input
   set_fact:
     force_initdb: false
+    etc_hosts_lists: []
+

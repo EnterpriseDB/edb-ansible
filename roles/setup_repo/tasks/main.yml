@@ -30,7 +30,7 @@
 # Check if Credentials are valid
 - name: Validate Credentials
   fail:
-      msg: "YUM User Name = {{ yum_username }} or Password = {{ yum_password }} are not valid!."
+      msg: "yum_username = {{ yum_username }} or yum_password = {{ yum_password }} are not valid!."
   when: (yum_username | length < 1 or yum_password | length < 1)
 
 - name: Include the setup_repo

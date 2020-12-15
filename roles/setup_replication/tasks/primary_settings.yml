@@ -7,7 +7,7 @@
   vars:
     input_user: "{{ pg_replication_user }}"
     input_password: "{{ pg_replication_user_password }}"
-  no_log: true
+  no_log: "{{ disable_logging }}"
   when: pg_replication_user_password|length < 1
 
 - name: Set pg_replication_user_password
@@ -24,6 +24,7 @@
        - name: "{{ pg_replication_user }}"
          pass: "{{ pg_replication_user_password }}"
          role_attr_flags: replication
+  no_log: "{{ disable_logging }}"
 
 - name: Grant minimum privileges to replication user for rewind
   include_role:
@@ -43,28 +44,4 @@
         objects: "pg_read_binary_file(text),pg_read_binary_file(text:bigint:bigint:boolean)"
         roles: "{{ pg_replication_user }}"
         database: "{{ pg_database }}"
-
-- name: Update the pgpass with replication users password
-  include_role:
-    name: manage_dbserver
-    tasks_from: manage_pgpass
-  vars:
-    pg_pgpass_values:
-        - user: "{{ pg_replication_user }}"
-          password: "{{ pg_replication_user_password }}"
-          create: yes
-  no_log: yes
-
-- name: Update primary hba config
-  include_role:
-    name: manage_dbserver
-    tasks_from: manage_hba_conf
-  vars:
-    pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
-
-- name: Create physical slots of the standbys
-  include_role:
-    name: manage_dbserver
-    tasks_from: manage_slots
-  vars:
-    pg_slots: "{{ standby_physical_slots }}"
+  no_log: "{{ disable_logging }}"

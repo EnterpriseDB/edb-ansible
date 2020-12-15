@@ -5,4 +5,3 @@
     enabled: yes
     state: started
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"

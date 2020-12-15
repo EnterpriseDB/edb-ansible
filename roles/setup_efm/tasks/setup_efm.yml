@@ -3,8 +3,8 @@
 
 - name: Set force_efm_install based on the user input
   set_fact:
-    force_efm_install: "{{ item.value.force_efm_install }}"
-  when: item.value.force_efm_install is defined
+    force_efm_install: "{{  hostvars[inventory_hostname].force_efm_install }}"
+  when:  hostvars[inventory_hostname].force_efm_install is defined
   register: output
 
 - name: Update etc_hosts based on use_hostname
@@ -13,14 +13,73 @@
   become: yes
   when:
     - use_hostname
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Remove before we start as per force_install
   block:
     - include_tasks: rm_efm_install_config.yml
   become: yes
   when: force_efm_install
-  delegate_to: "{{ item.value.public_ip }}"
+- name: Prepare etc_hosts_lists
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname
+  no_log: "{{ disable_logging }}"
+
+- name: Get the primary information
+  set_fact:
+    primary_public_ip: "{{ node.ansible_host }}"
+    primary_private_ip: "{{ node.private_ip }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when:  node.node_type == 'primary'
+  no_log: "{{ disable_logging }}"
+
+- name: Set efm install version
+  set_fact:
+    efm_install_version : "{{ efm_version | replace('.','') }}"
+  
+- name: Prepare efm node list
+  set_fact:
+    efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':7800 ' }}"
+  when:
+    - node.node_type in supported_node_type
+    - not use_hostname
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"  
+
+- name: Prepare efm node list based on hostname
+  set_fact:
+    efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':7800 ' }}"
+  when:
+    - node.node_type in supported_node_type
+    - node.hostname is defined
+    - use_hostname
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"
+
+- name: Prepare host ip lists based on allow_node_ips
+  include_tasks: prepare_hba_value_list.yml
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"
+
+- name: Ensure we have efm user in primary database
+  import_tasks: create_efm_user.yml
+  run_once: true
+  no_log: "{{ disable_logging }}"
+  delegate_to: "{{ primary_public_ip }}"
+
+- name: Add localhost in hba ip list
+  import_tasks: localhost_hba_value_list.yml
 
 - name: Install and configure postgres on centos7 or rhel7
   block:
@@ -28,5 +87,17 @@
     - import_tasks: efm_install.yml
     - import_tasks: efm_create_properties.yml
     - import_tasks: efm_configure.yml
+  no_log: "{{ disable_logging }}"
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Efm parameters settings
+  include_tasks: efm_cluster_set_params.yml
+  no_log: "{{ disable_logging }}"
+
+- name: Reset the variables used in this role
+  set_fact:
+     efm_nodes_list: ""
+     etc_hosts_lists: []
+     primary_public_ip: ""
+     input_password: ""
+     pg_allow_ip_addresses: []
