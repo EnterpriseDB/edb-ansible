@@ -1,0 +1,25 @@
+---
+
+- name: Set the local entries for pemagent
+  set_fact:
+    pem_agent_hba_local_entry:
+       - users: "{{ pg_pem_agent_user }}"
+         source: "127.0.0.1/32"
+       - users: "{{ pg_pem_agent_user }}"
+         source: "::1/128"
+       - users: "{{ pg_pem_agent_user }}"
+         source: "{{ hv.pem_server_private_ip }}"
+       - users: "{{ pg_user }}"
+         source: "127.0.0.1/32"
+       - users: "{{ pg_user }}"
+         source: "::1/128"
+       - users: "{{ pg_user }}"
+         source: "{{ hv.pem_server_private_ip }}"
+
+- name: Update hba config
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ pem_agent_hba_local_entry }}"
+
