@@ -92,10 +92,7 @@ Below is an example of how to include the `setup_replication` role:
 
   collections:
     - edb_devops.postgres
-
-  vars_files:
-    - hosts.yml
-
+    
   pre_tasks:
     # Define or re-define any variables previously assigned
     - name: Initialize the user defined variables
