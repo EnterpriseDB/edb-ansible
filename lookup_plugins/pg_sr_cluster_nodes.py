@@ -46,6 +46,10 @@ class LookupModule(LookupBase):
 
         myvars = getattr(self._templar, '_available_variables', {})
 
+        if ('standby' not in myvars['group_names']
+                and 'primary' not in myvars['group_names']):
+            return []
+
         # If no terms, we'll used the current private IP
         if len(terms) == 0:
             node_private_ip = myvars['hostvars'][variables['inventory_hostname']]['private_ip']
@@ -64,10 +68,14 @@ class LookupModule(LookupBase):
                     hostname=hv.get('hostname', hv['ansible_hostname']),
                     private_ip=hv['private_ip'],
                     upstream_node_private_ip=None,
-                    replication_type=None
+                    replication_type=None,
+                    inventory_hostname=hv['inventory_hostname']
                 )
             )
             pg_primary_map[private_ip] = private_ip
+
+        if 'standby' not in variables['groups']:
+            return pg_clusters[pg_primary_map[node_private_ip]]
 
         for host in variables['groups']['standby']:
             hv = myvars['hostvars'][host]
@@ -77,7 +85,8 @@ class LookupModule(LookupBase):
                 hostname=hv.get('hostname', hv['ansible_hostname']),
                 private_ip=hv['private_ip'],
                 upstream_node_private_ip=hv['upstream_node_private_ip'],
-                replication_type=hv.get('replication_type', 'asynchronous')
+                replication_type=hv.get('replication_type', 'asynchronous'),
+                inventory_hostname=hv['inventory_hostname']
             )
 
         pg_standbys_len = len(pg_standbys.keys())
