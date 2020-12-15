@@ -2,28 +2,16 @@
 
 - name: Get upstream node public ip
   set_fact:
-    upstream_public_ip: "{{ server.public_ip }}"
+    upstream_public_ip: "{{ node.ansible_host }}"
+    upstream_hostname: "{{ node.hostname if use_hostname else '' }}"
   when:
-    - item.upstream_node_private_ip is defined
-    - server.private_ip == item.upstream_node_private_ip
+    - hostvars[inventory_hostname].upstream_node_private_ip is defined
+    - node.private_ip == hostvars[inventory_hostname].upstream_node_private_ip
     - not use_hostname
-  loop: "{{ server_list }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
-    loop_var: server
-
-
-- name: Get upstream node hostnames
-  set_fact:
-    upstream_hostname: "{{ server.hostname }}"
-  when:
-    - item.upstream_node_private_ip is defined
-    - server.private_ip == item.upstream_node_private_ip
-    - use_hostname
-  loop: "{{ server_list }}"
-  loop_control:
-    loop_var: server
+    loop_var: node
 
 - name: Add standby slot in upstream node
   import_tasks: upstream_node_slots.yml
   delegate_to: "{{ upstream_public_ip }}"
-

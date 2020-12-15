@@ -26,17 +26,7 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-- name: Gather the host and information for /etc/hosts
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
-  loop_control:
-    loop_var: node
-  when: use_hostname
-
 - name: Include the init_dbserver
   include_tasks: init_dbserver.yml
+  when: supported_node_type is superset(group_names)
 
-- name: Reset etc_hosts_list variable
-  set_fact:
-    etc_hosts_lists: []

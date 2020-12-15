@@ -1,10 +1,9 @@
 ---
 # tasks file for the setup_replication role
 
-# sort and convert servers dict to a list
-- name: Sort servers
+- name: Set the os variable
   set_fact:
-    server_list: "{{ servers | sort_servers }}"
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 # reference epas variables
 - name: reference epas variables
@@ -23,70 +22,6 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-- name: Prepare etc_hosts_lists
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [item.private_ip + ' ' + item.hostname] }}"
-  when:
-    - item.hostname is defined
-    - item.node_type in supported_node_type
-  loop: "{{ server_list }}"
-
-- name: Get the primary information
-  set_fact:
-    primary_private_ip: "{{ item.private_ip }}"
-    primary_public_ip: "{{ item.public_ip }}"
-  when: item.node_type == 'primary'
-  loop: "{{ server_list }}"
-
-- name: Get primary hostname
-  set_fact:
-    primary_host_name: "{{ item.hostname }}"
-  when:
-    - item.hostname is defined
-    - item.node_type == 'primary'
-  loop: "{{ server_list }}"
-
-- name: Prepare slot names array for primary
-  include_tasks: prepare_standby_slots_list.yml
-  when:
-    - item.node_type == 'standby'
-    - item.upstream_node_private_ip is not defined
-  loop: "{{ server_list }}"
-
-- name: Prepare host ip lists based on allow_node_ips
-  include_tasks: prepare_hba_value_list.yml
-  when: item.node_type in supported_node_type
-  loop: "{{ server_list }}"
-
-- name: Prepare synchronous_standby_names
-  set_fact:
-    synchronous_standbys: "{{ synchronous_standbys + [item.name] }}"
-  when:
-    - item.node_type == 'standby'
-    - item.replication_type == 'synchronous'
-  loop: "{{ server_list }}"
-
-- name: Update primary for replication
-  import_tasks: primary_settings.yml
-  delegate_to: "{{ primary_public_ip }}"
-
 - name: Include the setup_replication
   include_tasks: setup_replication.yml
-  when: item.node_type == 'standby'
-  loop:  "{{ server_list }}"
-
-- name: Update primary for replication
-  import_tasks: primary_synchronous_param.yml
-  when: synchronous_standbys|length > 0
-  delegate_to: "{{ primary_public_ip }}"
-
-- name: Reset the variables based on the user input
-  set_fact:
-      primary_private_ip: ""
-      primary_public_ip: ""
-      primary_host_name: ""
-      standby_names: []
-      pg_allow_ip_addresses: []
-      standby_physical_slots: []
-      etc_hosts_lists: []
-  register: output
+  when: supported_node_type is superset(group_names)

@@ -1,3 +1,5 @@
+---
+
 - name: Set force_install based on the user input
   set_fact:
     force_install: "{{ hostvars[inventory_hostname].force_install }}"
@@ -5,13 +7,6 @@
   register: output
 
 # Display details of Node being processed
-- name: Display current Node to Install
-  block:
-    - debug:
-        msg: "Operating System = {{ os }}:
-             Postgres Version = {{ pg_version }},
-             Database Engine = {{ pg_type }},
-             Public IP = {{ ansible_host }}"
 
 - name: Remove Postgres packages on CentOS7 or RHEL7
   block:
