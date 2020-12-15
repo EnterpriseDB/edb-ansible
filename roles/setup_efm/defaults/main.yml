@@ -40,7 +40,6 @@ efm_default_parameters:
   - { name: local.timeout.final, value: "5" }
   - { name: remote.timeout, value: "5" }
   - { name: node.timeout, value: "5" }
-  - { name: ping.server.ip, value: "localhost"}
 
 efm_physical_slot_param:
   - { name: update.physical.slots.period, value: "5" }
