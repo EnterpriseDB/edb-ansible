@@ -105,9 +105,3 @@
     tasks_from: pgpool2_manage_configuration
   vars:
     pgpool2_configuration_lines: "{{ pgpool2_watchdog_configuration }}"
-
-- name: Restart pgpoolII service
-  systemd:
-    name: "{{ pgpool2_service_name }}"
-    state: restarted
-  become: true
