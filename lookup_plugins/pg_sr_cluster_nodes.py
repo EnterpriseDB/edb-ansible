@@ -47,7 +47,8 @@ class LookupModule(LookupBase):
         myvars = getattr(self._templar, '_available_variables', {})
 
         if ('standby' not in myvars['group_names']
-                and 'primary' not in myvars['group_names']):
+                and 'primary' not in myvars['group_names']
+                and len(terms) == 0):
             return []
 
         # If no terms, we'll used the current private IP
@@ -65,7 +66,7 @@ class LookupModule(LookupBase):
                 dict(
                     node_type='primary',
                     ansible_host=hv['ansible_host'],
-                    hostname=hv.get('hostname', hv['ansible_hostname']),
+                    hostname=hv.get('hostname', hv.get('ansible_hostname')),
                     private_ip=hv['private_ip'],
                     upstream_node_private_ip=None,
                     replication_type=None,
@@ -82,7 +83,7 @@ class LookupModule(LookupBase):
             pg_standbys[host] = dict(
                 node_type='standby',
                 ansible_host=hv['ansible_host'],
-                hostname=hv.get('hostname', hv['ansible_hostname']),
+                hostname=hv.get('hostname', hv.get('ansible_hostname')),
                 private_ip=hv['private_ip'],
                 upstream_node_private_ip=hv['upstream_node_private_ip'],
                 replication_type=hv.get('replication_type', 'asynchronous'),

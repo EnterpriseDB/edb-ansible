@@ -14,10 +14,6 @@ Following are the requirements of this role.
 
 When executing the role via ansible these are the required variables:
 
-  * ***os***
-
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7 and RHEL8
-
   * ***pg_version***
 
   Postgres Versions supported are: 10, 11, 12 and 13
@@ -40,7 +36,7 @@ Below is the documentation of the rest of the main variables:
 ### `pgpool2_watchdog`
 
 Enable PgpoolII High Availability capability when deploying a PgpoolII multi
-node cluster. Default: `false`
+nodes cluster (3, 5 etc..). Default: `false`
 
 Example:
 ```yaml
@@ -86,21 +82,14 @@ Example:
 pgpool2_ssl: true
 ```
 
-### `pgpool2_configuration`
+### `pgpool2_port`
 
-Configuration parameter values overiding default values. The default
-configuration values have been defined in the `pgpool2_default_configuration`.
-Please do not change values from the `pgpool2_default_configuration` variables
-and please use the `pgpool2_configuration` variable. Default: `[]`
+Pgpool2 listening TCP port. Default: `9999`.
 
 Example:
 ```yaml
-pgpool2_configuration:
-  - key: "port"
-    value: 6432
+pgpool2_port: 5433
 ```
-
-Please refer to the `manage_pgpool2` roles' README file for more information.
 
 ## Dependencies
 
@@ -109,31 +98,68 @@ been configured beforehand with the `setup_repo` role.
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-To deploy PgpoolII as a standalone application on a dedicated host, `node_type`
-should be set up to `pgpool2`.
+Content of the `inventory.yml` file:
 
-`hosts.yml` content example:
 ```yaml
 ---
-servers:
-  pooler1:
-    node_type: pgpool2
-    public_ip: xxx.xxx.xxx.xxx
-    private_ip: xxx.xxx.xxx.xxx
-  pooler2:
-    node_type: pgpool2
-    public_ip: xxx.xxx.xxx.xxx
-    private_ip: xxx.xxx.xxx.xxx
-  main:
-    node_type: primary
-    public_ip: xxx.xxx.xxx.xxx
-    private_ip: xxx.xxx.xxx.xxx
-  standby:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
-    private_ip: xxx.xxx.xxx.xxx
+all:
+  children:
+    pgpool2:
+      hosts:
+        pool1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          # Private IP address of the PG primary node
+          primary_private_ip: xxx.xxx.xxx.xxx
+        pool2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          # Private IP address of the PG primary node
+          primary_private_ip: xxx.xxx.xxx.xxx
+        pool3:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          # Private IP address of the PG primary node
+          primary_private_ip: xxx.xxx.xxx.xxx
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: synchronous
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: asynchronous
+```
+
+### User defined variables
+
+Defining variables can be done using a dedicated file and including this file
+ at execution time with the `ansible-playbook` CLI option:
+
+   * `--extra-vars=@./vars.yml`
+
+Content example of the `vars.yml` file:
+
+```yaml
+---
+pg_type: "PG"
+pg_version: 13
+pgpool2_load_balancing: true
+pgpool2_watchdog: true
+pgpool2_vip: "10.0.0.123"
+pgpool2_vip_dev: "eth0"
+pgpool2_port: 5433
 ```
 
 ### How to include the `setup_pgpool2` role in your Playbook
@@ -141,39 +167,10 @@ servers:
 Below is an example of how to include the `setup_pgpool2` role:
 ```yaml
 ---
-- hosts: localhost
-  name: Setup Pgpool2 connection pooler
-  become: true
-  gather_facts: no
-
-  collections:
-    - edb_devops.edb_postgres
-
-  vars_files:
-    - hosts.yml
-
-  pre_tasks:
-    - name: Initialize the user defined variables
-      set_fact:
-        os: "CentOS8"
-        pg_version: 13
-        pg_type: "PG"
-
-        # PgpoolII settings
-
-        # Enable read only queries load balancing
-        pgpool2_load_balancing: true
-        # Enable HA
-        pgpool2_watchdog: true
-        pgpool2_vip: "10.0.0.123"
-        pgpool2_vip_dev: "eth0"
-        # Enable SSL support
-        pgpool2_ssl: true
-        # Change listening port to 6432
-        pgpool2_configuration:
-          - key: "port"
-            value: 6432
-
+- hosts: pgpool2
+  name: Deploy PgpoolII instances
+  become: yes
+  gather_facts: yes
   roles:
     - setup_pgpool2
 ```
