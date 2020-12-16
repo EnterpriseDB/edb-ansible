@@ -21,14 +21,14 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-- name: Set the hv variable
+- name: Set the node_hostvars variable
   set_fact:
-    hv: "{{ hostvars[inventory_hostname] }}"
+    node_hostvars: "{{ hostvars[inventory_hostname] }}"
 
 - name: Initialize etc_hosts_lists
   set_fact:
     etc_hosts_lists:
-      - "{{ hv.private_ip }} {{ hv.hostname | default(hv.ansible_hostname) }}"
+      - "{{ node_hostvars.private_ip }} {{ node_hostvars.hostname | default(node_hostvars.ansible_hostname) }}"
 
 - name: Gather the host and information for /etc/hosts
   set_fact:
@@ -47,4 +47,4 @@
 - name: Reset the variables
   set_fact:
     etc_hosts_lists: []
-    hv:
+    node_hostvars:
