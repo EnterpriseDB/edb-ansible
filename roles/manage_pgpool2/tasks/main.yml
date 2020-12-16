@@ -1,6 +1,10 @@
 ---
 # Tasks file for manage_pgpool2 Role
 
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
 # reference EPAS/PG variables
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}.yml"
@@ -38,39 +42,20 @@
       {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II-{{ pg_version }}{% endif %}
 
 - name: Include the pgpool2_manage_configuration
-  include_tasks:
-    file: pgpool2_manage_configuration.yml
-    apply:
-      delegate_to: "{{ server.value.public_ip }}"
+  include_tasks: pgpool2_manage_configuration.yml
   when:
-    - server.value.node_type in supported_node_type
     - pgpool2_configuration|length > 0
-  with_dict:  "{{ servers }}"
-  loop_control:
-    loop_var: server
   vars:
     pgpool2_configuration_lines: "{{ pgpool2_configuration }}"
 
 - name: Include the pgpool2_manage_users
-  include_tasks:
-    file: pgpool2_manage_users.yml
-    apply:
-      delegate_to: "{{ server.value.public_ip }}"
+  include_tasks: pgpool2_manage_users.yml
   when:
-    - server.value.node_type in supported_node_type
     - pgpool2_users|length > 0
-  with_dict:  "{{ servers }}"
-  loop_control:
-    loop_var: server
 
 - name: Reload pgpoolII service
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: reloaded
-  delegate_to: "{{ server.value.public_ip }}"
-  with_dict:  "{{ servers }}"
-  loop_control:
-    loop_var: server
   when:
     - pgpool2_user|length > 0 or pgpool2_configuration|length > 0
-    - server.value.node_type in supported_node_type
