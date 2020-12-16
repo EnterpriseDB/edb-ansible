@@ -25,9 +25,9 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-- name: Set the hv variable
+- name: Set the node_hostvars variable
   set_fact:
-    hv: "{{ hostvars[inventory_hostname] }}"
+    node_hostvars: "{{ hostvars[inventory_hostname] }}"
 
 - name: Get PEM server informations
   set_fact:
@@ -77,5 +77,5 @@
   set_fact:
     pem_server_info:
     etc_hosts_lists: []
-    hv:
+    node_hostvars:
     pem_server_exists: false

@@ -9,8 +9,8 @@
 
 - name: set force_pem_install based on the user input
   set_fact:
-    force_pem_install: "{{ hv.force_pem_install }}"
-  when: hv.force_pem_install is defined
+    force_pem_install: "{{ node_hostvars.force_pem_install }}"
+  when: node_hostvars.force_pem_install is defined
   register: output
 
 - name: Remove pem server based on force_pem_install

@@ -14,7 +14,7 @@
          --register-agent \
          --display-name {{ inventory_hostname }} \
          --pem-user {{ pg_pem_admin_user }} \
-         --pem-server {{ hv.pem_server_private_ip }} \
+         --pem-server {{ node_hostvars.pem_server_private_ip }} \
          --pem-port {{ pg_port }} \
          --allow_server_restart true \
          --allow-batch-probes true \

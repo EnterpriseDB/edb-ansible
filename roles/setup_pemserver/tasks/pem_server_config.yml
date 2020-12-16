@@ -27,7 +27,7 @@
                          --db-install-path {{ pg_home }} \
                          --cidr-address {{ pem_allowed_connections }} \
                          --db-unitfile {{ pg_service }} \
-                         --host {{ hv.private_ip }} \
+                         --host {{ node_hostvars.private_ip }} \
                          --port {{ pg_port }} \
                          --superuser {{ pg_pem_admin_user }} \
                          --superpassword {{ pg_pem_admin_password }} \
