@@ -1,4 +1,12 @@
 ---
+# Default configuration values
+pgpool2_port: 9999
+pgpool2_listen_addresses: '*'
+pgpool2_pcp_port: 9898
+pgpool2_wd_port: 9000
+pgpool2_wd_heartbeat_port: 9694
+
+
 pgpool2_vip: ""
 pgpool2_vip_dev: ""
 pgpool2_watchdog: false

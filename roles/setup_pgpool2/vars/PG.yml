@@ -5,17 +5,11 @@ pgpool2_package_name: "pgpool-II-{{ pg_version }}"
 pgpool2_configuration_file: "/etc/pgpool-II-{{ pg_version }}/pgpool.conf"
 pgpool2_user: "postgres"
 pgpool2_group: "postgres"
+
 # Systemd unit file
 pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II-{{ pg_version }}.service.d/pgpool-II-{{ pg_version }}.conf"
 
-# Default configuration values
-pgpool2_listen_addresses: '*'
-pgpool2_port: 9999
-pgpool2_pcp_port: 9898
 pgpool2_pid_file_name: "/var/run/pgpool-II-{{ pg_version }}/pgpool.pid"
 pgpool2_logdir: "/var/log/pgpool-II-{{ pg_version }}"
-pgpool2_wd_port: 9000
-pgpool2_wd_heartbeat_port: 9694
-
 # Directory containing SSL keys and certs
 pgpool2_ssl_dir: "/etc/pgpool-II-{{ pg_version }}/ssl"
