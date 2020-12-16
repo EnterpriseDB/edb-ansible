@@ -5,6 +5,3 @@ pgpool2_pool_passwd_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string 
 pgpool2_user: "enterprisedb"
 pgpool2_group: "enterprisedb"
 pgpool2_bin_path: "/usr/edb/pgpool{{ pgpool2_version }}/bin"
-
-pgpool2_configuration: []
-pgpool2_users: []
