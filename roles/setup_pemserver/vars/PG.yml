@@ -1,8 +1,5 @@
 ---
 # pem credentials
-os: ""
-pg_version: ""
-
 pg_user: "postgres"
 # pem data dir
 pg_home: "/usr/pgsql-{{ pg_version }}"
@@ -24,6 +21,6 @@ pg_port: 5432
 pg_service: "postgresql-{{ pg_version }}"
 # pem server packages
 pem_server_packages:
-      - postgresql{{ pg_version }}-contrib
-      - sslutils_{{ pg_version }}
-      - edb-pem-server
+  - postgresql{{ pg_version }}-contrib
+  - sslutils_{{ pg_version }}
+  - edb-pem-server

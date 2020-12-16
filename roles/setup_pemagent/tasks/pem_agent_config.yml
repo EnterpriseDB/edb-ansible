@@ -12,9 +12,9 @@
     PEM_SERVER_PASSWORD={{ pg_pem_admin_password }} \
     {{ pem_agent_bin_path }}/pemworker \
          --register-agent \
-         --display-name {{ item.key }} \
+         --display-name {{ inventory_hostname }} \
          --pem-user {{ pg_pem_admin_user }} \
-         --pem-server {{ pem_server_private_ip }} \
+         --pem-server {{ node_hostvars.pem_server_private_ip }} \
          --pem-port {{ pg_port }} \
          --allow_server_restart true \
          --allow-batch-probes true \
@@ -29,7 +29,7 @@
   when: not pemagent_configured.stat.exists
   become: yes
 
-- name: start the pem service
+- name: start the pem agent service
   systemd:
     name: "{{ pem_agent_service }}"
     daemon_reload: yes

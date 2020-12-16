@@ -6,12 +6,11 @@
   become: yes
   when:
     - use_hostname
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: set force_pem_install based on the user input
   set_fact:
-    force_pem_install: "{{ item.value.force_pem_install }}"
-  when: item.value.force_pem_install is defined
+    force_pem_install: "{{ node_hostvars.force_pem_install }}"
+  when: node_hostvars.force_pem_install is defined
   register: output
 
 - name: Remove pem server based on force_pem_install
@@ -19,7 +18,6 @@
     - import_tasks: rm_pem_server_install.yml
   when: force_pem_install
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Install and configure pemserver
   block:
@@ -28,4 +26,3 @@
     - import_tasks: pem_server_config.yml
     - import_tasks: pem_server_hba.yml
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"

@@ -3,10 +3,10 @@
   set_fact:
     temp_list:
        - users: "+pem_user"
-         source: "{{ item.value.private_ip }}/32"
+         source: "{{ node_hostvars.private_ip }}/32"
          databases: pem
        - users: "+pem_agent"
-         source: "{{ item.value.private_ip }}/32"
+         source: "{{ node_hostvars.private_ip }}/32"
          databases: pem
          method: cert
 

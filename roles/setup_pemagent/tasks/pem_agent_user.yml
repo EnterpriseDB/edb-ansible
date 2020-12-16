@@ -1,4 +1,5 @@
 ---
+
 - name: Generate the pg_pem_agent_password
   include_role:
     name: manage_dbserver

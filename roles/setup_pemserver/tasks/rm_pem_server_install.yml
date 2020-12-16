@@ -2,7 +2,7 @@
 
 - name: Stopped pemagent
   systemd:
-    name: "{{ PEM_AGENT_SERVICE }}"
+    name: "{{ pem_agent_service }}"
     daemon_reload: yes
     state: stopped
   become: yes
@@ -16,7 +16,7 @@
 
 - name: Remove agent.cfg
   file:
-    path: "{{ PEM_AGENT_BIN_PATH }}/../etc/agent.cfg"
+    path: "{{ pem_agent_bin_path }}/../etc/agent.cfg"
     state: absent
   become: yes
 
