@@ -1,7 +1,6 @@
-# setup_pem
+# setup_pemserver
 
-This Ansible Galaxy Role Installs and configure PEM on Instances previously
-configured.
+This Ansible Galaxy Role Installs and configure PEM server.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -10,8 +9,7 @@ For more details refer to the: *Database engines supported* section.
 
 **Note:**
 The role does not configure EDB Postgres Advanced Server or PostgreSQL for
-replication it only installs Postgres Enterprise Manager (PEM) agents across
-multiple nodes and configure database nodes for PEM monitornig and configures
+replication it only installs Postgres Enterprise Manager (PEM) and configures
 any node to be a PEM server.
 
 **The ansible playbook must be executed under an account that has full
@@ -34,10 +32,6 @@ The requirements for this ansible galaxy role are:
 
 When executing the role via ansible there are three required variables:
 
-  * ***os***
-
-  Operating Systems supported are: CentOS7 and RHEL7
-
   * ***pg_version***
 
   Postgres Versions supported are: 10, 11, 12 and 13
@@ -48,81 +42,83 @@ When executing the role via ansible there are three required variables:
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_pem/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_pemserver/defaults/main.yml](./defaults/main.yml)
 
 ## Dependencies
 
-The `setup_pem` role does not have any dependencies on any other roles.
+The `setup_pemserver` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-Content of the `hosts.yml` file:
+Content of the `inventory.yml` file:
 
 ```yaml
 ---
-servers:
-  pemserver:
-    node_type: pemserver
-    private_ip: xxx.xxx.xxx.xxx
-    public_ip: xxx.xxx.xxx.xxx
-  main:
-    node_type: primary
-    pem_agent: true
-    private_ip: xxx.xxx.xxx.xxx
-    public_ip: xxx.xxx.xxx.xxx
-  standby1:
-    node_type: standby
-    pem_agent: true
-    replication_type: asynchronous
-    private_ip: xxx.xxx.xxx.xxx
-    public_ip: xxx.xxx.xxx.xxx
-  witness:
-    node_type: witness
-    pem_agent: true
-    private_ip: xxx.xxx.xxx.xxx
-    public_ip: xxx.xxx.xxx.xxx
+all:
+  children:
+    pemserver:
+      hosts:
+        pemserver1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: synchronous
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: asynchronous
 ```
 
+### User defined variables
 
-## How to include the `setup_pem` role in your Playbook
+Defining variables can be done using a dedicated file and including this file
+ at execution time with the `ansible-playbook` CLI option:
 
-Below is an example of how to include the `setup_pem` role:
+   * `--extra-vars=@./vars.yml`
+
+Content example of the `vars.yml` file:
 
 ```yaml
 ---
-- hosts: localhost
-  name: Setup PEM on Instances
-  become: true
-  gather_facts: no
+pg_type: "PG"
+pg_version: 13
+```
 
-  collections:
-    - edb_devops.edb_postgres
+## How to include the `setup_pemserver` role in your Playbook
 
-  vars_files:
-    - hosts.yml
+Below is an example of how to include the `setup_pemserver` role:
 
-  pre_tasks:
-    # Define or re-define any variables previously assigned
-    - name: Initialize the user defined variables
-      set_fact:
-        os: "CentOS7"
-        pg_type: "PG"
-        pg_version: "12"
+```yaml
+---
+- hosts: pemserver
+  name: Setup PEM server
+  become: yes
+  gather_facts: yes
   roles:
-    - setup_pem
+    - setup_pemserver
 ```
-
-Two example playbooks for setting up PEM with CentOS7 and RHEL7 are available
-in the [playbook-examples](/playbook-examples) directory.
 
 Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 
 All the variables are available at:
 
-  - [roles/setup_pem/vars/EPAS.yml](./vars/EPAS.yml) 
-  - [roles/setup_pem/vars/PG.yml](./vars/PG.yml) 
+  - [roles/setup_pemserver/vars/EPAS.yml](./vars/EPAS.yml) 
+  - [roles/setup_pemserver/vars/PG.yml](./vars/PG.yml) 
 
 ## Database engines supported
 
@@ -150,18 +146,20 @@ All the variables are available at:
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13 on CentOS7 hosts with the user centos
+# To deploy community Postgres version 13 with the user centos
 $ ansible-playbook playbook.yml \
   -u centos \
+  -i inventory.yml \
   --private-key <key.pem> \
-  --extra-vars="os=CentOS7 pg_version=13 pg_type=PG"
+  --extra-vars="pg_version=13 pg_type=PG"
 ```
 ```bash
-# To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user
+# To deploy EPAS version 12 with the user ec2-user
 $ ansible-playbook playbook.yml \
   -u ec2-user \
+  -i inventory.yml \
   --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS"
+  --extra-vars="pg_version=12 pg_type=EPAS"
 ```
 
 ## License

@@ -1,26 +1,19 @@
 ---
 # efm credentials
-os: ""
 pg_version: "12"
-
+use_hostname: false
 force_pem_install: false
 pem_agent: false
 pass_dir: "~/.edb"
 
 pg_pem_admin_user: "pemadmin"
 pg_pem_admin_password: ""
-pg_pem_agent_user: "pemagent"
-pg_pem_agent_password: ""
 pg_ssl: true
 
-pem_server_exists: false
 # efm information
 efm_version: "4.0"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "efm"
-
-pem_agent_package:
-      - edb-pem-agent
 
 pem_agent_service: pemagent
 
@@ -28,18 +21,11 @@ pem_server_bin_path: "/usr/edb/pem/bin"
 pem_agent_bin_path: "/usr/edb/pem/agent/bin"
 
 pem_allowed_connections: "0.0.0.0/0"
-pem_agent_certificate_path: "/etc/edb/certs/pem"
-pem_agent_service_name: "pem-server-agent"
 pem_server_hba_local_entry: []
-pem_agent_hba_local_entry: []
 # 1: web servce and database, 2: web services, 3: database
 pem_installation_type: "1"
 
 # common variables require for the role
-pem_server_private_ip: ""
-pem_server_public_ip: ""
-primary_private_ip: ""
-primary_public_ip: ""
 etc_hosts_lists: []
 input_password: ""
 pg_allow_ip_addresses: []
@@ -87,6 +73,4 @@ supported_pg_version:
   - 13
 
 supported_node_type:
-  - primary
-  - standby
   - pemserver

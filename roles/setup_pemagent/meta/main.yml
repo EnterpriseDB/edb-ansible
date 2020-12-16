@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: EDB
-  description: Installation of Postgres 10, 11 and 12 to RHEL and CentOS on Instances
+  description: Installation and configuration of Postgres Enterprise Manager agents
   company: "EnterpriseDB"
 
   # If the issue tracker for your role is not on github, uncomment the

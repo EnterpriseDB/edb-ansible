@@ -1,0 +1,21 @@
+---
+# configure variables
+
+- name: update etc_hosts based on use_hostname
+  block:
+    - import_tasks: linux_update_etc_hosts.yml
+  become: yes
+  when:
+    - use_hostname
+
+- name: Install and configure pemagent on nodes
+  block:
+    - import_tasks: pem_agent_install.yml
+    - import_tasks: pem_agent_config.yml
+  become: yes
+
+- name: Register database on primary and standby
+  block:
+    - import_tasks: pem_agent_hba.yml
+    - import_tasks: pem_agent_register_db.yml
+  become: yes
