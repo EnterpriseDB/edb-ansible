@@ -41,7 +41,7 @@
 
 - name: Prepare synchronous_standby_names
   set_fact:
-    synchronous_standbys: "{{ synchronous_standbys + [node.inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_')] }}"
+    synchronous_standbys: "{{ synchronous_standbys + [ node.inventory_hostname ] }}"
   loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
