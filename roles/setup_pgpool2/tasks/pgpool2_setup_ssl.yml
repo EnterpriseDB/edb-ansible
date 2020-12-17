@@ -99,9 +99,3 @@
           'quoted': true
         }
       ]
-
-- name: Restart pgpoolII service
-  systemd:
-    name: "{{ pgpool2_service_name }}"
-    state: restarted
-  become: yes

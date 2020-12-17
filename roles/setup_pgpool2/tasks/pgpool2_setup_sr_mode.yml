@@ -15,15 +15,15 @@
     name: manage_dbserver
     tasks_from: manage_users
     apply:
-      delegate_to: "{{ pgpool2_primary_backend }}"
+      delegate_to: "{{ pgpool2_primary_public_ip }}"
   vars:
     pg_users:
       - name: "{{ pgpool2_sr_check_user }}"
         pass: "{{ pgpool2_sr_check_password }}"
         role_attr_flags: login
   when:
-    - pgpool2_primary_backend is defined
-    - pgpool2_primary_backend|length > 0
+    - pgpool2_primary_public_ip is defined
+    - pgpool2_primary_public_ip|length > 0
 
 - name: Build pgpoolII SR configuration
   set_fact:
@@ -67,9 +67,3 @@
     tasks_from: pgpool2_manage_configuration
   vars:
     pgpool2_configuration_lines: "{{ pgpool2_sr_configuration }}"
-
-- name: Restart pgpoolII service
-  systemd:
-    name: "{{ pgpool2_service_name }}"
-    state: restarted
-  become: yes
