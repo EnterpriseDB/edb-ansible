@@ -13,10 +13,6 @@ Following are the dependencies and requirement of this role.
 
 When executing the role via ansible these are the required variables:
 
-  * ***os***
-
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7 and RHEL8
-
   * ***pg_version***
 
   Postgres Versions supported are: 10, 11, 12 and 13
@@ -89,17 +85,56 @@ been deployed beforehand with the `setup_pgpool2` role.
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-To manage PgpoolII instance, `node_type` should be set up to `pgpool2`.
+Content of the `inventory.yml` file:
 
-`hosts.yml` content example:
 ```yaml
 ---
-servers:
-  pooler:
-    node_type: pgpool2
-    public_ip: xxx.xxx.xxx.xxx
+all:
+  children:
+    pgpool2:
+      hosts:
+        pool1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+```
+
+### User defined variables
+
+Defining variables can be done using a dedicated file and including this file
+ at execution time with the `ansible-playbook` CLI option:
+
+   * `--extra-vars=@./vars.yml`
+
+Content example of the `vars.yml` file:
+
+```yaml
+---
+pg_type: "PG"
+pg_version: 13
+
+pgpool2_configuration:
+  - key: "port"
+    value: 6432
+    state: present
+  - key: "socket"
+    value: "/tmp"
+    # Add quotes around the value
+    quoted: true
+    state: present
+  - key: "ssl_ca_cert"
+    state: absent
+
+pgpool2_users:
+  - name: "my_user1"
+    pass: "password"
+    auth: scram
+  - name: "my_user2"
+    pass: "password"
+    auth: md5
+  - name: "my_user_to_be_removed"
+    state: absent
 ```
 
 ### How to include the `manage_pgpool2` role in your Playbook
@@ -107,46 +142,10 @@ servers:
 Below is an example of how to include the `manage_pgpool2` role:
 ```yaml
 ---
-- hosts: localhost
-  name: Manage PgpoolII configuration and users
-  become: true
-  gather_facts: no
-
-  collections:
-    - edb_devops.edb_postgres
-
-  vars_files:
-    - hosts.yml
-
-  pre_tasks:
-    - name: Initialize the user defined variables
-      set_fact:
-        os: "CentOS8"
-        pg_type: "PG"
-        pg_version: 13
-
-        pgpool2_configuration:
-          - key: "port"
-            value: 6432
-            state: present
-          - key: "socket"
-            value: "/tmp"
-            # Add quotes around the value
-            quoted: true
-            state: present
-          - key: "ssl_ca_cert"
-            state: absent
-
-        pgpool2_users:
-          - name: "my_user1"
-            pass: "password"
-            auth: scram
-          - name: "my_user2"
-            pass: "password"
-            auth: md5
-          - name: "my_user_to_be_removed"
-            state: absent
-
+- hosts: pgpool2
+  name: Manage PgpoolII instances
+  become: yes
+  gather_facts: yes
   roles:
     - manage_pgpool2
 ```

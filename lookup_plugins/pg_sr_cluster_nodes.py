@@ -47,7 +47,8 @@ class LookupModule(LookupBase):
         myvars = getattr(self._templar, '_available_variables', {})
 
         if ('standby' not in myvars['group_names']
-                and 'primary' not in myvars['group_names']):
+                and 'primary' not in myvars['group_names']
+                and len(terms) == 0):
             return []
 
         # If no terms, we'll used the current private IP
@@ -57,19 +58,20 @@ class LookupModule(LookupBase):
             node_private_ip = terms[0]
 
         for host in variables['groups']['primary']:
-            hv = myvars['hostvars'][host]
-            private_ip = hv['private_ip']
+            hostvars = myvars['hostvars'][host]
+            private_ip = hostvars['private_ip']
 
             pg_clusters[private_ip] = []
             pg_clusters[private_ip].append(
                 dict(
                     node_type='primary',
-                    ansible_host=hv['ansible_host'],
-                    hostname=hv.get('hostname', hv['ansible_hostname']),
-                    private_ip=hv['private_ip'],
+                    ansible_host=hostvars['ansible_host'],
+                    hostname=hostvars.get('hostname',
+                                          hostvars.get('ansible_hostname')),
+                    private_ip=hostvars['private_ip'],
                     upstream_node_private_ip=None,
                     replication_type=None,
-                    inventory_hostname=hv['inventory_hostname']
+                    inventory_hostname=hostvars['inventory_hostname']
                 )
             )
             pg_primary_map[private_ip] = private_ip
@@ -78,15 +80,17 @@ class LookupModule(LookupBase):
             return pg_clusters[pg_primary_map[node_private_ip]]
 
         for host in variables['groups']['standby']:
-            hv = myvars['hostvars'][host]
+            hostvars = myvars['hostvars'][host]
             pg_standbys[host] = dict(
                 node_type='standby',
-                ansible_host=hv['ansible_host'],
-                hostname=hv.get('hostname', hv['ansible_hostname']),
-                private_ip=hv['private_ip'],
-                upstream_node_private_ip=hv['upstream_node_private_ip'],
-                replication_type=hv.get('replication_type', 'asynchronous'),
-                inventory_hostname=hv['inventory_hostname']
+                ansible_host=hostvars['ansible_host'],
+                hostname=hostvars.get('hostname',
+                                      hostvars.get('ansible_hostname')),
+                private_ip=hostvars['private_ip'],
+                upstream_node_private_ip=hostvars['upstream_node_private_ip'],
+                replication_type=hostvars.get('replication_type',
+                                              'asynchronous'),
+                inventory_hostname=hostvars['inventory_hostname']
             )
 
         pg_standbys_len = len(pg_standbys.keys())
