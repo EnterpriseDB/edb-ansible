@@ -15,8 +15,5 @@ supported_pg_version:
   - 12
   - 13
 
-supported_node_type:
-  - pgpool2
-
 supported_pgpool2_version:
   - 4.1

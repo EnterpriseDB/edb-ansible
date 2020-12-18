@@ -2,7 +2,7 @@
 # efm credentials
 os: ""
 pg_version: ""
-efm_version: 4.0 
+efm_version: 4.0
 
 disable_logging: true
 force_efm_install: false
@@ -82,8 +82,3 @@ supported_efm_version:
   - 4.1
   - 4.0
   - 3.10
-
-supported_node_type:
-  - primary
-  - standby
-  - witness
