@@ -1,21 +1,44 @@
 ---
 - hosts: all
-  name: Setup RPM repositories
+  name: Postgres deployement playbook
   become: yes
   gather_facts: yes
-  roles:
-    - setup_repo
 
-- hosts: primary,standby,pemserver
-  name: Install Postgres binaries
-  become: yes
-  gather_facts: yes
-  roles:
-    - install_dbserver
+  # When using collections
+  #collections:
+  #    - edb_devops.edb_postgres
 
-- hosts: primary,pemserver
-  name: Init Postgres instances
-  become: yes
-  gather_facts: yes
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+        yum_username: ""
+        yum_password: ""
+        disable_logging: false
+
   roles:
-    - init_dbserver
+    - role: setup_repo
+      when: "'setup_repo' in host_supported_roles"
+    - role: install_dbserver
+      when: "'install_dbserver' in host_supported_roles"
+    - role: init_dbserver
+      when: "'init_dbserver' in host_supported_roles"
+    - role: setup_replication
+      when: "'setup_replication' in host_supported_roles"
+    - role: setup_efm
+      when: "'setup_efm' in host_supported_roles"
+    - role: setup_pgpool2
+      when: "'setup_pgpool2' in host_supported_roles"
+    - role: manage_pgpool2
+      when: "'manage_pgpool2' in host_supported_roles"
+    - role: manage_dbserver
+      when: "'manage_dbserver' in host_supported_roles"
+    - role: setup_pemserver
+      when: "'setup_pemserver' in host_supported_roles"
+    - role: setup_pemagent
+      when: "'setup_pemagent' in host_supported_roles"
+    - role: setup_pgbouncer
+      when: "'setup_pgbouncer' in host_supported_roles"
+    - role: manage_pgbouncer
+      when: "'manage_pgbouncer' in host_supported_roles"

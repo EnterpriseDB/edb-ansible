@@ -1,5 +1,22 @@
 ---
-# configure variables
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
+- name: Reference EPAS or PG variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
 
 - name: Set force_replication based on the user input
   set_fact:
@@ -13,7 +30,6 @@
   when: force_replication
   become: yes
 
-# postgres
 - name: Gather the host and information for /etc/hosts
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
