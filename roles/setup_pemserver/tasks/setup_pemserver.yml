@@ -1,5 +1,22 @@
 ---
 
+- name: Set the node_hostvars variable
+  set_fact:
+    node_hostvars: "{{ hostvars[inventory_hostname] }}"
+
+- name: Initialize etc_hosts_lists
+  set_fact:
+    etc_hosts_lists:
+      - "{{ node_hostvars.private_ip }} {{ node_hostvars.hostname | default(node_hostvars.ansible_hostname) }}"
+
+- name: Gather the host and information for /etc/hosts
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('pem_agents', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname
+
 - name: update etc_hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
@@ -26,3 +43,12 @@
     - import_tasks: pem_server_config.yml
     - import_tasks: pem_server_hba.yml
   become: yes
+
+- name: Update pem probes and alerts
+  import_tasks: pem_server_probe_alert.yml
+  when: supported_node_type is superset(group_names)
+
+- name: Reset the variables
+  set_fact:
+    etc_hosts_lists: []
+    node_hostvars:

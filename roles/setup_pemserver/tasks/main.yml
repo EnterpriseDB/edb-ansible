@@ -21,30 +21,6 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-- name: Set the node_hostvars variable
-  set_fact:
-    node_hostvars: "{{ hostvars[inventory_hostname] }}"
-
-- name: Initialize etc_hosts_lists
-  set_fact:
-    etc_hosts_lists:
-      - "{{ node_hostvars.private_ip }} {{ node_hostvars.hostname | default(node_hostvars.ansible_hostname) }}"
-
-- name: Gather the host and information for /etc/hosts
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('pem_agents', wantlist=True) }}"
-  loop_control:
-    loop_var: node
-  when: use_hostname
-
 - name: Configure pemserver
   include_tasks: setup_pemserver.yml
-
-- name: Update pem probes and alerts
-  import_tasks: pem_server_probe_alert.yml
-
-- name: Reset the variables
-  set_fact:
-    etc_hosts_lists: []
-    node_hostvars:
+  when: supported_node_type is superset(group_names)
