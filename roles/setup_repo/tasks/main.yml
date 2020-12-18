@@ -1,37 +1,4 @@
 ---
-# Tasks file for the setup_repo Role
-
-- name: Set the os variable
-  set_fact:
-    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
-
-# Check if the Operating System is supported
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
-
-# Check if the Database Engine is supported
-- name: Check support for Database engine
-  fail:
-    msg: "Database Engine = {{ pg_type }} is not supported.
-         Supported Database Engines are {{ supported_pg_type }}"
-  when: pg_type not in supported_pg_type
-
-# Check if Database Engine is supported on RHEL8/CentOS8
-- name: Check if Database Engine is supported
-  fail:
-    msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-          is not supported on RHEL8/CentOS8."
-  when:
-    - pg_type == 'EPAS' and pg_version|int < 12
-    - os in ['RHEL8','CentOS8']
-
-# Check if Credentials are valid
-- name: Validate Credentials
-  fail:
-      msg: "yum_username = {{ yum_username }} or yum_password = {{ yum_password }} are not valid!."
-  when: (yum_username | length < 1 or yum_password | length < 1)
-
-- name: Include the setup_repo
+# Entry point of the setup_repo role
+- name: Include the setup_repo.yml
   include_tasks: setup_repo.yml
