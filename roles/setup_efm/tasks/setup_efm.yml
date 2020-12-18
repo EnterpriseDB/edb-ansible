@@ -70,18 +70,16 @@
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':7800 ' }}"
   when:
-    - node.node_type in supported_node_type
     - not use_hostname
   loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
-  no_log: "{{ disable_logging }}"  
+  no_log: "{{ disable_logging }}"
 
 - name: Prepare efm node list based on hostname
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':7800 ' }}"
   when:
-    - node.node_type in supported_node_type
     - node.hostname is defined
     - use_hostname
   loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
