@@ -2,13 +2,11 @@
 - name: Set the efm parameters
   include_tasks: efm_set_params.yml
   when:
-    - supported_node_type is superset(group_names)
     - efm_parameters|length > 0
 
 - name: Stop the efm services of the cluster
   include_tasks: efm_stop_service.yml
   when:
-    - supported_node_type is superset(group_names)
     - efm_parameters|length > 0
     - properties_changes is defined
     - properties_changes.changed
@@ -16,7 +14,6 @@
 - name: Start the efm services of the cluster
   include_tasks: efm_start_service.yml
   when:
-    - supported_node_type is superset(group_names)
     - efm_parameters|length > 0
     - properties_changes is defined
     - properties_changes.changed

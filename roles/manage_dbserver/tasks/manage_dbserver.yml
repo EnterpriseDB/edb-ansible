@@ -1,17 +1,8 @@
 ---
-# tasks file for manage_dbserver
 
-# Display variables
-- name: Display current Node to Install
-  block:
-    - debug:
-        msg:
-            "Operating System = {{ os }}:
-             Postgres Version = {{ pg_version }},
-             Database Engine = {{ pg_type }},
-             Public IP = {{ ansible_host }}"
+- name: Reference EPAS Variables
+  include_vars: "{{ pg_type }}.yml"
 
-# Call the manage dbserver tasks
 - name: Include manage dbserver tasks
   block:
     - import_tasks: manage_users.yml
@@ -21,7 +12,7 @@
     - import_tasks: copy_files.yml
     - import_tasks: execute_sql_scripts.yml
 
-- name: Include update_postgres_conf
+- name: Include Postgres update configuration tasks
   block:
     - import_tasks: manage_pgpass.yml
     - import_tasks: manage_slots.yml

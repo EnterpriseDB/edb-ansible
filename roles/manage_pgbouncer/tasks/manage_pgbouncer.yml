@@ -1,0 +1,12 @@
+---
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Include the pgbouncer_set_databases
+  include_tasks: pgbouncer_set_databases.yml
+
+- name: Include the pgbouncer_set_userlist
+  include_tasks: pgbouncer_set_userlist.yml

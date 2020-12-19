@@ -1,5 +1,28 @@
 ---
-# display details of node to install
+
+- name: Reference variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+- name: Check support for efm
+  fail:
+    msg: "efm version = {{ efm_version }} not supported.
+         Supported versions are {{ supported_efm_version }}"
+  when: efm_version not in supported_efm_version
 
 - name: Set force_efm_install based on the user input
   set_fact:
@@ -19,6 +42,7 @@
     - include_tasks: rm_efm_install_config.yml
   become: yes
   when: force_efm_install
+
 - name: Prepare etc_hosts_lists
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
@@ -41,23 +65,21 @@
 - name: Set efm install version
   set_fact:
     efm_install_version : "{{ efm_version | replace('.','') }}"
-  
+
 - name: Prepare efm node list
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':7800 ' }}"
   when:
-    - node.node_type in supported_node_type
     - not use_hostname
   loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
-  no_log: "{{ disable_logging }}"  
+  no_log: "{{ disable_logging }}"
 
 - name: Prepare efm node list based on hostname
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':7800 ' }}"
   when:
-    - node.node_type in supported_node_type
     - node.hostname is defined
     - use_hostname
   loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
