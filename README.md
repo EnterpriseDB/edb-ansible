@@ -322,10 +322,7 @@ playbook:
 ```
 
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
-limit what roles you would like to execute: `setup_repo`, `install_dbserver`,
-`init_dbserver`, `setup_replication`, `setup_efm`, `setup_pem`,
-`manage_dbserver`, `setup_pgbouncer`, `manage_pgbouncer`, `setup_pgpool2` or
-`manage_pgpool2`.
+limit what roles you would like to execute.
 
 ## Default user and passwords
 
