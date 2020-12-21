@@ -1,3 +1,5 @@
+[![Ansible Lint Status](https://github.com/EnterpriseDB/edb-ansible/workflows/ansible-lint/badge.svg)](https://github.com/EnterpriseDB/edb-ansible/actions?query=workflow%3Aansible-lint)
+
 This is an open-source project and is not officially supported by EDB Support.
 This repository is maintained and supported by the EDB GitHub members of this
 repository. Please provide feedback by posting issues and contribute by
