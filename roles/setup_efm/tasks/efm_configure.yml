@@ -37,13 +37,13 @@
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
-  when: hostvars[inventory_hostname].upstream_node_private_ip is not defined 
+  when: hostvars[inventory_hostname].upstream_node_private_ip is not defined
         or hostvars[inventory_hostname].upstream_node_private_ip == primary_private_ip
 
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters + efm_cascaded_replica_param }}"
-  when: 
+  when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
     - hostvars[inventory_hostname].upstream_node_private_ip != primary_private_ip
 
