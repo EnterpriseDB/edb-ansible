@@ -98,43 +98,13 @@ all:
         pool1:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
-```
-
-### User defined variables
-
-Defining variables can be done using a dedicated file and including this file
- at execution time with the `ansible-playbook` CLI option:
-
-   * `--extra-vars=@./vars.yml`
-
-Content example of the `vars.yml` file:
-
-```yaml
----
-pg_type: "PG"
-pg_version: 13
-
-pgpool2_configuration:
-  - key: "port"
-    value: 6432
-    state: present
-  - key: "socket"
-    value: "/tmp"
-    # Add quotes around the value
-    quoted: true
-    state: present
-  - key: "ssl_ca_cert"
-    state: absent
-
-pgpool2_users:
-  - name: "my_user1"
-    pass: "password"
-    auth: scram
-  - name: "my_user2"
-    pass: "password"
-    auth: md5
-  - name: "my_user_to_be_removed"
-    state: absent
+          # Private IP address of the PG primary node
+          primary_private_ip: xxx.xxx.xxx
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
 ```
 
 ### How to include the `manage_pgpool2` role in your Playbook
@@ -146,9 +116,50 @@ Below is an example of how to include the `manage_pgpool2` role:
   name: Manage PgpoolII instances
   become: yes
   gather_facts: yes
+
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+
+        pgpool2_configuration:
+          - key: "port"
+            value: 6432
+            state: present
+          - key: "socket"
+            value: "/tmp"
+            # Add quotes around the value
+            quoted: true
+            state: present
+          - key: "ssl_ca_cert"
+            state: absent
+
+        pgpool2_users:
+          - name: "my_user1"
+            pass: "password"
+            auth: scram
+          - name: "my_user2"
+            pass: "password"
+            auth: md5
+          - name: "my_user_to_be_removed"
+            state: absent
+
   roles:
     - manage_pgpool2
 ```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/manage_pgpool2/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/manage_pgpool2/vars/PG.yml](./vars/PG.yml)
 
 ## License
 

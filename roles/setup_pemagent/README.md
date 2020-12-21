@@ -77,28 +77,16 @@ all:
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
         standby2:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
 ```
-
-### User defined variables
-
-Defining variables can be done using a dedicated file and including this file
- at execution time with the `ansible-playbook` CLI option:
-
-   * `--extra-vars=@./vars.yml`
-
-Content example of the `vars.yml` file:
-
-```yaml
----
-pg_type: "PG"
-pg_version: 13
-```
-
 
 ## How to include the `setup_pemagent` role in your Playbook
 
@@ -110,14 +98,29 @@ Below is an example of how to include the `setup_pemagent` role:
   name: Setup PEM agents
   become: yes
   gather_facts: yes
+
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+
   roles:
-    - setup_pemagent
+    - role: setup_pemagent
+      # Ensure to execute this role only on the hosts from the primary and
+      # standby groups having the 'pem_agent' host var set to true.
+      when: "'setup_pemagent' in host_supported_roles"
 ```
 
-Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
+  - [roles/setup_pemagent/defaults/main.yml](./defaults/main.yml)
   - [roles/setup_pemagent/vars/EPAS.yml](./vars/EPAS.yml)
   - [roles/setup_pemagent/vars/PG.yml](./vars/PG.yml)
 

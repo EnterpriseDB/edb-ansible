@@ -142,26 +142,6 @@ all:
           replication_type: asynchronous
 ```
 
-### User defined variables
-
-Defining variables can be done using a dedicated file and including this file
- at execution time with the `ansible-playbook` CLI option:
-
-   * `--extra-vars=@./vars.yml`
-
-Content example of the `vars.yml` file:
-
-```yaml
----
-pg_type: "PG"
-pg_version: 13
-pgpool2_load_balancing: true
-pgpool2_watchdog: true
-pgpool2_vip: "10.0.0.123"
-pgpool2_vip_dev: "eth0"
-pgpool2_port: 5433
-```
-
 ### How to include the `setup_pgpool2` role in your Playbook
 
 Below is an example of how to include the `setup_pgpool2` role:
@@ -171,9 +151,34 @@ Below is an example of how to include the `setup_pgpool2` role:
   name: Deploy PgpoolII instances
   become: yes
   gather_facts: yes
+
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+
+        pgpool2_load_balancing: true
+        pgpool2_watchdog: true
+        pgpool2_vip: "10.0.0.123"
+        pgpool2_vip_dev: "eth0"
+        pgpool2_port: 5433
+
   roles:
     - setup_pgpool2
 ```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
 
 ## License
 

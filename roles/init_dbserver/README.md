@@ -83,26 +83,15 @@ all:
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
         standby2:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
-```
-
-### User defined variables
-
-Defining variables can be done using a dedicated file and including this file
- at execution time with the `ansible-playbook` CLI option:
-
-   * `--extra-vars=@./vars.yml`
-
-Content example of the `vars.yml` file:
-
-```yaml
----
-pg_type: "PG"
-pg_version: 13
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
 ```
 
 ### How to include the `init_dbserver` role in your Playbook
@@ -115,12 +104,29 @@ Below is an example of how to include the `init_dbserver` role:
   name: Initialize Postgres instances
   become: yes
   gather_facts: yes
+
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+
   roles:
     - initdb_dbserver
 ```
 
-Defining and adding variables can also be done in the `set_fact` of the
-`pre_tasks`.
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
+  * [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/init_dbserver/vars/PG.yml](./vars/PG.yml)
+  * [roles/init_dbserver/vars/edb-ssl.yml](./vars/edb-ssl.yml)
 
 ## Database engines supported
 
@@ -149,6 +155,7 @@ Defining and adding variables can also be done in the `set_fact` of the
 ```bash
 # To deploy community Postgres version 13 with the user centos
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u centos \
   --private-key <key.pem> \
   --extra-vars="pg_version=13 pg_type=PG"
@@ -156,6 +163,7 @@ $ ansible-playbook playbook.yml \
 ```bash
 # To deploy EPAS version 12 with the user ec2-user
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u ec2-user \
   --private-key <key.pem> \
   --extra-vars="pg_version=12 pg_type=EPAS"

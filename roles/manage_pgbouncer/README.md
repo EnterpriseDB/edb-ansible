@@ -118,24 +118,30 @@ been deployed beforehand with the `setup_pgbouncer` role.
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
 To manage PgBouncer as a standalone application on a dedicated host,
 `node_type` should be set up to `pgbouncer`. When managing PgBouncer alongside
-a Postgres instance, the key `pgbouncer` should be set up to `true`.
+a Postgres instance, the host variable `pgbouncer` should be set up to `true`.
 
-`hosts.yml` content example:
+Content of the `inventory.yml` file:
 ```yaml
 ---
-servers:
-  pooler:
-    node_type: pgbouncer
-    public_ip: xxx.xxx.xxx.xxx
-  main:
-    node_type:  primary
-    public_ip: xxx.xxx.xxx.xxx
-    private_ip: xxx.xxx.xxx.xxx
-    pgbouncer: true
+all:
+  children:
+    # PgBouncer pooler instance on a dedicated host
+    pgbouncer:
+      hosts:
+        pooler1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          # Another PgBouncer pooler instance located on the PG host
+          pgbouncer: true
 ```
 
 ### How to include the `manage_pgbouncer` role in your Playbook
@@ -143,21 +149,19 @@ servers:
 Below is an example of how to include the `manage_pgbouncer` role:
 ```yaml
 ---
-- hosts: localhost
+- hosts: pgbouncer,primary,standby
   name: Manage PgBouncer databases and users
   become: true
-  gather_facts: no
+  gather_facts: yes
 
-  collections:
-    - edb_devops.edb_postgres
-
-  vars_files:
-    - hosts.yml
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        os: "CentOS8"
+
         pgbouncer_databases_list:
           - dbname: "db1"
             host: "xxx.xxx.xxx.xxx"
@@ -175,6 +179,7 @@ Below is an example of how to include the `manage_pgbouncer` role:
             max_db_connections: 100
             reserve_pool: 0
             state: present
+
         pgbouncer_auth_user_list:
           - username: "my_user"
             password: "SCRAM-SHA-256$4096:xxx...xxx"
@@ -187,8 +192,18 @@ Below is an example of how to include the `manage_pgbouncer` role:
             state: present
 
   roles:
-    - manage_pgbouncer_databases
+    - role: manage_pgbouncer
+      # Ensure to execute this role only on hosts from the pgbouncer group, or,
+      # from the primary and standby groups having the 'pgbouncer' inventory
+      # host var is set to true.
+      when: "'manage_pgbouncer' in host_supported_roles"
 ```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
 ## License
 
