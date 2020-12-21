@@ -71,7 +71,7 @@ class VarsModule(BaseVarsPlugin):
                     set(host_supported_roles)
                     | set(GROUP_ROLES.get(group, []))
                 )
-                # Special case when the primary or standby nodes where the host
+                # Special case for the primary or standby nodes when the host
                 # variable pgbouncer is set to true.
                 if (group in ['primary', 'standby']
                         and host_vars.get('pgbouncer', False)):
@@ -79,7 +79,7 @@ class VarsModule(BaseVarsPlugin):
                         set(host_supported_roles)
                         | set(['setup_pgbouncer', 'manage_pgbouncer'])
                     )
-                # Special case when the primary or standby nodes where the
+                # Special case for the primary or standby nodes when the
                 # host variable pem_agent is set to true.
                 if (group in ['primary', 'standby']
                         and host_vars.get('pem_agent', False)):

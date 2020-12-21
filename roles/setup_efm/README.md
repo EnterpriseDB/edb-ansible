@@ -68,23 +68,16 @@ The `setup_efm` role does not have any dependencies on any other roles.
 
 ### Hosts file content
 
-Content of the `inventory.yml \` file:
+Content of the `inventory.yml` file:
 
 ```yaml
 all:
   children:
-    pemserver:
-      hosts:
-        pemserver1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
     primary:
       hosts:
         primary1:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
-          pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
     standby:
       hosts:
         standby1:
@@ -105,34 +98,35 @@ Below is an example of how to include the `setup_efm` role:
 
 ```yaml
 ---
-- hosts: localhost
+- hosts: primary,standby
   name: Install EFM on Instances
   become: true
-  gather_facts: no
+  gather_facts: yes
 
-  collections:
-    - edb_devops.postgres
-    
+  # When using collections
+  #collections:
+  #  - edb_devops.postgres
+
   pre_tasks:
-    # Define or re-define any variables previously assigned
     - name: Initialize the user defined variables
       set_fact:
-        os: "CentOS7"
         pg_type: "PG"
-        pg_version: "12"
+        pg_version: "13"
+
         efm_version: 4.0
         efm_parameters:
           - name: script.notification
-          value: "/usr/edb/efm-4.0/bin/notification.sh"
-                  
+            value: "/usr/edb/efm-4.0/bin/notification.sh"
+
   roles:
     - setup_efm
 ```
 
-Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
+  - [roles/setup_efm/defaults/main.yml](./defaults/main.yml) 
   - [roles/setup_efm/vars/EPAS.yml](./vars/EPAS.yml) 
   - [roles/setup_efm/vars/PG.yml](./vars/PG.yml) 
 
