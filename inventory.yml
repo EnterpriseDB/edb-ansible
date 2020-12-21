@@ -20,8 +20,12 @@ all:
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
         standby2:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
