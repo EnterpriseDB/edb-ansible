@@ -186,59 +186,60 @@ all:
           replication_type: asynchronous
 ```
 
-### User defined variables
-
-Defining variables can be done using a dedicated file and including this file
- at execution time with the `ansible-playbook` CLI option:
-
-   * `--extra-vars=@./vars.yml`
-
-Content example of the `vars.yml` file:
-
-```yaml
----
-pg_type: "PG"
-pg_version: 13
-```
-
-
 ### How to include the `manage_dbserver` role in your Playbook
 
 Below is an example of how to include the `manage_dbserver` role:
 
 ```yaml
 ---
-- hosts: primary,pemserver
+- hosts: primary,standby
   name: Manage Postgres server
   become: yes
   gather_facts: yes
+
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
+
   pre_tasks:
-    set_fact:
-      pg_postgres_conf_params:
-        - name: listen_addresses
-          value: "*"
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
 
-      pg_hba_ip_addresses:
-        - contype: "host"
-          users: "all"
-          databases: "all"
-          method: "scram-sha-256"
-          source: "127.0.0.1/32"
-          state: present
+        pg_postgres_conf_params:
+          - name: listen_addresses
+            value: "*"
 
-      pg_slots:
-        - name: "physcial_slot"
-          slot_type: "physical"
-          state: present
-        - name: "logical_slot"
-          slot_type: "logical"
-          output_plugin: "test_decoding"
-          state: present
-          database: "edb"
+        pg_hba_ip_addresses:
+          - contype: "host"
+            users: "all"
+            databases: "all"
+            method: "scram-sha-256"
+            source: "127.0.0.1/32"
+            state: present
+
+        pg_slots:
+          - name: "physcial_slot"
+            slot_type: "physical"
+            state: present
+          - name: "logical_slot"
+            slot_type: "logical"
+            output_plugin: "test_decoding"
+            state: present
+            database: "edb"
 
   roles:
     - manage_dbserver
 ```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/manage_dbserver/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/manage_dbserver/vars/PG.yml](./vars/PG.yml)
 
 ## License
 

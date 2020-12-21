@@ -53,18 +53,11 @@ Content of the `inventory.yml` file:
 ---
 all:
   children:
-    pemserver:
-      hosts:
-        pemserver1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
     primary:
       hosts:
         primary1:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
-          pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
     standby:
       hosts:
         standby1:
@@ -85,26 +78,26 @@ Below is an example of how to include the `setup_replication` role:
 
 ```yaml
 ---
-- hosts: localhost
+- hosts: standby
   name: Setup Postgres replication on Instances
   become: true
-  gather_facts: no
+  gather_facts: true
 
-  collections:
-    - edb_devops.postgres
-    
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
+
   pre_tasks:
-    # Define or re-define any variables previously assigned
     - name: Initialize the user defined variables
       set_fact:
+        pg_version: 13
         pg_type: "PG"
-        pg_version: "12"
 
   roles:
     - setup_replication
 ```
 
-Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 

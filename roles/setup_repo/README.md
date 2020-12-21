@@ -48,26 +48,19 @@ The `setup_repo` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-Content of the `hosts.yml` file:    
+Content of the `inventory.yml` file:    
 
 ```yaml
 ---
 all:
   children:
-    pemserver:
-      hosts:
-        pemserver1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
     primary:
       hosts:
         primary1:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
-          pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
     standby:
       hosts:
         standby1:
@@ -82,21 +75,6 @@ all:
           replication_type: asynchronous
 ```
 
-### User defined variables
-
-Defining variables can be done using a dedicated file and including this file
- at execution time with the `ansible-playbook` CLI option:
-
-   * `--extra-vars=@./vars.yml`
-
-Content example of the `vars.yml` file:
-
-```yaml
----
-pg_type: "PG"
-pg_version: 13
-```
-
 ### How to include the `setup_repo` role in your Playbook
 
 Below is an example of how to include the `setup_repo` role:
@@ -108,14 +86,27 @@ Below is an example of how to include the `setup_repo` role:
   become: yes
   gather_facts: yes
 
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
+
   pre_tasks:
-    set_fact:
-      yum_username: "xxxxxxxx"
-      yum_password: "xxxxxxxx"
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+        yum_username: "xxxxxxxx"
+        yum_password: "xxxxxxxx"
 
   roles:
     - setup_repo
 ```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/setup_repo/defaults/main.yml](./defaults/main.yml)
 
 ## Database engines supported
 

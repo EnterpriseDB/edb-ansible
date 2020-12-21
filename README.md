@@ -1,10 +1,12 @@
-This is an open-source project and is not officially supported by EDB Support. This repository is maintained and supported by the EDB GitHub members of this repository. Please provide feedback by posting issues and contribute by creating pull requests.
+This is an open-source project and is not officially supported by EDB Support.
+This repository is maintained and supported by the EDB GitHub members of this
+repository. Please provide feedback by posting issues and contribute by
+creating pull requests.
 
 # edb_postgres
 
-This Ansible Galaxy Collection sets up and configures the repositories from
-which packages will be retrieved for any Postgres or EnterpriseDB Postgresql
-Advanced Server installations.
+This Ansible Galaxy Collection brings reference architecture deployment
+capabilites for PostgreSQL or EnterpriseDB Postgres Advanced Server.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -94,12 +96,18 @@ In the playbook, user can choose the specific roles based on their requirement.
 For more information on the role, please refer roles README
 [README.md](./roles/setup_efm/README.md)
 
-### setup_pem
+### setup_pemserver
 
-This role helps in setting PEM Server and deployment of PEM Agent on the
+This role helps in setting PEM Server.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_pemserver/README.md)
+
+### setup_pemagent
+
+This role helps in setting and deployment of PEM Agent on the
 PG/EPAS servers.
 For more information on the role, please refer roles README
-[README.md](./roles/setup_pem/README.md)
+[README.md](./roles/setup_pemagent/README.md)
 
 ### manage_dbserver
 
@@ -250,59 +258,67 @@ all:
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
         standby2:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
-```
-
-## User defined variables
-
-Defining variables can be done using a dedicated file and including this file
- at execution time with the `ansible-playbook` CLI option:
-
-   * `--extra-vars=@./vars.yml`
-
-Default content of the `vars.yml` file:
-
-```yaml
----
-pg_type: "PG"
-pg_version: 13
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
 ```
 
 ## How to include the roles in your Playbook
 
-Below is an example of how to include roles for a deployment in a playbook:
+Below is an example of how to include all the roles for a deployment in a
+playbook:
 
 ```yaml
 ---
 - hosts: all
-  name: Setup RPM repositories
+  name: Postgres deployement playbook
   become: yes
   gather_facts: yes
+
+  # When using collections
+  #collections:
+  #    - edb_devops.edb_postgres
+
   pre_tasks:
-    set_fact:
-      yum_username: "xxxxxxxx"
-      yum_password: "xxxxxxxx"
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+        yum_username: ""
+        yum_password: ""
+        disable_logging: false
 
   roles:
-    - setup_repo
-
-- hosts: primary,standby,pemserver
-  name: Install Postgres binaries
-  become: yes
-  gather_facts: yes
-  roles:
-    - install_dbserver
-
-- hosts: primary,pemserver
-  name: Init Postgres instances
-  become: yes
-  gather_facts: yes
-  roles:
-    - init_dbserver
+    - role: setup_repo
+      when: "'setup_repo' in host_supported_roles"
+    - role: install_dbserver
+      when: "'install_dbserver' in host_supported_roles"
+    - role: init_dbserver
+      when: "'init_dbserver' in host_supported_roles"
+    - role: setup_replication
+      when: "'setup_replication' in host_supported_roles"
+    - role: setup_efm
+      when: "'setup_efm' in host_supported_roles"
+    - role: setup_pgpool2
+      when: "'setup_pgpool2' in host_supported_roles"
+    - role: manage_pgpool2
+      when: "'manage_pgpool2' in host_supported_roles"
+    - role: manage_dbserver
+      when: "'manage_dbserver' in host_supported_roles"
+    - role: setup_pemserver
+      when: "'setup_pemserver' in host_supported_roles"
+    - role: setup_pemagent
+      when: "'setup_pemagent' in host_supported_roles"
+    - role: setup_pgbouncer
+      when: "'setup_pgbouncer' in host_supported_roles"
+    - role: manage_pgbouncer
+      when: "'manage_pgbouncer' in host_supported_roles"```
 ```
 
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
@@ -328,7 +344,7 @@ accounts:
     permissions to `user` executing the playbook.
   * A password of 20 characters will be automatically created under: `~/.edb`
     folder.
-  * The naming convention for the password file is: `<host>_<username>_pass`
+  * The naming convention for the password file is: `<username>_pass`
 
 ## Playbook examples
 
@@ -341,6 +357,7 @@ Postgres Advanced Server, Centos7 or RHEL7 are provided and located within the
 ```bash
 # To deploy community Postgres version 13 with the user centos
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u centos \
   --private-key <key.pem> \
   --extra-vars="pg_version=13 pg_type=PG"
@@ -348,6 +365,7 @@ $ ansible-playbook playbook.yml \
 ```bash
 # To deploy EPAS version 12 with the user ec2-user
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u ec2-user \
   --private-key <key.pem> \
   --extra-vars="pg_version=12 pg_type=EPAS yum_user=xxxxx yum_password=xxxxx"
