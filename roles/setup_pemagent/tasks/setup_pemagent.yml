@@ -2,7 +2,7 @@
 
 - name: Set variables
   set_fact:
-    os: "{{ ansible_distribution | replace('Red Hat Enterprise Linux', 'RHEL') }}{{ ansible_distribution_major_version }}"
+    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
     pem_server_exists: false
 
 - name: Reference variables
