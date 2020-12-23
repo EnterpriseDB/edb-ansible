@@ -42,3 +42,7 @@
       when: "'setup_pgbouncer' in host_supported_roles"
     - role: manage_pgbouncer
       when: "'manage_pgbouncer' in host_supported_roles"
+    - role: setup_barmanserver
+      when: "'setup_barmanserver' in host_supported_roles"
+    - role: setup_barman
+      when: "'setup_barman' in host_supported_roles"

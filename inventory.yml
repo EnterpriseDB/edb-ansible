@@ -6,6 +6,11 @@ all:
         pemserver1:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
+    barmanserver:
+      hosts:
+        barman1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
     primary:
       hosts:
         primary1:
@@ -13,6 +18,9 @@ all:
           private_ip: xxx.xxx.xxx.xxx
           pem_agent: true
           pem_server_private_ip: xxx.xxx.xxx.xxx
+          barman: true
+          barman_server_private_ip: xxx.xxx.xxx.xxx
+          barman_backup_method: rsync
     standby:
       hosts:
         standby1:
@@ -22,6 +30,9 @@ all:
           replication_type: synchronous
           pem_agent: true
           pem_server_private_ip: xxx.xxx.xxx.xxx
+          barman: true
+          barman_server_private_ip: xxx.xxx.xxx.xxx
+          barman_backup_method: postgres
         standby2:
           ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
@@ -29,3 +40,6 @@ all:
           replication_type: asynchronous
           pem_agent: true
           pem_server_private_ip: xxx.xxx.xxx.xxx
+          barman: true
+          barman_server_private_ip: xxx.xxx.xxx.xxx
+          barman_backup_method: postgres
