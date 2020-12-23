@@ -1,0 +1,28 @@
+---
+
+- name: Ensure logging directory {{ barman_home }} exists
+  file:
+    path: "{{ barman_log_file | dirname }}"
+    state: directory
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+    mode: 0755
+  become: yes
+
+- name: Ensure running directory {{ barman_lock_directory }} exists
+  file:
+    path: "{{ barman_lock_directory }}"
+    state: directory
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+    mode: 0750
+  become: yes
+
+- name: Ensure configuration files directory {{ barman_configuration_files_directory }} exists
+  file:
+    path: "{{ barman_configuration_files_directory }}"
+    state: directory
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+    mode: 0750
+  become: yes

@@ -1,0 +1,4 @@
+---
+# Entry point of the setup_barmanserver role
+- name: Include the setup_barmanserver.yml
+  include_tasks: setup_barmanserver.yml
