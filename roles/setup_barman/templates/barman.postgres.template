@@ -1,0 +1,10 @@
+[{{ ansible_hostname }}]
+path_prefix = "{{ pg_bin_path }}"
+description =  "{{ ansible_hostname }}"
+conninfo = host={{ hostvars[ansible_hostname].private_ip }} user={{ barman_pg_user }} dbname=postgres port={{ pg_port }}
+streaming_conninfo = host={{ hostvars[ansible_hostname].private_ip  }}  user={{ barman_pg_user }} port={{ pg_port }}
+backup_method = postgres
+streaming_archiver = on
+slot_name = barman
+backup_options = concurrent_backup
+immediate_checkpoint = true
