@@ -45,6 +45,11 @@ GROUP_ROLES = {
         'setup_repo',
         'setup_pgpool2',
         'manage_pgpool2'
+    ],
+    'barmanserver': [
+        'setup_repo',
+        'setup_barmanserver',
+        'install_dbserver'
     ]
 }
 
@@ -86,6 +91,14 @@ class VarsModule(BaseVarsPlugin):
                     host_supported_roles = list(
                         set(host_supported_roles)
                         | set(['setup_pemagent'])
+                    )
+                # Special case for the pemserver, primary or standby nodes when
+                # the host variable barman is set to true.
+                if (group in ['pemserver', 'primary', 'standby']
+                        and host_vars.get('barman', False)):
+                    host_supported_roles = list(
+                        set(host_supported_roles)
+                        | set(['setup_barman'])
                     )
 
         data['host_supported_roles'] = host_supported_roles
