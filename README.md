@@ -141,6 +141,17 @@ This role helps in managing Pgpool II user list and configuration.
 For more information on the role, please refer roles README
 [README.md](./roles/manage_pgpool2/README.md)
 
+### setup_barmanserver
+
+Setting up Barman server role.
+[README.md](./roles/setup_barmanserver/README.md)
+
+### setup_barman
+
+Configure Postgres backups with Barman.
+[README.md](./roles/setup_barman/README.md)
+
+
 ## Pre-Requisites
 
 For correctly installed and configuration of the cluster following are requirements:
