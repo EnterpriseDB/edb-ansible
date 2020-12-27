@@ -1,0 +1,35 @@
+---
+deb_cluster_name: "main"
+# postgres constants
+pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_default_data: "/var/lib/edb-as/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_log: "/var/log/edb"
+pg_wal: ""
+pg_log_filename: "edb-%a.log"
+
+use_hostname: false
+primary_host_name: ""
+
+pg_owner: "enterprisedb"
+pg_group: "enterprisedb"
+pg_ssl: true
+pg_port: "5444"
+pg_replication_user: "repuser"
+pg_replication_user_password: ""
+synchronous_standby_names: ""
+
+random_string: ""
+    
+pg_database: "postgres"
+pg_service: "edb-as@{{ pg_version }}-{{ deb_cluster_name }}"
+
+pg_user_home: "/var/lib/edb-as"
+pg_bin_path: "/usr/lib/edb-as/{{ pg_version }}/bin"
+pg_basebackup: "{{ pg_bin_path }}/pg_basebackup -Fp -R -l standby --wal-method=stream"
+pg_basebackup_options: ""
+
+pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer --pwfile /dev/zero"
+pg_initdb: "/usr/bin/epas_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ deb_cluster_name }} -- ${PGSETUP_INITDB_OPTIONS}"
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/edb"

@@ -1,4 +1,25 @@
 ---
+- name: Initialize postgres database for Debian
+  shell: |
+    export PGSETUP_INITDB_OPTIONS="{{ pg_initdb_options }}"
+    {{ pg_initdb }}
+  args:
+    creates: "{{ pg_data }}/PG_VERSION"
+  register: initdb_cmd
+  when: ansible_os_family == 'Debian'
+  become: true
+
+- name: Remove the {{ deb_cluster_name }} data directory
+  file:
+    path: "{{ pg_data }}"
+    state: absent
+  when:
+    - ansible_os_family == 'Debian'
+    - initdb_cmd is defined
+    - initdb_cmd.rc == 0
+    - initdb_cmd.changed
+  become: yes
+
 - name: Ensure postgres data directory exists
   file:
     path: "{{ pg_data }}"
