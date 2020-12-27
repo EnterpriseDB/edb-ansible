@@ -30,13 +30,13 @@ When executing the role via ansible these are the required variables:
 
   Database Engine supported are: PG and EPAS
 
-  * ***yum_username***
+  * ***repo_username***
 
-  If you have `pg_type` = EPAS, then you need to include `yum_username`
+  If you have `pg_type` = EPAS, then you need to include `repo_username`
 
-  * ***yum_password***
+  * ***repo_password***
 
-  If you have `pg_type` = EPAS, then you need to include `yum_password`
+  If you have `pg_type` = EPAS, then you need to include `repo_password`
 
 The rest of the variables can be configured and are available in the:
 
@@ -95,8 +95,8 @@ Below is an example of how to include the `setup_repo` role:
       set_fact:
         pg_version: 13
         pg_type: "PG"
-        yum_username: "xxxxxxxx"
-        yum_password: "xxxxxxxx"
+        repo_username: "xxxxxxxx"
+        repo_password: "xxxxxxxx"
 
   roles:
     - setup_repo
@@ -144,7 +144,7 @@ $ ansible-playbook playbook.yml \
 $ ansible-playbook playbook.yml \
   -u ec2-user \
   --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_type=EPAS yum_username=<username> yum_password=<password>"
+  --extra-vars="os=RHEL8 pg_type=EPAS repo_username=<username> repo_password=<password>"
 ```
 
 ## License

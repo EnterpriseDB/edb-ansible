@@ -8,16 +8,35 @@
       - postgresql-{{ pg_version }}
       - postgresql-{{ pg_version }}
       - postgresql-server-dev-{{ pg_version }}
-      - postgresql-12-sslutils
+      - postgresql-{{ pg_version }}-sslutils
     state: present
     update_cache: yes
   register: install_package
-  become: yes
+  become: true
+
+- name: Install python-psycopg2
+  apt:
+    pkg:
+      - python-psycopg2
+    state: present
+    update_cache: yes
+  when: os == 'Ubuntu18'
+  become: true
+
+- name: Stop the service {{ pg_service }}
+  systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+  when: install_package.changed
+  become: true
 
 - name: Drop the default debian database
   shell: >
-    {{ pg_deb_drop_cluster }} --stop {{ pg_version }} {{ deb_cluster_name }}
+    {{ pg_deb_drop_cluster }} {{ pg_version }} {{ deb_cluster_name }}
+  args:
+    executable: /bin/bash
   when: install_package.changed
   register: drop_cluster
   changed_when: drop_cluster.rc == 0
   failed_when: drop_cluster.rc != 0
+  become: true
