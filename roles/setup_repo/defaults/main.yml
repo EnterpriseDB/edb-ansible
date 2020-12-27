@@ -9,18 +9,19 @@
 edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
 edb_gpg_key_8: "https://yum.enterprisedb.com/ENTERPRISEDB-GPG-KEY"
 
+# EDB repository username and password
+repo_username: ""
+repo_password: ""
+
 # debian/ubuntu Repo
 edb_deb_repo_url: "deb [arch=amd64] https://apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"
+edb_deb_9_repo_url: "deb https://{{ repo_username }}:{{ repo_password }}@apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"
 edb_deb_keys: "https://apt.enterprisedb.com/edb-deb.gpg.key"
 edb_auth_conf: "/etc/apt/auth.conf.d/edb.conf"
 edb_auth_conf_url: "machine apt.enterprisedb.com"
 
 pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
 pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-
-# EDB repository username and password
-repo_username: ""
-repo_password: ""
 
 # Postgresql Repos
 pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
@@ -41,8 +42,8 @@ supported_os:
   - CentOS8
   - RedHat7
   - RedHat8
-  - Ubuntu18.04
-  - Ubuntu20.04
+  - Ubuntu18
+  - Ubuntu20
   - Debian9
   - Debian10
 

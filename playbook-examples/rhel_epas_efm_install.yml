@@ -20,8 +20,8 @@
         os: "RHEL7"
         pg_version: 12
         pg_type: "EPAS"
-        yum_username: ""
-        yum_password: ""
+        repo_username: ""
+        repo_password: ""
   
    roles:
      - setup_repo

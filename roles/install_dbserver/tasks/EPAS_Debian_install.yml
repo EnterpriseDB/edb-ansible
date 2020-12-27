@@ -15,8 +15,24 @@
       - edb-as{{ pg_version }}-server-sslutils
     state: present
     update_cache: yes
-  become: yes
+  become: true
   register: install_package
+
+- name: Install python-psycopg2
+  apt:
+    pkg:
+      - python-psycopg2
+    state: present
+    update_cache: yes
+  when: os == 'Ubuntu18'
+  become: true
+
+- name: Stop the service {{ epas_service }}
+  systemd:
+    name: "{{ epas_service }}"
+    state: stopped
+  when: install_package.changed
+  become: true
 
 - name: Drop the default debian database
   shell: >
@@ -25,3 +41,4 @@
   register: drop_cluster
   changed_when: drop_cluster.rc == 0
   failed_when: drop_cluster.rc != 0
+  become: true
