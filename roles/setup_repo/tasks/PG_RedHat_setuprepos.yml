@@ -22,7 +22,7 @@
   rpm_key:
     state: present
     key: "{{ epel_gpg_key_8 }}"
-  when: 
+  when:
     - ansible_distribution_major_version == "8"
   become: yes
 

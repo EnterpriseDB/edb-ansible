@@ -20,11 +20,11 @@
     msg: "Database Engine = {{ pg_type }} {{ pg_version }}
           is not supported on {{ os }}."
   when: >
-    pg_type == 'EPAS' and 
+    pg_type == 'EPAS' and
     ( pg_version|int < 12 and os in ['RedHat8','CentOS8'] or
       pg_version|int < 11 and os in ['Ubuntu18.04', 'Debian9'] or
       pg_version|int < 13 and os in ['Ubuntu20.04']  or
-      pg_version|int < 12 and os in ['Debian10'] ) 
+      pg_version|int < 12 and os in ['Debian10'] )
 
 
 - name: Set force_install based on the user input
@@ -40,13 +40,13 @@
     - force_install
   become: yes
 
-- name: Install and Configure Postgres on RedHat 
+- name: Install and Configure Postgres on RedHat
   block:
     - include_tasks: "{{ pg_type }}_RedHat{{ ansible_distribution_major_version }}_install.yml"
   become: yes
   when: ansible_os_family == 'RedHat'
 
-- name: Install and Configure Postgres on RedHat 
+- name: Install and Configure Postgres on RedHat
   block:
     - include_tasks: "{{ pg_type }}_Debian_install.yml"
   become: yes
