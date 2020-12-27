@@ -1,0 +1,23 @@
+---
+- name: Install Postgres
+  apt:
+    pkg:
+      - ca-certificates
+      - python3-pycurl
+      - python3-psycopg2
+      - postgresql-{{ pg_version }}
+      - postgresql-{{ pg_version }}
+      - postgresql-server-dev-{{ pg_version }}
+      - postgresql-12-sslutils
+    state: present
+    update_cache: yes
+  register: install_package
+  become: yes
+
+- name: Drop the default debian database
+  shell: >
+    {{ pg_deb_drop_cluster }} --stop {{ pg_version }} {{ deb_cluster_name }}
+  when: install_package.changed
+  register: drop_cluster
+  changed_when: drop_cluster.rc == 0
+  failed_when: drop_cluster.rc != 0

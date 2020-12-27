@@ -2,7 +2,7 @@
 
 - name: Set the os variable
   set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version if ansible_os_family == 'RedHat' else ansible_distribution_version }}"
 
 - name: Check support for Operating System
   fail:
@@ -18,10 +18,14 @@
 - name: Check if Database Engine is supported
   fail:
     msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-          is not supported on RHEL8/CentOS8."
-  when:
-    - pg_type == 'EPAS' and pg_version|int < 12
-    - os in ['RHEL8','CentOS8']
+          is not supported on {{ os }}."
+  when: >
+    pg_type == 'EPAS' and 
+    ( pg_version|int < 12 and os in ['RedHat8','CentOS8'] or
+      pg_version|int < 11 and os in ['Ubuntu18.04', 'Debian9'] or
+      pg_version|int < 13 and os in ['Ubuntu20.04']  or
+      pg_version|int < 12 and os in ['Debian10'] ) 
+
 
 - name: Set force_install based on the user input
   set_fact:
@@ -29,33 +33,24 @@
   when: hostvars[inventory_hostname].force_install is defined
   register: output
 
-- name: Remove Postgres packages on CentOS7 or RHEL7
+- name: Remove Postgres packages on CentOS7 or RedHat
   block:
-    - include_tasks: "{{ pg_type }}_rhel7_rm_install.yml"
+    - include_tasks: "{{ pg_type }}_{{ os }}_rm_install.yml"
   when:
     - force_install
-    - os in ['CentOS7', 'RHEL7']
   become: yes
 
-- name: Remove Postgres packages on CentOS8 or RHEL8
+- name: Install and Configure Postgres on RedHat 
   block:
-    - include_tasks: "{{ pg_type }}_rhel8_rm_install.yml"
-  when:
-    - force_install
-    - os in ['CentOS8', 'RHEL8']
+    - include_tasks: "{{ pg_type }}_RedHat{{ ansible_distribution_major_version }}_install.yml"
   become: yes
+  when: ansible_os_family == 'RedHat'
 
-- name: Install and Configure Postgres on CentOS7 or RHEL7
+- name: Install and Configure Postgres on RedHat 
   block:
-    - include_tasks: "{{ pg_type }}_rhel7_install.yml"
+    - include_tasks: "{{ pg_type }}_Debian_install.yml"
   become: yes
-  when: os in ['CentOS7', 'RHEL7']
-
-- name: Install and Configure Postgres on CentOS8 or RHEL8
-  block:
-    - include_tasks: "{{ pg_type }}_rhel8_install.yml"
-  become: yes
-  when: os in ['CentOS8', 'RHEL8']
+  when: ansible_os_family == 'Debian'
 
 - name: Reset force_install based on the user input
   set_fact:
