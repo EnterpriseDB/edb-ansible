@@ -47,7 +47,7 @@
     filename: "edb-{{ ansible_distribution_release }}"
   when: os == 'Debian9'
   become: true
-  
+
 - name: Add PG Debian keys
   apt_key:
     url: "{{ pg_deb_keys }}"
