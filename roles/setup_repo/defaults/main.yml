@@ -15,7 +15,7 @@ edb_deb_keys: "https://apt.enterprisedb.com/edb-deb.gpg.key"
 edb_auth_conf: "/etc/apt/auth.conf.d/edb.conf"
 edb_auth_conf_url: "machine apt.enterprisedb.com"
 
-pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
 pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 
 # EDB repository username and password
@@ -45,14 +45,6 @@ supported_os:
   - Ubuntu20.04
   - Debian9
   - Debian10
-
-supported_ubuntu_version:
-  - 18.04
-  - 20.04
-
-supported_debian_version:
-  - 9
-  - 10
 
 supported_pg_type:
   - EPAS
