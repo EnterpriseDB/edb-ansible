@@ -28,8 +28,12 @@ upstream_hostname: ""
 supported_os:
   - CentOS7
   - CentOS8
-  - RHEL7
-  - RHEL8
+  - RedHat7
+  - RedHat8
+  - Ubuntu18
+  - Ubuntu20
+  - Debian9
+  - Debian10
 
 supported_pg_type:
   - EPAS

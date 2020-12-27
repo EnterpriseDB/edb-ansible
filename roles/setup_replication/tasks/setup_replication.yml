@@ -2,10 +2,10 @@
 
 - name: Set the os variable
   set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Reference EPAS or PG variables
-  include_vars: "{{ pg_type }}.yml"
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Check support for Operating System
   fail:
@@ -88,6 +88,7 @@
 
 - name: Build standby service check
   block:
+    - import_tasks: firewalld_pg_port.yml
     - import_tasks: create_directories.yml
     - import_tasks: pg_basebackup.yml
     - import_tasks: configure_node.yml

@@ -1,0 +1,14 @@
+---
+- name: Populate service facts
+  service_facts:
+
+- name: Open listening TPC port {{ pg_port }}
+  firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld'] is defined
+    - ansible_facts.services['firewalld']['state'] == 'running'
+  become: true
