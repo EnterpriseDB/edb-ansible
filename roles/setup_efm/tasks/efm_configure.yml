@@ -74,6 +74,7 @@
     enabled: yes
     state: started
   become: yes
+  ignore_errors: yes
 
 - name: Populate service facts
   service_facts:

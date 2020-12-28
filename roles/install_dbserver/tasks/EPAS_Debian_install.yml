@@ -22,9 +22,10 @@
   apt:
     pkg:
       - python-psycopg2
+      - python-ipaddress
     state: present
     update_cache: yes
-  when: os == 'Ubuntu18'
+  when: os in ['Ubuntu18', 'Debian9']
   become: true
 
 - name: Stop the service {{ epas_service }}
