@@ -1,11 +1,11 @@
 ---
 
 - name: Reference variables
-  include_vars: "{{ pg_type }}.yml"
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Set the os variable
   set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
   fail:
@@ -22,7 +22,9 @@
   fail:
     msg: "efm version = {{ efm_version }} not supported.
          Supported versions are {{ supported_efm_version }}"
-  when: efm_version not in supported_efm_version
+  when: >
+    efm_version not in supported_efm_version
+    or ( efm_version is version('4.0', '<') and os in ['Ubuntu20','Debian10'])
 
 - name: Set force_efm_install based on the user input
   set_fact:
@@ -105,6 +107,7 @@
 
 - name: Install and configure postgres on centos7 or rhel7
   block:
+    - import_tasks: firewalld_pg_port.yml
     - import_tasks: efm_hba.yml
     - import_tasks: efm_install.yml
     - import_tasks: efm_create_properties.yml

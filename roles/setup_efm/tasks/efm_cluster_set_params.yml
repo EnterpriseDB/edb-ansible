@@ -4,16 +4,24 @@
   when:
     - efm_parameters|length > 0
 
-- name: Stop the efm services of the cluster
-  include_tasks: efm_stop_service.yml
+- name: Stop the efm service on nodes
+  systemd:
+    name: "{{ efm_service }}"
+    enabled: yes
+    state: stopped
   when:
     - efm_parameters|length > 0
     - properties_changes is defined
     - properties_changes.changed
+  become: yes
 
-- name: Start the efm services of the cluster
-  include_tasks: efm_start_service.yml
+- name: Start the efm service on nodes
+  systemd:
+    name: "{{ efm_service }}"
+    enabled: yes
+    state: started
   when:
     - efm_parameters|length > 0
     - properties_changes is defined
     - properties_changes.changed
+  become: yes

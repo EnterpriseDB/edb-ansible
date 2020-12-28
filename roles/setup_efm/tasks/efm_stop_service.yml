@@ -1,7 +1,0 @@
----
-- name: Stop the efm service on all nodes
-  systemd:
-    name: "{{ efm_service }}"
-    enabled: yes
-    state: stopped
-  become: yes
