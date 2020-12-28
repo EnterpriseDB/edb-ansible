@@ -9,6 +9,6 @@
     state: enabled
     immediate: true
   when:
-    - ansible_facts.services['firewalld'] is defined
-    - ansible_facts.services['firewalld']['state'] == 'running'
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service']['state'] == 'running'
   become: true

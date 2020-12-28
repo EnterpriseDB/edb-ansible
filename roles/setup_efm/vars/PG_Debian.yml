@@ -1,0 +1,28 @@
+---
+# efm credentials
+deb_cluster_name: "main"
+os: ""
+pg_version: ""
+
+pg_efm_user: "efm"
+pg_efm_user_password: ""
+
+# efm data dir
+pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
+
+pg_ssl: true
+
+pg_owner: "postgres"
+pg_database: "postgres"
+pg_efm_database: "postgres"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+   - "/var/run/postgresql"
+
+# postgres port
+pg_port: 5432
+
+# postgres service
+pg_service: "postgresql@{{ pg_version }}-{{ deb_cluster_name }}"

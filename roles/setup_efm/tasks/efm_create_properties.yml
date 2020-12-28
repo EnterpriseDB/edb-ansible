@@ -9,6 +9,14 @@
   stat:
     path: "/usr/lib/systemd/system/{{ efm_service }}.service"
   become: yes
+  when: ansible_os_family == 'RedHat'
+  register: efm_service_file
+
+- name: Check if we have efm service file or not
+  stat:
+    path: "/lib/systemd/system/{{ efm_service }}.service"
+  become: yes
+  when: ansible_os_family == 'Debian'
   register: efm_service_file
 
 - name: Create efm properties file
@@ -40,5 +48,18 @@
     group: root
     mode: 0644
   become: yes
-  when: not efm_service_file.stat.exists
+  when:
+    - ansible_os_family == 'RedHat'
+    - not efm_service_file.stat.exists
 
+- name: Copy the efm service file
+  template:
+    src: edb-efm.service
+    dest: "/lib/systemd/system/{{ efm_service }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  when:
+    - ansible_os_family == 'Debian'
+    - not efm_service_file.stat.exists

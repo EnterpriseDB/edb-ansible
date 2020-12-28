@@ -1,13 +1,23 @@
 ---
 - name: install efm dependencies
   yum:
-    name: "{{ efm_packages }}"
-  when: os in [ 'CentOS7','RHEL7']
+    name: "{{ efm_packages_RedHat }}"
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == 7
   become: yes
 
 - name: install efm dependencies
   dnf:
-    name: "{{ efm_packages }}"
-  when: os in ['CentOS8','RHEL8']
+    name: "{{ efm_packages_RedHat }}"
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == 8
   become: yes
 
+- name: install efm dependencies
+  apt:
+    pkg: "{{ efm_packages_Debian }}"
+    update_cache: yes
+  when: ansible_os_family == 'Debian'
+  become: yes

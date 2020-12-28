@@ -4,7 +4,7 @@
 
 - name: Open listening TPC port {{ pg_port }}
   firewalld:
-    port: "{{ pg_port }}/tcp"
+    port: "{{ efm_port }}/tcp"
     permanent: yes
     state: enabled
     immediate: true

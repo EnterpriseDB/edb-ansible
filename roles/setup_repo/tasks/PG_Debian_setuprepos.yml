@@ -40,6 +40,7 @@
     update_cache: true
     state: present
   become: true
+
 - name: Add EDB Debian 9 repo
   apt_repository:
     repo: "{{ edb_deb_9_repo_url }}"
