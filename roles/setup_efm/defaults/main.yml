@@ -62,7 +62,7 @@ efm_properties: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.propertie
 efm_node_file: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.nodes"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 
-efm_packages_Redhat:
+efm_packages_RedHat:
   - java-1.8.0-openjdk
   - mailx
   - edb-efm{{ efm_install_version }}

@@ -18,10 +18,10 @@ pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
 
 # unix socket domain directories
 pg_unix_socket_directories:
-  - "/var/run/edb"
+  - "/var/run/postgresql"
 
 # postgres port
-pg_port: 5444
+pg_port: 5432
 
 pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer --pwfile /dev/zero"
 pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ deb_cluster_name }} -- ${PGSETUP_INITDB_OPTIONS}"

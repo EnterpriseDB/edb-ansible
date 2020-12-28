@@ -10,14 +10,14 @@
     path: "/usr/lib/systemd/system/{{ efm_service }}.service"
   become: yes
   when: ansible_os_family == 'RedHat'
-  register: efm_service_file
+  register: efm_service_file_RedHat
 
 - name: Check if we have efm service file or not
   stat:
     path: "/lib/systemd/system/{{ efm_service }}.service"
   become: yes
   when: ansible_os_family == 'Debian'
-  register: efm_service_file
+  register: efm_service_file_Debian
 
 - name: Create efm properties file
   copy:
@@ -50,7 +50,7 @@
   become: yes
   when:
     - ansible_os_family == 'RedHat'
-    - not efm_service_file.stat.exists
+    - not efm_service_file_RedHat.stat.exists
 
 - name: Copy the efm service file
   template:
@@ -62,4 +62,4 @@
   become: yes
   when:
     - ansible_os_family == 'Debian'
-    - not efm_service_file.stat.exists
+    - not efm_service_file_Debian.stat.exists
