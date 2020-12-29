@@ -64,6 +64,7 @@
     state: enabled
     immediate: true
   when:
+    - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_port is defined
@@ -76,6 +77,7 @@
     state: enabled
     immediate: true
   when:
+    - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_pcp_port is defined
@@ -88,6 +90,7 @@
     state: enabled
     immediate: true
   when:
+    - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_pcp_port is defined
@@ -100,6 +103,7 @@
     state: enabled
     immediate: true
   when:
+    - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
@@ -113,6 +117,7 @@
     state: enabled
     immediate: true
   when:
+    - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
@@ -126,6 +131,7 @@
     state: enabled
     immediate: true
   when:
+    - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
@@ -139,6 +145,7 @@
     state: enabled
     immediate: true
   when:
+    - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
