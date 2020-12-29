@@ -116,6 +116,20 @@
   include_tasks: efm_cluster_set_params.yml
   no_log: "{{ disable_logging }}"
 
+- name: Gather service facts
+  service_facts:
+
+- name: Open EFM TCP ports 7800-7810
+  firewalld:
+    port: "7800-7810/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
 - name: Reset the variables used in this role
   set_fact:
      efm_nodes_list: ""
