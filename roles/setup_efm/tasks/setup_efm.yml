@@ -107,7 +107,6 @@
 
 - name: Install and configure postgres on centos7 or rhel7
   block:
-    - import_tasks: firewalld_pg_port.yml
     - import_tasks: efm_hba.yml
     - import_tasks: efm_install.yml
     - import_tasks: efm_create_properties.yml
