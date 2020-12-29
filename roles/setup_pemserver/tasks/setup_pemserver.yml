@@ -65,6 +65,20 @@
 - name: Update pem probes and alerts
   import_tasks: pem_server_probe_alert.yml
 
+- name: Gather service facts
+  service_facts:
+
+- name: Open PEM TCP port 8443
+  firewalld:
+    port: "8443/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
 - name: Reset the variables
   set_fact:
     etc_hosts_lists: []
