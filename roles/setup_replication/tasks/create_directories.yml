@@ -1,8 +1,9 @@
 ---
 - name: Initialize postgres database for Debian
-  shell: >
-    "{{ pg_initdb }}"
+  shell: |
+    {{ pg_initdb }}
   args:
+    executable: /bin/bash
     creates: "/etc/{{ 'postgresql' if pg_type == 'PG' else 'edb-as' }}/{{ pg_version }}/{{ deb_cluster_name }}/postgresql.conf"
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"

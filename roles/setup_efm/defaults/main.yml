@@ -17,6 +17,7 @@ efm_nodes_list: ""
 efm_cluster_name: "efm"
 efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
 efm_port: "7800-7810"
+edb_efm_lock_file: "/var/lock/{{ efm_cluster_name }}-{{ efm_version }}/{{ efm_cluster_name }}.lock"
 # common variables require for the role
 etc_hosts_lists: []
 primary_public_ip: ""
