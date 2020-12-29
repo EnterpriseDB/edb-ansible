@@ -20,7 +20,7 @@
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:7800"}
+        - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:{{ efm_port }}"}
         - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: not use_hostname
@@ -29,7 +29,7 @@
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ hostvars[inventory_hostname].hostname }}:7800"}
+        - { name: bind.address, value: "{{ hostvars[inventory_hostname].hostname }}:{{ efm_port }}"}
         - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: use_hostname
@@ -51,8 +51,7 @@
   set_fact:
     efm_node_parameters: "{{ efm_node_parameters + efm_physical_slot_param }}"
   when:
-    - pg_version|int > 11
-    - pg_type == "EPAS"
+    - (pg_version|int > 11 and pg_type == "EPAS") or (pg_version|int > 12 and pg_type == "PG")
     - efm_version|int > 3.10
 
 - name: Update efm efm.properties file

@@ -93,6 +93,20 @@
     - import_tasks: configure_node.yml
   become: yes
 
+- name: Gather service facts
+  service_facts:
+
+- name: Open Postgres TCP port {{ pg_port }}
+  firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
 - name: Update primary for synchronous replication
   import_tasks: primary_synchronous_param.yml
   when: synchronous_standbys|length > 0

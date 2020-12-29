@@ -54,6 +54,9 @@
     mode: 0600
   become: true
 
+- name: Gather service facts
+  service_facts:
+
 - name: Open listening TCP port {{ pgpool2_port | default('') }}
   firewalld:
     port: "{{ pgpool2_port }}/tcp"
@@ -61,7 +64,8 @@
     state: enabled
     immediate: true
   when:
-    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_port is defined
   become: yes
 
@@ -72,7 +76,8 @@
     state: enabled
     immediate: true
   when:
-    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_pcp_port is defined
   become: yes
 
@@ -83,7 +88,8 @@
     state: enabled
     immediate: true
   when:
-    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_pcp_port is defined
   become: yes
 
@@ -94,7 +100,8 @@
     state: enabled
     immediate: true
   when:
-    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
     - pgpool2_watchdog is true
   become: yes
@@ -106,7 +113,8 @@
     state: enabled
     immediate: true
   when:
-    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
     - pgpool2_watchdog is true
   become: yes
@@ -118,7 +126,8 @@
     state: enabled
     immediate: true
   when:
-    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
     - pgpool2_watchdog is true
   become: yes
@@ -130,7 +139,8 @@
     state: enabled
     immediate: true
   when:
-    - os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
     - pgpool2_watchdog is true
   become: yes

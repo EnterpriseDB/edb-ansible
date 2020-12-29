@@ -55,6 +55,20 @@
     - import_tasks: pg_set_superuser_password.yml
   become: yes
 
+- name: Gather service facts
+  service_facts:
+
+- name: Open Postgres TCP port {{ pg_port }}
+  firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
 - name: Configure ssl based on pg_ssl parameter
   block:
     - import_tasks: pg_ssl_check.yml
