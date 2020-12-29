@@ -1,0 +1,20 @@
+---
+
+barman_package: "barman-2.12-1"
+barman_cli_package: "barman-cli-2.12-1"
+
+barman_user: "barman"
+barman_group: "barman"
+barman_configuration_file: "/etc/barman.conf"
+barman_configuration_files_directory: "/etc/barman.d"
+barman_home: "/var/lib/barman"
+barman_lock_directory: "/var/run/barman"
+barman_log_file: "/var/log/barman/barman.log"
+barman_log_level: "INFO"
+barman_compression: "gzip"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8

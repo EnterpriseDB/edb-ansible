@@ -1,0 +1,17 @@
+---
+
+- name: Ensure barman system group {{ barman_group }} exists
+  group:
+    name: "{{ barman_group }}"
+    state: present
+  become: yes
+
+- name: Ensure barman system user {{ barman_user }} exists
+  user:
+    name: "{{ barman_user }}"
+    system: true
+    group: "{{ barman_group }}"
+    state: present
+    create_home: true
+    home: "{{ barman_home }}"
+  become: yes

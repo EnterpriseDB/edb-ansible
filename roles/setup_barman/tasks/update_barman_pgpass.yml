@@ -1,0 +1,31 @@
+---
+
+- name: Get Barman server informations
+  set_fact:
+    _barman_server_info: "{{ lookup('barman_server', wantlist=True) }}"
+
+- name: Fail if barman server informations are not found
+  fail:
+    msg: "Unable to find barman server informations"
+  when:
+    - _barman_server_info|length == 0
+
+- name: Set _barman_server_public_ip
+  set_fact:
+    _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
+
+- name: Ensure barman .pgpass file contains one entry for {{ ansible_host }}
+  lineinfile:
+    path: "{{ barman_home + '/.pgpass' }}"
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+    mode: 0600
+    line: "{{ hostvars[ansible_hostname].private_ip }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
+    regexp: "^{{ hostvars[ansible_hostname].private_ip | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
+    create: yes
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: yes
+
+- name: Reset _barman_server_info
+  set_fact:
+    _barman_server_info: ""

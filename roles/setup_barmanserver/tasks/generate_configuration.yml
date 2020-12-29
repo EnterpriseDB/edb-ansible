@@ -1,0 +1,10 @@
+---
+
+- name: Build configuration file {{ barman_configuration_file }}
+  template:
+    src: "./templates/barman.conf.template"
+    dest: "{{ barman_configuration_file }}"
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+    mode: 0600
+  become: true

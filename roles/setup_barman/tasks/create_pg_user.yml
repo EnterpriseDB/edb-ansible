@@ -1,0 +1,36 @@
+---
+
+- name: Initialize _role_attr_flags
+  set_fact:
+    _role_attr_flags: "login,replication"
+
+- name: Create barman user on the Postgres instance
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+  vars:
+    pg_users:
+      - name: "{{ barman_pg_user }}"
+        pass: "{{ barman_pg_password }}"
+        role_attr_flags: "{{ _role_attr_flags }}"
+
+- name: Ensure privileges for the barman user
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_privileges
+  vars:
+    pg_grant_privileges:
+      - roles: "{{ barman_pg_user }}"
+        database: postgres
+        privileges: execute
+        schema: pg_catalog
+        objects: >-
+          pg_start_backup(text:boolean:boolean),pg_stop_backup(),pg_stop_backup(boolean:boolean),pg_switch_wal(),pg_create_restore_point(text)
+        type: function
+    pg_grant_roles:
+      - role: pg_read_all_settings
+        user: "{{ barman_pg_user }}"
+        db: postgres
+      - role: pg_read_all_stats
+        user: "{{ barman_pg_user }}"
+        db: postgres
