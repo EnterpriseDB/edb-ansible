@@ -23,6 +23,9 @@ primary_private_ip: ""
 input_password: ""
 pg_allow_ip_addresses: []
 
+efm_port: 7800
+efm_admin_port: 7809
+
 efm_default_parameters:
   - { name: db.user, value: "{{ pg_efm_user }}"}
   - { name: db.port, value: "{{ pg_port }}"}
@@ -40,6 +43,7 @@ efm_default_parameters:
   - { name: local.timeout.final, value: "5" }
   - { name: remote.timeout, value: "5" }
   - { name: node.timeout, value: "5" }
+  - { name: amin.port, value: "{{ efm_admin_port }}" }
 
 efm_physical_slot_param:
   - { name: update.physical.slots.period, value: "5" }

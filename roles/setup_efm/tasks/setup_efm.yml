@@ -68,7 +68,7 @@
 
 - name: Prepare efm node list
   set_fact:
-    efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':7800 ' }}"
+    efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':' + efm_port | string + ' ' }}"
   when:
     - not use_hostname
   loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
@@ -78,7 +78,7 @@
 
 - name: Prepare efm node list based on hostname
   set_fact:
-    efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':7800 ' }}"
+    efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':' + efm_port | string + ' ' }}"
   when:
     - node.hostname is defined
     - use_hostname
@@ -119,9 +119,20 @@
 - name: Gather service facts
   service_facts:
 
-- name: Open EFM TCP ports 7800-7810
+- name: Open EFM TCP port {{ efm_port }}
   firewalld:
-    port: "7800-7810/tcp"
+    port: "{{ efm_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
+- name: Open EFM TCP admin. port {{ efm_admin_port }}
+  firewalld:
+    port: "{{ efm_admin_port }}/tcp"
     permanent: yes
     state: enabled
     immediate: true
