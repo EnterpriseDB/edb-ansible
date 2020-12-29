@@ -85,13 +85,18 @@
     mode: 0644
   become: yes
 
+- name: Gather service facts
+  service_facts:
+
 - name: Open TCP port {{ pgbouncer_listen_port }}
   firewalld:
     port: "{{ pgbouncer_listen_port }}/tcp"
     permanent: yes
     state: enabled
     immediate: true
-  when: os in ['CentOS8', 'CentOS7', 'RHEL7', 'RHEL8']
+  when:
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: yes
 
 - name: Stop PgBouncer service
