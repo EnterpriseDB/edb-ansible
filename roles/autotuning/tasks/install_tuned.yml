@@ -1,0 +1,17 @@
+---
+
+- name: Ensure the tuned package is present on CentOS/RHEL 7
+  yum:
+    name: tuned
+    state: present
+  when:
+    - os in ['CentOS7', 'RHEL7']
+  become: yes
+
+- name: Ensure the tuned package is present on CentOS/RHEL 8
+  dnf:
+    name: tuned
+    state: present
+  when:
+    - os in ['CentOS8', 'RHEL8']
+  become: yes

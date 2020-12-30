@@ -1,0 +1,4 @@
+---
+# Entry point of the autotuning role
+- name: Include the autotuning.yml
+  include_tasks: autotuning.yml
