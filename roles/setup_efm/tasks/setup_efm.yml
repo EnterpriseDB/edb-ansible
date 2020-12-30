@@ -24,6 +24,33 @@
          Supported versions are {{ supported_efm_version }}"
   when: efm_version not in supported_efm_version
 
+- name: Gather service facts
+  service_facts:
+
+- name: Open EFM TCP port {{ efm_port }}
+  firewalld:
+    port: "{{ efm_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
+- name: Open EFM TCP admin. port {{ efm_admin_port }}
+  firewalld:
+    port: "{{ efm_admin_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
 - name: Set force_efm_install based on the user input
   set_fact:
     force_efm_install: "{{  hostvars[inventory_hostname].force_efm_install }}"
@@ -115,31 +142,6 @@
 - name: Efm parameters settings
   include_tasks: efm_cluster_set_params.yml
   no_log: "{{ disable_logging }}"
-
-- name: Gather service facts
-  service_facts:
-
-- name: Open EFM TCP port {{ efm_port }}
-  firewalld:
-    port: "{{ efm_port }}/tcp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
-
-- name: Open EFM TCP admin. port {{ efm_admin_port }}
-  firewalld:
-    port: "{{ efm_admin_port }}/tcp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
 
 - name: Reset the variables used in this role
   set_fact:
