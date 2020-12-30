@@ -18,6 +18,3 @@ pg_port: 5444
 
 # postgres service
 pg_service: "edb-as-{{ pg_version }}"
-# pem server packages
-pem_server_packages:
-      - edb-pem-server

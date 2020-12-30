@@ -3,12 +3,20 @@
   yum:
     name: "{{ pem_agent_package }}"
     state: present
-  when: os in [ 'CentOS7','RHEL7']
+  when: os in [ 'CentOS7','RedHat']
   become: yes
 
 - name: Install require packages for PEM agent
   dnf:
     name: "{{ pem_agent_package }}"
     state: present
-  when: os in [ 'CentOS8','RHEL8']
+  when: os in [ 'CentOS8','RedHat8']
+  become: yes
+
+- name: Install require packages for PEM agent
+  apt:
+    pkg: "{{ pem_agent_package }}"
+    update_cache: true
+    state: present
+  when: os in [ 'Ubuntu18','Ubuntu20', 'Debian9', 'Debian10']
   become: yes

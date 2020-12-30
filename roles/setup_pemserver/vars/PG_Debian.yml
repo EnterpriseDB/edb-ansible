@@ -1,0 +1,28 @@
+---
+# pem credentials
+deb_cluster_name: "main"
+pg_user: "postgres"
+# pem data dir
+pg_home: "/usr/lib/postgresql/{{ pg_version }}"
+pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
+pg_ssl: true
+
+pg_owner: "postgres"
+pg_database: "postgres"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+   - "/var/run/postgresql"
+
+# postgres port
+pg_port: 5432
+
+# postgres service
+pg_service: "postgresql@{{ pg_version }}-{{ deb_cluster_name }}"
+# pem server packages
+pem_server_packages:
+  - postgresql-contrib-{{ pg_version }}
+  - postgresql-{{ pg_version }}-sslutils
+  - edb-pem-server
+  - apache2

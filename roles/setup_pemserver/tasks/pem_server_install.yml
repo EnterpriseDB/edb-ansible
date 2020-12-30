@@ -3,12 +3,20 @@
   yum:
     name: "{{ pem_server_packages }}"
     state: present
-  when: os in [ 'CentOS7','RHEL7']
+  when: os in [ 'CentOS7','RedHat7']
   become: yes
 
 - name: Install require packages for PEM server
   dnf:
     name: "{{ pem_server_packages }}"
     state: present
-  when: os in [ 'CentOS8','RHEL8']
+  when: os in [ 'CentOS8','RedHat8']
+  become: yes
+
+- name: Install require packages for PEM server
+  apt:
+    pkg: "{{ pem_server_packages }}"
+    state: present
+    update_cache: yes
+  when: os in [ 'Ubuntu18', 'Ubuntu20','Debian9','Debian10']
   become: yes

@@ -18,8 +18,3 @@ pg_port: 5432
 
 # postgres service
 pg_service: "postgresql-{{ pg_version }}"
-# pem server packages
-pem_server_packages:
-      - postgresql{{ pg_version }}-contrib
-      - sslutils_{{ pg_version }}
-      - edb-pem-server

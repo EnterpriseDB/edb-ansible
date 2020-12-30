@@ -19,6 +19,8 @@ pem_agent_service: pemagent
 
 pem_server_bin_path: "/usr/edb/pem/bin"
 pem_agent_bin_path: "/usr/edb/pem/agent/bin"
+pem_server_config_file: "{{ '/etc/httpd/conf.d/edb-ssl-pem.conf' if ansible_os_family == 'RedHat' else '/etc/apache2/sites-available/edb-ssl-pem.conf' }}"
+pem_server_port: "8443"
 
 pem_allowed_connections: "0.0.0.0/0"
 pem_server_hba_local_entry: []
@@ -59,8 +61,12 @@ WHERE
 supported_os:
   - CentOS7
   - CentOS8
-  - RHEL7
-  - RHEL8
+  - RedHat7
+  - RedHat8
+  - Ubuntu18
+  - Ubuntu20
+  - Debian9
+  - Debian10
 
 supported_pg_type:
   - EPAS
