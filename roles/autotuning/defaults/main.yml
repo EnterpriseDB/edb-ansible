@@ -1,0 +1,4 @@
+---
+
+tuned_profile: "edb"
+tuned_configuration_dir: "/etc/tuned"
