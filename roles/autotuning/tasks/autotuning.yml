@@ -9,8 +9,14 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}.yml"
+
 - name: Include the tuned package installation tasks
   include_tasks: install_tuned.yml
 
 - name: Include tuned setting up tasks
   include_tasks: setup_tuned.yml
+
+- name: Include Postgres tuning tasks
+  include_tasks: tune_postgres.yml
