@@ -150,9 +150,9 @@ All the variables are available at:
 ### Enterprise DB Postgres Advanced Server
 
 | Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|
+| ------------------------- |:--:|:--:|:--:|:--:|
 | CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|  :white_check_mark: |
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|  :white_check_mark:|
 | CentOS 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
 | Ubuntu 18.04 LTS (Bionic) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
