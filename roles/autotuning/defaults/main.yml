@@ -2,3 +2,9 @@
 
 tuned_profile: "edb"
 tuned_configuration_dir: "/etc/tuned"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
