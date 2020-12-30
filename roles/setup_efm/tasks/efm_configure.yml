@@ -92,11 +92,3 @@
     state: started
   when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
   become: yes
-
-- name: Restart efm service
-  systemd:
-    name: "{{ efm_service }}"
-    enabled: yes
-    state: restarted
-  become: yes
-  when: efm_nodes_update.changed

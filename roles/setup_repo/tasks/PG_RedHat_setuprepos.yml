@@ -1,5 +1,4 @@
 ---
-
 - name: Install EPEL repo for RedHat 7
   yum:
     name:

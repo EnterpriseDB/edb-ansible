@@ -26,7 +26,6 @@
       pg_version|int < 13 and os in ['Ubuntu20']  or
       pg_version|int < 12 and os in ['Debian10'] )
 
-
 - name: Set force_install based on the user input
   set_fact:
     force_install: "{{ hostvars[inventory_hostname].force_install }}"

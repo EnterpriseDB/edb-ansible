@@ -1,0 +1,15 @@
+---
+# Variables for EPAS
+deb_cluster_name: "main"
+pg_port: "5444"
+pg_owner: "enterprisedb"
+pg_service: "edb-as@{{ pg_version }}-{{ deb_cluster_name }}"
+pg_database: "postgres"
+pg_unix_socket_directories:
+  - "/var/run/edb"
+
+pg_extensions:
+    - { "name": "edb_wait_states", "database": "edb" }
+    - { "name": "edb_wait_states", "database": "postgres" }
+    - { "name": "pg_stat_statements", "database": "edb" }
+    - { "name": "pg_stat_statements", "database": "postgres" }
