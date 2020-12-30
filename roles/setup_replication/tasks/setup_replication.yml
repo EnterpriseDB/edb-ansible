@@ -18,6 +18,21 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
+- name: Gather service facts
+  service_facts:
+
+- name: Open Postgres TCP port {{ pg_port }}
+  firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
 - name: Set force_replication based on the user input
   set_fact:
       force_replication: "{{ hostvars[inventory_hostname].force_replication }}"
@@ -91,21 +106,6 @@
     - import_tasks: create_directories.yml
     - import_tasks: pg_basebackup.yml
     - import_tasks: configure_node.yml
-  become: yes
-
-- name: Gather service facts
-  service_facts:
-
-- name: Open Postgres TCP port {{ pg_port }}
-  firewalld:
-    port: "{{ pg_port }}/tcp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'] is defined
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: yes
 
 - name: Update primary for synchronous replication
