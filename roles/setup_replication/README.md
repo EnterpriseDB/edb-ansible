@@ -102,8 +102,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_replication/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/setup_replication/vars/PG.yml](./vars/PG.yml)
+  * [roles/setup_replication/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_replication/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  * [roles/setup_replication/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_replication/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## Database engines supported
 
@@ -115,15 +117,23 @@ All the variables are available at:
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 18.04 LTS (Bionic) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :x:| :x: | :x: |  :white_check_mark:|
+| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:| 
 
 ### Enterprise DB Postgres Advanced Server
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
+| Distribution | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 18.04 LTS (Bionic) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :x:| :x: | :x: |  :white_check_mark:|
+| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:|
 
 ## Playbook execution examples
 

@@ -47,8 +47,10 @@ section: *How to include the `init_dbserver` role in your Playbook*
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/init_dbserver/vars/PG.yml](./vars/PG.yml)
+  * [roles/init_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  * [roles/init_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 
 ## Dependencies
 
@@ -147,12 +149,12 @@ All the variables are available at:
 
 ### Enterprise DB Postgres Advanced Server
 
-| Distribution | 10 | 11 | 12 |
+| Distribution | 10 | 11 | 12 | 13 |
 | ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|  :white_check_mark: |
+| CentOS 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
 | Ubuntu 18.04 LTS (Bionic) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Ubuntu 20.04 LTS (Focal) - x86_64 | :x:| :x: | :x: |  :white_check_mark:|
 | Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
