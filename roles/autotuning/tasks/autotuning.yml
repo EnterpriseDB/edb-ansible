@@ -6,3 +6,6 @@
 
 - name: Include the tuned package installation tasks
   include_tasks: install_tuned.yml
+
+- name: Include tuned setting up tasks
+  include_tasks: setup_tuned.yml
