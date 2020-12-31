@@ -1,0 +1,8 @@
+---
+
+pg_port: 5432
+pg_database: "postgres"
+pg_owner: "postgres"
+pg_service: "postgresql-{{ pg_version }}"
+pg_unix_socket_directories:
+  - "/var/run/postgresql"

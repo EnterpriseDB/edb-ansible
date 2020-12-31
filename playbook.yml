@@ -46,3 +46,5 @@
       when: "'setup_barmanserver' in host_supported_roles"
     - role: setup_barman
       when: "'setup_barman' in host_supported_roles"
+    - role: autotuning
+      when: "'autotuning' in host_supported_roles"
