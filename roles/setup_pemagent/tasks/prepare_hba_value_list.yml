@@ -1,0 +1,15 @@
+---
+- name: Prepare the list
+  set_fact:
+    temp_list:
+       - users: "+pem_user"
+         source: "{{ node_hostvars.private_ip }}/32"
+         databases: pem
+       - users: "+pem_agent"
+         source: "{{ node_hostvars.private_ip }}/32"
+         databases: pem
+         method: cert
+
+- name: Prepare array of list
+  set_fact:
+    pg_allow_ip_addresses: "{{ pg_allow_ip_addresses + [temp_list] }}"

@@ -1,0 +1,27 @@
+---
+
+- name: Set package names for CentOS/RHEL
+  set_fact:
+    _barman_package: >-
+      {{ barman_package }}.*el{{ os[-1:] }}
+    _barman_cli_package: >-
+      {{ barman_cli_package }}.*el{{ os[-1:] }}
+  when: os is search("(CentOS|RHEL)")
+
+- name: Install Barman packages for CentOS/RHEL 8
+  dnf:
+    name:
+      - "{{ _barman_package }}"
+      - "{{ _barman_cli_package }}"
+    state: present
+  when: os in ['CentOS8', 'RHEL8']
+  become: yes
+
+- name: Install Barman packages for CentOS/RHEL 7
+  yum:
+    name:
+      - "{{ _barman_package }}"
+      - "{{ _barman_cli_package }}"
+    state: present
+  when: os in ['CentOS7', 'RHEL7']
+  become: yes

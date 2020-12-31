@@ -1,0 +1,16 @@
+---
+- name: Manage pgpool2 configuration file content in {{ pgpool2_configuration_file }}
+  lineinfile:
+    path: "{{ pgpool2_configuration_file }}"
+    line: >-
+      {{ conf_item.key }} = {% if conf_item.quoted | default(false) %}'{% endif %}{{ conf_item.value }}{% if conf_item.quoted | default(false) %}'{% endif %}
+    regexp: "^{{ conf_item.key | regex_escape() }}\\s*="
+    state: "{{ conf_item.state | default('present') }}"
+    create: yes
+    mode: 0600
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+  with_items: "{{ pgpool2_configuration_lines }}"
+  loop_control:
+    loop_var: conf_item
+  become: yes

@@ -1,10 +1,14 @@
-This is an open-source project and is not officially supported by EDB Support. This repository is maintained and supported by the EDB GitHub members of this repository. Please provide feedback by posting issues and contribute by creating pull requests.
+[![Ansible Lint Status](https://github.com/EnterpriseDB/edb-ansible/workflows/ansible-lint/badge.svg)](https://github.com/EnterpriseDB/edb-ansible/actions?query=workflow%3Aansible-lint)
+
+This is an open-source project and is not officially supported by EDB Support.
+This repository is maintained and supported by the EDB GitHub members of this
+repository. Please provide feedback by posting issues and contribute by
+creating pull requests.
 
 # edb_postgres
 
-This Ansible Galaxy Collection sets up and configures the repositories from
-which packages will be retrieved for any Postgres or EnterpriseDB Postgresql
-Advanced Server installations.
+This Ansible Galaxy Collection brings reference architecture deployment
+capabilites for PostgreSQL or EnterpriseDB Postgres Advanced Server.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -94,12 +98,18 @@ In the playbook, user can choose the specific roles based on their requirement.
 For more information on the role, please refer roles README
 [README.md](./roles/setup_efm/README.md)
 
-### setup_pem
+### setup_pemserver
 
-This role helps in setting PEM Server and deployment of PEM Agent on the
+This role helps in setting PEM Server.
+For more information on the role, please refer roles README
+[README.md](./roles/setup_pemserver/README.md)
+
+### setup_pemagent
+
+This role helps in setting and deployment of PEM Agent on the
 PG/EPAS servers.
 For more information on the role, please refer roles README
-[README.md](./roles/setup_pem/README.md)
+[README.md](./roles/setup_pemagent/README.md)
 
 ### manage_dbserver
 
@@ -113,17 +123,40 @@ This role install and configure a new PgBouncer connection pooler.
 For more information on the role, please refer roles README
 [README.md](./roles/setup_pgbouncer/README.md)
 
-### manage_pgbouncer_databases
+### manage_pgbouncer
 
-This role helps in managing PgBouncer connection pools list.
+This role helps in managing PgBouncer connection pools list and users.
 For more information on the role, please refer roles README
-[README.md](./roles/manage_pgbouncer_databases/README.md)
+[README.md](./roles/manage_pgbouncer/README.md)
 
-### manage_pgbouncer_users
+### setup_pgpool2
 
-This role helps in managing PgBouncer credentials list.
+This role install and configure a new PgpoolII connection pooler.
 For more information on the role, please refer roles README
-[README.md](./roles/manage_pgbouncer_users/README.md)
+[README.md](./roles/setup_pgpool2/README.md)
+
+### manage_pgpool2
+
+This role helps in managing Pgpool II user list and configuration.
+For more information on the role, please refer roles README
+[README.md](./roles/manage_pgpool2/README.md)
+
+### setup_barmanserver
+
+Setting up Barman server role.
+[README.md](./roles/setup_barmanserver/README.md)
+
+### setup_barman
+
+Configure Postgres backups with Barman.
+[README.md](./roles/setup_barman/README.md)
+
+### autotuning
+
+The autotuning role configures the system and Postgres instances for optimal
+performances. Most of the configuration values are calculated automatically
+from available resources found on the system.
+[README.md](./roles/autotuning/README.md)
 
 ## Pre-Requisites
 
@@ -217,86 +250,98 @@ $ cd edb-ansible
 **WARNING**: This approach does not automatically make the `edb_postgres`
 collection available to your playbooks.
 
-## Hosts file content
+## Inventory file content
 
-Content of the `hosts.yml` file:
+Content of the `inventory.yml` file:
 
 ```yaml
-      servers:
-        pem-server:
-          node_type: pemserver
-          public_ip: xxx.xxx.xxx.xxx
+---
+all:
+  children:
+    pemserver:
+      hosts:
+        pemserver1:
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
-        pooler:
-          node_type: pgbouncer
-          public_ip: xxx.xxx.xxx.xxx
+    primary:
+      hosts:
         primary1:
-          node_type: primary
-          public_ip: xxx.xxx.xxx.xxx
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
           pem_agent: true
-          pgbouncer: true
-        standby11:
-          node_type: standby
-          public_ip: xxx.xxx.xxx.xxx
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: synchronous
           pem_agent: true
-          pgbouncer: true
-        standby12:
-          node_type: standby
-          public_ip: xxx.xxx.xxx.xxx
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
           private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
           pem_agent: true
-          pgbouncer: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
 ```
 
 ## How to include the roles in your Playbook
 
-Below is an example of how to include roles for a deployment in a playbook:
+Below is an example of how to include all the roles for a deployment in a
+playbook:
 
 ```yaml
-    - hosts: localhost
-      name: Configure Postgres or EPAS on Instances
-      become: true
-      gather_facts: no
+---
+- hosts: all
+  name: Postgres deployement playbook
+  become: yes
+  gather_facts: yes
 
-      collections:
-        - edb_devops.postgres
+  # When using collections
+  #collections:
+  #    - edb_devops.edb_postgres
 
-      vars_files:
-        - hosts.yml
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+        yum_username: ""
+        yum_password: ""
+        disable_logging: false
 
-      pre_tasks:
-          - name: Initialize the user defined variables
-            set_fact:
-                os: "CentOS7"
-                pg_version: 12
-                pg_type: "PG"
-                yum_username: ""
-                yum_password: ""
-
-      roles:
-       - setup_repo
-       - install_dbserver
-       - init_dbserver
-       - setup_replication
-       - setup_efm
-       - setup_pem
-       - manage_dbserver
-       - setup_pgbouncer
-       - manage_pgbouncer_users
-       - manage_pgbouncer_databases
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in host_supported_roles"
+    - role: install_dbserver
+      when: "'install_dbserver' in host_supported_roles"
+    - role: init_dbserver
+      when: "'init_dbserver' in host_supported_roles"
+    - role: setup_replication
+      when: "'setup_replication' in host_supported_roles"
+    - role: setup_efm
+      when: "'setup_efm' in host_supported_roles"
+    - role: setup_pgpool2
+      when: "'setup_pgpool2' in host_supported_roles"
+    - role: manage_pgpool2
+      when: "'manage_pgpool2' in host_supported_roles"
+    - role: manage_dbserver
+      when: "'manage_dbserver' in host_supported_roles"
+    - role: setup_pemserver
+      when: "'setup_pemserver' in host_supported_roles"
+    - role: setup_pemagent
+      when: "'setup_pemagent' in host_supported_roles"
+    - role: setup_pgbouncer
+      when: "'setup_pgbouncer' in host_supported_roles"
+    - role: manage_pgbouncer
+      when: "'manage_pgbouncer' in host_supported_roles"```
 ```
 
-Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
-
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
-limit what roles you would like to execute: `setup_repo`, `install_dbserver`,
-`init_dbserver`, `setup_replication`, `setup_efm`, `setup_pem`,
-`manage_dbserver`, `setup_pgbouncer`, `manage_pgbouncer_users` or
-`manage_pgbouncer_databases`.
+limit what roles you would like to execute.
 
 ## Default user and passwords
 
@@ -326,18 +371,20 @@ Postgres Advanced Server, Centos7 or RHEL7 are provided and located within the
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13 on CentOS7 hosts with the user centos
+# To deploy community Postgres version 13 with the user centos
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u centos \
   --private-key <key.pem> \
-  --extra-vars="os=CentOS7 pg_version=13 pg_type=PG"
+  --extra-vars="pg_version=13 pg_type=PG"
 ```
 ```bash
-# To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user
+# To deploy EPAS version 12 with the user ec2-user
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u ec2-user \
   --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS"
+  --extra-vars="pg_version=12 pg_type=EPAS yum_user=xxxxx yum_password=xxxxx"
 ```
 
 ## Database engines supported

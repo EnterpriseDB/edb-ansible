@@ -1,0 +1,26 @@
+---
+
+- name: Generate the pg_pem_agent_password
+  include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pg_pem_agent_user }}"
+    input_password: "{{ pg_pem_agent_password }}"
+  no_log: true
+  when: pg_pem_agent_password|length < 1
+
+- name: Set pg_pem_agent_password
+  set_fact:
+     pg_pem_agent_password: "{{ input_password }}"
+  when: pg_pem_agent_password|length < 1
+
+- name: Set postgres pem admins's database cluster password
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+  vars:
+    pg_users:
+       - name: "{{ pg_pem_agent_user }}"
+         pass: "{{ pg_pem_agent_password }}"
+         groups: pg_monitor

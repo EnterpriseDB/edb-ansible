@@ -6,7 +6,7 @@ used the tasks given in the this role.
 
 ## Requirements
 
-Following are the dependencies and requirement of this role. 
+Following are the dependencies and requirement of this role.
 
   1. Ansible
   2. `community.general` Ansible Module - Utilized when creating aditional
@@ -21,9 +21,9 @@ day tasks:
 ### `pg_postgres_conf_params`
 
 Using this parameters user can set the database parameters.
- 
-Example: 
-```yaml  
+
+Example:
+```yaml
 pg_postgres_conf_params:
   - name: listen_addresses
     value: "*"
@@ -34,7 +34,7 @@ pg_postgres_conf_params:
 With this parameter, user can manage HBA (Host Based Authentication) entries.
 
 ```yaml
-pg_hba_ip_addresses: 
+pg_hba_ip_addresses:
   - contype: "host"
     users: "all"
     databases: "all"
@@ -124,7 +124,7 @@ Execute a query on a database.
 ```yaml
 pg_query:
     - query: "Update test set a=b"
-      db: edb 
+      db: edb
 ```
 
 ### `pg_pgpass_values`
@@ -159,22 +159,31 @@ The `manage_dbserver` role does depend on the following roles:
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-Content of the `hosts.yml` file:
+Content of the `inventory.yml` file:
 
 ```yaml
 ---
-servers:
-  main1:
-    node_type: primary
-    public_ip: xxx.xxx.xxx.xxx
-  standby11:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
-  standby12:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: synchronous
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: asynchronous
 ```
 
 ### How to include the `manage_dbserver` role in your Playbook
@@ -183,24 +192,20 @@ Below is an example of how to include the `manage_dbserver` role:
 
 ```yaml
 ---
-- hosts: localhost
-  name: Manage DB servers
-  become: true
-  gather_facts: no
+- hosts: primary,standby
+  name: Manage Postgres server
+  become: yes
+  gather_facts: yes
 
-  collections:
-    - edb_devops.postgres
-
-  vars_files:
-    - hosts.yml
+  # When using collections
+  #collections:
+  #  - edb_devops.edb_postgres
 
   pre_tasks:
-    # Define or re-define any variables previously assigned
     - name: Initialize the user defined variables
       set_fact:
-        os: "CentOS7"
-        pg_type: "EPAS"
-        pg_version: 12
+        pg_version: 13
+        pg_type: "PG"
 
         pg_postgres_conf_params:
           - name: listen_addresses
@@ -227,6 +232,14 @@ Below is an example of how to include the `manage_dbserver` role:
   roles:
     - manage_dbserver
 ```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/manage_dbserver/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/manage_dbserver/vars/PG.yml](./vars/PG.yml)
 
 ## License
 

@@ -1,36 +1,67 @@
 ---
-# configure variables
-- name: Display current node to install
-  block:
-    - debug:
-        msg: "operating system = {{ os }}:
-             postgres version = {{ pg_version }},
-             database engine = {{ pg_type }},
-             public ip = {{ item.value.public_ip }}"
 
-# setting variables available for all nodes
-# any of the variables existing can be updated and configured
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Reference ssl variables
+  include_vars: edb-ssl.yml
+  when: pg_ssl
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+- name: Gather service facts
+  service_facts:
+
+- name: Open Postgres TCP port {{ pg_port }}
+  firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
 
 - name: Set force_initdb based on the user input
   set_fact:
-    force_initdb: "{{ item.value.force_initdb }}"
-  when: item.value.force_initdb is defined
+    force_initdb: "{{ hostvars[inventory_hostname].force_initdb }}"
+  when: hostvars[inventory_hostname].force_initdb is defined
   register: output
 
-# main blog for tasks
 - name: Force cleanup based on force_initdb
   block:
     - include_tasks: rm_initdb.yml
   when: force_initdb
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Gather the host and information for /etc/hosts
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname
 
 - name: Update etc_hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
   when: use_hostname
-  delegate_to:  "{{ item.value.public_ip }}"
 
 - name: Check and configure the node as primary or pemserver
   block:
@@ -38,7 +69,6 @@
     - import_tasks: pg_initdb.yml
     - import_tasks: pg_set_superuser_password.yml
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Configure ssl based on pg_ssl parameter
   block:
@@ -47,8 +77,8 @@
   become: yes
   when:
      - pg_ssl
-  delegate_to: "{{ item.value.public_ip }}"
 
 - name: Reset force_initdb based on the user input
   set_fact:
     force_initdb: false
+    etc_hosts_lists: []

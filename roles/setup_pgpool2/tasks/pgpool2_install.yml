@@ -1,0 +1,28 @@
+---
+- name: Install pgpoolII package on CentOS7 or RHEL7
+  yum:
+    name: "{{ pgpool2_package_name }}"
+  when: os in ['CentOS7', 'RHEL7']
+  become: yes
+
+- name: Install pgpoolII package on CentOS8 or RHEL8
+  dnf:
+    name: "{{ pgpool2_package_name }}"
+  when: os in ['CentOS8', 'RHEL8']
+  become: yes
+
+- name: Install openssl package on CentOS7 or RHEL7
+  yum:
+    name: "openssl"
+  when:
+    - os in ['CentOS7', 'RHEL7']
+    - pgpool2_ssl is true
+  become: yes
+
+- name: Install openssl package on CentOS8 or RHEL8
+  dnf:
+    name: "openssl"
+  when:
+    - os in ['CentOS8', 'RHEL8']
+    - pgpool2_ssl is true
+  become: yes

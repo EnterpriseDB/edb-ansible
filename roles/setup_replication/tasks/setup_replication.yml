@@ -1,18 +1,42 @@
 ---
-# configure variables
-- name: Display details of node to configure
-  block:
-    - debug:
-        msg:
-            "operating system = {{ os }}:
-             postgres version = {{ pg_version }},
-             public ip = {{ item.value.public_ip }},
-             standby_names = {{ standby_names }}"
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
+- name: Reference EPAS or PG variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+- name: Gather service facts
+  service_facts:
+
+- name: Open Postgres TCP port {{ pg_port }}
+  firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
 
 - name: Set force_replication based on the user input
   set_fact:
-      force_replication: "{{ item.value.force_replication }}"
-  when: item.value.force_replication is defined
+      force_replication: "{{ hostvars[inventory_hostname].force_replication }}"
+  when: hostvars[inventory_hostname].force_replication is defined
   register: output
 
 - name: Force cleanup based on force_replication
@@ -20,16 +44,62 @@
     - include_tasks: rm_replication.yml
   when: force_replication
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
 
-# postgres
+- name: Gather the host and information for /etc/hosts
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname
+  no_log: "{{ disable_logging }}"
+
+- name: Get the primary information
+  set_fact:
+    primary_public_ip: "{{ node.ansible_host }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when:  node.node_type == 'primary'
+  no_log: "{{ disable_logging }}"
+
+- name: Prepare host ip lists based on allow_node_ips
+  include_tasks: prepare_hba_value_list.yml
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"
+
+- name: Prepare synchronous_standby_names
+  set_fact:
+    synchronous_standbys: "{{ synchronous_standbys + [ node.inventory_hostname ] }}"
+  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when:
+    - node.node_type == 'standby'
+    - node.replication_type == 'synchronous'
+  no_log: "{{ disable_logging }}"
+
+- name: Update primary for replication
+  import_tasks: primary_settings.yml
+  run_once: true
+  no_log: "{{ disable_logging }}"
+  delegate_to: "{{ primary_public_ip }}"
 
 - name: Update etc_hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
+  no_log: "{{ disable_logging }}"
   when: use_hostname
-  delegate_to: "{{ item.value.public_ip }}"
+
+- name: Call upstream update based on the upstream node
+  block:
+    - import_tasks: upstream_node.yml
+  when:
+    - hostvars[inventory_hostname].upstream_node_private_ip is defined
+  no_log: "{{ disable_logging }}"
 
 - name: Build standby service check
   block:
@@ -37,10 +107,22 @@
     - import_tasks: pg_basebackup.yml
     - import_tasks: configure_node.yml
   become: yes
-  delegate_to: "{{ item.value.public_ip }}"
 
-- name: Reset the the variables based on the user input
+- name: Update primary for synchronous replication
+  import_tasks: primary_synchronous_param.yml
+  when: synchronous_standbys|length > 0
+  run_once: true
+  delegate_to: "{{ primary_public_ip }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Reset the variables based on the user input
   set_fact:
+      primary_private_ip: ""
+      primary_public_ip: ""
+      primary_host_name: ""
+      standby_names: []
+      pg_allow_ip_addresses: []
+      standby_physical_slots: []
+      etc_hosts_lists: []
       force_replication: false
   register: output
-

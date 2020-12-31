@@ -1,0 +1,24 @@
+---
+
+- name: Ensure the directory {{ barman_home }}/.ssh exists
+  file:
+    state: directory
+    path: "{{ barman_home }}/.ssh"
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+    mode: 0700
+  become: true
+
+- name: Check if the SSH private key exists
+  stat:
+    path: "{{ barman_home }}/.ssh/id_rsa"
+  register: barman_ssh_private_key
+  become: true
+
+- name: Ensure barman user's SSH keys exist
+  openssh_keypair:
+    path: "{{ barman_home }}/.ssh/id_rsa"
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+  when: not barman_ssh_private_key.stat.exists
+  become: true

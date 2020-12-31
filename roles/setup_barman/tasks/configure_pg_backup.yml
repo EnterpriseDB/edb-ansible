@@ -1,0 +1,35 @@
+---
+
+- name: Ensure wal_level is configured to replica
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params:
+      - name: wal_level
+        value: "replica"
+  no_log: "{{ disable_logging }}"
+
+- name: Ensure the replication slot barman exists
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_slots
+  vars:
+    pg_slots:
+      - name: barman
+        slot_type: physical
+  no_log: "{{ disable_logging }}"
+  when: barman_backup_method == 'postgres'
+
+- name: Ensure WAL archiving is configured
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params:
+      - name: archive_mode
+        value: "on"
+      - name: archive_command
+        value: "barman-wal-archive {{ hostvars[ansible_hostname].barman_server_private_ip }} {{ ansible_hostname }} %p"
+  no_log: "{{ disable_logging }}"
+  when: barman_backup_method == 'rsync'

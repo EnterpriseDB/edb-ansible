@@ -13,4 +13,5 @@
   with_items: "{{ pg_extensions }}"
   loop_control:
     loop_var: line_item
+  no_log: "{{ disable_logging }}"
   when: pg_extensions|length > 0

@@ -1,0 +1,50 @@
+---
+use_hostname: false
+force_pem_install: false
+pem_agent: false
+pass_dir: "~/.edb"
+
+pg_pem_admin_user: "pemadmin"
+pg_pem_admin_password: ""
+pg_pem_agent_user: "pemagent"
+pg_pem_agent_password: ""
+pg_ssl: true
+
+pem_server_exists: false
+# efm information
+efm_version: "4.0"
+efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
+efm_cluster_name: "efm"
+
+pem_agent_package:
+  - edb-pem-agent
+
+pem_agent_service: pemagent
+
+pem_agent_bin_path: "/usr/edb/pem/agent/bin"
+
+pem_agent_certificate_path: "/etc/edb/certs/pem"
+pem_agent_service_name: "pem-server-agent"
+pem_agent_hba_local_entry: []
+
+# common variables require for the role
+etc_hosts_lists: []
+input_password: ""
+pg_allow_ip_addresses: []
+
+# support related variables
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+
+supported_pg_type:
+  - EPAS
+  - PG
+
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13

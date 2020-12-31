@@ -3,7 +3,8 @@
 # port constants
 
 os: ""
-pg_version: "12"
+pg_version: "13"
+dsable_logging: yes
 
 force_replication: false
 use_hostname: false
@@ -21,6 +22,8 @@ standby_names: []
 pg_allow_ip_addresses: []
 standby_physical_slots: []
 etc_hosts_lists: []
+upstream_public_ip: ""
+upstream_hostname: ""
 
 supported_os:
   - CentOS7
@@ -37,7 +40,3 @@ supported_pg_version:
   - 11
   - 12
   - 13
-
-supported_node_type:
-  - primary
-  - standby

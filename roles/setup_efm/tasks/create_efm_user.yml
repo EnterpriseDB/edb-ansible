@@ -6,7 +6,7 @@
   vars:
     input_user: "{{ pg_efm_user }}"
     input_password: "{{ pg_efm_user_password }}"
-  no_log: true
+  no_log: "{{ disable_logging }}"
   when: pg_efm_user_password|length < 1
 
 - name: Set pg_efm_user_password

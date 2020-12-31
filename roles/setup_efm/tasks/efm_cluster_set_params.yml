@@ -2,24 +2,18 @@
 - name: Set the efm parameters
   include_tasks: efm_set_params.yml
   when:
-    - item.value.node_type in ['primary','standby','witness']
     - efm_parameters|length > 0
-  with_dict: "{{ servers }}"
 
 - name: Stop the efm services of the cluster
   include_tasks: efm_stop_service.yml
   when:
-    - item.value.node_type in ['primary','standby','witness']
     - efm_parameters|length > 0
     - properties_changes is defined
     - properties_changes.changed
-  with_dict: "{{ servers }}"
 
 - name: Start the efm services of the cluster
   include_tasks: efm_start_service.yml
   when:
-    - item.value.node_type in ['primary','standby','witness']
     - efm_parameters|length > 0
     - properties_changes is defined
     - properties_changes.changed
-  with_dict: "{{ servers }}"

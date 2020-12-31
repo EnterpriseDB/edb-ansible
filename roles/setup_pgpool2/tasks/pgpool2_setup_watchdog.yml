@@ -1,0 +1,107 @@
+---
+# Task for setting up pgpoolII watchdog feature
+
+- name: Create sudo rules for {{ pgpool2_user }}
+  template:
+    src: ./templates/pgpool.sudoers.d.conf.template
+    dest: /etc/sudoers.d/pgpool
+    mode: 0640
+  become: true
+
+- name: Watchdog configuration
+  set_fact:
+    pgpool2_watchdog_configuration: >-
+      [
+        {
+          'key': 'use_watchdog',
+          'value': 'on',
+        },
+        {
+          'key': 'delegate_IP',
+          'value': '{{ pgpool2_vip }}',
+          'quoted': true
+        },
+        {
+          'key': 'if_up_cmd',
+          'value': '/bin/sudo /sbin/ip addr add $_IP_$/24 dev {{ pgpool2_vip_dev }} label {{ pgpool2_vip_dev }}:0',
+          'quoted': true
+        },
+        {
+          'key': 'if_down_cmd',
+          'value': '/bin/sudo /sbin/ip addr del $_IP_$/24 dev {{ pgpool2_vip_dev }}',
+          'quoted': true
+        },
+        {
+          'key': 'arping_cmd',
+          'value': '/bin/sudo /sbin/arping -U $_IP_$ -w 1 -I {{ pgpool2_vip_dev }}',
+          'quoted': true
+        },
+        {
+          'key': 'wd_hostname',
+          'value': '{{ pgpool2_current_node }}',
+          'quoted': true
+        },
+        {
+          'key': 'wd_port',
+          'value': '{{ pgpool2_wd_port }}',
+          'quoted': true
+        }
+      ]
+
+- name: Initialize pgpool2_other_node_list
+  set_fact:
+    pgpool2_other_node_list: []
+
+- name: Populate pgpool2_other_node_list
+  set_fact:
+    pgpool2_other_node_list: >-
+      {{ pgpool2_other_node_list + [ node_item ] }}
+  loop: "{{ pgpool2_node_list }}"
+  loop_control:
+    loop_var:
+      node_item
+  when:
+    - node_item != pgpool2_current_node
+
+- name: Add other pgpool2 nodes in watchdog configuration
+  set_fact:
+    pgpool2_watchdog_configuration: >-
+      {{ pgpool2_watchdog_configuration }} + [
+        {
+          'key': 'other_pgpool_hostname{{ ansible_loop.index0 }}',
+          'value': '{{ node_item }}',
+          'quoted': true
+        },
+        {
+          'key': 'other_pgpool_port{{ ansible_loop.index0 }}',
+          'value': '{{ pgpool2_port }}',
+          'quoted': false
+        },
+        {
+          'key': 'other_wd_port{{ ansible_loop.index0 }}',
+          'value': '{{ pgpool2_wd_port }}',
+          'quoted': false
+        },
+        {
+          'key': 'heartbeat_destination{{ ansible_loop.index0 }}',
+          'value': '{{ node_item }}',
+          'quoted': true
+        },
+        {
+          'key': 'heartbeat_destination_port{{ ansible_loop.index0 }}',
+          'value': '{{ pgpool2_wd_heartbeat_port }}',
+          'quoted': false
+        }
+      ]
+  loop: "{{ pgpool2_other_node_list }}"
+  loop_control:
+    extended: yes
+    loop_var:
+      node_item
+
+# Update the configuration file
+- include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_configuration
+  vars:
+    pgpool2_configuration_lines: "{{ pgpool2_watchdog_configuration }}"

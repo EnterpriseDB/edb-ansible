@@ -1,28 +1,4 @@
 ---
-# Tasks file for install_dbserver Role
-# Check if the Operating System is supported
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
-
-# Check if the Database Version is supported
-- name: Check supported versions for Database engine
-  fail:
-    msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
-
-# Check if Database Engine is supported on RHEL8/CentOS8
-- name: Check if Database Engine is supported
-  fail:
-    msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-          is not supported on RHEL8/CentOS8."
-  when:
-    - pg_type == 'EPAS' and pg_version|int < 12
-    - os in ['RHEL8','CentOS8']
-
-- name: Include the install_dbserver
+# Entry point of the install_dbserver role
+- name: Include the install_dbserver.yml
   include_tasks: install_dbserver.yml
-  when: item.value.node_type in supported_node_type
-  with_dict:  "{{ servers }}"

@@ -1,0 +1,73 @@
+---
+# efm credentials
+pg_version: "12"
+use_hostname: false
+force_pem_install: false
+pem_agent: false
+pass_dir: "~/.edb"
+
+pg_pem_admin_user: "pemadmin"
+pg_pem_admin_password: ""
+pg_ssl: true
+
+# efm information
+efm_version: "4.0"
+efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
+efm_cluster_name: "efm"
+
+pem_agent_service: pemagent
+
+pem_server_bin_path: "/usr/edb/pem/bin"
+pem_agent_bin_path: "/usr/edb/pem/agent/bin"
+
+pem_allowed_connections: "0.0.0.0/0"
+pem_server_hba_local_entry: []
+# 1: web servce and database, 2: web services, 3: database
+pem_installation_type: "1"
+
+# common variables require for the role
+etc_hosts_lists: []
+input_password: ""
+pg_allow_ip_addresses: []
+
+# pem probe and alert query
+pem_probe_query: "UPDATE
+    pem.probe
+SET
+    enabled_by_default = TRUE
+WHERE
+    internal_name NOT IN ('slony_replication', 'xdb_smr_mmr_replication', 'sql_protect')
+    AND target_type_id = 200
+    AND enabled_by_default = FALSE;"
+
+pem_alert_query: "UPDATE
+    pem.alert a
+SET
+    enabled = FALSE
+FROM
+    pem.alert_template t
+WHERE
+    a.template_id = t.id
+    AND (t.display_name ~ '^Last'
+        OR t.display_name ~ '^Largest index'
+        OR t.display_name = 'Database size in server'
+        OR t.display_name ~ 'Alert Errors')
+    AND t.is_auto_create = TRUE
+    AND a.enabled;"
+
+# support related variables
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+
+supported_pg_type:
+  - EPAS
+  - PG
+
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13

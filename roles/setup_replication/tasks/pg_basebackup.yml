@@ -1,4 +1,5 @@
 ---
+
 - name: Define pg_basebackup command.
   set_fact:
     pg_basebackup: "{{ pg_basebackup + ' -D ' + pg_data }}"
@@ -10,7 +11,7 @@
 
 - name: Add slot_name in pg_basebackup
   set_fact:
-    pg_basebackup: "{{ pg_basebackup + ' --slot=' }}{{ item.key | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+    pg_basebackup: "{{ pg_basebackup + ' --slot=' }}{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
 
 - name: Set replication user information
   set_fact:
@@ -19,13 +20,17 @@
 
 - name: Set host and port
   set_fact:
-    pg_basebackup: "{{ pg_basebackup + ' --host=' + primary_private_ip + ' --port=' + pg_port }}"
-  when: not use_hostname
+    pg_basebackup: "{{ pg_basebackup + ' --host=' + hostvars[inventory_hostname].upstream_node_private_ip + ' --port=' + pg_port }}"
+  when:
+    - not use_hostname
+    - hostvars[inventory_hostname].upstream_node_private_ip is defined
 
 - name: Set host and port
   set_fact:
-    pg_basebackup: "{{ pg_basebackup + ' --host=' + primary_host_name + ' --port=' + pg_port }}"
-  when: use_hostname
+    pg_basebackup: "{{ pg_basebackup + ' --host=' + upstream_hostname + ' --port=' + pg_port }}"
+  when:
+    - use_hostname
+    - hostvars[inventory_hostname].upstream_node_private_ip is defined
 
 - name: Use other supplied options if given
   set_fact:
