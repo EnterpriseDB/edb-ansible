@@ -21,7 +21,7 @@
       - python-ipaddress
     state: present
     update_cache: yes
-  when: os in ['Ubuntu18','Debian9']
+  when: os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
 
 - name: Stop the service {{ pg_service }}
