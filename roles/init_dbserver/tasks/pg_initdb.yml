@@ -35,3 +35,14 @@
     daemon_reload: yes
     state: started
   become: yes
+
+- name: Perform a immediate checkpoint after initializing the cluster
+  include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "CHECKPOINT"
+      - db: "postgres"
+  no_log: "{{ disable_logging }}"
+  when:  not pg_version_stat.stat.exists
