@@ -2,7 +2,7 @@
 deb_cluster_name: "main"
 pg_user: "enterprisedb"
 # pem data dir
-pg_home: "usr/lib/edb-as/{{ pg_version }}" 
+pg_home: "/usr/lib/edb-as/{{ pg_version }}" 
 pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ deb_cluster_name }}"
 pg_bin_path: "{{ pg_home }}/bin"
 pg_ssl: true
