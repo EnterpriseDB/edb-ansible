@@ -39,22 +39,13 @@
 
 - name: Cleanup the repos based on force_install
   block:
-    - include_tasks: "PG_RedHat_rm_repos.yml"
+    - include_tasks: "PG_{{ ansible_os_family }}_rm_repos.yml"
   when: force_install
   become: true
 
-- name: Install Postgres RPM repositories
+- name: Install Postgres repositories
   block:
-    - include_tasks: "PG_RedHat_setuprepos.yml"
-  when:
-    - ansible_os_family == 'RedHat'
-  become: true
-
-- name: Install Postgres RPM repositories
-  block:
-    - include_tasks: "PG_Debian_setuprepos.yml"
-  when:
-    - ansible_os_family == 'Debian'
+    - include_tasks: "PG_{{ ansible_os_family }}_setuprepos.yml"
   become: true
 
 - name: Reset force install based on the user input

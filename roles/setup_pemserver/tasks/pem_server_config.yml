@@ -22,6 +22,7 @@
     set -eu
     sed -i 's/md5/scram-sha-256/g' {{ pem_server_bin_path }}/configure-pem-server.sh
     sed -i 's/host    all/hostssl    all/g' {{ pem_server_bin_path }}/configure-pem-server.sh
+    sed -i 's/PEM_SERVER_SSL_PORT=8443/PEM_SERVER_SSL_PORT={{ pem_server_port }}/g' {{ pem_server_bin_path }}/configure-pem-server.sh
     {{ 'sed -i "s/systemctl list-units/systemctl -a/g"' if ansible_os_family == 'Debian' else 'ls' }} \
                                                       {{ pem_server_bin_path }}/configure-pem-server.sh
     {{ pem_server_bin_path }}/configure-pem-server.sh \

@@ -188,4 +188,4 @@ Author:
   * Vibhor Kumar (Co-Author)
   * EDB Postgres
   * DevOps
-  * doug.ortiz@enterprisedb.com www.enterprisedb.com
+  * edb-devops@enterprisedb.com www.enterprisedb.com

@@ -3,7 +3,7 @@
   yum:
     name: "{{ pem_agent_package }}"
     state: present
-  when: os in [ 'CentOS7','RedHat']
+  when: os in [ 'CentOS7','RedHat7']
   become: yes
 
 - name: Install require packages for PEM agent
