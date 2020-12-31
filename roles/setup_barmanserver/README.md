@@ -179,4 +179,4 @@ Author:
   * Julien Tachoires
   * Vibhor Kumar (Reviewer)
   * EDB Postgres
-  * julien.tachoires@enterprisedb.com www.enterprisedb.com
+  * edb-devops@enterprisedb.com www.enterprisedb.com
