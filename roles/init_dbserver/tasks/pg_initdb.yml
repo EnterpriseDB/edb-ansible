@@ -43,6 +43,6 @@
   vars:
     pg_query:
       - query: "CHECKPOINT"
-      - db: "postgres"
+        db: "postgres"
   no_log: "{{ disable_logging }}"
   when:  not pg_version_stat.stat.exists
