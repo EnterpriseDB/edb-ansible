@@ -3,6 +3,10 @@
 pg_version: 12
 pg_type: "PG"
 
+efm_cluster_name: "efm"
+efm_version: 4.0
+efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
+
 pass_dir: "~/.edb"
 passfile: ""
 pg_postgres_conf_params: ""
