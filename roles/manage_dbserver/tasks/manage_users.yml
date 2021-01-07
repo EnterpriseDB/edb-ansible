@@ -1,4 +1,16 @@
 ---
+- name: Check database is in read/write mode
+  postgresql_query:
+    query: "SELECT pg_catalog.pg_is_in_recovery()"
+    port: "{{ pg_port }}"
+    db: "{{ pg_database }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+  no_log: "{{ disable_logging }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  register: db_status
+
 - name: Manage optional users
   postgresql_user:
     name: "{{ line_item.name }}"
@@ -20,4 +32,6 @@
   with_items: "{{ pg_users }}"
   loop_control:
     loop_var: line_item
-  when: pg_users|length > 0
+  when:
+    - not db_status.query_result[0].pg_is_in_recovery
+    - pg_users|length > 0
