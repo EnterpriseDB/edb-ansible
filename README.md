@@ -151,6 +151,12 @@ Setting up Barman server role.
 Configure Postgres backups with Barman.
 [README.md](./roles/setup_barman/README.md)
 
+### autotuning
+
+The autotuning role configures the system and Postgres instances for optimal
+performances. Most of the configuration values are calculated automatically
+from available resources found on the system.
+[README.md](./roles/autotuning/README.md)
 
 ## Pre-Requisites
 

@@ -15,7 +15,6 @@
         pg_type: "PG"          # Postgres type: EPAS/PG
         repo_username: "xxxx"   # EDB Repo username
         repo_password: "xxxx"   # EDB Repo password
-
   roles:
     - role: setup_repo
       when: "'setup_repo' in host_supported_roles"

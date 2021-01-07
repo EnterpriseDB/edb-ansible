@@ -20,21 +20,24 @@ GROUP_ROLES = {
         'install_dbserver',
         'init_dbserver',
         'manage_dbserver',
-        'setup_efm'
+        'setup_efm',
+        'autotuning'
     ],
     'standby': [
         'setup_repo',
         'install_dbserver',
         'setup_replication',
         'manage_dbserver',
-        'setup_efm'
+        'setup_efm',
+        'autotuning'
     ],
     'pemserver': [
         'setup_repo',
         'install_dbserver',
         'init_dbserver',
         'manage_dbserver',
-        'setup_pemserver'
+        'setup_pemserver',
+        'autotuning'
     ],
     'pgbouncer': [
         'setup_repo',

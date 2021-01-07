@@ -93,6 +93,24 @@
   when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
   become: yes
 
+- name: Populate service facts
+  service_facts:
+
+- name: Cleanup the efm lock file if exists
+  file:
+    path: "{{ edb_efm_lock_file }}"
+    state: absent
+  when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
+  become: yes
+
+- name: Try starting {{ efm_service }} if not started firs
+  systemd:
+    name: "{{ efm_service }}"
+    enabled: yes
+    state: started
+  when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
+  become: yes
+
 - name: Restart efm service
   systemd:
     name: "{{ efm_service }}"
