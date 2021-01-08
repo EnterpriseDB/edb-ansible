@@ -4,9 +4,8 @@
   become: yes
   gather_facts: yes
 
-  # When using collections
-  #collections:
-  #    - edb_devops.edb_postgres
+  collections:
+    - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -19,32 +18,32 @@
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in host_supported_roles"
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: install_dbserver
-      when: "'install_dbserver' in host_supported_roles"
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: init_dbserver
-      when: "'init_dbserver' in host_supported_roles"
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_replication
-      when: "'setup_replication' in host_supported_roles"
+      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_efm
-      when: "'setup_efm' in host_supported_roles"
+      when: "'setup_efm' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pgpool2
-      when: "'setup_pgpool2' in host_supported_roles"
+      when: "'setup_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: manage_pgpool2
-      when: "'manage_pgpool2' in host_supported_roles"
+      when: "'manage_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: manage_dbserver
-      when: "'manage_dbserver' in host_supported_roles"
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pemserver
-      when: "'setup_pemserver' in host_supported_roles"
+      when: "'setup_pemserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pemagent
-      when: "'setup_pemagent' in host_supported_roles"
+      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pgbouncer
-      when: "'setup_pgbouncer' in host_supported_roles"
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: manage_pgbouncer
-      when: "'manage_pgbouncer' in host_supported_roles"
+      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_barmanserver
-      when: "'setup_barmanserver' in host_supported_roles"
+      when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_barman
-      when: "'setup_barman' in host_supported_roles"
+      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: autotuning
-      when: "'autotuning' in host_supported_roles"
+      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles')"
