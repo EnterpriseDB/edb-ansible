@@ -2,7 +2,7 @@
 
 - name: Get Barman server informations
   set_fact:
-    _barman_server_info: "{{ lookup('barman_server', wantlist=True) }}"
+    _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
 
 - name: Fail if barman server informations are not found
   fail:
