@@ -48,7 +48,7 @@
 - name: Gather the host and information for /etc/hosts
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
   when: use_hostname
@@ -57,7 +57,7 @@
 - name: Get the primary information
   set_fact:
     primary_public_ip: "{{ node.ansible_host }}"
-  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
   when:  node.node_type == 'primary'
@@ -65,7 +65,7 @@
 
 - name: Prepare host ip lists based on allow_node_ips
   include_tasks: prepare_hba_value_list.yml
-  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
   no_log: "{{ disable_logging }}"
@@ -73,7 +73,7 @@
 - name: Prepare synchronous_standby_names
   set_fact:
     synchronous_standbys: "{{ synchronous_standbys + [ node.inventory_hostname ] }}"
-  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
   when:
