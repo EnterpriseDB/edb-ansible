@@ -216,6 +216,8 @@ By default the location of your installed collection is:
 
 ### Downloading the `edb-ansible` repository source code from the repository in GitHub
 
+This method requires to have the `ansible-galaxy` tool installed.
+
 Downloading the code from the repository can be accomplished by following the
 steps below:
 
@@ -227,20 +229,10 @@ After the code has been downloaded, the code will be available as a zip file
 which requires being unzipped to your desired target destination.
 
 After the code has been unzipped, you must go to root folder
-`edb-ansible-master`, and build the collection with the `ansible-galaxy` tool
-by entering the command below:
+`edb-ansible-master`, and install the collection by entering the command below:
 
 ```bash
-$ EDB_ANSIBLE_VERSION=x.y.z make build
-```
-
-The environment variable `EDB_ANSIBLE_VERSION` defines the version of the
-collection, ex: `3.0.0`.
-
-After the collection has been built, you can install it with:
-
-```bash
-$ ansible-galaxy collection install edb_devops-edb_postgres-x.y.z.tar.gz
+$ make install
 ```
 
 This approach automatically makes the `edb_postgres` collection available to
@@ -254,6 +246,8 @@ By default the location of your installed collection is:
 `~/.ansible/collections/ansible_collections`
 
 ### Cloning the `edb-ansible` repository source code from the repository GitHub
+
+This method requires to have the `ansible-galaxy` tool installed.
 
 Downloading the code from the repository can be accomplished by following the
 steps below:
@@ -271,20 +265,10 @@ You can access the root folder of the repository by entering the command below:
 $ cd edb-ansible
 ```
 
-You can build the collection with the `ansible-galaxy` tool by entering the
-command below:
+You can install the collection by entering the command below:
 
 ```bash
-$ EDB_ANSIBLE_VERSION=x.y.z make build
-```
-
-The environment variable `EDB_ANSIBLE_VERSION` defines the version of the
-collection, ex: `3.0.0`.
-
-After the collection has been built, you can install it with:
-
-```bash
-$ ansible-galaxy collection install edb_devops-edb_postgres-x.y.z.tar.gz
+$ make install
 ```
 
 This approach automatically makes the `edb_postgres` collection available to
