@@ -103,9 +103,8 @@ Below is an example of how to include the `setup_efm` role:
   become: true
   gather_facts: yes
 
-  # When using collections
-  #collections:
-  #  - edb_devops.postgres
+  collections:
+    - edb_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
