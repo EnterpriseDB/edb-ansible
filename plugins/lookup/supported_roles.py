@@ -93,7 +93,7 @@ class LookupModule(LookupBase):
             # Special case for the primary or standby nodes when the
             # host variable pem_agent is set to true.
             if (group in ['primary', 'standby']
-                    and myvars['hostvars'][hostname].get('pem', False)):
+                    and myvars['hostvars'][hostname].get('pem_agent', False)):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_pemagent'])
