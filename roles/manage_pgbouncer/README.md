@@ -155,8 +155,8 @@ Below is an example of how to include the `manage_pgbouncer` role:
   gather_facts: yes
 
   # When using collections
-  #collections:
-  #  - edb_devops.edb_postgres
+  collections:
+    - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -196,7 +196,7 @@ Below is an example of how to include the `manage_pgbouncer` role:
       # Ensure to execute this role only on hosts from the pgbouncer group, or,
       # from the primary and standby groups having the 'pgbouncer' inventory
       # host var is set to true.
-      when: "'manage_pgbouncer' in host_supported_roles"
+      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.

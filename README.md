@@ -216,6 +216,8 @@ By default the location of your installed collection is:
 
 ### Downloading the `edb-ansible` repository source code from the repository in GitHub
 
+This method requires to have the `ansible-galaxy` tool installed.
+
 Downloading the code from the repository can be accomplished by following the
 steps below:
 
@@ -226,10 +228,26 @@ steps below:
 After the code has been downloaded, the code will be available as a zip file
 which requires being unzipped to your desired target destination.
 
-**WARNING**: This approach does not automatically make the `edb_postgres`
-collection available to your playbooks.
+After the code has been unzipped, you must go to root folder
+`edb-ansible-master`, and install the collection by entering the command below:
+
+```bash
+$ make install
+```
+
+This approach automatically makes the `edb_postgres` collection available to
+your playbooks.
+
+A message indicating where the collection is installed will be displayed by
+ansible-galaxy. The collection code should be automatically made readily
+available for you.
+
+By default the location of your installed collection is:
+`~/.ansible/collections/ansible_collections`
 
 ### Cloning the `edb-ansible` repository source code from the repository GitHub
+
+This method requires to have the `ansible-galaxy` tool installed.
 
 Downloading the code from the repository can be accomplished by following the
 steps below:
@@ -247,8 +265,21 @@ You can access the root folder of the repository by entering the command below:
 $ cd edb-ansible
 ```
 
-**WARNING**: This approach does not automatically make the `edb_postgres`
-collection available to your playbooks.
+You can install the collection by entering the command below:
+
+```bash
+$ make install
+```
+
+This approach automatically makes the `edb_postgres` collection available to
+your playbooks.
+
+A message indicating where the collection is installed will be displayed by
+ansible-galaxy. The collection code should be automatically made readily
+available for you.
+
+By default the location of your installed collection is:
+`~/.ansible/collections/ansible_collections`
 
 ## Inventory file content
 
@@ -300,9 +331,8 @@ playbook:
   become: yes
   gather_facts: yes
 
-  # When using collections
-  #collections:
-  #    - edb_devops.edb_postgres
+  collections:
+    - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -315,29 +345,35 @@ playbook:
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in host_supported_roles"
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: install_dbserver
-      when: "'install_dbserver' in host_supported_roles"
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: init_dbserver
-      when: "'init_dbserver' in host_supported_roles"
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_replication
-      when: "'setup_replication' in host_supported_roles"
+      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_efm
-      when: "'setup_efm' in host_supported_roles"
+      when: "'setup_efm' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pgpool2
-      when: "'setup_pgpool2' in host_supported_roles"
+      when: "'setup_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: manage_pgpool2
-      when: "'manage_pgpool2' in host_supported_roles"
+      when: "'manage_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: manage_dbserver
-      when: "'manage_dbserver' in host_supported_roles"
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pemserver
-      when: "'setup_pemserver' in host_supported_roles"
+      when: "'setup_pemserver' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pemagent
-      when: "'setup_pemagent' in host_supported_roles"
+      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: setup_pgbouncer
-      when: "'setup_pgbouncer' in host_supported_roles"
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
     - role: manage_pgbouncer
-      when: "'manage_pgbouncer' in host_supported_roles"```
+      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
+    - role: setup_barmanserver
+      when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles')"
+    - role: setup_barman
+      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles')"
+    - role: autotuning
+      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles')"
 ```
 
 You can customize the above example to install Postgres, EPAS, EFM or PEM or

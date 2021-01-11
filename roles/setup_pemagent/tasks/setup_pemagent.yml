@@ -25,7 +25,7 @@
 
 - name: Get PEM server informations
   set_fact:
-    pem_server_info: "{{ lookup('pem_server', wantlist=True) }}"
+    pem_server_info: "{{ lookup('edb_devops.edb_postgres.pem_server', wantlist=True) }}"
 
 - name: Set pem_server_exists
   set_fact:
@@ -46,7 +46,7 @@
 - name: Gather the SR cluster nodes host and information for /etc/hosts
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
   when: use_hostname

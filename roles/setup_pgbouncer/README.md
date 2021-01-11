@@ -12,18 +12,6 @@ Following are the requirements of this role.
 
 ## Role Variables
 
-When executing the role via ansible these are the required variables:
-
-  * ***os***
-
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7 and RHEL8
-
-The rest of the variables can be configured and are available in the:
-
-  * [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
-
-Below is the documentation of the rest of the variables:
-
 ### `pgbouncer_listen_port`
 
 Which port to listen on. Applies to both TCP and Unix sockets. Default: `6432`
@@ -280,9 +268,8 @@ Below is an example of how to include the `setup_pgbouncer` role:
   become: true
   gather_facts: yes
 
-  # When using collections
-  #collections:
-  #  - edb_devops.edb_postgres
+  collections:
+    - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -295,7 +282,7 @@ Below is an example of how to include the `setup_pgbouncer` role:
       # Ensure to execute this role only on hosts from the pgbouncer group, or,
       # from the primary and standby groups having the 'pgbouncer' inventory
       # host var is set to true.
-      when: "'setup_pgbouncer' in host_supported_roles"
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
