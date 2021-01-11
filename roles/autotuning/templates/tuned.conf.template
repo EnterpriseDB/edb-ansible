@@ -8,8 +8,10 @@ min_perf_pct=100
 readahead=>4096
 elevator={{ tuned_disk_elevator }}
 [sysctl]
+{% if 'pemserver' not in group_names %}
 vm.overcommit_memory=2
 vm.swappiness=1
+{% endif %}
 vm.dirty_ratio=30
 vm.dirty_background_ratio=10
 [vm]
