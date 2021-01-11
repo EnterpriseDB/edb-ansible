@@ -8,7 +8,7 @@
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
     - node.private_ip == hostvars[inventory_hostname].upstream_node_private_ip
     - not use_hostname
-  loop: "{{ lookup('pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
 

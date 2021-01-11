@@ -52,7 +52,7 @@
 - name: Build the list of Postgres backends
   set_fact:
     pgpool2_backends: "{{ pgpool2_backends }} + [ '{{ server.ansible_host }}' ]"
-  loop: "{{ lookup('pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
   loop_control:
     loop_var: server
 
@@ -61,7 +61,7 @@
     pgpool2_primary_public_ip: "{{ server.ansible_host }}"
   when:
     - server.node_type == 'primary'
-  loop: "{{ lookup('pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
   loop_control:
     loop_var: server
 
@@ -108,7 +108,7 @@
     file: pgpool2_configure_backend_pg_hba.yml
     apply:
       delegate_to: "{{ server.ansible_host }}"
-  loop: "{{ lookup('pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
   loop_control:
     loop_var: server
   when:

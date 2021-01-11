@@ -45,7 +45,7 @@
 - name: Gather the host and information for /etc/hosts
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('pem_agents', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pem_agents', wantlist=True) }}"
   loop_control:
     loop_var: node
   when: use_hostname

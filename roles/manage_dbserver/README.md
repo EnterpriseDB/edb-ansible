@@ -197,9 +197,8 @@ Below is an example of how to include the `manage_dbserver` role:
   become: yes
   gather_facts: yes
 
-  # When using collections
-  #collections:
-  #  - edb_devops.edb_postgres
+  collections:
+    - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
