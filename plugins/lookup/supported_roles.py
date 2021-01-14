@@ -24,7 +24,6 @@ _value:
     - string
 """
 
-from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
 GROUP_ROLES = {
@@ -68,6 +67,7 @@ GROUP_ROLES = {
         'install_dbserver'
     ]
 }
+
 
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
