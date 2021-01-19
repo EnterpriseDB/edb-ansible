@@ -6,6 +6,7 @@
   set_fact:
     pgpool2_sr_check_password: >-
       {{ lookup('password', '/dev/null chars=ascii_letters,digits length=12') }}
+  run_once: true
   when:
     - pgpool2_sr_check_password|length == 0
 
@@ -21,6 +22,7 @@
       - name: "{{ pgpool2_sr_check_user }}"
         pass: "{{ pgpool2_sr_check_password }}"
         role_attr_flags: login
+  run_once: true
   when:
     - pgpool2_primary_public_ip is defined
     - pgpool2_primary_public_ip|length > 0
