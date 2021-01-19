@@ -8,7 +8,7 @@
           'users': 'barman',
           'databases': 'postgres',
           'contype': 'hostssl',
-          'source': '{{ hostvars[ansible_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
+          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
         }
       ]
 
@@ -20,11 +20,11 @@
           'users': 'barman',
           'databases': 'replication',
           'contype': 'hostssl',
-          'source': '{{ hostvars[ansible_hostname].barman_server_private_ip }}/32'
+          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
         }
       ]
   when:
-    - hostvars[ansible_hostname].barman_server_private_ip is defined
+    - hostvars[inventory_hostname].barman_server_private_ip is defined
     - barman_backup_method == 'postgres'
 
 - name: Allow access from the barman server
