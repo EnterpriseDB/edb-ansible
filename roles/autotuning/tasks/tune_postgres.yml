@@ -66,10 +66,12 @@
       {{ [ _sys_nvcpus | int * 4, 100 ] | max }}
 
 # Set the shared_buffers value to: LEAST(Total RAM / 2, 10GB)
+# Note: we reduce it to LEAST(Total RAM / 3, 10GB) for being less aggressive
+# on systems without swap space.
 - name: Set the variable _pg_shared_buffers_mb
   set_fact:
     _pg_shared_buffers_mb: >-
-      {{ [ (_sys_memtotal_mb | int / 2) | int, 10 * 1024 ] | min }}
+      {{ [ (_sys_memtotal_mb | int / 3) | int, 10 * 1024 ] | min }}
 
 # Set the work_mem value to: ((Total RAM - shared_buffers)/(16 x CPU cores))
 - name: Set the variable _pg_work_mem_mb

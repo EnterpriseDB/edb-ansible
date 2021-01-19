@@ -20,8 +20,8 @@
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0600
-    line: "{{ hostvars[ansible_hostname].private_ip }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
-    regexp: "^{{ hostvars[ansible_hostname].private_ip | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
+    line: "{{ hostvars[inventory_hostname].private_ip }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
+    regexp: "^{{ hostvars[inventory_hostname].private_ip | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
     create: yes
   delegate_to: "{{ _barman_server_public_ip }}"
   become: yes

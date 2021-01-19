@@ -282,7 +282,7 @@ Below is an example of how to include the `setup_pgbouncer` role:
       # Ensure to execute this role only on hosts from the pgbouncer group, or,
       # from the primary and standby groups having the 'pgbouncer' inventory
       # host var is set to true.
-      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
