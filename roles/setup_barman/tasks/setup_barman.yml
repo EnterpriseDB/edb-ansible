@@ -6,7 +6,7 @@
 
 - name: Set barman_backup_method
   set_fact:
-    barman_backup_method: "{{ hostvars[ansible_hostname].barman_backup_method | default('rsync') }}"
+    barman_backup_method: "{{ hostvars[inventory_hostname].barman_backup_method | default('rsync') }}"
 
 - name: Check barman_backup_method value
   fail:

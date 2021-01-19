@@ -30,6 +30,6 @@
       - name: archive_mode
         value: "on"
       - name: archive_command
-        value: "barman-wal-archive {{ hostvars[ansible_hostname].barman_server_private_ip }} {{ ansible_hostname }} %p"
+        value: "barman-wal-archive {{ hostvars[inventory_hostname].barman_server_private_ip }} {{ inventory_hostname }} %p"
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'rsync'

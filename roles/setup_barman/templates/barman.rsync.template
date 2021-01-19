@@ -1,8 +1,8 @@
-[{{ ansible_hostname }}]
+[{{ inventory_hostname }}]
 path_prefix = "{{ pg_bin_path }}"
-description =  "{{ ansible_hostname }}"
-conninfo = host={{ hostvars[ansible_hostname].private_ip }} user={{ barman_pg_user }} dbname=postgres port={{ pg_port }}
-ssh_command = ssh {{ pg_owner }}@{{ hostvars[ansible_hostname].private_ip }}
+description =  "{{ inventory_hostname }}"
+conninfo = host={{ hostvars[inventory_hostname].private_ip }} user={{ barman_pg_user }} dbname=postgres port={{ pg_port }}
+ssh_command = ssh {{ pg_owner }}@{{ hostvars[inventory_hostname].private_ip }}
 backup_method = rsync
 parallel_jobs = 1
 reuse_backup = link

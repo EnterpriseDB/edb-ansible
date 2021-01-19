@@ -144,7 +144,7 @@ Below is an example of how to include the `setup_barman` role:
 
   roles:
     - setup_barman
-      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
