@@ -345,35 +345,35 @@ playbook:
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: install_dbserver
-      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
-      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_replication
-      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_efm
-      when: "'setup_efm' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_efm' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pgpool2
-      when: "'setup_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: manage_pgpool2
-      when: "'manage_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'manage_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: manage_dbserver
-      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pemserver
-      when: "'setup_pemserver' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_pemserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pemagent
-      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pgbouncer
-      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: manage_pgbouncer
-      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_barmanserver
-      when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_barman
-      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: autotuning
-      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
