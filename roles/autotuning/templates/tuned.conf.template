@@ -10,6 +10,7 @@ elevator={{ tuned_disk_elevator }}
 [sysctl]
 {% if 'pemserver' not in group_names %}
 vm.overcommit_memory=2
+vm.overcommit_ratio={{ vm_overcommit_ratio }}
 vm.swappiness=1
 {% endif %}
 vm.dirty_ratio=30
