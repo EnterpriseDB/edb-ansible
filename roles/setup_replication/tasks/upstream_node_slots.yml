@@ -10,6 +10,7 @@
           password: "{{ pg_replication_user_password }}"
           create: yes
   no_log: "{{ disable_logging }}"
+  run_once: true
 
 - name: Update primary hba config
   include_role:
@@ -18,6 +19,7 @@
   vars:
     pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
   no_log: "{{ disable_logging }}"
+  run_once: true
 
 - name: Create physical slots of the standbys
   include_role:
