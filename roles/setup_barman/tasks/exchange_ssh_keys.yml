@@ -56,7 +56,7 @@
     create: yes
 
 - name: Run ssh-keyscan from the Barman server
-  command: ssh-keyscan {{ hostvars[ansible_hostname].private_ip }}
+  command: ssh-keyscan {{ hostvars[inventory_hostname].private_ip }}
   register: _barman_ssh_keyscan_output
   delegate_to: "{{ _barman_server_public_ip }}"
   become: yes
@@ -65,7 +65,7 @@
 - name: Add {{ pg_owner }} SSH public key into barman server known hosts
   known_hosts:
     path: "{{ barman_home + '/.ssh/known_hosts' }}"
-    name: "{{ hostvars[ansible_hostname].private_ip }}"
+    name: "{{ hostvars[inventory_hostname].private_ip }}"
     key: "{{ _item }}"
   with_items: "{{ _barman_ssh_keyscan_output.stdout_lines }}"
   loop_control:
@@ -75,7 +75,7 @@
   no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the Postgres server
-  command: ssh-keyscan {{ hostvars[ansible_hostname].barman_server_private_ip }}
+  command: ssh-keyscan {{ hostvars[inventory_hostname].barman_server_private_ip }}
   register: _pg_ssh_keyscan_output
   become: yes
   changed_when: false
@@ -83,7 +83,7 @@
 - name: Add {{ barman_user }} SSH public key into Postgres server known hosts
   known_hosts:
     path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
-    name: "{{ hostvars[ansible_hostname].barman_server_private_ip }}"
+    name: "{{ hostvars[inventory_hostname].barman_server_private_ip }}"
     key: "{{ _item }}"
   with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
   loop_control:

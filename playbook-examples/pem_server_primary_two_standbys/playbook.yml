@@ -4,9 +4,8 @@
   become: yes
   gather_facts: yes
 
-  # When using collections
-  #collections:
-  #    - edb_devops.edb_postgres
+  collections:
+    - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -19,18 +18,18 @@
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in host_supported_roles"
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: install_dbserver
-      when: "'install_dbserver' in host_supported_roles"
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
-      when: "'init_dbserver' in host_supported_roles"
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: autotuning
-      when: "'autotuning' in host_supported_roles"
+      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_replication
-      when: "'setup_replication' in host_supported_roles"
+      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_efm
-      when: "'setup_efm' in host_supported_roles"
+      when: "'setup_efm' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pemserver
-      when: "'setup_pemserver' in host_supported_roles"
+      when: "'setup_pemserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pemagent
-      when: "'setup_pemagent' in host_supported_roles"
+      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

@@ -29,8 +29,6 @@ _value:
     - dict: node_type, hostname, ansible_host (public IP address), private_ip
 """
 
-from ansible.errors import AnsibleError
-from ansible.inventory.manager import InventoryManager
 from ansible.plugins.lookup import LookupBase
 
 

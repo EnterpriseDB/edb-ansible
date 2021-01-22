@@ -112,7 +112,7 @@ Below is an example of how to include the `setup_pemagent` role:
     - role: setup_pemagent
       # Ensure to execute this role only on the hosts from the primary and
       # standby groups having the 'pem_agent' host var set to true.
-      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles')"
+      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.

@@ -33,7 +33,6 @@ _value:
 """
 
 from ansible.errors import AnsibleError
-from ansible.inventory.manager import InventoryManager
 from ansible.plugins.lookup import LookupBase
 
 
@@ -113,7 +112,7 @@ class LookupModule(LookupBase):
                 raise AnsibleError(
                     "Inventory error with the following standbys nodes %s. "
                     "Upstream node is not configured or not found"
-                     % [s for s in pg_standbys.keys()]
+                    % [s for s in pg_standbys.keys()]
                 )
 
             pg_standbys_len = len(pg_standbys.keys())
