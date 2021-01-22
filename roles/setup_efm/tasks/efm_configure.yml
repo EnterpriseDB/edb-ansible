@@ -54,6 +54,13 @@
     - (pg_version|int > 11 and pg_type == "EPAS") or (pg_version|int > 12 and pg_type == "PG")
     - efm_version|int > 3.10
 
+- name: Add the efm_parameters with initial efm.properties
+  set_fact:
+    efm_node_parameters: "{{ efm_node_parameters + efm_parameters }}"
+  when:
+    - not stat_efm_properties.stat.exists
+    - efm_parameters|length > 0
+
 - name: Update efm efm.properties file
   lineinfile:
     path: "{{ efm_properties }}"
