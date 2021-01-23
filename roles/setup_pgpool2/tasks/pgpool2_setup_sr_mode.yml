@@ -1,0 +1,71 @@
+---
+# Configure pgpoolII SR checking and master_slave_mode
+
+# Build random password for pgpool2_sr_user if needed
+- name: Build random password for pgpool2_sr_user
+  set_fact:
+    pgpool2_sr_check_password: >-
+      {{ lookup('password', '/dev/null chars=ascii_letters,digits length=12') }}
+  run_once: true
+  when:
+    - pgpool2_sr_check_password|length == 0
+
+# Create pgpool2_sr_user Postgres user on the primary node
+- name: Create pgpoolII SR check role on Postgres primary node
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+    apply:
+      delegate_to: "{{ pgpool2_primary_public_ip }}"
+  vars:
+    pg_users:
+      - name: "{{ pgpool2_sr_check_user }}"
+        pass: "{{ pgpool2_sr_check_password }}"
+        role_attr_flags: login
+  run_once: true
+  when:
+    - pgpool2_primary_public_ip is defined
+    - pgpool2_primary_public_ip|length > 0
+
+- name: Build pgpoolII SR configuration
+  set_fact:
+    pgpool2_sr_configuration: >-
+      [
+        {
+          'key': 'master_slave_mode',
+          'value': 'on',
+          'state': 'present',
+          'quoted': false
+        },
+        {
+          'key': 'master_slave_sub_mode',
+          'value': 'stream',
+          'state': 'present',
+          'quoted': false
+        },
+        {
+          'key': 'sr_check_period',
+          'value': 1,
+          'state': 'present',
+          'quoted': false
+        },
+        {
+          'key': 'sr_check_user',
+          'value': '{{ pgpool2_sr_check_user }}',
+          'state': 'present',
+          'quoted': true
+        },
+        {
+          'key': 'sr_check_password',
+          'value': '{{ pgpool2_sr_check_password }}',
+          'state': 'present',
+          'quoted': true
+        }
+      ]
+
+# Apply configuration changes
+- include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_configuration
+  vars:
+    pgpool2_configuration_lines: "{{ pgpool2_sr_configuration }}"

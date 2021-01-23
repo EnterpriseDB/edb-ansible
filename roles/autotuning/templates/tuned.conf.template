@@ -1,0 +1,19 @@
+[main]
+summary=Tuned profile for EPAS / PostgreSQL
+[cpu]
+governor=performance
+energy_perf_bias=performance
+min_perf_pct=100
+[disk]
+readahead=>4096
+elevator={{ tuned_disk_elevator }}
+[sysctl]
+{% if 'pemserver' not in group_names %}
+vm.overcommit_memory=2
+vm.overcommit_ratio={{ vm_overcommit_ratio }}
+vm.swappiness=1
+{% endif %}
+vm.dirty_ratio=30
+vm.dirty_background_ratio=10
+[vm]
+transparent_hugepages=never

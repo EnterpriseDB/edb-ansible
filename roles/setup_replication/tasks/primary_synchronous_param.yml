@@ -20,3 +20,4 @@
          - name: synchronous_standby_names
            value: "{{ synchronous_standby_names }}"
   when: synchronous_standby_names|length > 0
+  no_log: "{{ disable_logging }}"

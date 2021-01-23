@@ -1,0 +1,9 @@
+---
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxxx.xxxx.xxx.xxx
+          hostname: primary

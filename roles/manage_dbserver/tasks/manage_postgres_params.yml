@@ -13,6 +13,7 @@
   become_user: "{{ pg_owner }}"
   loop_control:
     loop_var: line_item
+  no_log: "{{ disable_logging }}"
   register: params
 
 - name: Register the restart requirements
@@ -24,6 +25,7 @@
   with_items: "{{ params.results }}"
   loop_control:
     loop_var: line_item
+  no_log: "{{ disable_logging }}"
 
 - name: Reload the pg service
   systemd:
@@ -36,6 +38,23 @@
     - params.changed
     - not params_restart_required
 
+- name: Gather services facts
+  service_facts:
+
+- name: Stop failover manager service if exists
+  systemd:
+    name: "{{ efm_service }}"
+    state: stopped
+  when:
+    - ansible_facts.services[efm_service + '.service'] is defined
+    - ansible_facts.services[efm_service + '.service'].state == 'running'
+    - ansible_facts.services[efm_service + '.service'].status == 'enabled'
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - params_restart_required is defined
+    - params_restart_required
+  become: yes
+
 - name: Restart the pg service
   systemd:
     name: "{{ pg_service }}"
@@ -47,6 +66,20 @@
     - params.changed
     - params_restart_required is defined
     - params_restart_required
+
+- name: Start failover manager service if exists
+  systemd:
+    name: "{{ efm_service }}"
+    state: started
+  when:
+    - ansible_facts.services[efm_service + '.service'] is defined
+    - ansible_facts.services[efm_service + '.service'].state == 'running'
+    - ansible_facts.services[efm_service + '.service'].status == 'enabled'
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - params_restart_required is defined
+    - params_restart_required
+  become: yes
 
 - name: Reset the restart_required
   set_fact:

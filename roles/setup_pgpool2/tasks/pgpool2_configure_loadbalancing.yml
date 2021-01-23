@@ -1,0 +1,20 @@
+---
+# Tasks for setting up pgpool2 load balancing
+- name: Enable load balance mode
+  set_fact:
+    pgpool2_lb_configuration: >-
+      [
+        {
+          'key': 'load_balance_mode',
+          'value': 'on',
+          'state': 'present',
+          'quoted': false
+        }
+      ]
+
+# Apply configuration changes
+- include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_configuration
+  vars:
+    pgpool2_configuration_lines: "{{ pgpool2_lb_configuration }}"

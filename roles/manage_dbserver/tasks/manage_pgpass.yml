@@ -10,7 +10,7 @@
     group: "{{ pg_owner }}"
     mode: "0600"
   when: pg_pgpass_values|length > 0
-  no_log: yes
+  no_log: "{{ disable_logging }}"
   with_items: "{{ pg_pgpass_values }}"
   loop_control:
     loop_var: line_item

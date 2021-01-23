@@ -1,0 +1,13 @@
+---
+# Restart pgpoolII service and wait for a few seconds
+- name: Restart pgpoolII service
+  systemd:
+    name: "{{ pgpool2_service_name }}"
+    state: restarted
+  become: yes
+
+- name: Wait for port {{ pgpool2_port }}
+  wait_for:
+    host: 0.0.0.0
+    port: "{{ pgpool2_port }}"
+    state: started

@@ -5,6 +5,7 @@ pg_type: PG
 pg_version: 12
 pg_ssl: true
 
+disable_logging: yes
 force_initdb: false
 use_hostname: false
 
@@ -68,7 +69,3 @@ supported_pg_version:
   - 11
   - 12
   - 13
-
-supported_node_type:
-  - primary
-  - pemserver

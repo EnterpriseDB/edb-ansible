@@ -14,14 +14,14 @@
 
 - name: Check if we have efm_witness or not
   set_fact:
-    efm_witness: "{{ 'true' if (item.value.node_type == 'witness') else 'false' }}"
+    efm_witness: "{{ 'true' if ('witness' in group_names) else 'false' }}"
 
 - name: Prepare the necessary parameters
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ item.value.private_ip }}:7800"}
-        - { name: application.name, value: "{{ item.key }}" }
+        - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:{{ efm_port }}"}
+        - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: not use_hostname
 
@@ -29,22 +29,37 @@
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ item.value.hostname }}:7800"}
-        - { name: application.name, value: "{{ item.key }}" }
+        - { name: bind.address, value: "{{ hostvars[inventory_hostname].hostname }}:{{ efm_port }}"}
+        - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: use_hostname
 
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
+  when: hostvars[inventory_hostname].upstream_node_private_ip is not defined
+        or hostvars[inventory_hostname].upstream_node_private_ip == primary_private_ip
+
+- name: Prepare final parameters list
+  set_fact:
+    efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters + efm_cascaded_replica_param }}"
+  when:
+    - hostvars[inventory_hostname].upstream_node_private_ip is defined
+    - hostvars[inventory_hostname].upstream_node_private_ip != primary_private_ip
 
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_node_parameters + efm_physical_slot_param }}"
   when:
-    - pg_version|int > 11
-    - pg_type == "EPAS"
+    - (pg_version|int > 11 and pg_type == "EPAS") or (pg_version|int > 12 and pg_type == "PG")
     - efm_version|int > 3.10
+
+- name: Add the efm_parameters with initial efm.properties
+  set_fact:
+    efm_node_parameters: "{{ efm_node_parameters + efm_parameters }}"
+  when:
+    - not stat_efm_properties.stat.exists
+    - efm_parameters|length > 0
 
 - name: Update efm efm.properties file
   lineinfile:
@@ -56,6 +71,7 @@
   loop_control:
    loop_var: line_item
   become: yes
+  no_log: "{{ disable_logging }}"
   register: properties_changes
 
 - name: Start efm service
@@ -65,10 +81,30 @@
     state: started
   become: yes
 
+- name: Populate service facts
+  service_facts:
+
+- name: Cleanup the efm lock file if exists
+  file:
+    path: "{{ edb_efm_lock_file }}"
+    state: absent
+  when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
+  become: yes
+
+- name: Try starting {{ efm_service }} if not started firs
+  systemd:
+    name: "{{ efm_service }}"
+    enabled: yes
+    state: started
+  when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
+  become: yes
+
 - name: Restart efm service
   systemd:
     name: "{{ efm_service }}"
     enabled: yes
     state: restarted
   become: yes
-  when: efm_nodes_update.changed
+  when:
+    - efm_nodes_update.changed
+    - efm_service_file.stat.exists

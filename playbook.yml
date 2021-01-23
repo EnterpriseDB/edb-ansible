@@ -1,33 +1,49 @@
 ---
-- hosts: localhost
-  name: Configure Postgres SQL Replication on Instances
-  #connection: local
-  become: true
-  gather_facts: no
+- hosts: all
+  name: Postgres deployement playbook
+  become: yes
+  gather_facts: yes
 
-  # When using collections
-  #collections:
-  #    - edb_devops.edb_postgres
-
-  vars_files:
-    - hosts.yml
+  collections:
+    - edb_devops.edb_postgres
 
   pre_tasks:
-      - name: Initialize the user defined variables
-        set_fact:
-            os: "CentOS7"
-            pg_version: 12
-            pg_type: "EPAS"
-            yum_username: ""
-            yum_password: ""
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 13
+        pg_type: "PG"
+        yum_username: ""
+        yum_password: ""
+        disable_logging: false
 
   roles:
-    - setup_repo
-    - install_dbserver
-    - init_dbserver
-    - setup_replication
-    - setup_efm
-    - setup_pem
-    - manage_dbserver
-    - setup_pgbouncer
-    - manage_pgbouncer_databases
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: init_dbserver
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_replication
+      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_efm
+      when: "'setup_efm' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgpool2
+      when: "'setup_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_pgpool2
+      when: "'manage_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_dbserver
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pemserver
+      when: "'setup_pemserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pemagent
+      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgbouncer
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_pgbouncer
+      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_barmanserver
+      when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_barman
+      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: autotuning
+      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

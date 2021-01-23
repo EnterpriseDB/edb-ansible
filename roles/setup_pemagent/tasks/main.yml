@@ -1,0 +1,4 @@
+---
+# Entry point of the setup_pem role
+- name: Include the setup_pemagent.yml
+  include_tasks: setup_pemagent.yml

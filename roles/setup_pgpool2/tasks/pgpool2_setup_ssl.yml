@@ -1,0 +1,101 @@
+---
+# Tasks for setting up SSL mode for pgpoolII
+
+# Make sure the directory configured to contain SSL files exists
+- name: Create SSL directory {{ pgpool2_ssl_dir }}
+  file:
+    path: "{{ pgpool2_ssl_dir }}"
+    state: directory
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: 0700
+  become: yes
+
+- name: Check if the root CA certificate exists
+  stat:
+    path: "{{ pgpool2_ssl_dir }}/ca.crt"
+  become: yes
+  register: pgpool2_ssl_root_ca
+
+- name: Check if the server key exists
+  stat:
+    path: "{{ pgpool2_ssl_dir }}/server.key"
+  become: yes
+  register: pgpool2_ssl_server_key
+
+- name: Check if the server CRT exists
+  stat:
+    path: "{{ pgpool2_ssl_dir }}/server.crt"
+  become: yes
+  register: pgpool2_ssl_server_crt
+
+- name: Create root CA
+  shell:
+    cmd: >-
+      openssl req -new -x509 -days 365 -nodes \
+        -out {{ pgpool2_ssl_dir }}/ca.crt \
+        -keyout {{ pgpool2_ssl_dir }}/ca.key \
+        -subj "/CN=root-ca"
+  become: yes
+  become_user: "{{ pgpool2_user }}"
+  when: not pgpool2_ssl_root_ca.stat.exists
+
+- name: Create server key
+  command:
+    cmd: >-
+      openssl genrsa -out {{ pgpool2_ssl_dir }}/server.key
+  become: yes
+  become_user: "{{ pgpool2_user }}"
+  when: not pgpool2_ssl_server_key.stat.exists
+
+- name: Set tmp_dn
+  set_fact:
+    tmp_dn: "{{ pgpool2_ssl_csr_dn }}"
+
+- name: Create certificate request
+  shell:
+    cmd: >-
+      openssl req -new \
+        -key {{ pgpool2_ssl_dir }}/server.key \
+        -out {{ pgpool2_ssl_dir }}/server.csr \
+        -subj "/C={{ tmp_dn.C }}/L={{ tmp_dn.L }}/O={{ tmp_dn.O }}/CN={{ tmp_dn.CN }}/emailAddress={{ tmp_dn.EMAIL }}"
+  become: yes
+  become_user: "{{ pgpool2_user }}"
+  when: not pgpool2_ssl_server_key.stat.exists
+
+- name: Create the CA-signed server certificate
+  shell:
+    cmd: >-
+      openssl x509 -req \
+        -in {{ pgpool2_ssl_dir }}/server.csr \
+        -days 365 \
+        -CA {{ pgpool2_ssl_dir }}/ca.crt \
+        -CAkey {{ pgpool2_ssl_dir }}/ca.key \
+        -CAcreateserial \
+        -out {{ pgpool2_ssl_dir }}/server.crt
+  become: yes
+  become_user: "{{ pgpool2_user }}"
+  when: not pgpool2_ssl_server_crt.stat.exists
+
+# Apply configuration changes
+- include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_configuration
+  vars:
+    pgpool2_configuration_lines: >-
+      [
+        {
+          'key': 'ssl',
+          'value': 'on'
+        },
+        {
+          'key': 'ssl_key',
+          'value': '{{ pgpool2_ssl_dir }}/server.key',
+          'quoted': true
+        },
+        {
+          'key': 'ssl_cert',
+          'value': '{{ pgpool2_ssl_dir }}/server.crt',
+          'quoted': true
+        }
+      ]

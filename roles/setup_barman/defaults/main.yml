@@ -1,0 +1,13 @@
+---
+
+barman_cli_package: "barman-cli-2.12-1"
+
+barman_pg_user: "barman"
+
+pass_dir: "~/.edb"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8

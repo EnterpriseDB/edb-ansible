@@ -1,0 +1,4 @@
+---
+# Entry file of the setup_pemserver role
+- name: Include the setup_pemserver.yml
+  include_tasks: setup_pemserver.yml

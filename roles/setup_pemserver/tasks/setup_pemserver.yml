@@ -1,0 +1,86 @@
+---
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
+- name: Reference variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+- name: Gather service facts
+  service_facts:
+
+- name: Open PEM TCP port 8443
+  firewalld:
+    port: "8443/tcp"
+    permanent: yes
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: yes
+
+- name: Set the node_hostvars variable
+  set_fact:
+    node_hostvars: "{{ hostvars[inventory_hostname] }}"
+
+- name: Initialize etc_hosts_lists
+  set_fact:
+    etc_hosts_lists:
+      - "{{ node_hostvars.private_ip }} {{ node_hostvars.hostname | default(node_hostvars.ansible_hostname) }}"
+
+- name: Gather the host and information for /etc/hosts
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pem_agents', wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname
+
+- name: Update /etc/hosts based on use_hostname
+  block:
+    - import_tasks: linux_update_etc_hosts.yml
+  become: yes
+  when:
+    - use_hostname
+
+- name: Set force_pem_install based on the user input
+  set_fact:
+    force_pem_install: "{{ node_hostvars.force_pem_install }}"
+  when: node_hostvars.force_pem_install is defined
+  register: output
+
+- name: Remove pem server based on force_pem_install
+  block:
+    - import_tasks: rm_pem_server_install.yml
+  when: force_pem_install
+  become: yes
+
+- name: Install and configure pemserver
+  block:
+    - import_tasks: pem_server_user.yml
+    - import_tasks: pem_server_install.yml
+    - import_tasks: pem_server_config.yml
+    - import_tasks: pem_server_hba.yml
+  become: yes
+
+- name: Update pem probes and alerts
+  import_tasks: pem_server_probe_alert.yml
+
+- name: Reset the variables
+  set_fact:
+    etc_hosts_lists: []
+    node_hostvars:

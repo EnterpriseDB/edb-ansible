@@ -1,0 +1,22 @@
+---
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Include the tuned package installation tasks
+  include_tasks: install_tuned.yml
+
+- name: Include tuned setting up tasks
+  include_tasks: setup_tuned.yml
+
+- name: Include Postgres tuning tasks
+  include_tasks: tune_postgres.yml

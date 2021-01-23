@@ -44,3 +44,4 @@
       - name: sslutils
         database: "{{ pg_database }}"
         state: present
+  no_log: "{{ disable_logging }}"

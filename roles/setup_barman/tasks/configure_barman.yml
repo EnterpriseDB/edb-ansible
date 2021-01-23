@@ -1,0 +1,29 @@
+---
+
+- name: Get Barman server informations
+  set_fact:
+    _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
+
+- name: Fail if barman server informations are not found
+  fail:
+    msg: "Unable to find barman server informations"
+  when:
+    - _barman_server_info|length == 0
+
+- name: Set _barman_server_public_ip
+  set_fact:
+    _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
+
+- name: Ensure the barman configuration for the current host is present
+  template:
+    src: "./templates/barman.{{ barman_backup_method }}.template"
+    dest: "{{ barman_configuration_files_directory }}/{{ inventory_hostname }}.conf"
+    owner: "{{ barman_user }}"
+    group: "{{ barman_group }}"
+    mode: 0700
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: yes
+
+- name: Reset _barman_server_info
+  set_fact:
+    _barman_server_info: ""

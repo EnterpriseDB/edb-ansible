@@ -1,0 +1,39 @@
+---
+
+- name: Initialize the hba_entries variable
+  set_fact:
+    hba_entries: >-
+      [
+        {
+          'users': 'barman',
+          'databases': 'postgres',
+          'contype': 'hostssl',
+          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
+        }
+      ]
+
+- name: Add HBA rule for barman replication
+  set_fact:
+    hba_entries: >-
+      {{ hba_entries }} + [
+        {
+          'users': 'barman',
+          'databases': 'replication',
+          'contype': 'hostssl',
+          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
+        }
+      ]
+  when:
+    - hostvars[inventory_hostname].barman_server_private_ip is defined
+    - barman_backup_method == 'postgres'
+
+- name: Allow access from the barman server
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ hba_entries }}"
+
+- name: Reset hba_entries
+  set_fact:
+    hba_entries: []

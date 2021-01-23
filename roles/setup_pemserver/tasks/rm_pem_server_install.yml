@@ -1,0 +1,27 @@
+---
+
+- name: Stopped pemagent
+  systemd:
+    name: "{{ pem_agent_service }}"
+    daemon_reload: yes
+    state: stopped
+  become: yes
+  ignore_errors: yes
+
+- name: Remove pem ceritficate directory
+  file:
+    path: /root/.pem
+    state: absent
+  become: yes
+
+- name: Remove agent.cfg
+  file:
+    path: "{{ pem_agent_bin_path }}/../etc/agent.cfg"
+    state: absent
+  become: yes
+
+- name: Remove worker.log
+  file:
+    path: "/var/log/pem/worker.log"
+    state: absent
+  become: yes

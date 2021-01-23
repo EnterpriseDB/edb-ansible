@@ -1,10 +1,4 @@
 ---
-# tasks file for manage_dbserver
-
-- name: Reference EPAS Variables
-  include_vars: "{{ pg_type }}.yml"
-
-- name: Manage dbserver.yml
+# Entry point of the manage_dbserver role
+- name: Include the manage_dbserver.yml
   include_tasks: manage_dbserver.yml
-  when: item.value.node_type in supported_node_type
-  with_dict:  "{{ servers }}"

@@ -12,18 +12,6 @@ Following are the requirements of this role.
 
 ## Role Variables
 
-When executing the role via ansible these are the required variables:
-
-  * ***os***
-
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7 and RHEL8
-
-The rest of the variables can be configured and are available in the:
-
-  * [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
-
-Below is the documentation of the rest of the variables:
-
 ### `pgbouncer_listen_port`
 
 Which port to listen on. Applies to both TCP and Unix sockets. Default: `6432`
@@ -250,18 +238,24 @@ To deploy PgBouncer as a standalone application on a dedicated host,
 `node_type` should be set up to `pgbouncer`. When deploying PgBouncer alongside
 a Postgres instance, the key `pgbouncer` should be set up to `true`.
 
-`hosts.yml` content example:
+Content of the `inventory.yml` file:
 ```yaml
 ---
-servers:
-  pooler:
-    node_type: pgbouncer
-    public_ip: xxx.xxx.xxx.xxx
-  main:
-    node_type:  primary
-    public_ip: xxx.xxx.xxx.xxx
-    private_ip: xxx.xxx.xxx.xxx
-    pgbouncer: true
+all:
+  children:
+    # PgBouncer pooler instance on a dedicated host
+    pgbouncer:
+      hosts:
+        pooler1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          # Another PgBouncer pooler instance located on the PG host
+          pgbouncer: true
 ```
 
 ### How to include the `setup_pgbouncer` role in your Playbook
@@ -269,27 +263,33 @@ servers:
 Below is an example of how to include the `setup_pgbouncer` role:
 ```yaml
 ---
-- hosts: localhost
+- hosts: pgbouncer,primary,standby
   name: Setup PgBouncer connection pooler
   become: true
-  gather_facts: no
+  gather_facts: yes
 
   collections:
     - edb_devops.edb_postgres
 
-  vars_files:
-    - hosts.yml
-
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        os: "CentOS8"
         pg_version: 13
         pg_type: "PG"
 
   roles:
-    - setup_pgbouncer
+    - role: setup_pgbouncer
+      # Ensure to execute this role only on hosts from the pgbouncer group, or,
+      # from the primary and standby groups having the 'pgbouncer' inventory
+      # host var is set to true.
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
 ## License
 
@@ -302,4 +302,4 @@ Author:
   * Julien Tachoires
   * Vibhor Kumar (Reviewer)
   * EDB Postgres
-  * julien.tachoires@enterprisedb.com www.enterprisedb.com
+  * edb-devops@enterprisedb.com www.enterprisedb.com

@@ -1,0 +1,23 @@
+---
+- name: Manage PgBouncer databases entries in {{ pgbouncer_databases_file }}
+  lineinfile:
+    path: "{{ pgbouncer_databases_file }}"
+    line: >-
+      {{ db_item.dbname }} = {% if db_item.host is defined %}host={{ db_item.host }}{% endif %}
+      {% if db_item.port is defined %}port={{ db_item.port }}{% endif %}
+      {% if db_item.pool_size is defined %}pool_size={{ db_item.pool_size }}{% endif %}
+      {% if db_item.pool_mode is defined %}pool_mode={{ db_item.pool_mode }}{% endif %}
+      {% if db_item.max_db_connections is defined %}max_db_connections={{ db_item.max_db_connections }}{% endif %}
+      {% if db_item.reserve_pool is defined %}reserve_pool={{ db_item.reserve_pool }}{% endif %}
+    state: "{{ db_item.state | default('present') }}"
+  when: pgbouncer_databases_list|length > 0
+  with_items: "{{ pgbouncer_databases_list }}"
+  loop_control:
+    loop_var: db_item
+  become: yes
+
+- name: Reload PgBouncer configuration
+  shell:
+    cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
+  changed_when: false
+  become: yes

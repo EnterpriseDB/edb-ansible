@@ -26,10 +26,6 @@ The only dependency required for this ansible galaxy role is:
 
 When executing the role via ansible these are the required variables:
 
-  * ***os***
-
-  Operating Systems supported are: CentOS7, RHEL7, CentOS8 and RHEL8
-
   * ***pg_type***
 
   Database Engine supported are: PG and EPAS
@@ -52,22 +48,31 @@ The `setup_repo` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-Content of the `hosts.yml` file:    
+Content of the `inventory.yml` file:    
 
 ```yaml
 ---
-servers:
-  primary:
-    node_type: primary
-    public_ip: xxx.xxx.xxx.xxx
-  standby1:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
-  standby12:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: synchronous
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: asynchronous
 ```
 
 ### How to include the `setup_repo` role in your Playbook
@@ -76,36 +81,31 @@ Below is an example of how to include the `setup_repo` role:
 
 ```yaml
 ---
-- hosts: localhost
-  name: Setup and Configure Repos for package retrievals
-  become: true
-  gather_facts: no
+- hosts: all
+  name: Setup Postgres Repositories
+  become: yes
+  gather_facts: yes
 
   collections:
-    - edb_devops.postgres
-
-  vars_files:
-    - hosts.yml
+    - edb_devops.edb_postgres
 
   pre_tasks:
-    # Define or re-define any variables previously assigned
     - name: Initialize the user defined variables
       set_fact:
-        os: "CentOS7"
-        pg_type: "EPAS"
-        # Enter credentials below
-        yum_username: ""
-        yum_password: ""
+        pg_version: 13
+        pg_type: "PG"
+        yum_username: "xxxxxxxx"
+        yum_password: "xxxxxxxx"
 
   roles:
     - setup_repo
 ```
 
-Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  - [roles/setup_repo/defaults/main.yml](./defaults/main.yml) 
+  * [roles/setup_repo/defaults/main.yml](./defaults/main.yml)
 
 ## Database engines supported
 
@@ -158,4 +158,4 @@ Author:
   * Vibhor Kumar (Co-Author)
   * EDB Postgres 
   * DevOps 
-  * doug.ortiz@enterprisedb.com www.enterprisedb.com
+  * edb-devops@enterprisedb.com www.enterprisedb.com

@@ -1,0 +1,57 @@
+---
+# With vm.swapiness=1 and vm.overcommit_memory=2, vm.overcommit_ratio should
+# allow the system to use the entire memory available.
+#
+#                    RAM * vm.overcommit_ratio
+# Max Alloc = SWAP + -------------------------
+#                              100
+#
+# If we want to allow the system to allocate the entire memory (Max Alloc =
+# RAM), then, overcommit_ratio is calculated as below:
+#
+#                        RAM - SWAP
+# vm.overcommit_ratio = ------------ * 100
+#                           RAM
+#
+# We ensure a minimum value of 50. This is usefull for the case when the amount
+# of swap memory is ridiculous higher than the RAM size
+- name: Set vm_overcommit_ratio
+  set_fact:
+    vm_overcommit_ratio: >-
+      {{ [ ((ansible_memtotal_mb - ansible_swaptotal_mb) / ansible_memtotal_mb * 100) | int,
+           50 ] | max }}
+
+- name: Set the variable tuned_disk_elevator for CentOS/RHEL 7
+  set_fact:
+    tuned_disk_elevator: "deadline"
+  when:
+    - os in ['CentOS7', 'RHEL7']
+
+- name: Set the variable tuned_disk_elevator for CentOS/RHEL 8
+  set_fact:
+    tuned_disk_elevator: "mq-deadline"
+  when:
+    - os in ['CentOS8', 'RHEL8']
+
+- name: Ensure the tuned profile directory exists
+  file:
+    path: "{{ tuned_configuration_dir }}/{{ tuned_profile }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: 0700
+  become: yes
+
+- name: Ensure tuned profile configuration exists
+  template:
+    src: "tuned.conf.template"
+    dest: "{{ tuned_configuration_dir }}/{{ tuned_profile }}/tuned.conf"
+    owner: "root"
+    group: "root"
+    mode: 0600
+  become: true
+
+- name: Ensure tuned profile is active
+  command: tuned-adm profile {{ tuned_profile }}
+  become: true
+  changed_when: false

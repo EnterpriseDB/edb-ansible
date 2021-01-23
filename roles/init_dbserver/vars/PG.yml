@@ -1,15 +1,4 @@
 ---
-# postgres settings
-os: ""
-pg_type: PG
-pg_version: 12
-pg_ssl: true
-
-force_initdb: false
-use_hostname: false
-
-pass_dir: "~/.edb"
-
 pg_wal: ""
 pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
 pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"

@@ -1,0 +1,50 @@
+---
+# Default configuration values
+pgpool2_port: 9999
+pgpool2_listen_addresses: '*'
+pgpool2_pcp_port: 9898
+pgpool2_wd_port: 9000
+pgpool2_wd_heartbeat_port: 9694
+
+
+pgpool2_vip: ""
+pgpool2_vip_dev: ""
+pgpool2_watchdog: false
+
+# Enable load balancing
+pgpool2_load_balancing: true
+
+# Postgres user that pgpool2 will use to check Postgres nodes roles in load
+# balance mode
+pgpool2_sr_check_user: "pgpool2"
+# If empty or not defined, a random password will be generated
+pgpool2_sr_check_password: ""
+
+# Enable SSL
+pgpool2_ssl: true
+# Directory containing SSL keys and certs
+pgpool2_ssl_dir: ""
+
+pgpool2_ssl_csr_dn:
+  CN: "pgpool-server.fqdn"
+  O: ""
+  OU: ""
+  L: ""
+  ST: ""
+  C: ""
+  EMAIL: "example@mail.com"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13
+
+supported_pgpool2_version:
+  - 4.1

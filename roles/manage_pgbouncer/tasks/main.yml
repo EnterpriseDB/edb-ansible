@@ -1,0 +1,4 @@
+---
+# Entry point of the manage_pgbouncer role
+- name: Include the manage_pgbouncer.yml
+  include_tasks: manage_pgbouncer.yml

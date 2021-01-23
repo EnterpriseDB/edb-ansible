@@ -34,10 +34,6 @@ The only dependencies required for this ansible galaxy role are:
 
 When executing the role via ansible there are three required variables:
 
-  * ***os***
-
-  Operating Systems supported are: CentOS7 and RHEL7
-
   * ***pg_version***
 
   Postgres Versions supported are: 10, 11, 12 and 13
@@ -60,22 +56,42 @@ The `init_dbserver` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
-### Hosts file content
+### Inventory file content
 
-Content of the `hosts.yml` file:
+Content of the `inventory.yml` file:
 
 ```yaml
 ---
-servers:
-  main1:
-    node_type: primary
-    public_ip: xxx.xxx.xxx.xxx
-  standby11:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
-  standby12:
-    node_type: standby
-    public_ip: xxx.xxx.xxx.xxx
+all:
+  children:
+    pemserver:
+      hosts:
+        pemserver1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    primary:
+      hosts:
+        primary1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+    standby:
+      hosts:
+        standby1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: synchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: asynchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
 ```
 
 ### How to include the `init_dbserver` role in your Playbook
@@ -84,30 +100,32 @@ Below is an example of how to include the `init_dbserver` role:
 
 ```yaml
 ---
-- hosts: localhost
-  name: Initialize EPAS instances
-  become: true
-  gather_facts: no
+- hosts: primary,pemserver
+  name: Initialize Postgres instances
+  become: yes
+  gather_facts: yes
 
   collections:
-    - edb_devops.postgres
-
-  vars_files:
-    - hosts.yml
+    - edb_devops.edb_postgres
 
   pre_tasks:
-    # Define or re-define any variables previously assigned
     - name: Initialize the user defined variables
       set_fact:
-        os: "CentOS7"
-        pg_type: "EPAS"
-        pg_version: 12
+        pg_version: 13
+        pg_type: "PG"
 
   roles:
-    - init_dbserver
+    - initdb_dbserver
 ```
 
-Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+  * [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
+  * [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/init_dbserver/vars/PG.yml](./vars/PG.yml)
+  * [roles/init_dbserver/vars/edb-ssl.yml](./vars/edb-ssl.yml)
 
 ## Database engines supported
 
@@ -134,18 +152,20 @@ Defining and adding variables can be done in the `set_fact` of the `pre-tasks`.
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13 on CentOS7 hosts with the user centos
+# To deploy community Postgres version 13 with the user centos
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u centos \
   --private-key <key.pem> \
-  --extra-vars="os=CentOS7 pg_version=13 pg_type=PG"
+  --extra-vars="pg_version=13 pg_type=PG"
 ```
 ```bash
-# To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user
+# To deploy EPAS version 12 with the user ec2-user
 $ ansible-playbook playbook.yml \
+  -i inventory.yml \
   -u ec2-user \
   --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS"
+  --extra-vars="pg_version=12 pg_type=EPAS"
 ```
 
 ## License

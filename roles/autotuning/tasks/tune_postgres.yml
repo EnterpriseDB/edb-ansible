@@ -1,0 +1,144 @@
+---
+
+- name: Gather hardware informations
+  set_fact:
+    _sys_nvcpus: "{{ ansible_processor_vcpus }}"
+    # Convert from megibyte to megabyte
+    _sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
+
+- name: Gather Postgres settings
+  postgresql_info:
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    db: "{{ pg_database }}"
+    login_user: "{{ pg_owner }}"
+    filter:
+      - "settings"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
+  register: _pg_settings
+
+# Gather memory informations from /proc/meminfo for calculating the equivalent
+# of the column "buff/cache" from the "free" command.
+- name: Gather buffers memory size from /proc/meminfo
+  shell: >-
+    set -o pipefail && grep -E '^Buffers:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
+  register: _shell_output
+  become: yes
+  changed_when: false
+
+- name: Set the variable _sys_buffers_kb
+  set_fact:
+    _sys_buffers_kb: "{{ _shell_output.stdout | int }}"
+
+- name: Gather cached memory size from /proc/meminfo
+  shell: >-
+    set -o pipefail && grep -E '^Cached:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
+  register: _shell_output
+  become: yes
+  changed_when: false
+
+- name: Set the variable _sys_cached_kb
+  set_fact:
+    _sys_cached_kb: "{{ _shell_output.stdout | int }}"
+
+- name: Gather slab reclaimable size from /proc/meminfo
+  shell: >-
+    set -o pipefail && grep -E '^SReclaimable:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
+  register: _shell_output
+  become: yes
+  changed_when: false
+
+- name: Set the variable _sys_slab_reclaimable_kb
+  set_fact:
+    _sys_slab_reclaimable_kb: "{{ _shell_output.stdout | int }}"
+
+- name: Set the variable _sys_buffers_cached_mb
+  set_fact:
+    _sys_buffers_cached_mb: >-
+      {{ ((_sys_buffers_kb | int + _sys_cached_kb | int + _sys_slab_reclaimable_kb | int) / 1024) | round | int }}
+
+# Set the max_connections value to: GREATEST(4 x CPU cores, 100)
+- name: Set the variable _pg_max_connections
+  set_fact:
+    _pg_max_connections: >-
+      {{ [ _sys_nvcpus | int * 4, 100 ] | max }}
+
+# Set the shared_buffers value to: LEAST(Total RAM / 2, 10GB)
+# Note: we reduce it to LEAST(Total RAM / 3, 10GB) for being less aggressive
+# on systems without swap space.
+- name: Set the variable _pg_shared_buffers_mb
+  set_fact:
+    _pg_shared_buffers_mb: >-
+      {{ [ (_sys_memtotal_mb | int / 3) | int, 10 * 1024 ] | min }}
+
+# Set the work_mem value to: ((Total RAM - shared_buffers)/(16 x CPU cores))
+- name: Set the variable _pg_work_mem_mb
+  set_fact:
+    _pg_work_mem_mb: >-
+      {{ ((_sys_memtotal_mb | int - _pg_shared_buffers_mb | int) / (16 * _sys_nvcpus | int)) | round | int }}
+
+# Set the maintenance_work_mem_mb value to:
+# MAX(15% x (Total RAM - shared_buffers) / autovacuum_max_workers, 1GB)
+- name: Set the variable _pg_maintenance_work_mem_mb
+  set_fact:
+    _pg_maintenance_work_mem_mb: >-
+      {{
+        [
+          (
+            (_sys_memtotal_mb | int - _pg_shared_buffers_mb | int) * 15 / 100
+            / _pg_settings.settings.autovacuum_max_workers.setting | int
+          ) | round | int,
+          1024
+        ] | min
+      }}
+
+- name: Initialize the Postgres parameters list
+  set_fact:
+    _pg_postgres_conf_params:
+      - name: max_connections
+        value: "{{ _pg_max_connections }}"
+      - name: shared_buffers
+        value: "{{ _pg_shared_buffers_mb }}MB"
+      - name: work_mem
+        value: "{{ _pg_work_mem_mb }}MB"
+      - name: maintenance_work_mem
+        value: "{{ _pg_maintenance_work_mem_mb }}MB"
+      - name: wal_compression
+        value: "on"
+      - name: wal_log_hints
+        value: "on"
+      - name: wal_buffers
+        value: "64MB"
+      - name: checkpoint_timeout
+        value: "15min"
+      - name: checkpoint_completion_target
+        value: "0.9"
+      - name: effective_cache_size
+        value: "{{ _pg_shared_buffers_mb | int + _sys_buffers_cached_mb | int }}MB"
+      - name: cpu_tuple_cost
+        value: "0.03"
+      - name: autovacuum_max_workers
+        value: "5"
+      - name: autovacuum_vacuum_cost_limit
+        value: "3000"
+      - name: idle_in_transaction_session_timeout
+        value: "10min"
+
+- name: Configure parameters for SSD based disk usage
+  set_fact:
+    _pg_postgres_conf_params: >-
+      {{ _pg_postgres_conf_params + [
+        {'name': 'effective_io_concurrency', 'value': '200'},
+        {'name': 'random_page_cost', 'value': '1.1'},
+      ] }}
+  when: ssd_disk
+
+- name: Apply Postgres autotuning
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params: "{{ _pg_postgres_conf_params }}"
+  no_log: "{{ disable_logging }}"

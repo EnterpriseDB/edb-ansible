@@ -2,8 +2,9 @@
 # efm credentials
 os: ""
 pg_version: ""
-efm_version: 4.0 
+efm_version: 4.0
 
+disable_logging: true
 force_efm_install: false
 pass_dir: "~/.edb"
 use_hostname: false
@@ -18,8 +19,12 @@ efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
 # common variables require for the role
 etc_hosts_lists: []
 primary_public_ip: ""
+primary_private_ip: ""
 input_password: ""
 pg_allow_ip_addresses: []
+
+efm_port: 7800
+efm_admin_port: 7809
 
 efm_default_parameters:
   - { name: db.user, value: "{{ pg_efm_user }}"}
@@ -38,10 +43,14 @@ efm_default_parameters:
   - { name: local.timeout.final, value: "5" }
   - { name: remote.timeout, value: "5" }
   - { name: node.timeout, value: "5" }
+  - { name: amin.port, value: "{{ efm_admin_port }}" }
 
 efm_physical_slot_param:
   - { name: update.physical.slots.period, value: "5" }
 
+efm_cascaded_replica_param:
+  - { name: promotable, value: false }
+  - { name: auto.reconfigure, value: false }
 # example of efm_custom_parameters:
 # efm_parameters:
 #   - name: script.notification
@@ -74,9 +83,6 @@ supported_pg_version:
   - 13
 
 supported_efm_version:
+  - 4.1
   - 4.0
   - 3.10
-
-supported_node_type:
-  - primary
-  - standby

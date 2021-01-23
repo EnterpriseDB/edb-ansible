@@ -1,0 +1,4 @@
+---
+# Entry point of the manage_pgpool2 role
+- name: Include the manage_pgpool2.yml
+  include_tasks: manage_pgpool2.yml
