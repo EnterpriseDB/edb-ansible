@@ -18,7 +18,7 @@
 #  make install
 
 DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-EDB_ANSIBLE_VERSION ?= $(shell cat $(DIR)/VERSION)
+EDB_ANSIBLE_VERSION ?= $(shell cat $(DIR)/VERSION | head -n 1)
 
 build:
 	sed -E 's/version:.*/version: "$(EDB_ANSIBLE_VERSION)"/g' $(DIR)/galaxy.template.yml > $(DIR)/galaxy.yml
