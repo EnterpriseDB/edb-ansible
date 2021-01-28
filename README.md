@@ -420,7 +420,7 @@ $ ansible-playbook playbook.yml \
   -i inventory.yml \
   -u ec2-user \
   --private-key <key.pem> \
-  --extra-vars="pg_version=12 pg_type=EPAS yum_user=xxxxx yum_password=xxxxx"
+  --extra-vars="pg_version=12 pg_type=EPAS yum_username=xxxxx yum_password=xxxxx"
 ```
 
 ## Database engines supported
