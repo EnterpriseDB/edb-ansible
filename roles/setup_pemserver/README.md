@@ -21,11 +21,11 @@ The requirements for this ansible galaxy role are:
 
   1. Ansible >= 2.9
   2. `community.general`
-  3. `edb_devops.postgres` -> `setup_repo` - for installing the EPAS/PG
+  3. `edb_devops.edb_postgres` -> `setup_repo` - for installing the EPAS/PG
      repository
-  4. `edb_devops.postgres` -> `install_dbserver` - for installing the EPAS/PG
+  4. `edb_devops.edb_postgres` -> `install_dbserver` - for installing the EPAS/PG
      binaries
-  5. `edb_devops.postgres` -> `init_dbserver` - for initializing the EPAS/PG
+  5. `edb_devops.edb_postgres` -> `init_dbserver` - for initializing the EPAS/PG
      data directory and configuring a primary node.
 
 ## Role variables

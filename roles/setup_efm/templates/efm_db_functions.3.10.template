@@ -1,0 +1,578 @@
+#!/bin/bash
+# Copyright EnterpriseDB Corporation, 2014-2020. All Rights Reserved.
+
+# used as a key in the recovery.conf file header
+EDB_FM="EDB Failover Manager"
+
+# version name
+EFM=efm-3.10
+
+# Java files
+EFM_CONFIG=/etc/sysconfig/$EFM
+RUN_JAVA=/usr/edb/$EFM/bin/runJavaApplication.sh
+LIB=/usr/edb/$EFM/lib/EFM-3.10.jar
+CLASS=com.enterprisedb.efm.main.ConfigCommand
+
+# declare these to avoid static analysis warnings due to use as outvars from getProps
+TRIGGER_FILE=
+DATA_DIR=
+
+usage() {
+    echo $"Usage: $0 promotestandby             <cluster name>"
+    echo $"       $0 writerecoveryconf          <cluster name>"
+    echo $"       $0 writecustomrecoveryconf    <cluster name> <contents>"
+    echo $"       $0 removerecoveryconf         <cluster name>"
+    echo $"       $0 validaterecoveryconf       <cluster name>"
+    echo $"       $0 validatedbconf             <cluster name>"
+    echo $"       $0 validatepgbin              <cluster name>"
+    echo $"       $0 extrecconfexists           <cluster name>"
+    echo $"       $0 recoveryfileexists         <cluster name>"
+    echo $"       $0 fileexists                 <cluster name> <file path>"
+    echo $"       $0 reconfigurerecconf         <cluster name> <host> <is switchover>"
+    echo $"       $0 clearwalfiles              <cluster name>"
+    echo $"       $0 startdb                    <cluster name>"
+    echo $"       $0 stopdb                     <cluster name>"
+    echo $"       $0 readpgversion              <cluster name>"
+    echo $"       $0 readrecoveryconf           <cluster name>"
+    echo $"       $0 getminrecoveryendlsn       <cluster name>"
+    echo $"       $0 touchfile                  <file path>"
+    echo $"       $0 appendautoconf             <cluster name> <contents>"
+    exit 1
+}
+
+#
+# This is to fetch value for 'Minimum recovery ending location'.
+# For 9.6 and above we have in-built db function db_control_recovery() which provides this value.
+# For versions lower than 9.6 we need to fetch this value from pg_controldata utility
+#
+getMinRecoveryEndLocation() {
+    local PROP_FILE=$1
+    local KEY="Minimum recovery ending location"
+
+    getProp PG_CTLDATA_PATH db.bin ${PROP_FILE}
+    if [ -z "$PG_CTLDATA_PATH" ]; then
+        # some kind of error grepping the db.bin location from the prop file
+        echo "ERROR: Could not read value of 'db.bin' from properties file: ${PROP_FILE}"
+        return 1
+    fi
+
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        echo "ERROR: Could not read value of 'db.data.dir' from properties file: ${PROP_FILE}"
+        return 1
+    fi
+
+    local DATA=$(${PG_CTLDATA_PATH}/pg_controldata -D ${DATA_DIR})
+    if [ -z "$DATA"  ]; then
+        # error fetching data through pg_controldata
+        echo "ERROR: An unexpected error occurred while fetching data through pg_controldata."
+        return 1
+    fi
+
+    local VALUE=$(echo "${DATA}" | grep "${KEY}" | cut -d ':' -f 2)
+    if [ -z "$VALUE" ]; then
+        # error extracting value FROM pg_controldata output
+        echo "ERROR: An unexpected error occurred while extracting value for min_recovery_ending_location."
+        return 1
+    fi
+
+    # all good
+    echo $VALUE
+}
+
+#
+# look for the last occurrence of a non-commented line. Leading and trailing
+# white spaces trimmed.
+#
+# shell functions can't return string, so rely on clunky outvar
+#
+# Params
+#   $1 outvar - this is the name of the variable to store the result in
+#   $2 property name to look for
+#   $3 property file to grep in
+getProp() {
+    local OUTVAR=$1
+    local PROP_NAME=$2
+    local PROP_FILE=$3
+    local RESULT=`grep ${PROP_NAME} ${PROP_FILE} | grep -v \# | tail -1 | cut -d'=' -f2 | awk '{$1=$1};1'`
+    eval ${OUTVAR}=\$RESULT
+}
+
+#
+# Triggers promotion of a standby with promote command of pg_ctl utility
+#
+promoteStandby() {
+    local PROP_FILE=$1
+    getProp DB_BIN db.bin ${PROP_FILE}
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        return 1
+    else
+        # The -W (--no-wait) option in below command makes the command asynchronous
+        # and exists with exit code 0 even though database is still in recovery
+        ${DB_BIN}/pg_ctl promote -D $DATA_DIR -W
+        return $?
+    fi
+}
+
+#
+# Touch file passed in from agent, for instance standby.signal.
+# The file must not already exist.
+#
+touchFile() {
+    local FILE=$1
+    if [ -f "$FILE" ] ; then
+        echo "File ${FILE} already exists."
+        return 1
+    fi
+    touch $1
+}
+
+#
+# read the PG_VERSION file to get version of database. This is needed to if db is not running.
+#
+readPGVersion() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the data dir location from the prop file
+        return 1
+    else
+        local PG_VERSION="${DATA_DIR}/PG_VERSION"
+        if [ -e "${PG_VERSION}" ]; then
+            cat ${PG_VERSION}
+        else
+            echo "ERROR: cannot find file ${PG_VERSION}."
+            return 1
+        fi
+    fi
+}
+
+#
+# read the recovery.conf file. this is needed during switchover to save on original master
+# for database versions before v12
+#
+readRecoveryConf() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        return 1
+    else
+        local RECOVERY_CONF="${DATA_DIR}/recovery.conf"
+        if [ -e "${RECOVERY_CONF}" ]; then
+            cat ${RECOVERY_CONF}
+        else
+            echo "ERROR: cannot find file ${RECOVERY_CONF}."
+            return 1
+        fi
+    fi
+}
+
+#
+# validate the db.config.dir property
+# return success if:
+#    db.config.dir dir exists and contains postgresql.conf file
+#    db.config.dir value is not specified
+#
+validateDBConfig() {
+    local PROP_FILE=$1
+    getProp DB_CONFIG_DIR db.config.dir ${PROP_FILE}
+    if [ -z "$DB_CONFIG_DIR" ]; then
+        # this is  not a required prop and can be kept blank
+        return 0
+    else
+        local CONFIG_FILE="${DB_CONFIG_DIR}/postgresql.conf"
+        if [ -w "$CONFIG_FILE" ] ; then
+            # file exists and is writable
+            return 0
+        else
+            echo "ERROR: db.config.dir must exist, be a directory, and contain postgresql.conf file: $DB_CONFIG_DIR"
+            return 1
+        fi
+    fi
+}
+
+#
+# will replace the host and application_name information in recovery.conf file with
+# new host param and application_name set in properties file. this is used with
+# database versions before v12
+#
+reconfigureRecConf() {
+    local PROP_FILE=$1
+    local NEW_HOST=$2
+    local SWITCHOVER=$3
+
+    source $EFM_CONFIG
+    source $RUN_JAVA
+
+    # passing in date value to be consistent across script
+    runJREApplication -Xmx16m -cp $LIB $CLASS reconfigureRecConf ${PROP_FILE} ${NEW_HOST} ${SWITCHOVER} $(date +%F-%T)  < /dev/null
+}
+
+#
+# Append the passed-in text to the postgresql.auto.conf file. The file will be in the
+# db.config.dir directory if specified, otherwise in db.data.dir directory.
+#
+appendAutoConf() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    local PG_AUTO_CONF="${DATA_DIR}/postgresql.auto.conf"
+    if [ -f "${PG_AUTO_CONF}" ]; then
+        # -e here enables the interpretation of backslash escapes
+        # this option creates new line for '\n' from where it is used.
+        echo -e $2 >> ${PG_AUTO_CONF}
+    else
+        echo "Error: cannot find file ${PG_AUTO_CONF}"
+        return 1
+    fi
+}
+
+#
+# backup existing pg_wal directory and then clear files from original
+#
+clearWalFiles() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [[ -z "$DATA_DIR" ]]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        return 1
+    else
+        if [ -d "${DATA_DIR}/pg_wal" ]; then
+            # for pg 10 and above
+            if [ -L "${DATA_DIR}/pg_wal" ]; then
+              TARGET_WAL_DIR=$(readlink ${DATA_DIR}/pg_wal)
+              if [ -w ${TARGET_WAL_DIR}/.. ]; then
+                cp -R ${TARGET_WAL_DIR} ${TARGET_WAL_DIR}_$(date +%F-%T)
+                rm -rf  ${TARGET_WAL_DIR}/*
+              fi
+            else
+              cp -R ${DATA_DIR}/pg_wal ${DATA_DIR}/pg_wal_$(date +%F-%T)
+              rm -rf ${DATA_DIR}/pg_wal/*
+            fi
+        elif [ -d "${DATA_DIR}/pg_xlog" ]; then
+            # for pg 9.x
+            if [ -L "${DATA_DIR}/pg_xlog" ]; then
+              TARGET_XLOG_DIR=$(readlink ${DATA_DIR}/pg_xlog)
+              if [ -w ${TARGET_XLOG_DIR}/.. ]; then
+                cp -R ${TARGET_XLOG_DIR} ${TARGET_XLOG_DIR}_$(date +%F-%T)
+                rm -rf  ${TARGET_XLOG_DIR}/*
+              fi
+            else
+              cp -R ${DATA_DIR}/pg_xlog ${DATA_DIR}/pg_xlog_$(date +%F-%T)
+              rm -rf ${DATA_DIR}/pg_xlog/*
+            fi
+        else
+            echo "ERROR: Could not find pg_wal or pg_xlog directory at ${DATA_DIR}."
+            return 1
+        fi
+    fi
+}
+
+#
+# start database
+#
+startDb() {
+    local PROP_FILE=$1
+    getProp PG_CTL_PATH db.bin ${PROP_FILE}
+    getProp DB_CONFIG_DIR db.config.dir ${PROP_FILE}
+
+     if [ -z "$DB_CONFIG_DIR" ]; then
+        # if db.config.dir value not specified then default to db.data.dir
+        getProp DATA_DIR db.data.dir ${PROP_FILE}
+        if [ -z "$DATA_DIR" ]; then
+            # some kind of error grepping the recovery dir location from the prop file
+            return 1
+        else
+            DB_CONFIG_DIR=$DATA_DIR
+        fi
+     fi
+
+     ${PG_CTL_PATH}/pg_ctl start -w -D ${DB_CONFIG_DIR}
+}
+
+#
+# stop database
+#
+stopDb() {
+    local PROP_FILE=$1
+    getProp PG_CTL_PATH db.bin ${PROP_FILE}
+    getProp DB_CONFIG_DIR db.config.dir ${PROP_FILE}
+
+     if [ -z "$DB_CONFIG_DIR" ]; then
+        # if db.config.dir value not specified then default to db.data.dir
+        getProp DATA_DIR db.data.dir ${PROP_FILE}
+        if [ -z "$DATA_DIR" ]; then
+            # some kind of error grepping the recovery dir location from the prop file
+            return 1
+        else
+            DB_CONFIG_DIR=$DATA_DIR
+        fi
+     fi
+
+     ${PG_CTL_PATH}/pg_ctl stop -m fast -D ${DB_CONFIG_DIR}
+}
+
+#
+# validate the recovery conf property
+# return success if:
+#    recovery.conf dir exists and is writable
+#    recovery.conf dir is a dir
+#
+# Environment.java has already verified that the property is set in the prop file
+#
+# Note: this function no longer checks to see if the recovery.conf file actually exists
+#       because we are now asking the db if it is in recovery mode or not at startup to
+#       assign master/standby roles.
+#
+validateRecoveryConf() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        return 1
+    else
+        if [ -w "$DATA_DIR" ] && [ -d "$DATA_DIR" ]; then
+             return 0
+        else
+            echo "ERROR: db.data.dir must exist, be a directory, and be writable: $DATA_DIR"
+            return 1
+        fi
+    fi
+}
+
+#
+#
+#
+validatePgBin() {
+    local PROP_FILE=$1
+    getProp BIN_DIR db.bin ${PROP_FILE}
+    if [ -z "$BIN_DIR" ]; then
+        # some kind of error grepping the db.bin location from the prop file
+        return 1
+    else
+        if [ -x "$BIN_DIR/pg_ctl" ]; then
+             return 0
+        else
+            echo "ERROR: db.bin must exist, be a directory, and contain pg_ctl: $BIN_DIR"
+            return 1
+        fi
+    fi
+}
+
+#
+# write the recovery.conf file
+#
+writeRecoveryConfFile() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        return 1
+    elif [ -e ${DATA_DIR}/recovery.conf ]; then
+        grep "$EDB_FM" ${DATA_DIR}/recovery.conf >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            # file exists, but it's ours, so delete it and re-write it (below)
+            rm -f ${DATA_DIR}/recovery.conf
+        else
+            # file exists and it's not ours, so rename it and write ours (below)
+            mv ${DATA_DIR}/recovery.conf ${DATA_DIR}/recovery.conf.`date +%Y-%m-%d_%H:%M`
+        fi
+    fi
+    cat > ${DATA_DIR}/recovery.conf << EOF
+# $EDB_FM
+# This generated recovery.conf file prevents the db server from accidentally
+# being restarted as a master since a failover or promotion has occurred.
+# For v12 and above the settings are ignored; the presence of the file
+# prevents startup.
+standby_mode = on
+restore_command = 'echo 2>"recovery suspended on failed server node"; exit 1'
+EOF
+    return $?
+}
+
+#
+# write custom recovery.conf file
+#
+writeCustomRecoveryConf() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        return 1
+    elif [ -e ${DATA_DIR}/recovery.conf ]; then
+        # file exists, so rename it and write ours (below)
+        mv ${DATA_DIR}/recovery.conf ${DATA_DIR}/recovery.conf.`date +%Y-%m-%d_%H:%M`
+    fi
+    echo -e $2 > ${DATA_DIR}/recovery.conf
+    return $?
+}
+
+#
+# remove recovery.conf file
+#
+removeRecoveryConf() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    if [ -z "$DATA_DIR" ]; then
+        # some kind of error grepping the recovery dir location from the prop file
+        return 1
+    fi
+    rm -f ${DATA_DIR}/recovery.conf
+    return $?
+}
+
+#
+# test if an externally written recovery.conf file exists (not created by EFM). We don't really
+# care if we find a recovery.conf file created by EFM with this function.
+#
+extRecConfExists() {
+    local PROP_FILE=$1
+    getProp DATA_DIR db.data.dir ${PROP_FILE}
+    # Note: we aren't testing for -z $DATA_DIR here because the prop should
+    #       have already been validated with validateRecoveryConf().
+    if [ -e ${DATA_DIR}/recovery.conf ]; then
+        grep "$EDB_FM" ${DATA_DIR}/recovery.conf >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            # file exists, but it's ours, so delete it and return false
+            rm -f ${DATA_DIR}/recovery.conf
+            return 1
+        else
+            # file exists and it's not ours, so return true
+            return 0
+        fi
+    else
+        # file doesn't exist
+        return 1
+    fi
+}
+
+#
+# test to see if the given file exists
+#
+fileExists() {
+    local FILE_PATH=$1
+    if [ -f ${FILE_PATH} ]; then
+        # file exists
+        return 0
+    else
+        return 1
+    fi
+}
+
+#
+# test to see if at least one file exists signifying the database will be in recovery
+#
+recoveryFileExists() {
+    local PROP_FILE=$1
+    getProp DIR db.data.dir ${PROP_FILE}
+    # Note: we aren't testing for -z $DIR here because the prop should
+    #       have already been validated with validateRecoveryConf().
+    if [ ! -f ${DIR}/recovery.conf ] && [ ! -f ${DIR}/standby.signal ] && [ ! -f ${DIR}/recovery.signal ]; then
+        return 1
+    else
+        # at least one exists
+        return 0
+    fi
+}
+
+#
+# process the command
+#
+# command names correlate to enum values in SudoFunctions.java. If you add new functions
+# here, then also add a value in SudoFunctions...
+#
+if [ $# -gt 1 ]; then
+    COMMAND=$1
+    PROPS="/etc/edb/${EFM}/$2.properties"
+    case "$COMMAND" in
+        promotestandby)
+            promoteStandby ${PROPS}
+            exit $?
+            ;;
+        touchfile)
+            touchFile $2
+            exit $?
+            ;;
+        readpgversion)
+            readPGVersion ${PROPS}
+            exit $?
+            ;;
+        readrecoveryconf)
+            readRecoveryConf ${PROPS}
+            exit $?
+            ;;
+        validaterecoveryconf)
+            validateRecoveryConf ${PROPS}
+            exit $?
+            ;;
+        validatedbconf)
+            validateDBConfig ${PROPS}
+            exit $?
+            ;;
+        validatepgbin)
+            validatePgBin ${PROPS}
+            exit $?
+            ;;
+        writerecoveryconf)
+            writeRecoveryConfFile ${PROPS}
+            exit $?
+            ;;
+        removerecoveryconf)
+            removeRecoveryConf ${PROPS}
+            exit $?
+            ;;
+        writecustomrecoveryconf)
+            shift
+            shift
+            TEXT=$*
+            writeCustomRecoveryConf ${PROPS} "${TEXT}"
+            exit $?
+            ;;
+        appendautoconf)
+            shift
+            shift
+            TEXT=$*
+            appendAutoConf ${PROPS} "${TEXT}"
+            exit $?
+            ;;
+        extrecconfexists)
+            extRecConfExists ${PROPS}
+            exit $?
+            ;;
+        recoveryfileexists)
+            recoveryFileExists ${PROPS}
+            exit $?
+            ;;
+        fileexists)
+            fileExists $3
+            exit $?
+            ;;
+        reconfigurerecconf)
+            reconfigureRecConf ${PROPS} $3 $4
+            exit $?
+            ;;
+        clearwalfiles)
+            clearWalFiles ${PROPS}
+            exit $?
+            ;;
+        startdb)
+            startDb ${PROPS}
+            exit $?
+            ;;
+        stopdb)
+            stopDb ${PROPS}
+            exit $?
+            ;;
+        getminrecoveryendlsn)
+            getMinRecoveryEndLocation ${PROPS}
+            exit $?
+            ;;
+        *)
+            usage
+    esac
+else
+    usage
+fi
