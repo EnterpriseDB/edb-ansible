@@ -26,8 +26,8 @@ The only dependencies required for this ansible galaxy role are:
   1. Ansible
   2. `community.general` Ansible Module - Utilized when creating aditional
      users during a Postgres Install. Only on primary nodes.
-  3. `edb_devops.postgres` -> `setup_repo` - for repository installation
-  4. `edb_devops.postgres` -> `install_dbserver` - for installation of
+  3. `edb_devops.edb_postgres` -> `setup_repo` - for repository installation
+  4. `edb_devops.edb_postgres` -> `install_dbserver` - for installation of
      PostgreSQL/EPAS binaries.
 
 ## Role variables

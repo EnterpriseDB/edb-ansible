@@ -7,7 +7,7 @@ PgBouncer is a lightweight connection pooler for PostgreSQL.
 
 Following are the dependencies and requirement of this role.
   1. Ansible
-  2. `edb_devops.postgres` -> `setup_pgbouncer` - role for setting up PgBouncer
+  2. `edb_devops.edb_postgres` -> `setup_pgbouncer` - role for setting up PgBouncer
      on the systems.
 
 ## Role Variables

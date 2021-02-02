@@ -6,7 +6,7 @@ This role is for configuring Barman backups on Postgres nodes.
 
 Following are the requirements of this role.
   1. Ansible
-  2. `edb_devops.postgres` -> `setup_repo` role for setting the repository on
+  2. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository on
      the systems.
 
 ## Role Variables

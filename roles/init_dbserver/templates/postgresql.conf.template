@@ -8,6 +8,7 @@ hot_standby = on
 max_replication_slots = 10
 wal_compression = on
 wal_log_hints = on
+{{ 'wal_keep_segments = 10' if pg_version is version('13','<') else 'wal_keep_size = 160' }}
 checkpoint_timeout = 15min
 password_encryption = 'scram-sha-256'
 checkpoint_completion_target = 0.9

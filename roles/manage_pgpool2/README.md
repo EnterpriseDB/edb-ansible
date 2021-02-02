@@ -6,7 +6,7 @@ This role is for managing PgpoolII configuration parameters and user list.
 
 Following are the dependencies and requirement of this role.
   1. Ansible
-  2. `edb_devops.postgres` -> `setup_pgpool2` - role for setting up PgpoolII
+  2. `edb_devops.edb_postgres` -> `setup_pgpool2` - role for setting up PgpoolII
      on the systems.
 
 ## Role Variables
