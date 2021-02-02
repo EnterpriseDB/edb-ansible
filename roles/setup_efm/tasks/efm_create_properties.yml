@@ -22,6 +22,16 @@
   when: not stat_efm_properties.stat.exists
   become: yes
 
+- name: Copy the efm_db_function to the server
+  template:
+    src: efm_db_functions.{{ efm_version }}.template
+    dest: "{{ efm_bin_path }}/efm_db_functions"
+    owner: "root"
+    group: "root"
+    mode: 0755
+  become: yes
+  when: efm_version is version('4.1','<=')
+
 - name: Copy the efm.nodes.template to the server
   template:
     src: efm.nodes.template
