@@ -1,0 +1,45 @@
+---
+- name: Check if we have pcp.conf file
+  stat:
+    path: "{{ pcp_configuration_file }}"
+  register: pcp_conf
+  when: pcp_users|length > 0
+
+- name: Create pcp.conf if not exists
+  copy:
+    src: "{{ pcp_configuration_file }}.sample"
+    dest: "{{ pcp_configuration_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_owner }}"
+    mode: 0600
+    remote_src: yes
+  when:
+    - not pcp_conf.stat.exists
+    - pcp_users|length > 0
+  become: yes
+  become_user: "{{ pg_owner }}"
+
+- name: Remove pcp users
+  lineinfile:
+    path: "{{ pcp_configuration_file }}"
+    line: >-
+      {{ user_item.name }}:
+    regexp: "^{{ user_item.name | regex_escape() }}\\:"
+    state: "absent"
+  loop: "{{ pcp_users }}"
+  loop_control:
+    loop_var: user_item
+  when:
+    - pcp_users|length > 0
+    - user_item.state is defined
+    - user_item.state == 'absent'
+  become: yes
+
+- name: Add pcp users
+  include_tasks: pcp_add_user.yml
+  loop: "{{ pcp_users }}"
+  loop_control:
+    loop_var: pcp_user
+  when:
+    - pcp_users|length > 0
+    - user_item.state is not defined or user_item.state == 'present'

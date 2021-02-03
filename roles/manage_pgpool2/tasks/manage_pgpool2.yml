@@ -52,3 +52,8 @@
     state: reloaded
   when:
     - pgpool2_user|length > 0 or pgpool2_configuration|length > 0
+
+- name: Include the pcp_manage_users
+  include_tasks: pcp_manage_users.yml
+  when:
+    - pcp_users|length > 0
