@@ -78,6 +78,23 @@ Two authentication methods are supported: `scram` and `md5`.
 The `state` attribute defines if the user must be present or not in the
 authentication file. Default value is `present`.
 
+### pcp_users
+
+This is the lost f pcp users for PgpoolII user account to managed
+
+Example:
+```yaml
+pcp_users:
+  - name: pcpadmin
+    pass: pcpadminpass
+  - name: pcpadmin2
+    pass: pcpadminpass2
+    state: absent
+```
+
+The `state` attribute defines if the user must be present or not in the
+`pcp.conf` file. Default value is `present`.
+
 ## Dependencies
 
 This role does not have any dependencies, but a PgpoolII instance should have

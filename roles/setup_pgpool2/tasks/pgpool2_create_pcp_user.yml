@@ -1,0 +1,28 @@
+---
+- name: Generate the pcp_admin_user_password
+  include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pcp_admin_user }}"
+    input_password: "{{ pcp_admin_user_password }}"
+  no_log: "{{ disable_logging }}"
+  run_once: true
+  when: pcp_admin_user_password|length < 1
+
+- name: Set pcp_admin_user_password
+  set_fact:
+     pcp_admin_user_password: "{{ input_password }}"
+  when: pcp_admin_user_password|length < 1
+  run_once: true
+
+- name: Add pcp_admin_user
+  include_role:
+    name: manage_pgpool2
+    tasks_from: pcp_manage_users
+  vars:
+    pcp_users:
+       - name: "{{ pcp_admin_user }}"
+         pass: "{{ pcp_admin_user_password }}"
+  no_log: "{{ disable_logging }}"
+  when: pcp_admin_user_password|length > 1
