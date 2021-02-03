@@ -29,9 +29,10 @@
   when:  not pg_version_stat.stat.exists
   become: yes
 
-- name: Start the pg_service
+- name: Start and enable the pg_service
   systemd:
     name: "{{ pg_service }}"
     daemon_reload: yes
     state: started
+    enabled: yes
   become: yes
