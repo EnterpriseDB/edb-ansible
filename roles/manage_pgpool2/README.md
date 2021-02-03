@@ -6,7 +6,7 @@ This role is for managing PgpoolII configuration parameters and user list.
 
 Following are the dependencies and requirement of this role.
   1. Ansible
-  2. `edb_devops.postgres` -> `setup_pgpool2` - role for setting up PgpoolII
+  2. `edb_devops.edb_postgres` -> `setup_pgpool2` - role for setting up PgpoolII
      on the systems.
 
 ## Role Variables
@@ -77,6 +77,23 @@ Two authentication methods are supported: `scram` and `md5`.
 
 The `state` attribute defines if the user must be present or not in the
 authentication file. Default value is `present`.
+
+### pcp_users
+
+This is the lost f pcp users for PgpoolII user account to managed
+
+Example:
+```yaml
+pcp_users:
+  - name: pcpadmin
+    pass: pcpadminpass
+  - name: pcpadmin2
+    pass: pcpadminpass2
+    state: absent
+```
+
+The `state` attribute defines if the user must be present or not in the
+`pcp.conf` file. Default value is `present`.
 
 ## Dependencies
 
