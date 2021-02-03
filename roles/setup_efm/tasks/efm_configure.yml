@@ -34,6 +34,20 @@
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: use_hostname
 
+- name: Initialize efm_lb_parameters
+  set_fact:
+    efm_lb_parameters: []
+
+- name: Prepare parameters for PgPoolII integration
+  set_fact:
+    efm_lb_parameters:
+      - {name: script.load.balancer.attach, value: "{{ efm_bin_path }}/pcp_attach_all.sh %h %t"}
+      - {name: script.post.promotion, value: "{{ efm_bin_path }}/pcp_attach_all.sh %p p"}
+      - {name: script.remote.post.promotion, value: "{{ efm_bin_path }}/pcp_remote_post_promote_attach.sh"}
+      - {name: auto.resume.period, value: "1"}
+  when:
+    - efm_pgpool2_integration
+
 - name: Prepare final parameters list
   set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
@@ -53,6 +67,12 @@
   when:
     - (pg_version|int > 11 and pg_type == "EPAS") or (pg_version|int > 12 and pg_type == "PG")
     - efm_version|int > 3.10
+
+- name: Add LB configuration to final parameters list
+  set_fact:
+    efm_node_parameters: "{{ efm_node_parameters + efm_lb_parameters }}"
+  when:
+    - efm_pgpool2_integration
 
 - name: Add the efm_parameters with initial efm.properties
   set_fact:

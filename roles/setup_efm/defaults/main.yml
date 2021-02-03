@@ -2,7 +2,7 @@
 # efm credentials
 os: ""
 pg_version: ""
-efm_version: 4.0
+efm_version: 4.1
 
 disable_logging: true
 force_efm_install: false
@@ -65,6 +65,17 @@ efm_packages:
   - java-1.8.0-openjdk
   - mailx
   - edb-efm{{ efm_install_version }}
+
+# Integration with pgpoolII
+pgpool2_version: 4.1
+efm_pgpool2_integration: true
+pcp_admin_user: "pcpadmin"
+pcp_admin_user_password: ""
+pcp_passfile: "/var/efm/.pcppass"
+pcp_passfile_owner: "efm"
+pcp_passfile_group: "efm"
+pcp_passfile_mode: "0600"
+pgpool2_pcp_port: 9898
 
 supported_os:
   - CentOS7
