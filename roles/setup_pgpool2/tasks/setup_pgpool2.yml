@@ -126,3 +126,9 @@
 
 - name: Include the pgpool2_restart_service
   include_tasks: pgpool2_restart_service.yml
+
+- name: Create and update pgpool2 database user
+  include_tasks: pgpool2_create_db_user.yml
+
+- name: Create pcp user for pgpool2
+  include_tasks: pgpool2_create_pcp_user.yml

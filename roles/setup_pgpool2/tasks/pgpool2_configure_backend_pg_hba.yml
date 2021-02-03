@@ -5,6 +5,20 @@
    hba_entries: >-
     {{ hba_entries | default([]) }} + [
       {
+        'contype': 'hostssl',
+        'source': '{{ pgpool2_node_ip }}/32'
+      }
+    ]
+  loop: "{{ pgpool2_node_list }}"
+  loop_control:
+    loop_var: pgpool2_node_ip
+  when: pgpool2_ssl
+
+- name: Initialize the hba_entries variable
+  set_fact:
+   hba_entries: >-
+    {{ hba_entries | default([]) }} + [
+      {
         'contype': 'host',
         'source': '{{ pgpool2_node_ip }}/32'
       }
@@ -12,6 +26,7 @@
   loop: "{{ pgpool2_node_list }}"
   loop_control:
     loop_var: pgpool2_node_ip
+  when: not pgpool2_ssl
 
 - name: Allow access to pgpoolII servers
   include_role:
