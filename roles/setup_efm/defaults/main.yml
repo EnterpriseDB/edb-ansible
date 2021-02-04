@@ -68,7 +68,7 @@ efm_packages:
 
 # Integration with pgpoolII
 pgpool2_version: 4.1
-efm_pgpool2_integration: true
+efm_pgpool2_integration: false
 pcp_admin_user: "pcpadmin"
 pcp_admin_user_password: ""
 pcp_passfile: "/var/efm/.pcppass"
