@@ -25,3 +25,7 @@ pg_port: 5432
 
 # postgres service
 pg_service: "postgresql-{{ pg_version }}"
+
+# pgpool2 binary dir
+pgpool2_bin_path: "/usr/pgpool-{{ pg_version }}/bin"
+pgpool2_package_name: "pgpool-II-{{ pg_version }}"

@@ -130,14 +130,33 @@
 - name: Add localhost in hba ip list
   import_tasks: localhost_hba_value_list.yml
 
-- name: Install and configure postgres on centos7 or rhel7
+- name: EFM installation
   block:
     - import_tasks: efm_hba.yml
     - import_tasks: efm_install.yml
+  no_log: "{{ disable_logging }}"
+  become: yes
+
+- name: PgPoolII integration
+  block:
+    - include_role:
+        name: setup_pgpool2
+        tasks_from: pgpool2_install.yml
+      vars:
+        pgpool2_ssl: false
+    - import_tasks: efm_pgpool2_integration.yml
+  no_log: "{{ disable_logging }}"
+  become: yes
+  when:
+    - efm_pgpool2_integration
+
+- name: EFM configuration
+  block:
     - import_tasks: efm_create_properties.yml
     - import_tasks: efm_configure.yml
   no_log: "{{ disable_logging }}"
   become: yes
+
 
 - name: Efm parameters settings
   include_tasks: efm_cluster_set_params.yml

@@ -41,7 +41,7 @@
           'key': 'master_slave_sub_mode',
           'value': 'stream',
           'state': 'present',
-          'quoted': false
+          'quoted': true
         },
         {
           'key': 'sr_check_period',

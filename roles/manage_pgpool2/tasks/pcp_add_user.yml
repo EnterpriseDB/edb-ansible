@@ -1,0 +1,21 @@
+---
+- name: Generate pcp users md5 password
+  command:
+    cmd: >-
+      script -q -c '{{ pgpool2_bin_path }}/pg_md5 {{ pcp_user.pass }}'
+  become: yes
+  become_user: "{{ pg_owner }}"
+  when:
+    - pcp_user|length > 0
+    - pcp_user.state is not defined or user_item.state == 'present'
+  register: pcp_password_out
+
+- name: Update pcp.conf
+  lineinfile:
+    path: "{{ pcp_configuration_file }}"
+    line: "{{ pcp_user.name }}:{{ pcp_password_out.stdout }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  when:
+    - pcp_user|length > 0
+    - pcp_user.state is not defined or user_item.state == 'present'
