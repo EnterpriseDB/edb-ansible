@@ -22,7 +22,7 @@
   fail:
     msg: "efm version = {{ efm_version }} not supported.
          Supported versions are {{ supported_efm_version }}"
-  when: efm_version not in supported_efm_version
+  when: efm_version | string not in supported_efm_version
 
 - name: Gather service facts
   service_facts:
