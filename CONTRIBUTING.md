@@ -8,6 +8,78 @@ that they conform to these guidelines before approving and merging.
 Please note we have a code of conduct, please follow it in all your
 interactions with the project.
 
+## Github work flow
+
+### Versioning
+
+Major version number is composed by the two first digits: **3.0**.1
+
+Minor version number is the third digit: 3.0.**1**
+
+The first digit is used to mark significant changes, like new interface, new
+API version, programming language changes, etc...
+
+**Major version** examples: 3.1.0, 4.0.0, 5.2.0
+
+**Minor version** examples: 3.1.10, 4.0.1, 5.2.7
+
+### Releases
+
+**Major** release brings **new features** and **bug fixes**
+
+**Minor** release brings **only bug fixes**
+
+### Branches
+
+  * **master** branch is dedicated to development of new features.
+  * Each **new major release** is created from **master** branch.
+  * Each new major release is immediately followed by the **maintenance branch creation**.
+  * Maintenance branches should be named like the major version number it refers
+    to: **v3_1**, **v4_0**, etc..
+  * Bug fixes impacting only one major version must be applied on its
+    maintenance branch only.
+  * Bug fixes impacting all or many of the major versions must be applied first
+    on master, and then backported on the maintenance branches.
+  * **Maintenance releases** are created from **the maintenance branch**.
+
+![Branches diagram example](./imgs/github_branches.png)
+
+### How to submit code contribution
+
+**Initialization**
+
+  1. Fork the main repository into user Github account
+  2. Clone the repository on the workstation form user fork:
+```shell
+$ git clone git@github.com:<user>/edb-ansible.git
+```
+  3. Go to repository folder
+  4. Add main repository as an upstream repository:
+```shell
+$ git remote add upstream https://github.com/EnterpriseDB/edb-ansible.git
+```
+
+**Contribution submission**
+
+  1. Update local code:
+```shell
+$ git remote update
+$ git checkout master
+$ git merge upstream/master
+```
+  2. Create a new branch:
+```shell
+$ git checkout -b new_feature upstream/master
+```
+  3. Commit your awesome feature
+  4. Push the branch on your forked repository:
+```shell
+$ git push origin new_feature
+```
+  5. Create the Pull Request by opening the web link:
+     `https://github.com/<user>/edb-ansible/pull/new/new_feature`
+
+
 ## Contribution Ideas
 
 1. Raise issues for bugs, features, and enhancements.
