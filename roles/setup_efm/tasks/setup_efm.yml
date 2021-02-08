@@ -22,7 +22,7 @@
   fail:
     msg: "efm version = {{ efm_version }} not supported.
          Supported versions are {{ supported_efm_version }}"
-  when: efm_version not in supported_efm_version
+  when: efm_version | string not in supported_efm_version
 
 - name: Gather service facts
   service_facts:
@@ -144,7 +144,7 @@
         tasks_from: pgpool2_install.yml
       vars:
         pgpool2_ssl: false
-    - import_tasks: efm_pgpool2_integration.yml
+    - include_tasks: efm_pgpool2_integration.yml
   no_log: "{{ disable_logging }}"
   become: yes
   when:
