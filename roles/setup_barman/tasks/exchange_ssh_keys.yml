@@ -72,6 +72,7 @@
     loop_var: _item
   delegate_to: "{{ _barman_server_public_ip }}"
   become: yes
+  become_user: "{{ barman_user }}"
   no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the Postgres server
@@ -89,6 +90,7 @@
   loop_control:
     loop_var: _item
   become: yes
+  become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
 
 - name: Reset _barman_server_info
