@@ -42,9 +42,11 @@
   set_fact:
     efm_lb_parameters:
       - {name: script.load.balancer.attach, value: "{{ efm_bin_path }}/pcp_attach_all.sh %h %t"}
-      - {name: script.post.promotion, value: "{{ efm_bin_path }}/pcp_attach_all.sh %p p"}
-      - {name: script.remote.post.promotion, value: "{{ efm_bin_path }}/pcp_remote_post_promote_attach.sh"}
-      - {name: auto.resume.period, value: "1"}
+      - {name: auto.resume.period, value: "5"}
+      - {name: script.custom.monitor, value: "{{ efm_bin_path }}/pg_pcp_health.sh"}
+      - {name: custom.monitor.interval, value: "5"}
+      - {name: custom.monitor.safe.mode, value: "true"}
+      - {name: custom.monitor.timeout, value: "10"}
   when:
     - efm_pgpool2_integration
 

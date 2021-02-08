@@ -36,7 +36,7 @@
 
 - name: Copy the pcp_control.sh to the server
   template:
-    src: pcp_control.sh
+    src: pcp_control.sh.template
     dest: "{{ efm_bin_path }}/pcp_control.sh"
     owner: "root"
     group: "root"
@@ -52,10 +52,10 @@
     mode: 0755
   become: yes
 
-- name: Copy the pcp_remote_post_promote_attach.sh to the server
+- name: Copy the pg_pcp_health.sh to the server
   template:
-    src: pcp_remote_post_promote_attach.sh.template
-    dest: "{{ efm_bin_path }}/pcp_remote_post_promote_attach.sh"
+    src: pg_pcp_health.sh.template
+    dest: "{{ efm_bin_path }}/pg_pcp_health.sh"
     owner: "root"
     group: "root"
     mode: 0755
