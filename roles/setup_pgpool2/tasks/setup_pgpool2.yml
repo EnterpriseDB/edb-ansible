@@ -51,7 +51,13 @@
 
 - name: Build the list of Postgres backends
   set_fact:
-    pgpool2_backends: "{{ pgpool2_backends }} + [ '{{ server.private_ip }}' ]"
+    pgpool2_backends: >-
+      {{ pgpool2_backends | default([]) }} + [
+         {
+           'private_ip': '{{ server.private_ip }}',
+           'inventory_hostname': '{{ server.inventory_hostname }}'
+         }
+       ]
   loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
   loop_control:
     loop_var: server
