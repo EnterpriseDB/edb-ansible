@@ -6,7 +6,7 @@
       {{ pgpool2_backends_configuration | default([]) }} + [
         {
           'key': 'backend_hostname{{ ansible_loop.index0 }}',
-          'value': '{{ backend_item }}',
+          'value': '{{ backend_item.private_ip }}',
           'state': 'present',
           'quoted': true
         },
@@ -30,7 +30,7 @@
         },
         {
           'key': 'backend_application_name{{ ansible_loop.index0 }}',
-          'value': 'server{{ ansible_loop.index0 }}',
+          'value': '{{ backend_item.inventory_hostname }}',
           'state': 'present',
           'quoted': true
         },
