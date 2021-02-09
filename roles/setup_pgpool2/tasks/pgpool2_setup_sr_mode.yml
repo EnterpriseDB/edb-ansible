@@ -27,6 +27,22 @@
     - pgpool2_primary_public_ip is defined
     - pgpool2_primary_public_ip|length > 0
 
+# grant monitoring privilege to pgpool2 user for replication status
+- name: Grant execute privileges on system functions to pgpoolII sr user
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_privileges
+    apply:
+      delegate_to: "{{ pgpool2_primary_public_ip }}"
+  vars:
+    pg_grant_roles:
+       - user: "{{ pgpool2_sr_check_user }}"
+         role: "pg_monitor"
+  run_once: true
+  when:
+    - pgpool2_primary_public_ip is defined
+    - pgpool2_primary_public_ip|length > 0
+
 - name: Build pgpoolII SR configuration
   set_fact:
     pgpool2_sr_configuration: >-
