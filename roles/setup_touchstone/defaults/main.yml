@@ -1,0 +1,6 @@
+---
+
+touchstone_version: 0.2.2
+supported_os:
+  - CentOS8
+  - RHEL8

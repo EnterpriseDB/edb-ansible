@@ -1,0 +1,32 @@
+---
+
+- name: Install packages
+  yum:
+    name:
+      - curl
+      - tcl
+      - libpq
+  become: yes
+  ignore_errors: yes
+
+- name: Include Touchstone installation
+  include_role:
+    name: setup_touchstone
+    tasks_from: main
+
+- name: Include HammerDB installation
+  include_tasks: install_hammerdb.yml
+
+- name: Create TPROC-C runner.tcl
+  template:
+    dest: runner.tcl
+    src: ./templates/runner.tcl.template
+    mode: 0644
+  become: no
+
+- name: Create TPROC-C run script
+  template:
+    src: ./templates/run-tproc-c.template
+    dest: /usr/local/bin/run-tproc-c
+    mode: 0755
+  become: yes

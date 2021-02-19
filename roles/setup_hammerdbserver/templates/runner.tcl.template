@@ -1,0 +1,31 @@
+#!/usr/bin/env tclsh
+proc runtimer { seconds } {
+        set x 0
+        set timerstop 0
+        while {!$timerstop} {
+                incr x
+                after 1000
+                if { ![ expr {$x % 60} ] } {
+                        set y [ expr $x / 60 ]
+                }
+                update
+                if {  [ vucomplete ] || $x eq $seconds } { set timerstop 1 }
+        }
+        return
+}
+dbset db pg
+diset connection pg_host {{ hostvars['primary1'].private_ip }}
+diset connection pg_port {{ pg_port }}
+diset tpcc pg_raiseerror true
+diset tpcc pg_superuser enterprisedb
+diset tpcc pg_driver timed
+diset tpcc pg_duration 30
+diset tpcc pg_rampup 5
+vuset logtotemp 1
+loadscript
+vuset vu 96
+vucreate
+vurun
+runtimer 2200
+vudestroy
+exit
