@@ -15,3 +15,32 @@
     create_home: true
     home: "{{ barman_home }}"
   become: yes
+
+- name: Test whether SELinux is enabled
+  command: getenforce
+  register: selinux_status
+
+- name: Set SELinux context of custom located barman home directory
+  sefcontext:
+    target: "{{ barman_home }}(/.*)?"
+    setype: user_home_t
+    state: present
+  register: barman_home_dir
+  when:
+    - selinux_status.stdout == 'Enforcing'
+    - barman_home != barman_default_home
+
+- name: Set SELinux context of barman's ssh directory
+  sefcontext:
+    target: "{{ barman_home }}/.ssh(/.*)?"
+    setype: ssh_home_t
+    state: present
+  register: barman_ssh_home_dir
+  when:
+    - selinux_status.stdout == 'Enforcing'
+    - barman_home != barman_default_home
+
+- name: Apply new SELinux context for custom located barman home directory
+  command: "restorecon -irv {{ barman_home }}"
+  when: barman_home_dir.changed or
+        barman_ssh_home_dir.changed
