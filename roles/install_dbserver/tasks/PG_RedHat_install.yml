@@ -10,18 +10,37 @@
   failed_when: disable_builtin_postgres.rc != 0
   ignore_errors: yes
   become: yes
+  when: os in ['RedHat8','CentOS8']
 
-- name: Install Postgres
-  dnf:
+- name: Install require python package
+  package:
     name:
-      - glibc-common
-      - ca-certificates
+      - python-pycurl
+      - libselinux-python
+      - python-psycopg2
+      - python-ipaddress
+    state: present
+  when: os in ['RedHat7','CentOS7']
+  become: yes
+
+- name: Install require python package
+  package:
+    name:
       - python3-pycurl
       - python3-libselinux
       - python3-psycopg2
+    state: present
+  become: yes
+  when: os in ['RedHat8','CentOS8']
+
+- name: Install Postgres
+  package:
+    name:
+      - glibc-common
+      - ca-certificates
+      - postgresql{{ pg_version }}
       - postgresql{{ pg_version }}-server
       - postgresql{{ pg_version }}-contrib
-      - postgresql{{ pg_version }}-devel
       - sslutils_{{ pg_version }}
     state: present
   become: yes

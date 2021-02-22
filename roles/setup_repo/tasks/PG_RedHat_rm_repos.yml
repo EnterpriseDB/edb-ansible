@@ -1,0 +1,38 @@
+---
+- name: Remove PG repos and epel-release packages
+  yum:
+    name:
+      - pgdg-redhat-repo
+      - epel-release
+      - edb-repo
+    state: removed
+  when: ansible_distribution_major_version == "7"
+  become: yes
+
+- name: Remove PG repos and epel-release packages
+  dnf:
+    name:
+      - pgdg-redhat-repo
+      - epel-release
+      - edb-repo
+    state: removed
+  when: ansible_distribution_major_version == "8"
+  become: yes
+
+- name: Remove PGDG repo file
+  file:
+    path: /etc/yum.repos.d/pgdg-redhat-all.repo
+    state: absent
+  become: yes
+
+- name: Remove edb.repo file
+  file:
+    path: /etc/yum.repos.d/edb.repo
+    state: absent
+  become: yes
+
+- name: Remove edb.repo file
+  file:
+    path: /etc/yum.repos.d/edb.repo.rpmsave
+    state: absent
+  become: yes

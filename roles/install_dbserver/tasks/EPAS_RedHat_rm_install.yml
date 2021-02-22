@@ -1,16 +1,13 @@
 ---
-- name: Stop the PG service if it's running
+- name: Stop the service edb-as-{{ pg_version }}
   systemd:
-    name: edb-as-{{ pg_version }}
+    name: "edb-as-{{ pg_version }}"
     state: stopped
-  become: yes
-  ignore_errors: true
+  become: true
 
-- name: Remove EPAS Packages
-  dnf:
+- name: Remove EPAS packages
+  package:
     name:
-      - python3-pip
-      - python3-psycopg2
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
       - edb-as{{ pg_version }}-server-edb-modules
@@ -23,5 +20,24 @@
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
       - edb-as{{ pg_version }}-server-sslutils
-    state: removed
+    state: present
   become: yes
+
+- name: Remove python packages
+  package:
+    name:
+      - python-pip
+      - python-psycopg2
+    state: present
+  when: os in ['RedHat7','CentOS7']
+  become: yes
+
+- name: Remove python packages
+  package:
+    name:
+      - python3-pip
+      - python3-psycopg2
+    state: present
+  when: os in ['RedHat8','CentOS8']
+  become: yes
+
