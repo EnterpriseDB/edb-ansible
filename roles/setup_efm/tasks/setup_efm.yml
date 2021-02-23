@@ -28,7 +28,7 @@
   service_facts:
 
 - name: Open EFM TCP port {{ efm_port }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ efm_port }}/tcp"
     permanent: yes
     state: enabled
@@ -40,7 +40,7 @@
   become: yes
 
 - name: Open EFM TCP admin. port {{ efm_admin_port }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ efm_admin_port }}/tcp"
     permanent: yes
     state: enabled
