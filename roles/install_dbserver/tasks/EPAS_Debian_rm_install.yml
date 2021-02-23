@@ -3,11 +3,10 @@
   systemd:
     name: "{{ epas_deb_service }}"
     state: stopped
-  when: install_package.changed
   ignore_errors: yes
   become: true
 
-- name: Install EPAS Packages
+- name: Remove EPAS Packages
   package:
     name:
       - python3-pip
@@ -25,7 +24,7 @@
     update_cache: yes
   become: true
 
-- name: Install python-psycopg2
+- name: Remove python-psycopg2
   package:
     name:
       - python-psycopg2
