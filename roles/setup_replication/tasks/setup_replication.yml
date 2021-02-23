@@ -22,7 +22,7 @@
   service_facts:
 
 - name: Open Postgres TCP port {{ pg_port }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"
     permanent: yes
     state: enabled

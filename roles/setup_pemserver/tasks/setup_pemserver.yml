@@ -22,7 +22,7 @@
   service_facts:
 
 - name: Open PEM TCP port 8443
-  firewalld:
+  ansible.posix.firewalld:
     port: "8443/tcp"
     permanent: yes
     state: enabled
