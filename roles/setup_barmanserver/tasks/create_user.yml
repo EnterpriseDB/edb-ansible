@@ -19,6 +19,7 @@
 - name: Test whether SELinux is enabled
   command: getenforce
   register: selinux_status
+  changed_when: false
 
 - name: Set SELinux context of custom located barman home directory
   sefcontext:
