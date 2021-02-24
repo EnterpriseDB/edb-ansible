@@ -2,7 +2,7 @@
 
 - name: Set the os variable
   set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
   fail:
@@ -19,32 +19,23 @@
   fail:
     msg: "Database Engine = {{ pg_type }} {{ pg_version }}
           is not supported on RHEL8/CentOS8."
-  when:
-    - pg_type == 'EPAS' and pg_version|int < 12
-    - os in ['RHEL8','CentOS8']
+  when: >
+    pg_type == 'EPAS' and
+    ( pg_version|int < 12 and os in ['RedHat8','CentOS8'] or
+      pg_version|int < 11 and os in ['Ubuntu18', 'Debian9'] or
+      pg_version|int < 13 and os in ['Ubuntu20']  or
+      pg_version|int < 12 and os in ['Debian10'] )
 
 - name: Validate Credentials
   fail:
-      msg: "yum_username = {{ yum_username }} or yum_password = {{ yum_password }} are not valid!."
-  when: (yum_username | length < 1 or yum_password | length < 1)
+      msg: "repo_username = {{ repo_username }} or repo_password = {{ repo_password }} are not valid!."
+  when: (repo_username | length < 1 or repo_password | length < 1)
 
-- name: Set force install based on the user input
-  set_fact:
-    force_install: "{{ hostvars[inventory_hostname].force_install }}"
-  when: hostvars[inventory_hostname].force_install is defined
-  register: output
+- name: Cleanup the repos based on force_repo
+  include_tasks: "PG_{{ ansible_os_family }}_rm_repos.yml"
+  when:
+    - force_repo is defined
+    - force_repo
 
-- name: Cleanup the repos based on force_install
-  block:
-    - include_tasks: "{{ pg_type }}_rhel_rm_repos.yml"
-  when: force_install
-  become: yes
-
-- name: Install Postgres RPM repositories
-  block:
-    - include_tasks: "{{ pg_type }}_rhel_setuprepos.yml"
-  become: yes
-
-- name: Reset force install based on the user input
-  set_fact:
-    force_install: false
+- name: Install Postgres repositories
+  include_tasks: "PG_{{ ansible_os_family }}_setuprepos.yml"
