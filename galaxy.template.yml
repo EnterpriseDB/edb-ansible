@@ -17,7 +17,9 @@ tags:
 - postgres
 - edb
 - repo
-dependencies: {}
+dependencies:
+  - community.postgresql
+  - ansible.posix
 repository: "https://github.com/EnterpriseDB/edb-ansible"
 documentation: "https://github.com/EnterpriseDB/edb-ansible/blob/master/README.md"
 homepage: "https://github.com/EnterpriseDB/edb-ansible"
