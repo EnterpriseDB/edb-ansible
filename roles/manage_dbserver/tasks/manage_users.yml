@@ -1,6 +1,6 @@
 ---
 - name: Check database is in read/write mode
-  postgresql_query:
+  community.postgresql.postgresql_query:
     query: "SELECT pg_catalog.pg_is_in_recovery()"
     port: "{{ pg_port }}"
     db: "{{ pg_database }}"
@@ -12,7 +12,7 @@
   register: db_status
 
 - name: Manage optional users
-  postgresql_user:
+  community.postgresql.postgresql_user:
     name: "{{ line_item.name }}"
     password: "{{ line_item.pass | default(omit) }}"
     encrypted: "{{ line_item.encrypted | default(omit) }}"

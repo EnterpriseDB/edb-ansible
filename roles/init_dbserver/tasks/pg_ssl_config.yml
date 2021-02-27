@@ -1,6 +1,6 @@
 ---
 - name: create ssl cert key
-  postgresql_query:
+  community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -27,7 +27,7 @@
   become: yes
 
 - name: create a certificate authority key
-  postgresql_query:
+  community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -74,7 +74,7 @@
   become: yes
 
 - name: create a root.crl
-  postgresql_query:
+  community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -98,7 +98,7 @@
   become: yes
 
 - name: create ssl server key
-  postgresql_query:
+  community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -125,7 +125,7 @@
   become: yes
 
 - name: create a server cert
-  postgresql_query:
+  community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"

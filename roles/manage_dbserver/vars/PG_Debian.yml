@@ -1,0 +1,9 @@
+---
+# Variables for EPAS
+deb_cluster_name: "main"
+pg_port: "5432"
+pg_owner: "postgres"
+pg_service: "postgresql@{{ pg_version }}-{{ deb_cluster_name }}"
+pg_database: "postgres"
+pg_unix_socket_directories:
+  - "/var/run/postgresql"

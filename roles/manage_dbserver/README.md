@@ -237,8 +237,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/manage_dbserver/defaults/main.yml](./defaults/main.yml)
-  * [roles/manage_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/manage_dbserver/vars/PG.yml](./vars/PG.yml)
+  * [roles/manage_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/manage_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/manage_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  * [roles/manage_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## License
 

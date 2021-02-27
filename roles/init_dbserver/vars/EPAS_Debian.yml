@@ -1,7 +1,8 @@
 ---
+deb_cluster_name: "main"
 pg_wal: ""
-pg_data: "/var/lib/edb/as{{ pg_version }}/data"
-pg_default_data: "/var/lib/edb/as{{ pg_version }}/data"
+pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_default_data: "/var/lib/edb-as/{{ pg_version }}/{{ deb_cluster_name }}"
 pg_encoding: ""
 
 # log directory and filename
@@ -9,20 +10,21 @@ pg_log: "/var/log/edb"
 pg_log_filename: "edb-%a.log"
 
 # postgres service
-pg_service: "edb-as-{{ pg_version }}"
+pg_service: "edb-as@{{ pg_version }}-{{ deb_cluster_name }}"
 
 # required & optional directories
-pg_user_home: "/var/lib/edb"
-pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
-pg_initdb: "{{ pg_bin_path }}/edb-as-{{ pg_version }}-setup initdb"
-pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=en_US.UTF-8 --auth-local=peer --pwfile /dev/zero"
+pg_user_home: "/var/lib/edb-as"
+pg_bin_path: "/usr/lib/edb-as/{{ pg_version }}/bin"
 
 # unix socket domain directories
 pg_unix_socket_directories:
-  - "/var/run/edb"
+  - "/var/run/edb-as"
 
 # postgres port
 pg_port: 5444
+
+pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer --pwfile /dev/zero"
+pg_initdb: "/usr/bin/epas_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ deb_cluster_name }} -- ${PGSETUP_INITDB_OPTIONS}"
 
 # postgres database
 pg_database: "postgres"
@@ -33,8 +35,6 @@ pg_group: "enterprisedb"
 
 # postgres superuser
 pg_superuser: "enterprisedb"
-pg_superuser_password: ""
-pg_random_password: false
 
 
 pg_shared_libraries_list:

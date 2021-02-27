@@ -10,8 +10,8 @@
          create: yes
   no_log: "{{ disable_logging }}"
 
-- name: create standby
-  shell: |
+- name: Create standby
+  shell: >
     PGAPPNAME={{ inventory_hostname }} {{ pg_basebackup }}
   args:
     creates: "{{ pg_data }}/PG_VERSION"

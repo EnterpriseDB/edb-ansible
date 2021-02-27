@@ -1,5 +1,4 @@
 ---
-
 - name: Check if we have PG_VERSION in pg_data
   stat:
     path: "{{ pg_data }}/PG_VERSION"
@@ -12,11 +11,13 @@
   when: pg_wal|length > 0  and not pg_data in pg_wal
 
 - name: Initialize database postgres service
-  shell: |
-    export PGSETUP_INITDB_OPTIONS="{{ pg_initdb_options }}"
+  shell: >
     {{ pg_initdb }}
   args:
+    executable: /bin/bash
     creates: "{{ pg_data }}/PG_VERSION"
+  environment:
+    PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
   become: yes
 
 - name: Copy the postgresql.conf.template to the server

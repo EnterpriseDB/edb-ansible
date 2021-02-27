@@ -1,6 +1,6 @@
 ---
 - name: Check user defined parameters and update
-  postgresql_set:
+  community.postgresql.postgresql_set:
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     port: "{{ pg_port }}"
     db: "{{ pg_database }}"

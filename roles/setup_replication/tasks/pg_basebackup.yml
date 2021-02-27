@@ -1,5 +1,4 @@
 ---
-
 - name: Define pg_basebackup command.
   set_fact:
     pg_basebackup: "{{ pg_basebackup + ' -D ' + pg_data }}"

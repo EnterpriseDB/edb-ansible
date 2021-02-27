@@ -7,7 +7,7 @@
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
     - node.private_ip == hostvars[inventory_hostname].upstream_node_private_ip
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
 

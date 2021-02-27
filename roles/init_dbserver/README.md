@@ -47,8 +47,10 @@ section: *How to include the `init_dbserver` role in your Playbook*
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/init_dbserver/vars/PG.yml](./vars/PG.yml)
+  * [roles/init_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  * [roles/init_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 
 ## Dependencies
 
@@ -123,8 +125,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
-  * [roles/init_dbserver/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/init_dbserver/vars/PG.yml](./vars/PG.yml)
+  * [roles/init_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/init_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  * [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
   * [roles/init_dbserver/vars/edb-ssl.yml](./vars/edb-ssl.yml)
 
 ## Database engines supported
@@ -137,15 +141,21 @@ All the variables are available at:
 | Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :x: | :x: | :x: |  :white_check_mark:|
+| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:| 
 
 ### Enterprise DB Postgres Advanced Server
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
+| Distribution | 10 | 11 | 12 | 13 |
+| ------------------------- |:--:|:--:|:--:|:--:|
+| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|  :white_check_mark:|
+| CentOS 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :x:| :x: | :x: |  :white_check_mark:|
+| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:| 
 
 - :white_check_mark: - Tested and supported
 

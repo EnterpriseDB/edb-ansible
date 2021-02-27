@@ -1,6 +1,6 @@
 ---
 - name: Check database is in read/write mode
-  postgresql_query:
+  community.postgresql.postgresql_query:
     query: "SELECT pg_catalog.pg_is_in_recovery()"
     port: "{{ pg_port }}"
     db: "{{ pg_database }}"
@@ -12,13 +12,13 @@
   register: db_status
 
 - name: Create databases
-  postgresql_db:
+  community.postgresql.postgresql_db:
     name: "{{ line_item.name }}"
     owner: "{{ line_item.owner | default(pg_owner) }}"
     encoding: "{{ line_item.encoding | default(omit) }}"
     lc_collate: "{{ line_item.lc_collate | default(omit) }}"
     lc_ctype: "{{ line_item.lc_ctype | default(omit) }}"
-    template: "{{ line_item.template | default('template0') }}"
+    template: "line_item.template | default('template0')"
     port: "{{ pg_port }}"
     maintenance_db: "{{ pg_database }}"
     state: "{{ line_item.state | default('present') }}"

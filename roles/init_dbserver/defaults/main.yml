@@ -6,7 +6,6 @@ pg_version: 12
 pg_ssl: true
 
 disable_logging: yes
-force_initdb: false
 use_hostname: false
 
 pass_dir: "~/.edb"
@@ -57,8 +56,11 @@ etc_hosts_lists: []
 supported_os:
   - CentOS7
   - CentOS8
-  - RHEL7
-  - RHEL8
+  - RedHat7
+  - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
 
 supported_pg_type:
   - EPAS

@@ -1,5 +1,4 @@
 ---
-
 - name: Set synchronous_standby_names
   set_fact:
     synchronous_standby_names: "{{ ' ' + synchronous_standbys|length|string() + '(' + synchronous_standbys| map('to_json') | join(',') + ')' }}"

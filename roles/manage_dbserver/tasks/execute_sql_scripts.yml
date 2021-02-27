@@ -1,6 +1,6 @@
 ---
 - name: Execute sql scripts
-  postgresql_query:
+  community.postgresql.postgresql_query:
     path_to_script: "{{ line_item.file_path }}"
     db: "{{ line_item.db }}"
     port: "{{ pg_port }}"
@@ -16,7 +16,7 @@
   register: sql_script_output
 
 - name: Execute query
-  postgresql_query:
+  community.postgresql.postgresql_query:
     query: "{{ line_item.query }}"
     db: "{{ line_item.db }}"
     port: "{{ pg_port }}"

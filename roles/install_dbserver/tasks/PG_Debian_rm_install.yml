@@ -1,7 +1,7 @@
 ---
-- name: Stop the service {{ pg_deb_service }}
+- name: Stop the service {{ pg_service }}
   systemd:
-    name: "{{ pg_deb_service }}"
+    name: "{{ pg_service }}"
     state: stopped
   become: true
 
