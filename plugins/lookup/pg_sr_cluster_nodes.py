@@ -126,7 +126,7 @@ class LookupModule(LookupBase):
             # only one SR cluster has been found, then we return this SR
             # cluster because there is no doubt.
             if len(primary_private_ips) == 1:
-                return pg_clusters[primary_private_ips[0]]]
+                return pg_clusters[primary_private_ips[0]]
             else:
                 raise AnsibleError(
                     "Unable to find the SR cluster topology because multiple "
