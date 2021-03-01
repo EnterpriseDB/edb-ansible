@@ -45,11 +45,6 @@ class LookupModule(LookupBase):
 
         myvars = getattr(self._templar, '_available_variables', {})
 
-        if ('standby' not in myvars['group_names']
-                and 'primary' not in myvars['group_names']
-                and len(terms) == 0):
-            return []
-
         # If no terms, we'll used the current private IP
         if len(terms) == 0:
             node_private_ip = myvars['hostvars'][variables['inventory_hostname']]['private_ip']
@@ -117,11 +112,12 @@ class LookupModule(LookupBase):
 
             pg_standbys_len = len(pg_standbys.keys())
 
+
         if node_private_ip in pg_primary_map:
             # Current node is part of one of the SR clusters found
             return pg_clusters[pg_primary_map[node_private_ip]]
         else:
-            primary_private_ips = pg_clusters.keys()
+            primary_private_ips = list(pg_clusters.keys())
             # If the current node is not part of any SR cluster found, but,
             # only one SR cluster has been found, then we return this SR
             # cluster because there is no doubt.
