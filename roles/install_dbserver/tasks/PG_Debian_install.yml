@@ -24,9 +24,9 @@
   when: os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
 
-- name: Stop the service {{ pg_deb_service }}
+- name: Stop the service {{ pg_service }}
   systemd:
-    name: "{{ pg_deb_service }}"
+    name: "{{ pg_service }}"
     state: stopped
   when: install_package.changed
   become: true

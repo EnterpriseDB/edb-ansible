@@ -1,6 +1,6 @@
 ---
 - name: Find the hba file location
-  postgresql_query:
+  community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -13,7 +13,7 @@
   register: hba_info
 
 - name: Manage ip address entries into pg_hba file
-  postgresql_pg_hba:
+  community.postgresql.postgresql_pg_hba:
     dest: "{{ hba_info.query_result[0].hba_file }}"
     contype: "{{ line_item.contype | default('hostssl') }}"
     users: "{{ line_item.users | default ('all') }}"

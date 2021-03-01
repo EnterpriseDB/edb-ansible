@@ -1,5 +1,4 @@
 ---
-
 - name: Remove EDB auth conf
   file:
     path: "{{ edb_auth_conf }}"
@@ -35,7 +34,7 @@
   become: true
 
 - name: Uninstall apt-transport-https
-  apt:
+  package:
     name: apt-transport-https
     state: absent
   become: true

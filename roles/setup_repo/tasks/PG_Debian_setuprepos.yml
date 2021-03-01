@@ -1,5 +1,5 @@
 ---
-- name: Test if {{ edb_auth_conf }} exists
+- name: Verify if {{ edb_auth_conf }} exists
   stat:
     path: "{{ edb_auth_conf }}"
   register: auth_conf

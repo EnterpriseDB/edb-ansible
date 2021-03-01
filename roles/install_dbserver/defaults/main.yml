@@ -5,10 +5,10 @@ pg_type: "PG"
 pg_version: 12
 
 epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
-epas_deb_service: "edb-as@{{ pg_version }}-main"
+epas_service: "edb-as@{{ pg_version }}-main"
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 deb_cluster_name: "main"
-pg_deb_service: "postgresql@{{ pg_version }}-main"
+pg_service: "postgresql@{{ pg_version }}-main"
 
 supported_os:
   - CentOS7
