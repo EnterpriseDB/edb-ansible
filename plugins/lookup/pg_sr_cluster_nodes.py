@@ -51,6 +51,12 @@ class LookupModule(LookupBase):
         else:
             node_private_ip = terms[0]
 
+        # If no primary found in the inventory we return an empty list
+        if 'primary' not in variables['groups']:
+            return []
+
+        # Initiate pg_clusters and pg_primary_map for each primary node we have
+        # in the inventory.
         for host in variables['groups']['primary']:
             hostvars = myvars['hostvars'][host]
             private_ip = hostvars['private_ip']
@@ -70,25 +76,26 @@ class LookupModule(LookupBase):
             )
             pg_primary_map[private_ip] = private_ip
 
-        if 'standby' not in variables['groups']:
-            return pg_clusters[pg_primary_map[node_private_ip]]
-
-        for host in variables['groups']['standby']:
-            hostvars = myvars['hostvars'][host]
-            pg_standbys[host] = dict(
-                node_type='standby',
-                ansible_host=hostvars['ansible_host'],
-                hostname=hostvars.get('hostname',
-                                      hostvars.get('ansible_hostname')),
-                private_ip=hostvars['private_ip'],
-                upstream_node_private_ip=hostvars['upstream_node_private_ip'],
-                replication_type=hostvars.get('replication_type',
-                                              'asynchronous'),
-                inventory_hostname=hostvars['inventory_hostname']
-            )
+        # Populate pg_standbys dict if we have standby nodes in the inventory
+        if 'standby' in variables['groups']:
+            for host in variables['groups']['standby']:
+                hostvars = myvars['hostvars'][host]
+                pg_standbys[host] = dict(
+                    node_type='standby',
+                    ansible_host=hostvars['ansible_host'],
+                    hostname=hostvars.get('hostname',
+                                          hostvars.get('ansible_hostname')),
+                    private_ip=hostvars['private_ip'],
+                    upstream_node_private_ip=hostvars['upstream_node_private_ip'],
+                    replication_type=hostvars.get('replication_type',
+                                                  'asynchronous'),
+                    inventory_hostname=hostvars['inventory_hostname']
+                )
 
         pg_standbys_len = len(pg_standbys.keys())
 
+        # Append the standby nodes into the right pg_clusters item, based on
+        # standby's upstream node.
         while pg_standbys_len != 0:
 
             for k in list(pg_standbys.keys()):
