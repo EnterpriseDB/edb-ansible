@@ -1,7 +1,6 @@
 ---
 - name: Disable builtin postgresql module
   shell: >
-    # Disable the built-in PostgreSQL module:
     dnf -qy module disable postgresql
   args:
     executable: /bin/bash
