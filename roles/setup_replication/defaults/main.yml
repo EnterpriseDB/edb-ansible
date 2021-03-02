@@ -9,6 +9,10 @@ dsable_logging: yes
 force_replication: false
 use_hostname: false
 
+# EFM service information
+efm_version: 4.1
+efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
+
 synchronous_standby_names: ""
 synchronous_standbys: []
 standby_quorum_type: "any"

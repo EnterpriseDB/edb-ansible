@@ -20,12 +20,12 @@ $pcp_control is_running $node ${PGPORT}
 if [ $? -ne 0 ]; then
   exit 1
 fi
-for i in "${POOLERS[@]}"
+for POOLER in "${POOLERS[@]}"
 do
   # check if pgpool is running and accordingly attach
   $pcp_control is_running ${POOLER} ${PCP_PORT}
   if [ $? -eq 0 ]; then
-    export PCP_HOST=$i
+    export PCP_HOST=${POOLER}
     echo "Attaching node $node on ${PCP_HOST}"
     $pcp_control attach $node
     if [ "$role" = "p" ]; then

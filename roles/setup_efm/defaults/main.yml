@@ -16,6 +16,7 @@ pg_ssl: true
 efm_nodes_list: ""
 efm_cluster_name: "efm"
 efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
+edb_efm_lock_file: "/var/lock/{{ efm_cluster_name }}-{{ efm_version }}/{{ efm_cluster_name }}.lock"
 # common variables require for the role
 etc_hosts_lists: []
 primary_public_ip: ""
@@ -43,7 +44,7 @@ efm_default_parameters:
   - { name: local.timeout.final, value: "5" }
   - { name: remote.timeout, value: "5" }
   - { name: node.timeout, value: "5" }
-  - { name: amin.port, value: "{{ efm_admin_port }}" }
+  - { name: admin.port, value: "{{ efm_admin_port }}" }
 
 efm_physical_slot_param:
   - { name: update.physical.slots.period, value: "5" }
@@ -61,9 +62,14 @@ efm_properties: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.propertie
 efm_node_file: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.nodes"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 
-efm_packages:
+efm_packages_redhat:
   - java-1.8.0-openjdk
   - mailx
+  - edb-efm{{ efm_install_version }}
+
+efm_packages_debian:
+  - bsd-mailx
+  - openjdk-8-jdk
   - edb-efm{{ efm_install_version }}
 
 # Integration with pgpoolII
@@ -80,8 +86,11 @@ pgpool2_pcp_port: 9898
 supported_os:
   - CentOS7
   - CentOS8
-  - RHEL7
-  - RHEL8
+  - RedHat7
+  - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
 
 supported_pg_type:
   - EPAS
