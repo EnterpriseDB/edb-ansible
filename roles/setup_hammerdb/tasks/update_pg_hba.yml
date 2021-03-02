@@ -1,8 +1,5 @@
 ---
 
-- name: Reference pg_type variables
-  include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}.yml"
-
 - name: Initialize the hba_entries variable
   set_fact:
     hba_entries: >-
@@ -18,12 +15,12 @@
           'users': 'all',
           'databases': 'all',
           'contype': 'host',
-          'source': '{{ hostvars['primary1'].private_ip | default("127.0.0.1") }}/32',
+          'source': '{{ primary_private_ip | default("127.0.0.1") }}/32',
           'method': 'trust'
         }
       ]
 
-- name: Allow access from the hammerdb server
+- name: Allow access from the HammerDB server and local primary private IP address
   include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf

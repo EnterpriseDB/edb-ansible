@@ -4,11 +4,11 @@ DATE=`date +"%Y-%m-%dT%T%:z"`
 LDIR="${HOME}/results/driver/${DATE}"
 RDIR="${HOME}/results/sut/${DATE}"
 
-ssh -fn {{ hostvars['primary1'].private_ip }} ts-sysstat -o $RDIR
+ssh -fn {{ primary_private_ip }} ts-sysstat -o $RDIR
 (cd ${HOME}/HammerDB-{{ hammerdb_version }} && \\
 ts-sysstat -o $LDIR ./hammerdbcli << !
 source ${HOME}/runner.tcl
 !
 )
-ssh -fn {{ hostvars['primary1'].private_ip }} ts-sysstat -o $RDIR -s
+ssh -fn {{ primary_private_ip }} ts-sysstat -o $RDIR -s
 grep "TEST RESULT" /tmp/hammerdb.log | tail -n 1 > ${LDIR}/hammerdb.txt

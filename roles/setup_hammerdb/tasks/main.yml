@@ -1,10 +1,28 @@
 ---
 
+- name: Gather the pg_cluster_nodes information
+  set_fact:
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary private IP address
+  set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:  node.node_type == 'primary'
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
 - name: Include the HBA file update tasks
   include_tasks: update_pg_hba.yml
 
-- name: Include Postgres configuration for TPROC-C
-  include_tasks: configure_postgres_params.yml
+- name: Install packages
+  yum:
+    name:
+      - tmux
+  become: yes
+  ignore_errors: yes
 
 - name: Include HammerDB installation
   include_role:
@@ -19,13 +37,20 @@
 - name: Create TPROC-C loader.tcl
   template:
     dest: loader.tcl
-    src: ./templates/loader.tcl.template
+    src: loader.tcl.template
     mode: 0644
   become: no
+  vars:
+    primary_private_ip: "{{ primary_private_ip }}"
 
 - name: Create TPROC-C load script
   template:
-    src: ./templates/load-tproc-c.template
+    src: load-tproc-c.template
     dest: /usr/local/bin/load-tproc-c
     mode: 0755
   become: yes
+
+- name: Reset the variables based on the user input
+  set_fact:
+      primary_private_ip: ""
+  register: output
