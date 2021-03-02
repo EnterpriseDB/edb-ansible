@@ -35,10 +35,8 @@
 - name: Force cleanup based on force_initdb/replication
   block:
     - include_tasks: rm_replication.yml
-  when: >
-    ((force_initdb is defined and force_intidb)
-      or
-     (force_replication is defined and force_replication))
+  when: (force_initdb is defined and force_initdb)
+      or (force_replication is defined and force_replication)
   become: yes
 
 - name: Gather the cluste_nodes information

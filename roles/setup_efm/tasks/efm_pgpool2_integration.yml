@@ -32,6 +32,7 @@
   loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip,  wantlist=True) }}"
   loop_control:
     loop_var: node
+  run_once: true
   no_log: "{{ disable_logging }}"
 
 - name: Copy the pcp_control.sh to the server

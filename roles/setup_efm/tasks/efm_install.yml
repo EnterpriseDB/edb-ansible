@@ -1,13 +1,14 @@
 ---
-- name: install efm dependencies
-  yum:
-    name: "{{ efm_packages }}"
-  when: os in [ 'CentOS7','RHEL7']
+- name: Install EFM and dependencies
+  package:
+    name: "{{ efm_packages_redhat }}"
+    state: present
+  when: ansible_os_family == 'RedHat'
   become: yes
 
-- name: install efm dependencies
-  dnf:
-    name: "{{ efm_packages }}"
-  when: os in ['CentOS8','RHEL8']
+- name: Install EFM and dependencies
+  package:
+    name: "{{ efm_packages_debian }}"
+    state: present
+  when: ansible_os_family == 'Debian'
   become: yes
-

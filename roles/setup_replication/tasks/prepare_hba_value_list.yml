@@ -16,7 +16,7 @@
            "databases": "{{ pg_database }}"
            }
       ]
-  when: pg_ssl
+  when: not pg_ssl
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
@@ -38,7 +38,7 @@
            "databases": "{{ pg_database }}"
            }
       ]
-  when: not pg_ssl
+  when: pg_ssl
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node

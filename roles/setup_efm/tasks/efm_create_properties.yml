@@ -50,5 +50,18 @@
     group: root
     mode: 0644
   become: yes
-  when: not efm_service_file.stat.exists
+  when:
+  - not efm_service_file.stat.exists
+  - os != 'Debian9'
 
+- name: Copy the efm service file
+  template:
+    src: edb-efm.service
+    dest: "/lib/systemd/system/{{ efm_service }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  when:
+  - not efm_service_file.stat.exists
+  - os == 'Debian9'
