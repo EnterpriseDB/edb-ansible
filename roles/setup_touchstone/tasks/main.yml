@@ -1,0 +1,31 @@
+---
+
+- name: Install packages for Touchstone
+  yum:
+    name:
+      - cmake
+      - gcc
+      - make
+      - sysstat
+  become: yes
+  ignore_errors: yes
+
+- name: Download Touchstone
+  raw: curl -OL https://gitlab.com/touchstone/touchstone/-/archive/v{{ touchstone_version }}/touchstone-v{{ touchstone_version }}.tar.gz
+  become: no
+
+- name: Unpack Touchstone
+  raw: tar -xvf touchstone-v{{ touchstone_version }}.tar.gz
+  become: no
+
+- name: Build Touchstone
+  shell:
+    cmd: make release
+    chdir: touchstone-v{{ touchstone_version }}
+  become: no
+
+- name: Install Touchstone
+  shell:
+    cmd: make install
+    chdir: touchstone-v{{ touchstone_version }}/build/release
+  become: yes

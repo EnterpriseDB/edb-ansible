@@ -1,0 +1,32 @@
+---
+
+- name: Initialize the hba_entries variable
+  set_fact:
+    hba_entries: >-
+      [
+        {
+          'users': 'all',
+          'databases': 'all',
+          'contype': 'host',
+          'source': '{{ hostvars[inventory_hostname].hammerdb_server_private_ip | default("127.0.0.1") }}/32',
+          'method': 'trust'
+        },
+        {
+          'users': 'all',
+          'databases': 'all',
+          'contype': 'host',
+          'source': '{{ primary_private_ip | default("127.0.0.1") }}/32',
+          'method': 'trust'
+        }
+      ]
+
+- name: Allow access from the HammerDB server and local primary private IP address
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ hba_entries }}"
+
+- name: Reset hba_entries
+  set_fact:
+    hba_entries: []

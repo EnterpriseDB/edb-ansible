@@ -1,0 +1,5 @@
+---
+
+supported_os:
+  - CentOS8
+  - RHEL8
