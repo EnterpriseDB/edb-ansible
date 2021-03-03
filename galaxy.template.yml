@@ -21,7 +21,7 @@ documentation: "https://github.com/EnterpriseDB/edb-ansible/blob/master/README.m
 homepage: "https://github.com/EnterpriseDB/edb-ansible"
 issues: "https://github.com/EnterpriseDB/edb-ansible/issues"
 dependencies:
-  "community.postgresql": "*"
-  "ansible.posix": "*"
-  "community.general": "*"
-  "community.crypto": "*"
+  "community.postgresql": "1.1.1"
+  "ansible.posix": "1.1.1"
+  "community.general": "2.1.1"
+  "community.crypto": "1.4.0"
