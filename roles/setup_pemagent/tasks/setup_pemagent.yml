@@ -33,6 +33,15 @@
   when:
     - pem_server_info|length > 0
 
+- name: Remove pem agent based on force_pemserver/force_initdb/force_pemagent
+  block:
+    - import_tasks: rm_pemagent.yml
+  when: >
+      ((force_pemserver is defined and force_pemserver)
+       or (force_initdb is defined and force_initdb)
+       or (force_pemagent is defined and force_pemagent))
+  become: yes
+
 - name: Gather the PEM server host and information for /etc/hosts
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
@@ -53,16 +62,11 @@
 
 - name: Fetch PEM admin user password
   import_tasks: pem_agent_fetch_adm_password.yml
-  when:
-    - pem_server_exists
+  when: pem_server_exists
 
 - name: Create pemagent user on primary
   import_tasks: pem_agent_user.yml
-  when:
-    - group_names | select('search','primary') | list | count > 0
-
-- name: Prepare hba host ip lists
-  include_tasks: prepare_hba_value_list.yml
+  when: group_names | select('search','primary') | list | count > 0
 
 - name: Update /etc/hosts based on use_hostname
   block:
@@ -73,13 +77,13 @@
 
 - name: Install and configure pemagent on nodes
   block:
+    - import_tasks: pem_agent_hba.yml
     - import_tasks: pem_agent_install.yml
     - import_tasks: pem_agent_config.yml
   become: yes
 
 - name: Register database on primary and standby
   block:
-    - import_tasks: pem_agent_hba.yml
     - import_tasks: pem_agent_register_db.yml
   become: yes
 

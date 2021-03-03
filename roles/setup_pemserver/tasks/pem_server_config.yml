@@ -55,7 +55,6 @@
         - user: "{{ pg_owner }}"
           source: "127.0.0.1/32"
           state: present
-#  when: not pem_configured.stat.exists
 
 - name: Update agent to use hostssl
   include_role:

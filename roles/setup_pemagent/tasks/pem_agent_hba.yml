@@ -1,4 +1,38 @@
 ---
+- name: Prepare hba ssl list
+  set_fact:
+    pg_allow_ip_addresses: >-
+      {{ pg_allow_ip_addresses | default([]) }} + [
+        {
+          "users": "+pem_user",
+          "source": "{{ node_hostvars.private_ip }}/32",
+          "databases": "pem"
+          },
+          {
+           "users": "+pem_agent",
+           "source": "{{ node_hostvars.private_ip }}/32",
+           "databases": "pem",
+           "method": "cert"
+           },
+          {
+           "users": "{{ pg_pem_admin_user }}",
+           "source": "{{ node_hostvars.private_ip }}/32",
+           "databases": "pem",
+           "method": "scram-sha-256"
+           },
+      ]
+
+- name: Update PEM server to allow connections from the agent
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+    apply:
+      delegate_to: "{{ node.ansible_host }}"
+  vars:
+    pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
+  loop: "{{ pem_server_info }}"
+  loop_control:
+    loop_var: node
 
 - name: Set the local entries for pemagent
   set_fact:
