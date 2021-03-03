@@ -23,3 +23,5 @@ issues: "https://github.com/EnterpriseDB/edb-ansible/issues"
 dependencies:
   "community.postgresql": "*"
   "ansible.posix": "*"
+  "community.general": "*"
+  "community.crypto": "*"
