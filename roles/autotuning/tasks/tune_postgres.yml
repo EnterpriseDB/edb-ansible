@@ -7,7 +7,7 @@
     _sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
 
 - name: Gather Postgres settings
-  postgresql_info:
+  community.postgresql.postgresql_info:
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     port: "{{ pg_port }}"
     db: "{{ pg_database }}"

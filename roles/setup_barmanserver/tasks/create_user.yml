@@ -22,7 +22,7 @@
   changed_when: false
 
 - name: Set SELinux context of custom located barman home directory
-  sefcontext:
+  community.general.sefcontext:
     target: "{{ barman_home }}(/.*)?"
     setype: user_home_t
     state: present
@@ -32,7 +32,7 @@
     - barman_home != barman_default_home
 
 - name: Set SELinux context of barman's ssh directory
-  sefcontext:
+  community.general.sefcontext:
     target: "{{ barman_home }}/.ssh(/.*)?"
     setype: ssh_home_t
     state: present

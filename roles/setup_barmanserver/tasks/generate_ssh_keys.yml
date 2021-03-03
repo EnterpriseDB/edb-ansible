@@ -16,7 +16,7 @@
   become: true
 
 - name: Ensure barman user's SSH keys exist
-  openssh_keypair:
+  community.crypto.openssh_keypair:
     path: "{{ barman_home }}/.ssh/id_rsa"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
