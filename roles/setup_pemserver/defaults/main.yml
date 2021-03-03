@@ -2,7 +2,6 @@
 # efm credentials
 pg_version: "12"
 use_hostname: false
-force_pem_install: false
 pem_agent: false
 pass_dir: "~/.edb"
 
@@ -15,7 +14,8 @@ efm_version: "4.0"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "efm"
 
-pem_agent_service: pemagent
+pem_agent_service: "pemagent"
+pem_server_service: "httpd"
 
 pem_server_bin_path: "/usr/edb/pem/bin"
 pem_agent_bin_path: "/usr/edb/pem/agent/bin"
