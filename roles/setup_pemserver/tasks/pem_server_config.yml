@@ -74,13 +74,15 @@
   when: not pem_configured.stat.exists
   become: yes
 
-- name: Assign pg_monitor privilges
+- name: Assign pg_monitor/pem_admin privilges
   include_role:
     name: manage_dbserver
     tasks_from: manage_privileges
   vars:
     pg_grant_roles:
       - role: pg_monitor
+        user: "{{ pg_pem_admin_user }}"
+      - role: pem_admin
         user: "{{ pg_pem_admin_user }}"
   when: not pem_configured.stat.exists
 
