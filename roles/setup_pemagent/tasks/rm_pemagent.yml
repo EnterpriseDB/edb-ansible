@@ -1,0 +1,25 @@
+---
+- name: Gather service facts
+  service_facts:
+
+- name: Stop pemagent
+  systemd:
+    name: "{{ pem_agent_service }}"
+    daemon_reload: yes
+    state: stopped
+  when:
+    - ansible_facts.services[pem_agent_service] is defined
+    - ansible_facts.services[pem_agent_service].state == 'running'
+  become: yes
+
+- name: Remove pem files and directory
+  file:
+    path: /root/.pem
+    state: absent
+  with_items:
+     - "/root/.pem"
+     - "{{ pem_agent_bin_path }}/../etc/agent.cfg"
+     - "/var/log/pem/worker.log"
+     - "{{ pem_agent_bin_path }}/../etc/.agentregistered"
+     - "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}registered"
+  become: yes
