@@ -75,9 +75,16 @@
   when:
     - use_hostname
 
-- name: Install and configure pemagent on nodes
+- name: Configure pemagent and pemserver HBA
   block:
     - import_tasks: pem_agent_hba.yml
+  become: yes
+  # We limit the number of worker for this task to avoid any concurrency issue
+  # while updating PEM server HBA file.
+  throttle: 2
+
+- name: Install and configure pemagent on nodes
+  block:
     - import_tasks: pem_agent_install.yml
     - import_tasks: pem_agent_config.yml
   become: yes
