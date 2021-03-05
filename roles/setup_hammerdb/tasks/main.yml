@@ -1,5 +1,8 @@
 ---
 
+- name: Reference Postgres variables
+  include_vars: "{{ pg_type }}.yml"
+
 - name: Gather the pg_cluster_nodes information
   set_fact:
     pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
@@ -34,21 +37,8 @@
     name: setup_touchstone
     tasks_from: main
 
-- name: Create TPROC-C loader.tcl
-  template:
-    dest: loader.tcl
-    src: loader.tcl.template
-    mode: 0644
-  become: no
-  vars:
-    primary_private_ip: "{{ primary_private_ip }}"
-
-- name: Create TPROC-C load script
-  template:
-    src: load-tproc-c.template
-    dest: /usr/local/bin/load-tproc-c
-    mode: 0755
-  become: yes
+- name: Include the TPROC-C load script tasks
+  include_tasks: install_tproc-c_load_scripts.yml
 
 - name: Reset the variables based on the user input
   set_fact:

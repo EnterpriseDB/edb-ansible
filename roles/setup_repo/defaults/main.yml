@@ -48,6 +48,7 @@ supported_os:
 supported_pg_type:
   - EPAS
   - PG
+  - RDS
 
 supported_pg_version:
   - 10

@@ -1,0 +1,13 @@
+---
+
+- name: Reference Postgres variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Install pgpass file
+  template:
+    dest: .pgpass
+    src: pgpass.template
+    mode: 0600
+  become: no
+  when: pg_type in ['RDS']
+
