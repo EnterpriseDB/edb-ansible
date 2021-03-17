@@ -3,7 +3,7 @@
 - name: Reference Postgres variables
   include_vars: "{{ pg_type }}.yml"
 
-- name: Reference HammerDB variables
+- name: Reference HammerDB TPROC-C variables
   include_vars: "hammerdb-tproc-c.yml"
 
 - name: Create TPROC-C runner.tcl

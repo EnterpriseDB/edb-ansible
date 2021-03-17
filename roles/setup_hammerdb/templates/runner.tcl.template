@@ -24,7 +24,7 @@ diset tpcc pg_duration 9
 diset tpcc pg_rampup 5
 vuset logtotemp 1
 loadscript
-vuset vu 96
+vuset vu {{ tprocc_users }}
 vucreate
 vurun
 runtimer 2200
