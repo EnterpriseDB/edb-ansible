@@ -17,13 +17,14 @@ dbset db pg
 diset connection pg_host {{ primary_private_ip }}
 diset connection pg_port {{ pg_port }}
 diset tpcc pg_raiseerror true
-diset tpcc pg_superuser enterprisedb
+diset tpcc pg_superuser {{ pg_superuser }}
+diset tpcc pg_count_ware {{ tprocc_warehouses }}
 diset tpcc pg_driver timed
-diset tpcc pg_duration 30
+diset tpcc pg_duration 9
 diset tpcc pg_rampup 5
 vuset logtotemp 1
 loadscript
-vuset vu 96
+vuset vu {{ tprocc_users }}
 vucreate
 vurun
 runtimer 2200

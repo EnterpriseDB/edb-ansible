@@ -1,0 +1,25 @@
+---
+
+- name: Reference Postgres variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Reference HammerDB TPROC-C variables
+  include_vars: "hammerdb-tproc-c.yml"
+
+- name: Create TPROC-C runner.tcl
+  template:
+    dest: runner.tcl
+    src: runner.tcl.template
+    mode: 0644
+  become: no
+  vars:
+    primary_private_ip: "{{ primary_private_ip }}"
+
+- name: Create TPROC-C run script
+  template:
+    src: run-tproc-c.template
+    dest: /usr/local/bin/run-tproc-c
+    mode: 0755
+  become: yes
+  vars:
+    primary_private_ip: "{{ primary_private_ip }}"

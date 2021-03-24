@@ -1,0 +1,6 @@
+---
+
+tprocc_warehouses: 600
+tprocc_users: 96
+
+max_connections: 300

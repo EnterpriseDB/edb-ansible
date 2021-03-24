@@ -19,6 +19,7 @@
     name:
       - curl
       - libpq
+      - postgresql
       - tcl
       - tmux
   become: yes
@@ -32,23 +33,20 @@
 - name: Include HammerDB installation
   include_tasks: install_hammerdb.yml
 
-- name: Create TPROC-C runner.tcl
-  template:
-    dest: runner.tcl
-    src: runner.tcl.template
-    mode: 0644
-  become: no
-  vars:
-    primary_private_ip: "{{ primary_private_ip }}"
+- name: Create TPROC-C run scripts
+  include_role:
+    name: setup_hammerdb
+    tasks_from: install_tproc-c_run_scripts
 
-- name: Create TPROC-C run script
-  template:
-    src: run-tproc-c.template
-    dest: /usr/local/bin/run-tproc-c
-    mode: 0755
-  become: yes
-  vars:
-    primary_private_ip: "{{ primary_private_ip }}"
+- name: Create TPROC-C load scripts
+  include_role:
+    name: setup_hammerdb
+    tasks_from: install_tproc-c_load_scripts
+
+- name: Create .pgpass file
+  include_role:
+    name: setup_hammerdb
+    tasks_from: install_pgpass
 
 - name: Reset the variables based on the user input
   set_fact:
