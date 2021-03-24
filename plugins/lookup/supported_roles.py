@@ -67,7 +67,6 @@ GROUP_ROLES = {
         'install_dbserver'
     ],
     'hammerdbserver': [
-        'setup_repo',
         'setup_hammerdbserver'
     ]
 }
