@@ -11,6 +11,7 @@ use_hostname: false
 
 # EFM service information
 efm_version: 4.1
+efm_cluster_name: "efm"
 efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
 
 synchronous_standby_names: ""
