@@ -327,7 +327,7 @@ playbook:
 ```yaml
 ---
 - hosts: all
-  name: Postgres deployement playbook
+  name: Postgres deployment playbook
   become: yes
   gather_facts: yes
 
