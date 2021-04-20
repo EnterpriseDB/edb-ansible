@@ -101,6 +101,18 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
+- name: Add PgPoolII hosts to etc_hosts_lists
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip, wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when:
+    - use_hostname
+    - efm_pgpool2_integration
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
 - name: Ensure we have efm user in primary database
   import_tasks: create_efm_user.yml
   run_once: true

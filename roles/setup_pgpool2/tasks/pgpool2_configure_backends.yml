@@ -6,7 +6,7 @@
       {{ pgpool2_backends_configuration | default([]) }} + [
         {
           'key': 'backend_hostname{{ ansible_loop.index0 }}',
-          'value': '{{ backend_item.private_ip }}',
+          'value': '{{ backend_item.hostname }}',
           'state': 'present',
           'quoted': true
         },
