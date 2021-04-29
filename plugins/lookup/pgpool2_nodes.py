@@ -37,7 +37,7 @@ class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 
         nodes = []
-        if len(variables['groups']['pgpool2']) == 0:
+        if len(variables['groups'].get('pgpool2', [])) == 0:
             return []
 
         myvars = getattr(self._templar, '_available_variables', {})
