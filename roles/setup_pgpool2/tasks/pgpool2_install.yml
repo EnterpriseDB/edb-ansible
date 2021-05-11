@@ -16,7 +16,7 @@
     name: "openssl"
   when:
     - os in ['CentOS7', 'RHEL7']
-    - pgpool2_ssl is true
+    - pgpool2_ssl
   become: yes
 
 - name: Install openssl package on CentOS8 or RHEL8
@@ -24,5 +24,5 @@
     name: "openssl"
   when:
     - os in ['CentOS8', 'RHEL8']
-    - pgpool2_ssl is true
+    - pgpool2_ssl
   become: yes

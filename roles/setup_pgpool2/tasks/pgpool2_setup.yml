@@ -53,7 +53,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 - name: Open Watchdog UDP port {{ pgpool2_wd_port | default('') }}
@@ -67,7 +67,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 - name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port | default('') }}
@@ -81,7 +81,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 - name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
@@ -95,7 +95,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 # Tasks for setting up pgpoolII
