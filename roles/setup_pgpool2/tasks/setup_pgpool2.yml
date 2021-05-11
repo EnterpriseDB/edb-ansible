@@ -34,7 +34,7 @@
     msg: "Watchdog settings not valid: pgpool2_vip = '{{ pgpool2_vip }}',
           pgpool2_vip_dev = '{{ pgpool2_vip_dev }}'"
   when:
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
     - (pgpool2_vip is not defined or pgpool2_vip|length == 0) or
       (pgpool2_vip_dev is not defined or pgpool2_vip_dev|length == 0)
 
@@ -175,12 +175,12 @@
 - name: Include the pgpool2_setup_ssl
   include_tasks: pgpool2_setup_ssl.yml
   when:
-    - pgpool2_ssl is true
+    - pgpool2_ssl
 
 - name: Include the pgpool2_configure_loadbalancing
   include_tasks: pgpool2_configure_loadbalancing.yml
   when:
-    - pgpool2_load_balancing is true
+    - pgpool2_load_balancing
 
 - name: Include the pgpool2_configure_backend_pg_hba
   include_tasks:
@@ -198,7 +198,7 @@
 - name: Include the pgpool2_setup_watchdog
   include_tasks: pgpool2_setup_watchdog.yml
   when:
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   vars:
     pgpool2_node_list: "{{ _pgpool2_node_list }}"
     pgpool2_current_node: "{{ _pgpool2_current_node }}"
