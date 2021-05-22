@@ -25,4 +25,4 @@
     src: hammerdb-{{ hammerdb_version }}-azure-db.patch
     basedir: HammerDB-{{ hammerdb_version }}
     strip: 1
-  when: azure_db_hackery is defined
+  when: azure_db_hackery
