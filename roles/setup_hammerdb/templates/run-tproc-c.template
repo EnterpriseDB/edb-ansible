@@ -15,7 +15,8 @@ ssh -fn {{ primary_private_ip }} sudo /usr/local/bin/ts-sysstat -o $RDIR
 ssh {{ primary_private_ip }} sudo -iu {{ pg_owner }} psql \
 		-h {{ primary_private_ip }} -c "checkpoint;" postgres
 {% else %}
-{% if azure_db_hackery is not defined and not azure_db_hackery %}
+{% if azure_db_hackery is defined and azure_db_hackery %}
+{% else %}
 psql -h {{ primary_private_ip }} -c "checkpoint;" postgres {{ pg_superuser_override | default(pg_superuser, true) }}
 {% endif %}
 {% endif %}
