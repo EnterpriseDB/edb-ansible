@@ -1,11 +1,7 @@
 ---
-
-- name: Reference variables
-  include_vars: "{{ pg_type }}.yml"
-
 - name: Set the os variable
   set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
   fail:
@@ -24,11 +20,14 @@
          Supported versions are {{ supported_efm_version }}"
   when: efm_version | string not in supported_efm_version
 
+- name: Reference variables
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
 - name: Gather service facts
   service_facts:
 
 - name: Open EFM TCP port {{ efm_port }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ efm_port }}/tcp"
     permanent: yes
     state: enabled
@@ -40,7 +39,7 @@
   become: yes
 
 - name: Open EFM TCP admin. port {{ efm_admin_port }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ efm_admin_port }}/tcp"
     permanent: yes
     state: enabled
@@ -51,74 +50,67 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: yes
 
-- name: Set force_efm_install based on the user input
+- name: Gather the cluste_nodes information and efm_install_version
   set_fact:
-    force_efm_install: "{{  hostvars[inventory_hostname].force_efm_install }}"
-  when:  hostvars[inventory_hostname].force_efm_install is defined
-  register: output
-
-- name: Update etc_hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
-  when:
-    - use_hostname
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+    efm_install_version : "{{ efm_version | replace('.','') }}"
+  run_once: true
 
 - name: Remove before we start as per force_install
   block:
     - include_tasks: rm_efm_install_config.yml
   become: yes
-  when: force_efm_install
+  when: >
+    (force_efm is defined and force_efm)
+    or (force_initdb is defined and force_initdb)
+    or (force_replication is defined and force_replication)
 
-- name: Prepare etc_hosts_lists
+- name: Prepare etc_hosts_lists and efm_nodes_list based on use_hostname
   set_fact:
     etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+    efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':' + efm_port | string + ' ' }}"
+  loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
   when: use_hostname
+  run_once: true
   no_log: "{{ disable_logging }}"
-
-- name: Get the primary information
-  set_fact:
-    primary_public_ip: "{{ node.ansible_host }}"
-    primary_private_ip: "{{ node.private_ip }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
-  loop_control:
-    loop_var: node
-  when:  node.node_type == 'primary'
-  no_log: "{{ disable_logging }}"
-
-- name: Set efm install version
-  set_fact:
-    efm_install_version : "{{ efm_version | replace('.','') }}"
 
 - name: Prepare efm node list
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':' + efm_port | string + ' ' }}"
   when:
     - not use_hostname
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+  loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
-  no_log: "{{ disable_logging }}"
-
-- name: Prepare efm node list based on hostname
-  set_fact:
-    efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':' + efm_port | string + ' ' }}"
-  when:
-    - node.hostname is defined
-    - use_hostname
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
-  loop_control:
-    loop_var: node
+  run_once: true
   no_log: "{{ disable_logging }}"
 
 - name: Prepare host ip lists based on allow_node_ips
   include_tasks: prepare_hba_value_list.yml
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary information
+  set_fact:
+    primary_public_ip: "{{ node.ansible_host }}"
+    primary_private_ip: "{{ node.private_ip }}"
+  when: node.node_type == 'primary'
+  loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Add PgPoolII hosts to etc_hosts_lists
+  set_fact:
+    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip, wantlist=True) }}"
+  loop_control:
+    loop_var: node
+  when:
+    - use_hostname
+    - efm_pgpool2_integration
+  run_once: true
   no_log: "{{ disable_logging }}"
 
 - name: Ensure we have efm user in primary database
@@ -127,8 +119,11 @@
   no_log: "{{ disable_logging }}"
   delegate_to: "{{ primary_public_ip }}"
 
-- name: Add localhost in hba ip list
-  import_tasks: localhost_hba_value_list.yml
+- name: Update etc_hosts based on use_hostname
+  block:
+    - import_tasks: linux_update_etc_hosts.yml
+  become: yes
+  when: use_hostname
 
 - name: EFM installation
   block:
@@ -156,7 +151,6 @@
     - import_tasks: efm_configure.yml
   no_log: "{{ disable_logging }}"
   become: yes
-
 
 - name: Efm parameters settings
   include_tasks: efm_cluster_set_params.yml

@@ -9,6 +9,20 @@
 edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
 edb_gpg_key_8: "https://yum.enterprisedb.com/ENTERPRISEDB-GPG-KEY"
 
+# EDB repository username and password
+repo_username: ""
+repo_password: ""
+
+# debian/ubuntu Repo
+edb_deb_repo_url: "deb [arch=amd64] https://apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"
+edb_deb_9_repo_url: "deb https://{{ repo_username }}:{{ repo_password }}@apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"
+edb_deb_keys: "https://apt.enterprisedb.com/edb-deb.gpg.key"
+edb_auth_conf: "/etc/apt/auth.conf.d/edb.conf"
+edb_auth_conf_url: "machine apt.enterprisedb.com"
+
+pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+
 # Postgresql Repos
 pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
@@ -21,19 +35,20 @@ epel_gpg_key_8: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8"
 
 os: ""
 pg_type: "PG"
-yum_username: ""
-yum_password: ""
-force_install: false
 
 supported_os:
   - CentOS7
   - CentOS8
-  - RHEL7
-  - RHEL8
+  - RedHat7
+  - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
 
 supported_pg_type:
   - EPAS
   - PG
+  - RDS
 
 supported_pg_version:
   - 10

@@ -1,6 +1,6 @@
 ---
 - name: Check database is in read/write mode
-  postgresql_query:
+  community.postgresql.postgresql_query:
     query: "SELECT pg_catalog.pg_is_in_recovery()"
     port: "{{ pg_port }}"
     db: "{{ pg_database }}"
@@ -12,7 +12,7 @@
   register: db_status
 
 - name: Grant object privilege to users
-  postgresql_privs:
+  community.postgresql.postgresql_privs:
     type: "{{ line_item.type }}"
     state: "{{ line_item.grant | default('present') }}"
     privs: "{{ line_item.privileges }}"
@@ -34,7 +34,7 @@
     - pg_grant_privileges|length > 0
 
 - name: Grant role to users
-  postgresql_membership:
+  community.postgresql.postgresql_membership:
     group: "{{ line_item.role }}"
     target_role: "{{ line_item.user }}"
     state: "{{ line_item.grant|default('present') }}"

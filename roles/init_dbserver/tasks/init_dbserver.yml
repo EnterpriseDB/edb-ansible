@@ -1,15 +1,7 @@
 ---
-
 - name: Set the os variable
   set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
-
-- name: Reference pg_type variables
-  include_vars: "{{ pg_type }}.yml"
-
-- name: Reference ssl variables
-  include_vars: edb-ssl.yml
-  when: pg_ssl
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
   fail:
@@ -22,11 +14,18 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
+- name: Reference ssl variables
+  include_vars: edb-ssl.yml
+  when: pg_ssl
+
 - name: Gather service facts
   service_facts:
 
 - name: Open Postgres TCP port {{ pg_port }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"
     permanent: yes
     state: enabled
@@ -37,16 +36,12 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: yes
 
-- name: Set force_initdb based on the user input
-  set_fact:
-    force_initdb: "{{ hostvars[inventory_hostname].force_initdb }}"
-  when: hostvars[inventory_hostname].force_initdb is defined
-  register: output
-
 - name: Force cleanup based on force_initdb
   block:
     - include_tasks: rm_initdb.yml
-  when: force_initdb
+  when:
+    - force_initdb is defined
+    - force_initdb
   become: yes
 
 - name: Gather the host and information for /etc/hosts
@@ -55,6 +50,7 @@
   loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
   loop_control:
     loop_var: node
+  run_once: true
   when: use_hostname
 
 - name: Update etc_hosts based on use_hostname
@@ -77,8 +73,3 @@
   become: yes
   when:
      - pg_ssl
-
-- name: Reset force_initdb based on the user input
-  set_fact:
-    force_initdb: false
-    etc_hosts_lists: []

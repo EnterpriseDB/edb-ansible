@@ -1,0 +1,91 @@
+---
+
+- name: Check T-shirt Size
+  fail:
+    msg: "T-shirt size = {{ tshirt_size }} is not supported.
+         Available T-shirt sizes are {{ supported_tshirt_size }}"
+  when: tshirt_size not in supported_tshirt_size
+
+- name: Reference HammerDB TPROC-C variables
+  include_vars: "hammerdb-tproc-c.yml"
+
+- name: Reference HammerDB T-shirt variables
+  include_vars: "hammerdb_{{ tshirt_size }}.yml"
+
+- name: Reference Postgres variables
+  include_vars: "{{ pg_type }}.yml"
+
+- name: Gather the pg_cluster_nodes information
+  set_fact:
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary private IP address
+  set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:  node.node_type == 'primary'
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Include the HBA file update tasks
+  include_tasks: update_pg_hba.yml
+
+- name: Install packages
+  yum:
+    name:
+      - tmux
+  become: yes
+  ignore_errors: yes
+
+- name: Include HammerDB installation
+  include_role:
+    name: setup_hammerdbserver
+    tasks_from: install_hammerdb
+
+- name: Include Touchstone installation
+  include_role:
+    name: setup_touchstone
+    tasks_from: main
+
+- name: Include the TPROC-C load script tasks
+  include_tasks: install_tproc-c_load_scripts.yml
+
+- name: Gather hardware informations
+  set_fact:
+    _sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
+
+- name: Set the variable _pg_shared_buffers_mb for HammerDB TPROC-C
+  set_fact:
+    _pg_shared_buffers_mb: 24576
+
+- name: Set the variable _pg_effective_cache_size_mb for HammerDB TPROC-C
+  set_fact:
+    _pg_effective_cache_size_mb: >-
+      {{ ((_sys_memtotal_mb | int - _pg_shared_buffers_mb | int) - 4096) }}
+
+- name: Re-initialize the Postgres parameters for {{ tshirt_size }} t-shirt size
+  set_fact:
+    _pg_postgres_conf_params:
+      - name: max_connections
+        value: "{{ max_connections }}"
+      - name: shared_buffers
+        value: "{{ _pg_shared_buffers_mb }}MB"
+      - name: effective_cache_size
+        value: "{{ _pg_effective_cache_size_mb }}MB"
+      - name: max_wal_size
+        value: "{{ max_wal_size }}"
+
+- name: Re-apply Postgres parameters for {{ tshirt_size }} t-shirt size
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params: "{{ _pg_postgres_conf_params }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Reset the variables based on the user input
+  set_fact:
+      primary_private_ip: ""
+  register: output

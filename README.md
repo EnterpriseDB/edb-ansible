@@ -37,8 +37,8 @@ internet, mainly connection to the following sites:
 This role requires following compulsory parameters:
 
   * `pg_type`: "EPAS" or "PG"
-  * `yum_username`: EDB repository's username
-  * `yum_password`: EDB yum repository's password.
+  * `repo_username`: EDB repository's username
+  * `repo_password`: EDB yum repository's password.
 
 For access to EDB repository, you can use following link:
 [EDB yum access](https://www.enterprisedb.com/user/register?destination=/repository-access-request%3Fdestination%3Dnode/1255704%26resource%3D1255704%26ma_formid%3D2098)
@@ -327,7 +327,7 @@ playbook:
 ```yaml
 ---
 - hosts: all
-  name: Postgres deployement playbook
+  name: Postgres deployment playbook
   become: yes
   gather_facts: yes
 
@@ -339,8 +339,8 @@ playbook:
       set_fact:
         pg_version: 13
         pg_type: "PG"
-        yum_username: ""
-        yum_password: ""
+        repo_username: ""
+        repo_password: ""
         disable_logging: false
 
   roles:
@@ -420,7 +420,7 @@ $ ansible-playbook playbook.yml \
   -i inventory.yml \
   -u ec2-user \
   --private-key <key.pem> \
-  --extra-vars="pg_version=12 pg_type=EPAS yum_username=xxxxx yum_password=xxxxx"
+  --extra-vars="pg_version=12 pg_type=EPAS repo_username=xxxxx repo_password=xxxxx"
 ```
 
 ## Database engines supported

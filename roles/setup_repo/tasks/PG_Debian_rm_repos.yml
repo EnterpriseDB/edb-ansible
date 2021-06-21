@@ -1,0 +1,40 @@
+---
+- name: Remove EDB auth conf
+  file:
+    path: "{{ edb_auth_conf }}"
+    state: absent
+  become: true
+
+- name: Remove EDB GPGP Debian keys
+  apt_key:
+    url: "{{ edb_deb_keys }}"
+    state: absent
+  become: true
+
+- name: Remove EDB Debian repo
+  apt_repository:
+    repo: "{{ edb_deb_repo_url }}"
+    state: absent
+    filename: "edb-{{ ansible_distribution_release }}.list"
+  become: true
+
+- name: Remove PG Debian keys
+  apt_key:
+    url: "{{ pg_deb_keys }}"
+    state: absent
+  when: pg_type == 'PG'
+  become: true
+
+- name: Remove PG Debian repo
+  apt_repository:
+    repo: "{{ pg_deb_repo_url }}"
+    state: absent
+    filename: "pgdg.list"
+  when: pg_type == 'PG'
+  become: true
+
+- name: Uninstall apt-transport-https
+  package:
+    name: apt-transport-https
+    state: absent
+  become: true

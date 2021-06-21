@@ -1,0 +1,35 @@
+---
+- name: Stop the service {{ epas_service }}
+  systemd:
+    name: "{{ epas_service }}"
+    state: stopped
+  ignore_errors: yes
+  become: true
+
+- name: Remove EPAS Packages
+  package:
+    name:
+      - python3-pip
+      - python3-psycopg2
+      - edb-as{{ pg_version }}-server
+      - edb-as{{ pg_version }}-server-core
+      - edb-as{{ pg_version }}-server-edb-modules
+      - edb-as{{ pg_version }}-server-client
+      - edb-as{{ pg_version }}-server-sslutils
+      - edb-as{{ pg_version }}-server-indexadvisor
+      - edb-as{{ pg_version }}-server-sqlprofiler
+      - edb-as{{ pg_version }}-server-sqlprotect
+      - edb-as{{ pg_version }}-server-sslutils
+    state: absent
+    update_cache: yes
+  become: true
+
+- name: Remove python-psycopg2
+  package:
+    name:
+      - python-psycopg2
+      - python-ipaddress
+    state: absent
+    update_cache: yes
+  when: os in ['Ubuntu18', 'Debian9']
+  become: true

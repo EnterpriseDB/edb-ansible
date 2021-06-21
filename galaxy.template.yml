@@ -6,19 +6,22 @@ authors:
 - "Doug Ortiz"
 - "Vibhor Kumar (Reviewer)"
 - "Julien Tachoires"
-dependencies:
 description: This Ansible Galaxy Role sets up and configures the repositories from which packages will be retrieved for any Postgres or EnterpriseDB Postgresql Advanced Server installations.
 license:
 - "BSD-3-Clause"
 license_file: ''
-tags: 
+tags:
 - database
 - postgresql
 - postgres
 - edb
 - repo
-dependencies: {}
 repository: "https://github.com/EnterpriseDB/edb-ansible"
 documentation: "https://github.com/EnterpriseDB/edb-ansible/blob/master/README.md"
 homepage: "https://github.com/EnterpriseDB/edb-ansible"
 issues: "https://github.com/EnterpriseDB/edb-ansible/issues"
+dependencies:
+  "community.postgresql": "1.1.1"
+  "ansible.posix": "1.1.1"
+  "community.general": "2.1.1"
+  "community.crypto": "1.4.0"

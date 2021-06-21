@@ -45,17 +45,18 @@ class LookupModule(LookupBase):
 
         myvars = getattr(self._templar, '_available_variables', {})
 
-        if ('standby' not in myvars['group_names']
-                and 'primary' not in myvars['group_names']
-                and len(terms) == 0):
-            return []
-
         # If no terms, we'll used the current private IP
         if len(terms) == 0:
             node_private_ip = myvars['hostvars'][variables['inventory_hostname']]['private_ip']
         else:
             node_private_ip = terms[0]
 
+        # If no primary found in the inventory we return an empty list
+        if 'primary' not in variables['groups']:
+            return []
+
+        # Initiate pg_clusters and pg_primary_map for each primary node we have
+        # in the inventory.
         for host in variables['groups']['primary']:
             hostvars = myvars['hostvars'][host]
             private_ip = hostvars['private_ip']
@@ -75,25 +76,26 @@ class LookupModule(LookupBase):
             )
             pg_primary_map[private_ip] = private_ip
 
-        if 'standby' not in variables['groups']:
-            return pg_clusters[pg_primary_map[node_private_ip]]
-
-        for host in variables['groups']['standby']:
-            hostvars = myvars['hostvars'][host]
-            pg_standbys[host] = dict(
-                node_type='standby',
-                ansible_host=hostvars['ansible_host'],
-                hostname=hostvars.get('hostname',
-                                      hostvars.get('ansible_hostname')),
-                private_ip=hostvars['private_ip'],
-                upstream_node_private_ip=hostvars['upstream_node_private_ip'],
-                replication_type=hostvars.get('replication_type',
-                                              'asynchronous'),
-                inventory_hostname=hostvars['inventory_hostname']
-            )
+        # Populate pg_standbys dict if we have standby nodes in the inventory
+        if 'standby' in variables['groups']:
+            for host in variables['groups']['standby']:
+                hostvars = myvars['hostvars'][host]
+                pg_standbys[host] = dict(
+                    node_type='standby',
+                    ansible_host=hostvars['ansible_host'],
+                    hostname=hostvars.get('hostname',
+                                          hostvars.get('ansible_hostname')),
+                    private_ip=hostvars['private_ip'],
+                    upstream_node_private_ip=hostvars['upstream_node_private_ip'],
+                    replication_type=hostvars.get('replication_type',
+                                                  'asynchronous'),
+                    inventory_hostname=hostvars['inventory_hostname']
+                )
 
         pg_standbys_len = len(pg_standbys.keys())
 
+        # Append the standby nodes into the right pg_clusters item, based on
+        # standby's upstream node.
         while pg_standbys_len != 0:
 
             for k in list(pg_standbys.keys()):
@@ -117,6 +119,20 @@ class LookupModule(LookupBase):
 
             pg_standbys_len = len(pg_standbys.keys())
 
-        if node_private_ip not in pg_primary_map:
-            return []
-        return pg_clusters[pg_primary_map[node_private_ip]]
+
+        if node_private_ip in pg_primary_map:
+            # Current node is part of one of the SR clusters found
+            return pg_clusters[pg_primary_map[node_private_ip]]
+        else:
+            primary_private_ips = list(pg_clusters.keys())
+            # If the current node is not part of any SR cluster found, but,
+            # only one SR cluster has been found, then we return this SR
+            # cluster because there is no doubt.
+            if len(primary_private_ips) == 1:
+                return pg_clusters[primary_private_ips[0]]
+            else:
+                raise AnsibleError(
+                    "Unable to find the SR cluster topology because multiple "
+                    "SR clusters were found and this current node does not "
+                    "appear to be part of any of them"
+                )

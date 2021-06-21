@@ -1,0 +1,9 @@
+---
+
+- name: Download HammerDB
+  raw: curl -OL https://github.com/TPC-Council/HammerDB/releases/download/v{{ hammerdb_version }}/HammerDB-{{ hammerdb_version }}-Linux.tar.gz
+  become: no
+
+- name: Install HammerDB
+  raw: tar -xvf HammerDB-{{ hammerdb_version }}-Linux.tar.gz
+  become: no

@@ -1,5 +1,4 @@
 ---
-
 - name: Update the pgpass with replication users password
   include_role:
     name: manage_dbserver

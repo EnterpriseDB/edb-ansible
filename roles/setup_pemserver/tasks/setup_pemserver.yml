@@ -22,7 +22,7 @@
   service_facts:
 
 - name: Open PEM TCP port 8443
-  firewalld:
+  ansible.posix.firewalld:
     port: "8443/tcp"
     permanent: yes
     state: enabled
@@ -57,16 +57,12 @@
   when:
     - use_hostname
 
-- name: Set force_pem_install based on the user input
-  set_fact:
-    force_pem_install: "{{ node_hostvars.force_pem_install }}"
-  when: node_hostvars.force_pem_install is defined
-  register: output
-
-- name: Remove pem server based on force_pem_install
+- name: Remove pem server based on force_pemserver/force_initdb
   block:
     - import_tasks: rm_pem_server_install.yml
-  when: force_pem_install
+  when: >
+      ((force_pemserver is defined and force_pemserver)
+       or (force_initdb is defined and force_initdb))
   become: yes
 
 - name: Install and configure pemserver

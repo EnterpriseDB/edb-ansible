@@ -1,7 +1,7 @@
 ---
 
-- name: Reference EPAS Variables
-  include_vars: "{{ pg_type }}.yml"
+- name: Reference Postgres variables
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Include manage dbserver tasks
   block:

@@ -1,0 +1,30 @@
+---
+- name: Stop the service {{ pg_service }}
+  systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+  become: true
+
+- name: Remove postgreSQL
+  package:
+    name:
+      - ca-certificates
+      - python3-pycurl
+      - python3-psycopg2
+      - postgresql-{{ pg_version }}
+      - postgresql-{{ pg_version }}
+      - postgresql-server-dev-{{ pg_version }}
+      - postgresql-{{ pg_version }}-sslutils
+    state: absent
+    update_cache: yes
+  become: true
+
+- name: Remove python-psycopg2
+  package:
+    name:
+      - python-psycopg2
+      - python-ipaddress
+    state: absent
+    update_cache: yes
+  when: os in ['Ubuntu18','Debian9', 'Debian10']
+  become: true

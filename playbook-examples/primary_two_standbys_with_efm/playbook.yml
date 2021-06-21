@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  name: Postgres deployement playbook
+  name: Postgres deployment playbook
   become: yes
   gather_facts: yes
 
@@ -12,8 +12,8 @@
       set_fact:
         pg_version: 13         # Postgres Version
         pg_type: "PG"          # Postgres type: EPAS/PG
-        yum_username: "xxxx"   # EDB Repo username
-        yum_password: "xxxx"   # EDB Repo password
+        repo_username: "xxxx"   # EDB Repo username
+        repo_password: "xxxx"   # EDB Repo password
 
   roles:
     - role: setup_repo

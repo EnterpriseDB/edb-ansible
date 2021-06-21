@@ -1,0 +1,21 @@
+---
+- name: Remove PG/EDB repos and epel-release packages
+  package:
+    name:
+      - pgdg-redhat-repo
+      - epel-release
+      - edb-repo
+    state: removed
+  become: yes
+
+- name: Remove repo file
+  file:
+    path: "{{ item_file }}"
+    state: absent
+  with_items:
+    - "/etc/yum.repos.d/pgdg-redhat-all.repo"
+    - "/etc/yum.repos.d/edb.repo"
+    - "/etc/yum.repos.d/edb.repo.rpmsave"
+  loop_control:
+    loop_var: item_file
+  become: yes

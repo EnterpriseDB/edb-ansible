@@ -65,6 +65,10 @@ GROUP_ROLES = {
         'setup_repo',
         'setup_barmanserver',
         'install_dbserver'
+    ],
+    'hammerdbserver': [
+        'setup_repo',
+        'setup_hammerdbserver'
     ]
 }
 
@@ -105,5 +109,13 @@ class LookupModule(LookupBase):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_barman'])
+                )
+            # Special case for the primary nodes when the host variable
+            # hammerdb is set to true.
+            if (group in ['primary']
+                    and myvars['hostvars'][hostname].get('hammerdb', False)):
+                supported_roles = list(
+                    set(supported_roles)
+                    | set(['setup_hammerdb'])
                 )
         return supported_roles

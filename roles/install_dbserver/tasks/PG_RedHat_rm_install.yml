@@ -1,0 +1,38 @@
+---
+- name: Stop the PG service if it's running
+  systemd:
+    name: postgresql-{{ pg_version }}
+    state: stopped
+  become: yes
+  ignore_errors: yes
+
+- name: Remove require python package
+  package:
+    name:
+      - python-pycurl
+      - libselinux-python
+      - python-psycopg2
+      - python-ipaddress
+    state: absent
+  when: os in ['RedHat7','CentOS7']
+  become: yes
+
+- name: Remove require python package
+  package:
+    name:
+      - python3-pycurl
+      - python3-libselinux
+      - python3-psycopg2
+    state: absent
+  become: yes
+  when: os in ['RedHat8','CentOS8']
+
+- name: Remove Postgres
+  package:
+    name:
+      - postgresql{{ pg_version }}
+      - postgresql{{ pg_version }}-server
+      - postgresql{{ pg_version }}-contrib
+      - sslutils_{{ pg_version }}
+    state: absent
+  become: yes

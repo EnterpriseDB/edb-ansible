@@ -1,0 +1,70 @@
+---
+- name: Download EDB GPG key for RedhHat 8
+  rpm_key:
+    key: "{{ edb_gpg_key_8 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == "8"
+  become: yes
+
+- name: Download PGDG GPG key for CentOS8/RHEL8
+  rpm_key:
+    key: "{{ pg_gpg_key_8 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == "8"
+    - pg_type == 'PG'
+  become: yes
+
+- name: Download EPEL GPG key for RedHat 8
+  rpm_key:
+    key: "{{ epel_gpg_key_8 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == "8"
+  become: yes
+
+- name: Install EPEL repo for RedHat 7
+  package:
+    name: "{{ epel_repo_7 }}"
+    state: present
+  when: ansible_distribution_major_version == "7"
+  become: yes
+
+- name: Install PG repo for RedHat 7
+  package:
+    name: "{{ pg_rpm_repo_7 }}"
+    state: present
+  become: yes
+  when:
+    - ansible_distribution_major_version == "7"
+    - pg_type == 'PG'
+
+- name: Install EPEL repo for RedHat 8
+  package:
+    name: "{{ epel_repo_8 }}"
+    state: present
+  when: ansible_distribution_major_version == "8"
+  become: yes
+
+- name: Install PG repo for RedHat 8
+  package:
+    name: "{{ pg_rpm_repo_8 }}"
+    state: present
+  become: yes
+  when:
+    - ansible_distribution_major_version == "8"
+    - pg_type == 'PG'
+
+- name: Install EPAS repo for RedHat
+  package:
+    name: "{{ edb_rpm_repo }}"
+    state: present
+  become: yes
+
+- name: Set Credentials for EDB Yum Repo
+  replace:
+    path: /etc/yum.repos.d/edb.repo
+    regexp: '<username>:<password>'
+    replace: "{{ repo_username }}:{{ repo_password }}"
+  become: yes

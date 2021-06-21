@@ -1,5 +1,4 @@
 ---
-
 - name: Generate efm encrypted password
   shell: |
     {{ efm_bin_path }}/efm encrypt {{ efm_cluster_name }} --from-env
@@ -29,7 +28,7 @@
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ hostvars[inventory_hostname].hostname }}:{{ efm_port }}"}
+        - { name: bind.address, value: "{{ ansible_hostname }}:{{ efm_port }}"}
         - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: use_hostname
@@ -96,13 +95,6 @@
   no_log: "{{ disable_logging }}"
   register: properties_changes
 
-- name: Start efm service
-  systemd:
-    name: "{{ efm_service }}"
-    enabled: yes
-    state: started
-  become: yes
-
 - name: Populate service facts
   service_facts:
 
@@ -113,12 +105,11 @@
   when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
   become: yes
 
-- name: Try starting {{ efm_service }} if not started firs
+- name: Start efm service
   systemd:
     name: "{{ efm_service }}"
     enabled: yes
     state: started
-  when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
   become: yes
 
 - name: Restart efm service

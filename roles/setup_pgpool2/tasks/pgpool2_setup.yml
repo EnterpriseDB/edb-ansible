@@ -4,7 +4,7 @@
   service_facts:
 
 - name: Open listening TCP port {{ pgpool2_port | default('') }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pgpool2_port }}/tcp"
     permanent: yes
     state: enabled
@@ -17,7 +17,7 @@
   become: yes
 
 - name: Open PCP TCP port {{ pgpool2_pcp_port | default('') }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pgpool2_pcp_port }}/tcp"
     permanent: yes
     state: enabled
@@ -30,7 +30,7 @@
   become: yes
 
 - name: Open PCP UDP port {{ pgpool2_pcp_port | default('') }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pgpool2_pcp_port }}/udp"
     permanent: yes
     state: enabled
@@ -43,7 +43,7 @@
   become: yes
 
 - name: Open Watchdog TCP port {{ pgpool2_wd_port | default('') }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pgpool2_wd_port }}/tcp"
     permanent: yes
     state: enabled
@@ -53,11 +53,11 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 - name: Open Watchdog UDP port {{ pgpool2_wd_port | default('') }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pgpool2_wd_port }}/udp"
     permanent: yes
     state: enabled
@@ -67,11 +67,11 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 - name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port | default('') }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pgpool2_wd_heartbeat_port }}/tcp"
     permanent: yes
     state: enabled
@@ -81,11 +81,11 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 - name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
-  firewalld:
+  ansible.posix.firewalld:
     port: "{{ pgpool2_wd_heartbeat_port }}/udp"
     permanent: yes
     state: enabled
@@ -95,7 +95,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
-    - pgpool2_watchdog is true
+    - pgpool2_watchdog
   become: yes
 
 # Tasks for setting up pgpoolII

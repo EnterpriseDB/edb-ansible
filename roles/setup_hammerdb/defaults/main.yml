@@ -1,0 +1,13 @@
+---
+
+tshirt_size: "medium"
+
+supported_os:
+  - CentOS8
+  - RHEL8
+
+supported_tshirt_size:
+  - small
+  - medium
+  - large
+  - xl

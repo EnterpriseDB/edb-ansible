@@ -1,0 +1,64 @@
+---
+- name: Verify if {{ edb_auth_conf }} exists
+  stat:
+    path: "{{ edb_auth_conf }}"
+  register: auth_conf
+  when: os != 'Debian9'
+  become: true
+
+- name: Build EDB auth conf
+  copy:
+    dest: "{{ edb_auth_conf }}"
+    content: >
+      {{ edb_auth_conf_url }} login {{ repo_username }} password {{ repo_password }}
+    owner: root
+    group: root
+    mode: 0600
+  when:
+    - os != 'Debian9'
+    - not auth_conf.stat.exists or auth_conf.stat.size == 0
+  become: true
+
+- name: Add EDB GPGP Debian keys
+  apt_key:
+    url: "{{ edb_deb_keys }}"
+    state: present
+  become: true
+
+- name: Add EDB Debian repo
+  apt_repository:
+    repo: "{{ edb_deb_repo_url }}"
+    state: present
+    filename: "edb-{{ ansible_distribution_release }}"
+  when: os != 'Debian9'
+  become: true
+
+- name: Install apt-transport-https
+  apt:
+    name: apt-transport-https
+    update_cache: true
+    state: present
+  become: true
+
+- name: Add EDB Debian 9 repo
+  apt_repository:
+    repo: "{{ edb_deb_9_repo_url }}"
+    state: present
+    filename: "edb-{{ ansible_distribution_release }}"
+  when: os == 'Debian9'
+  become: true
+
+- name: Add PG Debian keys
+  apt_key:
+    url: "{{ pg_deb_keys }}"
+    state: present
+  when: pg_type == 'PG'
+  become: true
+
+- name: Add PG Debian repo
+  apt_repository:
+    repo: "{{ pg_deb_repo_url }}"
+    state: present
+    filename: "pgdg"
+  when: pg_type == 'PG'
+  become: true

@@ -1,0 +1,45 @@
+---
+- name: Install EPAS Packages
+  package:
+    name:
+      - python3-pip
+      - python3-psycopg2
+      - edb-as{{ pg_version }}-server
+      - edb-as{{ pg_version }}-server-core
+      - edb-as{{ pg_version }}-server-edb-modules
+      - edb-as{{ pg_version }}-server-client
+      - edb-as{{ pg_version }}-server-sslutils
+      - edb-as{{ pg_version }}-server-indexadvisor
+      - edb-as{{ pg_version }}-server-sqlprofiler
+      - edb-as{{ pg_version }}-server-sqlprotect
+      - edb-as{{ pg_version }}-server-sslutils
+    state: present
+    update_cache: yes
+  become: true
+  register: install_package
+
+- name: Install python-psycopg2
+  package:
+    name:
+      - python-psycopg2
+      - python-ipaddress
+    state: present
+    update_cache: yes
+  when: os in ['Ubuntu18', 'Debian9']
+  become: true
+
+- name: Stop the service {{ epas_service }}
+  systemd:
+    name: "{{ epas_service }}"
+    state: stopped
+  when: install_package.changed
+  become: true
+
+- name: Drop the default debian database
+  shell: >
+    {{ epas_deb_drop_cluster }} --stop {{ pg_version }} {{ deb_cluster_name }}
+  when: install_package.changed
+  register: drop_cluster
+  changed_when: drop_cluster.rc == 0
+  failed_when: drop_cluster.rc != 0
+  become: true

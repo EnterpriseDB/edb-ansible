@@ -1,9 +1,34 @@
 ---
+- name: Gather service facts
+  service_facts:
+
+- name: Stop the efm_service
+  systemd:
+    name: "{{ efm_service }}"
+    state: stopped
+  when:
+    - ansible_facts.services[efm_service] is defined
+    - ansible_facts.services[efm_service].state == 'running'
+  become: yes
+
 - name: stop pg service if running
   systemd:
     name: "{{ pg_service }}"
     state: stopped
+  when:
+    - ansible_facts.services[pg_service] is defined
+    - ansible_facts.services[pg_service].state == 'running'
   become: yes
+
+- name: Drop the default debian database
+  shell: >
+    {{ pg_deb_drop_cluster }} {{ pg_version }} {{ deb_cluster_name }}
+  args:
+    executable: /bin/bash
+  changed_when: drop_cluster.rc == 0
+  failed_when: drop_cluster.rc != 0
+  when: ansible_os_family == 'Debian'
+  become: true
 
 - name: remove postgres data directory if exists
   file:
