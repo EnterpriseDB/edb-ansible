@@ -23,6 +23,19 @@
 - name: Reference variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Find the WAL dir source location
+  stat:
+    path: "{{ pg_data }}/pg_wal"
+  register: waldir
+
+- name: Ensure parent WAL dir has correct permissions
+  file:
+    path: "{{ waldir.stat.lnk_source|dirname }}"
+    owner: "{{ pg_owner }}"
+  when:
+    - waldir is defined
+    - waldir.stat.islnk
+
 - name: Gather service facts
   service_facts:
 

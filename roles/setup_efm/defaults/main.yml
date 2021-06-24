@@ -2,7 +2,7 @@
 # efm credentials
 os: ""
 pg_version: ""
-efm_version: 4.1
+efm_version: 4.2
 
 disable_logging: true
 force_efm_install: false
@@ -103,6 +103,7 @@ supported_pg_version:
   - 13
 
 supported_efm_version:
+  - "4.2"
   - "4.1"
   - "4.0"
   - "3.10"
