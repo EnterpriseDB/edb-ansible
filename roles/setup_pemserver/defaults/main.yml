@@ -10,7 +10,7 @@ pg_pem_admin_password: ""
 pg_ssl: true
 
 # efm information
-efm_version: "4.0"
+efm_version: "4.2"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "efm"
 
