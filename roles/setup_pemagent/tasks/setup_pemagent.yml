@@ -42,24 +42,6 @@
        or (force_pemagent is defined and force_pemagent))
   become: yes
 
-- name: Gather the PEM server host and information for /etc/hosts
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ pem_server_info }}"
-  loop_control:
-    loop_var: node
-  when:
-    - use_hostname
-    - pem_server_exists
-
-- name: Gather the SR cluster nodes host and information for /etc/hosts
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
-  loop_control:
-    loop_var: node
-  when: use_hostname
-
 - name: Fetch PEM admin user password
   import_tasks: pem_agent_fetch_adm_password.yml
   when: pem_server_exists
@@ -97,6 +79,5 @@
 - name: Reset the variables
   set_fact:
     pem_server_info:
-    etc_hosts_lists: []
     node_hostvars:
     pem_server_exists: false

@@ -44,16 +44,7 @@
     - force_initdb
   become: yes
 
-- name: Gather the host and information for /etc/hosts
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
-  loop_control:
-    loop_var: node
-  run_once: true
-  when: use_hostname
-
-- name: Update etc_hosts based on use_hostname
+- name: Update /etc/hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
