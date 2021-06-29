@@ -1,5 +1,19 @@
 ---
 
+- name: Get Barman server informations
+  set_fact:
+    _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
+
+- name: Set _barman_host when not using hostname
+  set_fact:
+    _barman_host: "{{ _barman_server_info[0].private_ip }}"
+  when: "not use_hostname"
+
+- name: Set _barman_host when using hostname
+  set_fact:
+    _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
+  when: use_hostname
+
 - name: Ensure wal_level is configured to replica
   include_role:
     name: manage_dbserver
@@ -30,6 +44,11 @@
       - name: archive_mode
         value: "on"
       - name: archive_command
-        value: "barman-wal-archive {{ hostvars[inventory_hostname].barman_server_private_ip }} {{ inventory_hostname }} %p"
+        value: "barman-wal-archive {{ _barman_host }} {{ inventory_hostname }} %p"
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'rsync'
+
+- name: Reset local variables
+  set_fact:
+    _barman_server_info: null
+    _barman_host: null
