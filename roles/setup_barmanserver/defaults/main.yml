@@ -13,6 +13,7 @@ barman_lock_directory: "/var/run/barman"
 barman_log_file: "/var/log/barman/barman.log"
 barman_log_level: "INFO"
 barman_compression: "gzip"
+etc_hosts_lists: []
 
 supported_os:
   - CentOS7

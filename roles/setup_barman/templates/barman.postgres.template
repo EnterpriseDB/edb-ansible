@@ -1,8 +1,8 @@
 [{{ inventory_hostname }}]
 path_prefix = "{{ pg_bin_path }}"
 description =  "{{ inventory_hostname }}"
-conninfo = host={{ hostvars[inventory_hostname].private_ip }} user={{ barman_pg_user }} dbname=postgres port={{ pg_port }}
-streaming_conninfo = host={{ hostvars[inventory_hostname].private_ip  }}  user={{ barman_pg_user }} port={{ pg_port }}
+conninfo = host={{ pg_host }} user={{ barman_pg_user }} dbname=postgres port={{ pg_port }}
+streaming_conninfo = host={{ pg_host  }}  user={{ barman_pg_user }} port={{ pg_port }}
 backup_method = postgres
 streaming_archiver = on
 slot_name = barman

@@ -37,19 +37,6 @@
   set_fact:
     node_hostvars: "{{ hostvars[inventory_hostname] }}"
 
-- name: Initialize etc_hosts_lists
-  set_fact:
-    etc_hosts_lists:
-      - "{{ node_hostvars.private_ip }} {{ node_hostvars.hostname | default(node_hostvars.ansible_hostname) }}"
-
-- name: Gather the host and information for /etc/hosts
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pem_agents', wantlist=True) }}"
-  loop_control:
-    loop_var: node
-  when: use_hostname
-
 - name: Update /etc/hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
@@ -78,5 +65,4 @@
 
 - name: Reset the variables
   set_fact:
-    etc_hosts_lists: []
     node_hostvars:

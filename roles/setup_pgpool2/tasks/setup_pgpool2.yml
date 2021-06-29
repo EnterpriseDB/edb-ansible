@@ -45,7 +45,6 @@
 
 - name: Initialize local variables
   set_fact:
-    _etc_hosts_list: []
     _pgpool2_backends: []
     _pgpool2_node_list: []
     _pgpool2_ip_list: []
@@ -85,7 +84,7 @@
     _pgpool2_backends: >-
       {{ _pgpool2_backends | default([]) }} + [
          {
-           'hostname': '{{ server.hostname }}',
+           'hostname': '{{ server.inventory_hostname }}',
            'inventory_hostname': '{{ server.inventory_hostname }}'
          }
        ]
@@ -94,16 +93,6 @@
     loop_var: server
   when:
     - use_hostname
-
-- name: Prepare _etc_hosts_lists on use_hostname
-  set_fact:
-    _etc_hosts_list: "{{ _etc_hosts_list + [server.private_ip + ' ' + server.hostname] }}"
-  loop: "{{ _pg_cluster_nodes + _pgpool2_nodes }}"
-  loop_control:
-    loop_var: server
-  when: use_hostname
-  run_once: true
-  no_log: "{{ disable_logging }}"
 
 - name: Set the _pgpool2_primary_public_ip variable
   set_fact:
@@ -153,8 +142,6 @@
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
   when: use_hostname
-  vars:
-    etc_hosts_list: "{{ _etc_hosts_list }}"
 
 - name: Include the pgpool2_configure_backends
   include_tasks: pgpool2_configure_backends.yml
