@@ -80,7 +80,7 @@
 
 - name: Prepare efm_nodes_list based on use_hostname
   set_fact:
-    efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':' + efm_port | string + ' ' }}"
+    efm_nodes_list: "{{ efm_nodes_list + node.inventory_hostname + ':' + efm_port | string + ' ' }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
