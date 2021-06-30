@@ -1,5 +1,5 @@
 ---
-use_hostname: false
+use_hostname: true
 force_pem_install: false
 pem_agent: false
 pass_dir: "~/.edb"

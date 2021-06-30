@@ -11,7 +11,7 @@ efm_cluster_name: "efm"
 efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
 
 disable_logging: yes
-use_hostname: false
+use_hostname: true
 
 pass_dir: "~/.edb"
 

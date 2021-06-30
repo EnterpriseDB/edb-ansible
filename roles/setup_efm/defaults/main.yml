@@ -7,7 +7,7 @@ efm_version: 4.2
 disable_logging: true
 force_efm_install: false
 pass_dir: "~/.edb"
-use_hostname: false
+use_hostname: true
 
 pg_efm_user: "efm"
 pg_efm_user_password: ""
