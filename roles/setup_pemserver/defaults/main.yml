@@ -1,7 +1,7 @@
 ---
 # efm credentials
 pg_version: "12"
-use_hostname: false
+use_hostname: true
 pem_agent: false
 pass_dir: "~/.edb"
 

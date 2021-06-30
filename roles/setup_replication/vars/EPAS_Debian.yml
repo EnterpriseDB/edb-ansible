@@ -7,7 +7,7 @@ pg_log: "/var/log/edb"
 pg_wal: ""
 pg_log_filename: "edb-%a.log"
 
-use_hostname: false
+use_hostname: true
 primary_host_name: ""
 
 pg_owner: "enterprisedb"

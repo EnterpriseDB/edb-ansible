@@ -7,7 +7,7 @@ pg_log: "/var/log/postgres"
 pg_wal: ""
 pg_log_filename: "postgresql-%a.log"
 
-use_hostname: false
+use_hostname: true
 primary_host_name: ""
 
 pg_owner: "postgres"
