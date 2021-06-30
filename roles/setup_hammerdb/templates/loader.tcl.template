@@ -11,6 +11,12 @@ diset connection pg_port {{ pg_port }}
 diset tpcc pg_count_ware {{ tprocc_warehouses }}
 diset tpcc pg_num_vu {{ ansible_processor_vcpus }}
 diset tpcc pg_raiseerror true
-diset tpcc pg_superuser {{ pg_superuser }}
+{% if azure_db_hackery is defined and azure_db_hackery %}
+diset tpcc pg_superuser {{ pg_superuser_connect }}
+diset tpcc pg_superuserpass {{ pg_superuser_password_override | default(pg_superuser_password, true) }}
+diset tpcc pg_user tpcc@{{ pg_host }}
+{% else %}
+diset tpcc pg_superuser {{ pg_superuser_override | default(pg_superuser, true) }}
+{% endif %}
 buildschema
 wait_to_complete

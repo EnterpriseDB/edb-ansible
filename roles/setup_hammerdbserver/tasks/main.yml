@@ -19,6 +19,7 @@
     name:
       - curl
       - libpq
+      - patch
       - postgresql
       - tcl
       - tmux
