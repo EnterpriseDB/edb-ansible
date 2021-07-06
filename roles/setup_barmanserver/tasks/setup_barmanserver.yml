@@ -12,6 +12,12 @@
 - name: Include the package installation tasks
   include_tasks: install_packages.yml
 
+- name: Update /etc/hosts based on use_hostname
+  block:
+    - import_tasks: linux_update_etc_hosts.yml
+  become: yes
+  when: use_hostname
+
 - name: Include the user ans group creation tasks
   include_tasks: create_user.yml
 

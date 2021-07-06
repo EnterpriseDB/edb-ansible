@@ -43,16 +43,6 @@
   set_fact:
     pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
 
-- name: Gather the host and information for /etc/hosts
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ pg_cluster_nodes }}"
-  loop_control:
-    loop_var: node
-  when: use_hostname
-  run_once: true
-  no_log: "{{ disable_logging }}"
-
 - name: Get the primary information
   set_fact:
     primary_public_ip: "{{ node.ansible_host }}"
@@ -84,7 +74,7 @@
   no_log: "{{ disable_logging }}"
   delegate_to: "{{ primary_public_ip }}"
 
-- name: Update etc_hosts based on use_hostname
+- name: Update /etc/hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
@@ -120,6 +110,5 @@
       standby_names: []
       pg_allow_ip_addresses: []
       standby_physical_slots: []
-      etc_hosts_lists: []
       force_replication: false
   register: output

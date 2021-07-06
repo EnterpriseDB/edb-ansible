@@ -1,5 +1,5 @@
 ---
-use_hostname: false
+use_hostname: true
 force_pem_install: false
 pem_agent: false
 pass_dir: "~/.edb"
@@ -12,7 +12,7 @@ pg_ssl: true
 
 pem_server_exists: false
 # efm information
-efm_version: "4.0"
+efm_version: "4.2"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "efm"
 

@@ -3,6 +3,7 @@
 barman_cli_package: "barman-cli-2.12-1"
 
 barman_pg_user: "barman"
+etc_hosts_lists: []
 
 pass_dir: "~/.edb"
 

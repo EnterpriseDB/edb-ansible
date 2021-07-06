@@ -23,6 +23,19 @@
 - name: Reference variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Find the WAL dir source location
+  stat:
+    path: "{{ pg_data }}/pg_wal"
+  register: waldir
+
+- name: Ensure parent WAL dir has correct permissions
+  file:
+    path: "{{ waldir.stat.lnk_source|dirname }}"
+    owner: "{{ pg_owner }}"
+  when:
+    - waldir is defined
+    - waldir.stat.islnk
+
 - name: Gather service facts
   service_facts:
 
@@ -65,10 +78,9 @@
     or (force_initdb is defined and force_initdb)
     or (force_replication is defined and force_replication)
 
-- name: Prepare etc_hosts_lists and efm_nodes_list based on use_hostname
+- name: Prepare efm_nodes_list based on use_hostname
   set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-    efm_nodes_list: "{{ efm_nodes_list + node.hostname + ':' + efm_port | string + ' ' }}"
+    efm_nodes_list: "{{ efm_nodes_list + node.inventory_hostname + ':' + efm_port | string + ' ' }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
@@ -101,25 +113,13 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
-- name: Add PgPoolII hosts to etc_hosts_lists
-  set_fact:
-    etc_hosts_lists: "{{ etc_hosts_lists + [node.private_ip + ' ' + node.hostname] }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip, wantlist=True) }}"
-  loop_control:
-    loop_var: node
-  when:
-    - use_hostname
-    - efm_pgpool2_integration
-  run_once: true
-  no_log: "{{ disable_logging }}"
-
 - name: Ensure we have efm user in primary database
   import_tasks: create_efm_user.yml
   run_once: true
   no_log: "{{ disable_logging }}"
   delegate_to: "{{ primary_public_ip }}"
 
-- name: Update etc_hosts based on use_hostname
+- name: Update /etc/hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
@@ -159,7 +159,6 @@
 - name: Reset the variables used in this role
   set_fact:
      efm_nodes_list: ""
-     etc_hosts_lists: []
      primary_public_ip: ""
      input_password: ""
      pg_allow_ip_addresses: []

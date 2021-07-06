@@ -1,12 +1,17 @@
 ---
-- name: update /etc/hosts file
-  lineinfile:
+- name: Update /etc/hosts file, based on variable etc_hosts_list
+  ansible.builtin.lineinfile:
      path: "/etc/hosts"
-     line: "{{ line_item }}"
-  when:
-    - etc_hosts_lists|length > 0
-    - use_hostname
-  with_items: "{{ etc_hosts_lists }}"
-  loop_control:
-     loop_var: line_item
-  become: yes
+     line: "{{ item }}"
+  loop: "{{ etc_hosts_lists }}"
+
+- name: Update /etc/hosts file, based on the inventory
+  ansible.builtin.lineinfile:
+     path: "/etc/hosts"
+     line: "{{ item.private_ip }} {{ item.inventory_hostname }}"
+     regexp: ".*\\s{{ item.inventory_hostname | regex_escape() }}$"
+  loop: "{{ lookup('edb_devops.edb_postgres.all_nodes') }}"
+
+- name: Update system hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"

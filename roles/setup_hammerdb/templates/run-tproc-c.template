@@ -2,12 +2,12 @@
 
 DATE=`date +"%Y-%m-%dT%T%:z"`
 LDIR="${HOME}/results/driver/${DATE}"
-{% if pg_type != 'RDS' %}
+{% if pg_type != 'DBaaS' %}
 RDIR="${HOME}/results/sut/${DATE}"
 {% endif %}
 
 mkdir -p $LDIR
-{% if pg_type != 'RDS' %}
+{% if pg_type != 'DBaaS' %}
 ssh -fn {{ primary_private_ip }} mkdir -p $RDIR
 
 ssh -fn {{ primary_private_ip }} sudo mkdir -p $RDIR
@@ -15,14 +15,17 @@ ssh -fn {{ primary_private_ip }} sudo /usr/local/bin/ts-sysstat -o $RDIR
 ssh {{ primary_private_ip }} sudo -iu {{ pg_owner }} psql \
 		-h {{ primary_private_ip }} -c "checkpoint;" postgres
 {% else %}
-psql -h {{ primary_private_ip }} -c "checkpoint;" postgres {{ pg_superuser }}
+{% if azure_db_hackery is defined and azure_db_hackery %}
+{% else %}
+psql -h {{ primary_private_ip }} -c "checkpoint;" postgres {{ pg_superuser_override | default(pg_superuser, true) }}
+{% endif %}
 {% endif %}
 (cd ${HOME}/HammerDB-{{ hammerdb_version }} && \
 sudo /usr/local/bin/ts-sysstat -o $LDIR ./hammerdbcli << !
 source ${HOME}/runner.tcl
 !
 )
-{% if pg_type != 'RDS' %}
+{% if pg_type != 'DBaaS' %}
 ssh -fn {{ primary_private_ip }} sudo /usr/local/bin/ts-sysstat -o $RDIR -s
 {% endif %}
 grep "TEST RESULT" /tmp/hammerdb.log | tail -n 1 > ${LDIR}/hammerdb.txt

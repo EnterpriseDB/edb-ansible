@@ -28,7 +28,7 @@
   set_fact:
     efm_node_parameters:
         - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ ansible_hostname }}:{{ efm_port }}"}
+        - { name: bind.address, value: "{{ inventory_hostname }}:{{ efm_port }}"}
         - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
   when: use_hostname

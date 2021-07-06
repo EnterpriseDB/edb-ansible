@@ -14,6 +14,16 @@
   set_fact:
     _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
 
+- name: Set _pg_host when not using hostname
+  set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
+  when: "not use_hostname"
+
+- name: Set _pg_host when using hostname
+  set_fact:
+    _pg_host: "{{ inventory_hostname }}"
+  when: use_hostname
+
 - name: Ensure the barman configuration for the current host is present
   template:
     src: "./templates/barman.{{ barman_backup_method }}.template"
@@ -23,7 +33,10 @@
     mode: 0700
   delegate_to: "{{ _barman_server_public_ip }}"
   become: yes
+  vars:
+    pg_host: "{{ _pg_host }}"
 
-- name: Reset _barman_server_info
+- name: Reset local variables
   set_fact:
     _barman_server_info: ""
+    _pg_host: null

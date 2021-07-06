@@ -14,6 +14,18 @@
   set_fact:
     _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
 
+- name: Set _pg_host and _barman_host when not using hostname
+  set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
+    _barman_host: "{{ _barman_server_info[0].private_ip }}"
+  when: "not use_hostname"
+
+- name: Set _pg_host and _barman_host when using hostname
+  set_fact:
+    _pg_host: "{{ inventory_hostname }}"
+    _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
+  when: use_hostname
+
 - name: Fetch barman server SSH public key
   slurp:
     src: "{{ barman_home + '/.ssh/id_rsa.pub' }}"
@@ -56,7 +68,7 @@
     create: yes
 
 - name: Run ssh-keyscan from the Barman server
-  command: ssh-keyscan {{ hostvars[inventory_hostname].private_ip }}
+  command: ssh-keyscan {{ _pg_host }}
   register: _barman_ssh_keyscan_output
   delegate_to: "{{ _barman_server_public_ip }}"
   become: yes
@@ -65,7 +77,7 @@
 - name: Add {{ pg_owner }} SSH public key into barman server known hosts
   known_hosts:
     path: "{{ barman_home + '/.ssh/known_hosts' }}"
-    name: "{{ hostvars[inventory_hostname].private_ip }}"
+    name: "{{ _pg_host }}"
     key: "{{ _item }}"
   with_items: "{{ _barman_ssh_keyscan_output.stdout_lines }}"
   loop_control:
@@ -76,7 +88,7 @@
   no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the Postgres server
-  command: ssh-keyscan {{ hostvars[inventory_hostname].barman_server_private_ip }}
+  command: ssh-keyscan {{ _barman_host }}
   register: _pg_ssh_keyscan_output
   become: yes
   changed_when: false
@@ -84,7 +96,7 @@
 - name: Add {{ barman_user }} SSH public key into Postgres server known hosts
   known_hosts:
     path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
-    name: "{{ hostvars[inventory_hostname].barman_server_private_ip }}"
+    name: "{{ _barman_host }}"
     key: "{{ _item }}"
   with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
   loop_control:
@@ -93,6 +105,8 @@
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
 
-- name: Reset _barman_server_info
+- name: Reset local variables
   set_fact:
     _barman_server_info: ""
+    _pg_host: null
+    _barman_host: null
