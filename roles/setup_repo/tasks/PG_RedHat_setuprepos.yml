@@ -61,6 +61,8 @@
     name: "{{ edb_rpm_repo }}"
     state: present
   become: yes
+  when:
+    - pg_type == 'EPAS'
 
 - name: Set Credentials for EDB Yum Repo
   replace:
@@ -68,3 +70,5 @@
     regexp: '<username>:<password>'
     replace: "{{ repo_username }}:{{ repo_password }}"
   become: yes
+  when:
+    - pg_type == 'EPAS'
