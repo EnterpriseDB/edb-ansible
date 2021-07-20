@@ -12,3 +12,17 @@ pg_extensions:
     - { "name": "edb_wait_states", "database": "postgres" }
     - { "name": "pg_stat_statements", "database": "edb" }
     - { "name": "pg_stat_statements", "database": "postgres" }
+
+shell_profile_path: "/var/lib/edb/.enterprisedb_profile"
+shell_profile_owner: "enterprisedb"
+shell_profile_group: "enterprisedb"
+shell_profile_mode: "0600"
+shell_profile_content: |
+  # EnterpriseDB shell environment
+
+psqlrc_path: "/var/lib/edb/.psqlrc"
+psqlrc_owner: "enterprisedb"
+psqlrc_group: "enterprisedb"
+psqlrc_mode: "0600"
+psqlrc_content: |
+  -- psql configuration

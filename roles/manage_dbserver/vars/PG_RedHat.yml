@@ -6,3 +6,17 @@ pg_service: "postgresql-{{ pg_version }}"
 pg_database: "postgres"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
+
+shell_profile_path: "/var/lib/pgsql/.pgsql_profile"
+shell_profile_owner: "postgres"
+shell_profile_group: "postgres"
+shell_profile_mode: "0600"
+shell_profile_content: |
+  # PostgreSQL shell environment
+
+psqlrc_path: "/var/lib/pgsql/.psqlrc"
+psqlrc_owner: "postgres"
+psqlrc_group: "postgres"
+psqlrc_mode: "0600"
+psqlrc_content: |
+  -- psql configuration

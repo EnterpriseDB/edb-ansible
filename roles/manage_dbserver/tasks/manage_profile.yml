@@ -1,0 +1,9 @@
+- name: "Ensure shell profile is created"
+  ansible.builtin.copy:
+    mode: "{{ shell_profile_mode }}"
+    owner: "{{ shell_profile_owner }}"
+    group: "{{ shell_profile_group }}"
+    dest: "{{ shell_profile_path }}"
+    content: "{{ shell_profile_content }}"
+  become: true
+  when: shell_profile_path | length > 0

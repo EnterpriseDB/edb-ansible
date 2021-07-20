@@ -1,0 +1,9 @@
+- name: "Ensure .psqlrc file is created"
+  ansible.builtin.copy:
+    mode: "{{ psqlrc_mode }}"
+    owner: "{{ psqlrc_owner }}"
+    group: "{{ psqlrc_group }}"
+    dest: "{{ psqlrc_path }}"
+    content: "{{ psqlrc_content }}"
+  become: true
+  when: psqlrc_path | length > 0

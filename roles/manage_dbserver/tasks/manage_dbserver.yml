@@ -18,3 +18,9 @@
     - import_tasks: manage_slots.yml
     - import_tasks: manage_postgres_params.yml
     - import_tasks: manage_hba_conf.yml
+
+- name: Include shell profile creation task
+  import_tasks: manage_profile.yml
+
+- name: Include .psqlrc file creation task
+  import_tasks: manage_psqlrc.yml
