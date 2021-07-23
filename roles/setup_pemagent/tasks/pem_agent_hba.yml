@@ -20,6 +20,13 @@
            "databases": "pem",
            "method": "scram-sha-256"
            },
+          {
+           "users": "{{ pg_pem_admin_user }}",
+           "source": "{{ node_hostvars.private_ip }}/32",
+           "databases": "pem",
+           "method": "scram-sha-256",
+           "contype": "host"
+           },
       ]
 
 - name: Update PEM server to allow connections from the agent
@@ -56,4 +63,3 @@
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ pem_agent_hba_local_entry }}"
-
