@@ -33,3 +33,6 @@
 
 - name: Install and Configure Postgres on RedHat
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_install.yml"
+
+- name: Install rng tools
+  include_tasks: setup_rng_tools.yml

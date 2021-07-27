@@ -1,0 +1,11 @@
+---
+- name: Install rng-tools
+  ansible.builtin.package:
+    name: rng-tools
+    state: present
+  become: true
+
+- name: Start rngd
+  ansible.builtin.shell: >-
+    /usr/sbin/rngd -r /dev/urandom
+  become: true
