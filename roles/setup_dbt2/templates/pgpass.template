@@ -1,0 +1,5 @@
+{% if azure_db_hackery is defined and azure_db_hackery %}
+*:*:*:{{ pg_superuser_connect }}:{{ pg_superuser_password_override | default(pg_superuser_password, true) }}
+{% else %}
+*:*:*:{{ pg_superuser_override | default(pg_superuser, true) }}:{{ pg_superuser_password_override | default(pg_superuser_password, true) }}
+{% endif %}

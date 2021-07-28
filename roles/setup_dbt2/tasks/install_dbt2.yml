@@ -1,0 +1,19 @@
+---
+
+- name: Download DBT-2
+  git:
+    repo: 'https://git.code.sf.net/p/osdldbt/dbt2'
+    dest: /usr/local/src/dbt2
+    version: "{{ dbt2_version }}"
+
+- name: Configure DBT-2
+  shell:
+    cmd: make release DBMS=pgsql
+    chdir: /usr/local/src/dbt2
+  environment:
+    PATH: "{{ ansible_env.PATH }}:/usr/pgsql-{{ pg_version }}/bin"
+
+- name: Install DBT-2
+  shell:
+    cmd: make install
+    chdir: /usr/local/src/dbt2/builds/release
