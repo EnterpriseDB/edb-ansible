@@ -1,0 +1,30 @@
+---
+
+- name: Gather the pg_cluster_nodes information
+  set_fact:
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary private IP address
+  set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:  node.node_type == 'primary'
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Include DBT-2 required package installation
+  include_role:
+    name: setup_dbt2
+    tasks_from: install_packages
+
+- name: Include DBT-2 kit installation
+  include_role:
+    name: setup_dbt2
+    tasks_from: install_dbt2
+
+- name: Reset the variables based on the user input
+  set_fact:
+      primary_private_ip: ""
+  register: output
