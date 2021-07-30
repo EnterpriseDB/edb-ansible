@@ -5,4 +5,4 @@ pg_database: "postgres"
 pg_owner: "enterprisedb"
 pg_service: "edb-as-{{ pg_version }}"
 pg_unix_socket_directories:
-  - "/var/run/edb"
+  - "/var/run/edb/as{{ pg_version }}"

@@ -20,7 +20,7 @@ pg_efm_database: "edb"
 
 # unix socket domain directories
 pg_unix_socket_directories:
-   - "/var/run/edb"
+   - "/var/run/edb-as"
 
 # postgres port
 pg_port: 5444
