@@ -62,3 +62,12 @@
     filename: "pgdg"
   when: pg_type == 'PG'
   become: true
+
+- name: Add additional Debian repositories
+  ansible.builtin.apt_repository:
+    repo: "{{ item.repo }}"
+    state: present
+    filename: "{{ item.filename }}"
+  become: true
+  loop: "{{ apt_additional_repos }}"
+  when: apt_additional_repos | length > 0

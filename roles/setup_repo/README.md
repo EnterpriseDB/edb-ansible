@@ -38,9 +38,27 @@ When executing the role via ansible these are the required variables:
 
   If you have `pg_type` = EPAS, then you need to include `repo_password`
 
+  * ***yum_additional_repos***
+
+  List of additional YUM repositories. List items are dictionnaries:
+
+    * *name*: Repository name
+    * *description*: Repository description
+    * *baseurl*: Repository URL
+    * *gpgkey*: GPG key locatio. Default: None
+    * *gpgcheck*: Enable package signature checking with GPG. Default: false
+
+  * **apt_additional_repos**
+
+  List of additional APT repositories. List items are dictionnaries:
+
+    * *repo*: Debian repository connection string
+    * *filename*: Repository file name on disk: `<filename>.list`
+
+
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_repo/defaults/main.yml](./defaults/main.yml) 
+  * [roles/setup_repo/defaults/main.yml](./defaults/main.yml)
 
 ## Dependencies
 
@@ -50,7 +68,7 @@ The `setup_repo` role does not have any dependencies on any other roles.
 
 ### Inventory file content
 
-Content of the `inventory.yml` file:    
+Content of the `inventory.yml` file:
 
 ```yaml
 ---
@@ -96,6 +114,15 @@ Below is an example of how to include the `setup_repo` role:
         pg_type: "PG"
         repo_username: "xxxxxxxx"
         repo_password: "xxxxxxxx"
+        # Additional repositories
+        yum_additional_repos:
+          - name: "Additional Repo. 1"
+            description: "Description of the repo."
+            baseurl: https://my.repo.internal/CentOS$releasever-$basearch
+            gpgkey: https://my.repo.internal/key.asc
+            gpgcheck: true
+          - name: "Local Repo"
+            baseurl: file:///opt/my_local_repo
 
   roles:
     - setup_repo

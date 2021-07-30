@@ -38,3 +38,12 @@
     name: apt-transport-https
     state: absent
   become: true
+
+- name: Remove additional Debian repositories
+  ansible.builtin.apt_repository:
+    repo: "{{ item.repo }}"
+    state: absent
+    filename: "{{ item.filename }}.list"
+  become: true
+  loop: "{{ apt_additional_repos }}"
+  when: apt_additional_repos | length > 0
