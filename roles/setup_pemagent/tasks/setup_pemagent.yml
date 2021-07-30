@@ -74,6 +74,10 @@
 - name: Register database on primary and standby
   block:
     - import_tasks: pem_agent_register_db.yml
+  when: >
+    group_names | select('search','primary') | list | count > 0
+    or
+    group_names | select('search','standby') | list | count > 0
   become: yes
 
 - name: Reset the variables
