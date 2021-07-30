@@ -1,27 +1,9 @@
 ---
 
-dbt2_packages:
-  - cmake
-  - gcc
-  - git
-  - make
-  - postgresql-devel
-  - postgresql-libs
-  - tmux
-
-dbt2_packages_pg:
-  - cmake
-  - gcc
-  - git
-  - make
-  - postgresql{{ pg_version }}-devel
-  - redhat-rpm-config
-  - tmux
-
 dbt2_version: HEAD
 
 supported_os:
   - CentOS7
   - CentOS8
-  - RHEL7
-  - RHEL8
+  - RedHat7
+  - RedHat8

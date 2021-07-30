@@ -1,6 +1,6 @@
 # setup_dbt2_client
 
-This role is for setting up a client server for
+This role is for setting up a server for the client
 [DBT-2](http://osdldbt.sourceforge.net/).  DBT-2(TM) is an OLTP transactional
 performance test. It simulates a wholesale parts supplier where several workers
 access a database, update customer information and check on parts inventories.

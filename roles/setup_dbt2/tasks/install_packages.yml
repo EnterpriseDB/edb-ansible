@@ -1,17 +1,14 @@
 ---
 
-- name: Set the os variable
-  set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
-
-- name: Install packages for DBT-2 (yum)
-  yum:
-    name: "{{ dbt2_packages }}"
-  when: os in [ 'CentOS7', 'RHEL7']
-  become: yes
-
-- name: Install packages for DBT-2 (dnf)
-  dnf:
-    name: "{{ dbt2_packages }}"
-  when: os in [ 'CentOS8', 'RHEL8']
+- name: Install packages for DBT-2
+  package:
+    name:
+      - cmake
+      - gcc
+      - git
+      - make
+      - postgresql-devel
+      - postgresql-libs
+      - tmux
+    state: present
   become: yes

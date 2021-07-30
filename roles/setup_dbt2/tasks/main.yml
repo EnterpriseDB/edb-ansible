@@ -17,16 +17,17 @@
 - name: Include DBT-2 client systems into pg_hba
   include_tasks: update_pg_hba.yml
 
-- name: Install packages for DBT-2 (server, yum)
-  yum:
-    name: "{{ dbt2_packages_pg }}"
-  when: os in [ 'CentOS7', 'RHEL7']
-  become: yes
-
-- name: Install packages for DBT-2 (server, dnf)
-  dnf:
-    name: "{{ dbt2_packages_pg }}"
-  when: os in [ 'CentOS8', 'RHEL8']
+- name: Install packages for DBT-2
+  package:
+    name:
+      - cmake
+      - gcc
+      - git
+      - make
+      - postgresql{{ pg_version }}-devel
+      - redhat-rpm-config
+      - tmux
+    state: present
   become: yes
 
 - name: Include DBT-2-installation
@@ -34,13 +35,9 @@
 
 - name: Install DBT-2 UDF
   shell:
-    cmd: make USE_PGXS=1 install
+    cmd: make install
     chdir: /usr/local/src/dbt2/storedproc/pgsql/c
   environment:
     PATH: "{{ ansible_env.PATH }}:/usr/pgsql-{{ pg_version }}/bin"
+    USE_PGXS: "1"
   become: yes
-
-- name: Reset the variables based on the user input
-  set_fact:
-      primary_private_ip: ""
-  register: output
