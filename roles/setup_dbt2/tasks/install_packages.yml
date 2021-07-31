@@ -1,5 +1,9 @@
 ---
 
+- name: Update packages
+  package: name=* state=latest
+  become: yes
+
 - name: Install packages for DBT-2
   package:
     name:
