@@ -8,10 +8,11 @@
 
 - name: Configure DBT-2
   shell:
-    cmd: make release DBMS=pgsql
+    cmd: make release
     chdir: /usr/local/src/dbt2
   environment:
     PATH: "{{ ansible_env.PATH }}:/usr/pgsql-{{ pg_version }}/bin"
+    DBMS: "pgsql"
 
 - name: Install DBT-2
   shell:
