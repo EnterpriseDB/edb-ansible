@@ -1,0 +1,28 @@
+---
+
+- name: Gather DBT-2 client addresses
+  set_fact:
+    dbt2client_item: >-
+      {
+        'users': 'all',
+        'databases': 'all',
+        'contype': 'host',
+        'source': '{{ hostvars[item]['private_ip'] }}/32',
+        'method': 'trust'
+      }
+  with_items: "{{ groups['dbt2_client'] }}"
+  register: dbt2client_list
+
+- name: Make a list of DBT-2 client addresses
+  set_fact: hba_entries={{ dbt2client_list.results | map(attribute='ansible_facts.dbt2client_item') | list }}
+
+- name: Update pg_hba.conf for access from the DBT-2 clients' private IP addresses
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ hba_entries }}"
+
+- name: Reset hba_entries
+  set_fact:
+    hba_entries: []

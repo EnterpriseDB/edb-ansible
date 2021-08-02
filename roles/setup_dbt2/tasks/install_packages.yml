@@ -1,0 +1,14 @@
+---
+
+- name: Install packages for DBT-2
+  package:
+    name:
+      - cmake
+      - gcc
+      - git
+      - make
+      - postgresql-devel
+      - postgresql-libs
+      - tmux
+    state: present
+  become: yes

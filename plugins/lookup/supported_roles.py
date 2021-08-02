@@ -66,6 +66,12 @@ GROUP_ROLES = {
         'setup_barmanserver',
         'install_dbserver'
     ],
+    'dbt2_driver': [
+        'setup_dbt2_driver'
+    ],
+    'dbt2_client': [
+        'setup_dbt2_client'
+    ],
     'hammerdbserver': [
         'setup_hammerdbserver'
     ]
@@ -108,6 +114,14 @@ class LookupModule(LookupBase):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_barman'])
+                )
+            # Special case for the primary nodes when the host variable
+            # dbt2 is set to true.
+            if (group in ['primary']
+                    and myvars['hostvars'][hostname].get('dbt2', False)):
+                supported_roles = list(
+                    set(supported_roles)
+                    | set(['setup_dbt2'])
                 )
             # Special case for the primary nodes when the host variable
             # hammerdb is set to true.

@@ -19,3 +19,11 @@
   loop_control:
     loop_var: item_file
   become: yes
+
+- name: Remove additional Redhat repositories
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    state: absent
+  become: true
+  loop: "{{ yum_additional_repos }}"
+  when: yum_additional_repos | length > 0

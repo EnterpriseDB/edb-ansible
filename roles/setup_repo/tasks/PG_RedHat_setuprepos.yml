@@ -68,3 +68,15 @@
     regexp: '<username>:<password>'
     replace: "{{ repo_username }}:{{ repo_password }}"
   become: yes
+
+- name: Add additional Redhat repositories
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(item.name) }}"
+    state: present
+    baseurl: "{{ item.baseurl }}"
+    gpgcheck: "{{ item.gpgcheck | default('no') }}"
+    gpgkey: "{{ item.gpgkey | default(None) }}"
+  become: true
+  loop: "{{ yum_additional_repos }}"
+  when: yum_additional_repos | length > 0

@@ -36,6 +36,9 @@ epel_gpg_key_8: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8"
 os: ""
 pg_type: "PG"
 
+apt_additional_repos: []
+yum_additional_repos: []
+
 supported_os:
   - CentOS7
   - CentOS8

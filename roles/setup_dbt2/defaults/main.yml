@@ -1,0 +1,9 @@
+---
+
+dbt2_version: HEAD
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8

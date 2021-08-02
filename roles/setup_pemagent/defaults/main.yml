@@ -3,7 +3,7 @@ use_hostname: true
 force_pem_install: false
 pem_agent: false
 pass_dir: "~/.edb"
-
+efm_enabled: True
 pg_pem_admin_user: "pemadmin"
 pg_pem_admin_password: ""
 pg_pem_agent_user: "pemagent"
