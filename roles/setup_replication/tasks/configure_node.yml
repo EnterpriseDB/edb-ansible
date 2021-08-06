@@ -18,11 +18,12 @@
   become: yes
   become_user: "{{ pg_owner }}"
 
-- name: Start the services
+- name: Enable and start the service
   systemd:
     name: "{{ pg_service }}"
     daemon_reload: yes
     state: started
+    enabled: true
   become: yes
 
 - name: Update standby hba config
