@@ -1,6 +1,5 @@
 ---
 # efm credentials
-deb_cluster_name: "main"
 os: ""
 pg_version: ""
 
@@ -11,7 +10,7 @@ pg_efm_user: "efm"
 pg_efm_user_password: ""
 
 # efm data dir
-pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_bin_path: "/usr/lib/edb-as/{{ pg_version }}/bin"
 
 pg_ssl: true
@@ -26,7 +25,7 @@ pg_unix_socket_directories:
 pg_port: 5444
 
 # postgres service
-pg_service: "edb-as@{{ pg_version }}-{{ deb_cluster_name }}"
+pg_service: "edb-as@{{ pg_version }}-{{ pg_instance_name }}"
 
 # pgpool2 binary dir
 pgpool2_bin_path: "/usr/edb/pgpool{{ pgpool2_version }}/bin"
