@@ -2,7 +2,7 @@
 
 - name: check if agent key was registered
   stat:
-    path: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}registered"
+    path: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered"
   become: yes
   register: server_registered
 
@@ -29,7 +29,7 @@
     PEM_MONITORED_SERVER_PASSWORD={{ pg_pem_agent_password }} \
     {{ pem_agent_bin_path }}/pemworker \
         --register-server \
-        --display-name {{ inventory_hostname }} \
+        --display-name "{{ inventory_hostname }}:{{ pg_port }}" \
         --pem-user {{ pg_pem_admin_user }} \
         --server-addr {{ node_hostvars.private_ip }} \
         --server-port {{ pg_port }} \
@@ -42,10 +42,10 @@
         --asb-host-user {{ pg_pem_agent_user }} \
         --asb-ssl-mode prefer \
         --remote-monitoring no \
-    && touch {{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}registered
+    && touch {{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered
   args:
     executable: /bin/bash
-    creates: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}registered"
+    creates: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered"
   register: output
   changed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' in output.stdout"
   failed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' not in output.stdout"
@@ -71,10 +71,10 @@
         --asb-host-user {{ pg_pem_agent_user }} \
         --asb-ssl-mode prefer \
         --remote-monitoring no \
-    && touch {{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}registered
+    && touch {{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered
   args:
     executable: /bin/bash
-    creates: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}registered"
+    creates: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered"
   register: output
   changed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' in output.stdout"
   failed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' not in output.stdout"

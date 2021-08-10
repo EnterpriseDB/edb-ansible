@@ -15,7 +15,7 @@
          --display-name {{ inventory_hostname }} \
          --pem-user {{ pg_pem_admin_user }} \
          --pem-server {{ node_hostvars.pem_server_private_ip }} \
-         --pem-port {{ pg_port }} \
+         --pem-port {{ pem_pg_port | default(pg_port) }} \
          --allow_server_restart true \
          --allow-batch-probes true \
          --batch-script-user root \

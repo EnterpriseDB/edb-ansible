@@ -1,5 +1,5 @@
 ---
-# efm credentials
+pg_instance_name: main
 pg_version: "12"
 use_hostname: true
 pem_agent: false
