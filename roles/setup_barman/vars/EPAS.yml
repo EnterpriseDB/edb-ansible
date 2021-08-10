@@ -1,0 +1,5 @@
+---
+
+pg_owner: enterprisedb
+pg_port: 5444
+pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"

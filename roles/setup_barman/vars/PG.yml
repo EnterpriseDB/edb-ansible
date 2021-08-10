@@ -1,0 +1,5 @@
+---
+
+pg_owner: postgres
+pg_port: 5432
+pg_bin_path: "/usr/pgsql{{ pg_version }}/bin"
