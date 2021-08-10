@@ -44,7 +44,7 @@
       - name: archive_mode
         value: "on"
       - name: archive_command
-        value: "barman-wal-archive {{ _barman_host }} {{ inventory_hostname }} %p"
+        value: "barman-wal-archive {{ _barman_host }} {{ inventory_hostname }}-{{ pg_instance_name }} %p"
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'rsync'
 
