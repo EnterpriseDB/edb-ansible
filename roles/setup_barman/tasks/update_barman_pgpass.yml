@@ -14,14 +14,26 @@
   set_fact:
     _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
 
+- name: Set _pg_host when use_hostname is false
+  set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
+  when:
+    - not use_hostname
+
+- name: Set _pg_host when use_hostname is true
+  set_fact:
+    _pg_host: "{{ inventory_hostname }}"
+  when:
+    - use_hostname
+
 - name: Ensure barman .pgpass file contains one entry for {{ ansible_host }}
   lineinfile:
     path: "{{ barman_home + '/.pgpass' }}"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0600
-    line: "{{ hostvars[inventory_hostname].private_ip }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
-    regexp: "^{{ hostvars[inventory_hostname].private_ip | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
+    line: "{{ _pg_host }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
+    regexp: "^{{ _pg_host | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
     create: yes
   delegate_to: "{{ _barman_server_public_ip }}"
   become: yes
