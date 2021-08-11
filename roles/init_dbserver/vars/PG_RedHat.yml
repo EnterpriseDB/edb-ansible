@@ -1,15 +1,17 @@
 ---
+pg_instance_name: "main"
 pg_wal: ""
-pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
-pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_default_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_encoding: ""
 
 # log directory and filename
 pg_log: "/var/log/postgres"
-pg_log_filename: "postgresql-%a.log"
+pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
 
 # postgres service
-pg_service: "postgresql-{{ pg_version }}"
+pg_service: "postgresql-{{ pg_version }}-{{ pg_instance_name }}"
+pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_version }}.service"
 
 # required & optional directories
 pg_user_home: "/var/lib/pgsql"

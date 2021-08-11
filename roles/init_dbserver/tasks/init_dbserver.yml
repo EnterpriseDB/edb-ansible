@@ -53,6 +53,7 @@
 - name: Check and configure the node as primary or pemserver
   block:
     - import_tasks: create_directories.yml
+    - import_tasks: pg_setup_systemd.yml
     - import_tasks: pg_initdb.yml
     - import_tasks: pg_set_superuser_password.yml
   become: yes

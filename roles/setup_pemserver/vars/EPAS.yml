@@ -2,8 +2,8 @@
 # pem credentials
 pg_user: "enterprisedb"
 # pem data dir
-pg_home: "/usr/edb/as{{ pg_version }}" 
-pg_data: "/var/lib/edb/as{{ pg_version }}/data"
+pg_home: "/usr/edb/as{{ pg_version }}"
+pg_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_bin_path: "{{ pg_home }}/bin"
 pg_ssl: true
 
@@ -15,10 +15,11 @@ pg_unix_socket_directories:
    - "/var/run/edb/as{{ pg_version }}"
 
 # postgres port
+pem_pg_port: 5444
 pg_port: 5444
 
 # postgres service
-pg_service: "edb-as-{{ pg_version }}"
+pg_service: "edb-as-{{ pg_version }}-{{ pg_instance_name }}"
 # pem server packages
 pem_server_packages:
   - edb-pem-server

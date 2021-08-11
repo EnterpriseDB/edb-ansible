@@ -4,7 +4,7 @@
     {{ pg_initdb }}
   args:
     executable: /bin/bash
-    creates: "/etc/{{ 'postgresql' if pg_type == 'PG' else 'edb-as' }}/{{ pg_version }}/{{ deb_cluster_name }}/postgresql.conf"
+    creates: "/etc/{{ 'postgresql' if pg_type == 'PG' else 'edb-as' }}/{{ pg_version }}/{{ pg_instance_name }}/postgresql.conf"
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
   register: initdb_cmd
@@ -12,7 +12,7 @@
     - ansible_os_family == 'Debian'
   become: true
 
-- name: Remove the {{ deb_cluster_name }} data directory
+- name: Remove the {{ pg_instance_name }} data directory
   file:
     path: "{{ pg_data }}"
     state: absent
@@ -21,6 +21,15 @@
     - initdb_cmd is defined
     - initdb_cmd.rc == 0
     - initdb_cmd.changed
+  become: yes
+
+- name: Ensure postgres default data directory exists
+  ansible.builtin.file:
+    path: "{{ pg_default_data }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
   become: yes
 
 - name: Ensure postgres data directory exists

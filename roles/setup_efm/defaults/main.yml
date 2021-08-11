@@ -4,6 +4,7 @@ os: ""
 pg_version: ""
 efm_version: 4.2
 
+pg_instance_name: main
 disable_logging: true
 force_efm_install: false
 pass_dir: "~/.edb"
@@ -14,7 +15,7 @@ pg_efm_user_password: ""
 pg_ssl: true
 
 efm_nodes_list: ""
-efm_cluster_name: "efm"
+efm_cluster_name: "{{ pg_instance_name }}"
 efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
 edb_efm_lock_file: "/var/lock/{{ efm_cluster_name }}-{{ efm_version }}/{{ efm_cluster_name }}.lock"
 # common variables require for the role

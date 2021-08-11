@@ -1,0 +1,31 @@
+---
+
+- name: Copy global systemd unit file to /etc/systemd/system
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ pg_systemd_global_unit_file }}"
+    dest: "/etc/systemd/system/{{ pg_service }}.service"
+    mode: 0600
+    owner: root
+    group: root
+  become: true
+  when:
+    - ansible_distribution in ['RedHat', 'CentOS']
+
+- name: Update systemd unit file
+  ansible.builtin.lineinfile:
+    path: "/etc/systemd/system/{{ pg_service }}.service"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    insertafter: "{{ item.insertafter | default('EOF') }}"
+  become: true
+  loop:
+    - line: "Description=Database server {{ pg_type }} {{ pg_version }} - Instance: {{ pg_instance_name }}"
+      regexp: "^Description=.*"
+    - line: "Environment=PGDATA={{ pg_default_data }}"
+      regexp: "^Environment=PGDATA.*"
+    - line: "PIDFile={{ pg_default_data }}/postmaster.pid"
+      regexp: "^PIDFile=.*"
+      insertafter: "^\\[Service\\]$"
+  when:
+    - ansible_distribution in ['RedHat', 'CentOS']
