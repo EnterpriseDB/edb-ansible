@@ -19,7 +19,7 @@ pem_pg_port: 5444
 pg_port: 5444
 
 # postgres service
-pg_service: "edb-as-{{ pg_version }}-{{ pg_instance_name }}"
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 # pem server packages
 pem_server_packages:
   - edb-pem-server
