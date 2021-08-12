@@ -21,7 +21,7 @@ synchronous_standby_names: ""
 random_string: ""
     
 pg_database: "edb"
-pg_service: "edb-as-{{ pg_version }}-{{ pg_instance_name }}"
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 
 pg_user_home: "/var/lib/edb"
 pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
