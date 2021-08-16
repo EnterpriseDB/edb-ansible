@@ -1,5 +1,6 @@
 ---
 pg_user: "postgres"
+pg_instance_name: "main"
 # pem data dir
 pg_home: "/usr/pgsql-{{ pg_version }}"
 pg_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"

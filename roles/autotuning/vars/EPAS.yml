@@ -2,7 +2,8 @@
 
 pg_port: 5444
 pg_database: "postgres"
+pg_instance_name: "main"
 pg_owner: "enterprisedb"
-pg_service: "edb-as-{{ pg_version }}-{{ pg_instance_name }}"
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 pg_unix_socket_directories:
   - "/var/run/edb/as{{ pg_version }}"

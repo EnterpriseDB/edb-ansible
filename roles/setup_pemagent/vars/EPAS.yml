@@ -1,4 +1,5 @@
 ---
+pg_instance_name: "main"
 pg_user: "enterprisedb"
 # pem data dir
 pg_home: "/usr/edb/as{{ pg_version }}" 
