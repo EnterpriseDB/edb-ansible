@@ -78,6 +78,8 @@
     group_names | select('search','primary') | list | count > 0
     or
     group_names | select('search','standby') | list | count > 0
+    or
+    force_register_db
   become: yes
 
 - name: Reset the variables
