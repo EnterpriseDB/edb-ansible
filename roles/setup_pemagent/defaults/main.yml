@@ -28,6 +28,7 @@ pem_agent_certificate_path: "/etc/edb/certs/pem"
 pem_agent_service_name: "pem-server-agent"
 pem_agent_hba_local_entry: []
 
+force_register_db: false
 # common variables require for the role
 etc_hosts_lists: []
 input_password: ""
