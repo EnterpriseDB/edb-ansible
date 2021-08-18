@@ -7,6 +7,7 @@ pg_version: "13"
 dsable_logging: yes
 
 force_replication: false
+use_replication_slots: true
 use_hostname: true
 
 # EFM service information
