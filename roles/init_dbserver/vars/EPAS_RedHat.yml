@@ -1,16 +1,17 @@
 ---
+pg_instance_name: "main"
 pg_wal: ""
-pg_data: "/var/lib/edb/as{{ pg_version }}/data"
-pg_default_data: "/var/lib/edb/as{{ pg_version }}/data"
+pg_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_default_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_encoding: ""
 
 # log directory and filename
 pg_log: "/var/log/edb"
-pg_log_filename: "edb-%a.log"
+pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
 
 # postgres service
-pg_service: "edb-as-{{ pg_version }}"
-
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
+pg_systemd_global_unit_file: "/usr/lib/systemd/system/edb-as-{{ pg_version }}.service"
 # required & optional directories
 pg_user_home: "/var/lib/edb"
 pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"

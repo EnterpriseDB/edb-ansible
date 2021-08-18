@@ -12,7 +12,7 @@
 
 - name: Initialize database postgres service
   shell: >
-    {{ pg_initdb }}
+    {{ pg_initdb }} {{ pg_service }}
   args:
     executable: /bin/bash
     creates: "{{ pg_data }}/PG_VERSION"
@@ -30,10 +30,10 @@
   when:  not pg_version_stat.stat.exists
   become: yes
 
-- name: Start and enable the pg_service
-  systemd:
+- name: Enable and start systemd service
+  ansible.builtin.systemd:
     name: "{{ pg_service }}"
-    daemon_reload: yes
+    daemon_reload: true
     state: started
-    enabled: yes
-  become: yes
+    enabled: true
+  become: true

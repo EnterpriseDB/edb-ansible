@@ -4,6 +4,9 @@
   set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}.yml"
+
 - name: Set barman_backup_method
   set_fact:
     barman_backup_method: "{{ hostvars[inventory_hostname].barman_backup_method | default('rsync') }}"
@@ -62,3 +65,6 @@
 
 - name: Include the Postgres configuration tasks for backup
   include_tasks: configure_pg_backup.yml
+
+- name: Include the barman post configuration tasks
+  include_tasks: post_configure_barman.yml

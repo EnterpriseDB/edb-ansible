@@ -1,5 +1,6 @@
 ---
 
+pg_instance_name: main
 pg_version: 13
 tuned_profile: "edb"
 tuned_configuration_dir: "/etc/tuned"

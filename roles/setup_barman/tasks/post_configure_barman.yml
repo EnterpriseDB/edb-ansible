@@ -1,0 +1,61 @@
+---
+
+- name: Get Barman server informations
+  ansible.builtin.set_fact:
+    _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
+
+- name: Fail if barman server informations are not found
+  ansible.builtin.fail:
+    msg: "Unable to find barman server informations"
+  when:
+    - _barman_server_info|length == 0
+
+- name: Set _barman_server_public_ip
+  ansible.builtin.set_fact:
+    _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
+
+- name: Set _pg_host when not using hostname
+  ansible.builtin.set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
+  when: "not use_hostname"
+
+- name: Set _pg_host when using hostname
+  ansible.builtin.set_fact:
+    _pg_host: "{{ inventory_hostname }}"
+  when: use_hostname
+
+- name: Add a crontab entry for barman backup at 00:00 every day
+  ansible.builtin.lineinfile:
+    line: "0 0 * * * barman /usr/bin/barman backup {{ inventory_hostname }}-{{ pg_instance_name }}"
+    state: present
+    path: /etc/cron.d/barman
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: true
+
+- name: Start barman cron
+  ansible.builtin.command:
+    cmd: "/usr/bin/barman cron"
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: true
+  become_user: barman
+
+- name: Execute ssh command for testing
+  ansible.builtin.command:
+    cmd: "ssh {{ pg_owner }}@{{ _pg_host }} /bin/true"
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: true
+  become_user: barman
+
+- name: Execute barman check
+  ansible.builtin.command:
+    cmd: "/usr/bin/barman check {{ inventory_hostname }}-{{ pg_instance_name }}"
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: true
+  become_user: barman
+
+- name: Take a barman backup
+  ansible.builtin.command:
+    cmd: "/usr/bin/barman backup {{ inventory_hostname }}-{{ pg_instance_name }}"
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: true
+  become_user: barman

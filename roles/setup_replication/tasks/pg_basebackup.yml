@@ -19,14 +19,14 @@
 
 - name: Set host and port
   set_fact:
-    pg_basebackup: "{{ pg_basebackup + ' --host=' + hostvars[inventory_hostname].upstream_node_private_ip + ' --port=' + pg_port }}"
+    pg_basebackup: "{{ pg_basebackup + ' --host=' + hostvars[inventory_hostname].upstream_node_private_ip + ' --port=' + pg_port | string }}"
   when:
     - not use_hostname
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
 
 - name: Set host and port
   set_fact:
-    pg_basebackup: "{{ pg_basebackup + ' --host=' + upstream_hostname + ' --port=' + pg_port }}"
+    pg_basebackup: "{{ pg_basebackup + ' --host=' + upstream_hostname + ' --port=' + pg_port | string }}"
   when:
     - use_hostname
     - hostvars[inventory_hostname].upstream_node_private_ip is defined

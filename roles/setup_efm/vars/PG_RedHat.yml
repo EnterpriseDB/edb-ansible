@@ -7,7 +7,7 @@ pg_efm_user: "efm"
 pg_efm_user_password: ""
 
 # efm data dir
-pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
 
 pg_ssl: true
@@ -24,7 +24,7 @@ pg_unix_socket_directories:
 pg_port: 5432
 
 # postgres service
-pg_service: "postgresql-{{ pg_version }}"
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 
 # pgpool2 binary dir
 pgpool2_bin_path: "/usr/pgpool-{{ pg_version }}/bin"

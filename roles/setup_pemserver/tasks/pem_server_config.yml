@@ -28,7 +28,7 @@
                          --cidr-address {{ pem_allowed_connections }} \
                          --db-unitfile {{ pg_service }} \
                          --host {{ node_hostvars.private_ip }} \
-                         --port {{ pg_port }} \
+                         --port {{ pem_pg_port | default(pg_port) }} \
                          --superuser {{ pg_pem_admin_user }} \
                          --superpassword {{ pg_pem_admin_password }} \
                          --type {{ pem_installation_type }}

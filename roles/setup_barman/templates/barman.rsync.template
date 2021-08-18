@@ -1,6 +1,6 @@
-[{{ inventory_hostname }}]
+[{{ inventory_hostname }}-{{ pg_instance_name }}]
 path_prefix = "{{ pg_bin_path }}"
-description =  "{{ inventory_hostname }}"
+description =  "Instance: {{ pg_instance_name }} - {{ inventory_hostname }}"
 conninfo = host={{ pg_host }} user={{ barman_pg_user }} dbname=postgres port={{ pg_port }}
 ssh_command = ssh {{ pg_owner }}@{{ pg_host }}
 backup_method = rsync

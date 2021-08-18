@@ -1,8 +1,9 @@
 ---
 pg_user: "postgres"
+pg_instance_name: "main"
 # pem data dir
 pg_home: "/usr/pgsql-{{ pg_version }}"
-pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_bin_path: "{{ pg_home }}/bin"
 pg_ssl: true
 
@@ -14,10 +15,11 @@ pg_unix_socket_directories:
    - "/var/run/postgresql"
 
 # postgres port
+pem_pg_port: 5432
 pg_port: 5432
 
 # postgres service
-pg_service: "postgresql-{{ pg_version }}"
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 # pem server packages
 pem_server_packages:
       - postgresql{{ pg_version }}-contrib
