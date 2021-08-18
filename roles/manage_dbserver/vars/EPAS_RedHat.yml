@@ -12,3 +12,26 @@ pg_extensions:
     - { "name": "edb_wait_states", "database": "postgres" }
     - { "name": "pg_stat_statements", "database": "edb" }
     - { "name": "pg_stat_statements", "database": "postgres" }
+
+shell_profile_path: "/var/lib/edb/.enterprisedb_profile"
+shell_profile_owner: "enterprisedb"
+shell_profile_group: "enterprisedb"
+shell_profile_mode: "0600"
+shell_profile_content: |
+  # EnterpriseDB shell environment
+  export PGDATA={{ pg_data }}
+  export PGDATABASE=edb
+  export PGUSER=enterprisedb
+  export PGPORT={{ pg_port }}
+  export PGLOCALEDIR=/usr/edb/as{{ pg_version }}/share/locale
+  export PGHOST={{ pg_unix_socket_directories[0] }}
+
+psqlrc_path: "/var/lib/edb/.psqlrc"
+psqlrc_owner: "enterprisedb"
+psqlrc_group: "enterprisedb"
+psqlrc_mode: "0600"
+psqlrc_content: |
+  -- psql configuration
+
+pg_user_home: "/var/lib/edb"
+pg_data: "/var/lib/edb/as{{ pg_version }}/data"
