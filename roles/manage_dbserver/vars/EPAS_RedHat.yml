@@ -2,6 +2,7 @@
 # Variables for EPAS
 pg_port: "5444"
 pg_owner: "enterprisedb"
+pg_user_home: "/var/lib/edb"
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 pg_database: "postgres"
 pg_unix_socket_directories:
@@ -13,7 +14,7 @@ pg_extensions:
     - { "name": "pg_stat_statements", "database": "edb" }
     - { "name": "pg_stat_statements", "database": "postgres" }
 
-shell_profile_path: "/var/lib/edb/.enterprisedb_profile"
+shell_profile_path: "{{ pg_user_home }}/.enterprisedb_profile"
 shell_profile_owner: "enterprisedb"
 shell_profile_group: "enterprisedb"
 shell_profile_mode: "0600"
@@ -26,12 +27,11 @@ shell_profile_content: |
   export PGLOCALEDIR=/usr/edb/as{{ pg_version }}/share/locale
   export PGHOST={{ pg_unix_socket_directories[0] }}
 
-psqlrc_path: "/var/lib/edb/.psqlrc"
+psqlrc_path: "{{ pg_user_home }}/.psqlrc"
 psqlrc_owner: "enterprisedb"
 psqlrc_group: "enterprisedb"
 psqlrc_mode: "0600"
 psqlrc_content: |
   -- psql configuration
 
-pg_user_home: "/var/lib/edb"
-pg_data: "/var/lib/edb/as{{ pg_version }}/data"
+pg_data: "{{ pg_user_home }}/as{{ pg_version }}/data"
