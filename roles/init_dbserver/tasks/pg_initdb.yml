@@ -18,6 +18,18 @@
     creates: "{{ pg_data }}/PG_VERSION"
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
+  when: ansible_os_family == 'RedHat'
+  become: yes
+
+- name: Initialize database postgres service
+  shell: >
+    {{ pg_initdb }}
+  args:
+    executable: /bin/bash
+    creates: "{{ pg_data }}/PG_VERSION"
+  environment:
+    PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
+  when: ansible_os_family == 'Debian'
   become: yes
 
 - name: Copy the postgresql.conf.template to the server
