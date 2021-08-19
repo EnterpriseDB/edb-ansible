@@ -2,12 +2,13 @@
 # Variables for EPAS
 pg_port: "5432"
 pg_owner: "postgres"
+pg_user_home: "/var/lib/postgresql"
 pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}"
 pg_database: "postgres"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
 
-shell_profile_path: "/var/lib/pgsql/.pgsql_profile"
+shell_profile_path: "{{ pg_user_home }}/.pgsql_profile"
 shell_profile_owner: "postgres"
 shell_profile_group: "postgres"
 shell_profile_mode: "0600"
@@ -20,12 +21,11 @@ shell_profile_content: |
   export PGLOCALEDIR=/usr/lib/postgresql/{{ pg_version }}/share/locale
   export PGHOST={{ pg_unix_socket_directories[0] }}
 
-psqlrc_path: "/var/lib/pgsql/.psqlrc"
+psqlrc_path: "{{ pg_user_home }}/.psqlrc"
 psqlrc_owner: "postgres"
 psqlrc_group: "postgres"
 psqlrc_mode: "0600"
 psqlrc_content: |
   -- psql configuration
 
-pg_user_home: "/var/lib/postgresql"
-pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_data: "{{ pg_user_home }}/{{ pg_version }}/{{ pg_instance_name }}"
