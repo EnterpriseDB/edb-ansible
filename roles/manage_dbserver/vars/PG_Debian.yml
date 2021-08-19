@@ -28,4 +28,4 @@ psqlrc_content: |
   -- psql configuration
 
 pg_user_home: "/var/lib/postgresql"
-pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ deb_cluster_name }}"
+pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
