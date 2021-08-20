@@ -46,6 +46,13 @@
   become: true
   become_user: barman
 
+- name: Archive the first WAL file using barman
+  ansible.builtin.command:
+    cmd: "/usr/bin/barman switch-wal {{ inventory_hostname }}-{{ pg_instance_name }} --archive"
+  delegate_to: "{{ _barman_server_public_ip }}"
+  become: true
+  become_user: barman
+
 - name: Execute barman check
   ansible.builtin.command:
     cmd: "/usr/bin/barman check {{ inventory_hostname }}-{{ pg_instance_name }}"
