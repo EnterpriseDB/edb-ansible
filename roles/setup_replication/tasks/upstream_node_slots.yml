@@ -29,3 +29,4 @@
        - name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
          slot_type: physical
   no_log: "{{ disable_logging }}"
+  when: use_replication_slots
