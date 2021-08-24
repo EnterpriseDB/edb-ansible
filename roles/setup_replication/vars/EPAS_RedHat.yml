@@ -32,4 +32,4 @@ pg_basebackup_options: ""
 
 # unix socket domain directories
 pg_unix_socket_directories:
-  - "/var/run/edb"
+  - "/var/run/edb/as{{ pg_version }}"
