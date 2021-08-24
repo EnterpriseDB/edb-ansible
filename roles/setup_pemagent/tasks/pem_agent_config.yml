@@ -29,9 +29,10 @@
   when: not pemagent_configured.stat.exists
   become: yes
 
-- name: start the pem agent service
+- name: Start the pem agent service
   systemd:
     name: "{{ pem_agent_service }}"
     daemon_reload: yes
+    enabled: yes
     state: started
   become: yes
