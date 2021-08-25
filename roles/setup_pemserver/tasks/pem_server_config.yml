@@ -70,6 +70,16 @@
   systemd:
     name: "{{ pem_agent_service }}"
     daemon_reload: yes
+    enabled: yes
+    state: started
+  when: not pem_configured.stat.exists
+  become: yes
+
+- name: Ensure HTTPD service is running
+  systemd:
+    name: "{{ pem_server_service }}"
+    daemon_reload: yes
+    enabled: yes
     state: started
   when: not pem_configured.stat.exists
   become: yes
