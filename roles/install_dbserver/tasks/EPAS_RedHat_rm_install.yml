@@ -20,7 +20,7 @@
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
       - edb-as{{ pg_version }}-server-sslutils
-    state: present
+    state: absent
   become: yes
 
 - name: Remove python packages
@@ -28,7 +28,7 @@
     name:
       - python-pip
       - python-psycopg2
-    state: present
+    state: absent
   when: os in ['RedHat7','CentOS7']
   become: yes
 
@@ -37,7 +37,7 @@
     name:
       - python3-pip
       - python3-psycopg2
-    state: present
+    state: absent
   when: os in ['RedHat8','CentOS8']
   become: yes
 
