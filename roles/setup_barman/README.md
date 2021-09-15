@@ -153,6 +153,26 @@ All the variables are available at:
 
   * [roles/setup_barman/defaults/main.yml](./defaults/main.yml)
 
+## Important notes for recovery
+
+This role adds the `recovery_options=get-wal` to the barman configuration file,
+this implies that the server where a backup is restored is able to access barman
+with ssh.
+If no ssh access is possible to the Barman server from the new PostgreSQL server
+then it is required to execute the recovery with: `--no-get-wal` parameter, like:
+```bash
+$ barman recover --no-get-wal \
+     --remote-ssh-command 'ssh postgresql@restore_server' \
+     my_server_instance \
+     latest /path/to/new/pgdata
+```
+
+`get-wal` allows to recover partial WAL file from the backup when streaming
+backup is used (i.e. the one being currently written by the backuped PostgreSQL
+server).
+
+`barman recover --no-get-wal` requires `recovery_options=get-wal` to be set.
+
 ## License
 
 BSD
@@ -161,6 +181,7 @@ BSD
 
 Author:
 
+  * Cédric Villemain
   * Julien Tachoires
   * Vibhor Kumar (Reviewer)
   * EDB Postgres
