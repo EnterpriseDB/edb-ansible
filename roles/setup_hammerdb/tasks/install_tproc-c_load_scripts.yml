@@ -6,6 +6,20 @@
 - name: Reference HammerDB TPROC-C variables
   include_vars: "hammerdb-tproc-c.yml"
 
+- name: Gather the pg_cluster_nodes information
+  set_fact:
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary private IP address
+  set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:  node.node_type == 'primary'
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
 - name: Create TPROC-C loader.tcl
   template:
     dest: loader.tcl
