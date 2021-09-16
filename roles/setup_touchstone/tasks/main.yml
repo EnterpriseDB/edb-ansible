@@ -1,14 +1,19 @@
 ---
 
+- name: Update packages
+  package: name=* state=latest
+  become: yes
+
 - name: Install packages for Touchstone
-  yum:
+  package:
     name:
       - cmake
       - gcc
       - make
+      - redhat-rpm-config
       - sysstat
+    state: present
   become: yes
-  ignore_errors: yes
 
 - name: Download Touchstone
   raw: curl -OL https://gitlab.com/touchstone/touchstone/-/archive/v{{ touchstone_version }}/touchstone-v{{ touchstone_version }}.tar.gz
