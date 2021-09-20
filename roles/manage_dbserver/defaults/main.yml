@@ -6,7 +6,7 @@ pg_type: "PG"
 
 efm_cluster_name: "{{ pg_instance_name }}"
 efm_version: 4.2
-efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
+efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
 
 pass_dir: "~/.edb"
 passfile: ""
