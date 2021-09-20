@@ -5,10 +5,12 @@ pg_type: PG
 pg_version: 12
 pg_ssl: true
 
+pg_instance_name: main
+
 # EFM service information
 efm_version: 4.2
-efm_cluster_name: "efm"
-efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
+efm_cluster_name: "{{ pg_instance_name }}"
+efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
 
 disable_logging: yes
 use_replication_slots: true

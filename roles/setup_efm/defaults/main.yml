@@ -16,7 +16,7 @@ pg_ssl: true
 
 efm_nodes_list: ""
 efm_cluster_name: "{{ pg_instance_name }}"
-efm_service: "edb-{{ efm_cluster_name }}-{{ efm_version }}"
+efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
 edb_efm_lock_file: "/var/lock/{{ efm_cluster_name }}-{{ efm_version }}/{{ efm_cluster_name }}.lock"
 # common variables require for the role
 etc_hosts_lists: []

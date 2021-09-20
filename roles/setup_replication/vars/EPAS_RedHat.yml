@@ -1,5 +1,4 @@
 ---
-pg_instance_name: "main"
 pg_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_default_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_log: "/var/log/edb"
@@ -19,7 +18,7 @@ pg_replication_user_password: ""
 synchronous_standby_names: ""
 
 random_string: ""
-    
+
 pg_database: "edb"
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 
