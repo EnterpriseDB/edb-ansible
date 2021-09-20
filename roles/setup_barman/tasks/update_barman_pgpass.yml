@@ -36,6 +36,7 @@
     regexp: "^{{ _pg_host | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
     create: yes
   delegate_to: "{{ _barman_server_public_ip }}"
+  throttle: 1
   become: yes
 
 - name: Reset _barman_server_info
