@@ -1,5 +1,4 @@
 ---
-pg_instance_name: "main"
 pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_log: "/var/log/edb"
@@ -18,7 +17,7 @@ pg_replication_user_password: ""
 synchronous_standby_names: ""
 
 random_string: ""
-    
+
 pg_database: "postgres"
 pg_service: "edb-as@{{ pg_version }}-{{ pg_instance_name }}"
 

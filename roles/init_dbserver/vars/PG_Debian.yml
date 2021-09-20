@@ -1,5 +1,4 @@
 ---
-pg_instance_name: "main"
 pg_wal: ""
 pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
