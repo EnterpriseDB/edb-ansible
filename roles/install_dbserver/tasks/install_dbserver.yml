@@ -32,7 +32,7 @@
     - force_install
 
 - name: Update packages
-  package: name=* state=latest
+  package: name=* state=present
   become: yes
 
 - name: Install and Configure Postgres on RedHat
