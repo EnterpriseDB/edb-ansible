@@ -18,7 +18,7 @@
   include_tasks: update_pg_hba.yml
 
 - name: Update packages
-  package: name=* state=latest
+  package: name=* state=present
   become: yes
 
 - name: Install packages for DBT-2
