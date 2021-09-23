@@ -1,7 +1,7 @@
 ---
 
 - name: Update packages
-  package: name=* state=latest
+  package: name=* state=present
   become: yes
 
 - name: Install EPEL
