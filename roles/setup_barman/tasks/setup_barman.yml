@@ -23,7 +23,7 @@
   when: os not in supported_os
 
 - name: Reference pg_type variables
-  include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_RedHat.yml"
+  include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Reference barman server variables
   include_vars: "{{ role_path }}/../setup_barmanserver/defaults/main.yml"
