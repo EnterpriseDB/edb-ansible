@@ -25,3 +25,13 @@
     state: present
   when: os in ['CentOS7', 'RHEL7']
   become: yes
+
+- name: Install Barman packages for Debian
+  apt:
+    name:
+      - barman
+      - barman-cli
+      - barman-cli-cloud
+    state: present
+  when: ansible_os_family == 'Debian'
+  become: yes

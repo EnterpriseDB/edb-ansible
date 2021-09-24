@@ -10,6 +10,7 @@ etc_hosts_lists: []
 pass_dir: "~/.edb"
 
 supported_os:
+  - Debian10
   - CentOS7
   - CentOS8
   - RHEL7

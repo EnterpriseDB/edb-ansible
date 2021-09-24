@@ -16,6 +16,7 @@ barman_compression: "gzip"
 etc_hosts_lists: []
 
 supported_os:
+  - Debian10
   - CentOS7
   - CentOS8
   - RHEL7
