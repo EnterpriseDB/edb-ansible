@@ -16,10 +16,28 @@
     home: "{{ barman_home }}"
   become: yes
 
+- name: Check if getenforce is installed
+  ansible.builtin.shell: command -v getenforce > /dev/null 2>&1
+  register: getenforce_installed
+  become: true
+  ignore_errors: true
+
+- name: Set default value for selinux_enforcing
+  ansible.builtin.set_fact:
+    selinux_enforcing: false
+
 - name: Test whether SELinux is enabled
   command: getenforce
   register: selinux_status
   changed_when: false
+  when: getenforce_installed.rc == 0
+
+- name: Set selinux_enforcing
+  ansible.builtin.set_fact:
+    selinux_enforcing: true
+  when:
+    - getenforce_installed.rc == 0
+    - selinux_status.stdout == 'Enforcing'
 
 - name: Set SELinux context of custom located barman home directory
   community.general.sefcontext:
@@ -28,7 +46,7 @@
     state: present
   register: barman_home_dir
   when:
-    - selinux_status.stdout == 'Enforcing'
+    - selinux_enforcing
     - barman_home != barman_default_home
 
 - name: Set SELinux context of barman's ssh directory
@@ -38,10 +56,11 @@
     state: present
   register: barman_ssh_home_dir
   when:
-    - selinux_status.stdout == 'Enforcing'
+    - selinux_enforcing
     - barman_home != barman_default_home
 
 - name: Apply new SELinux context for custom located barman home directory
   command: "restorecon -irv {{ barman_home }}"
-  when: barman_home_dir.changed or
-        barman_ssh_home_dir.changed
+  when:
+    - selinux_enforcing
+    - barman_home_dir.changed or barman_ssh_home_dir.changed
