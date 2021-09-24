@@ -1,5 +1,4 @@
 ---
-pg_instance_name: "main"
 pg_port: 5432
 pg_database: "postgres"
 pg_owner: "postgres"
