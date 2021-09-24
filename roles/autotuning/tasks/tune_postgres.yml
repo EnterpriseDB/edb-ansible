@@ -24,6 +24,8 @@
 - name: Gather buffers memory size from /proc/meminfo
   shell: >-
     set -o pipefail && grep -E '^Buffers:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
+  args:
+    executable: /bin/bash
   register: _shell_output
   become: yes
   changed_when: false
@@ -35,6 +37,8 @@
 - name: Gather cached memory size from /proc/meminfo
   shell: >-
     set -o pipefail && grep -E '^Cached:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
+  args:
+    executable: /bin/bash
   register: _shell_output
   become: yes
   changed_when: false
@@ -46,6 +50,8 @@
 - name: Gather slab reclaimable size from /proc/meminfo
   shell: >-
     set -o pipefail && grep -E '^SReclaimable:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
+  args:
+    executable: /bin/bash
   register: _shell_output
   become: yes
   changed_when: false

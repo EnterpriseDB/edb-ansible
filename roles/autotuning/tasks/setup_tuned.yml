@@ -33,6 +33,12 @@
   when:
     - os in ['CentOS8', 'RHEL8']
 
+- name: Set the variable tuned_disk_elevator for Debian
+  set_fact:
+    tuned_disk_elevator: "deadline"
+  when:
+    - ansible_os_family == 'Debian'
+
 - name: Ensure the tuned profile directory exists
   file:
     path: "{{ tuned_configuration_dir }}/{{ tuned_profile }}"

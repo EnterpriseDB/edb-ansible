@@ -10,7 +10,7 @@
   when: os not in supported_os
 
 - name: Reference pg_type variables
-  include_vars: "{{ pg_type }}.yml"
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Include the tuned package installation tasks
   include_tasks: install_tuned.yml
