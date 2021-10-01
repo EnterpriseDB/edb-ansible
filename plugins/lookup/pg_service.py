@@ -19,9 +19,9 @@ from ansible.plugins.lookup import LookupBase
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 
-        pg_type = variables['pg_type']
-        pg_version = variables['pg_version']
-        pg_instance_name = variables['pg_instance_name']
+        pg_type = variables.get('pg_type', '13')
+        pg_version = variables.get('pg_version', 'PG')
+        pg_instance_name = variables.get('pg_instance_name', 'main')
 
         if pg_type == 'EPAS':
             p = 'edb-as-%s'
