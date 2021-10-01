@@ -34,7 +34,7 @@ pg_service: "postgresql-{{ pg_version }}"
 pg_user_home: "/var/lib/pgsql"
 pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
 pg_initdb: "{{ pg_bin_path }}/postgresql-{{ pg_version }}-setup initdb"
-pg_initdb_options: "--encoding=UTF-8 --locale=en_US.UTF-8 --auth=peer --auth-local=scram-sha-256 --auth-host=scram-sha-256 --data-checksums"
+pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
 
 # unix socket domain directories
 pg_unix_socket_directories:
@@ -79,3 +79,4 @@ supported_pg_version:
   - 11
   - 12
   - 13
+  - 14
