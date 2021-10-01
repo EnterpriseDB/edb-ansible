@@ -427,27 +427,27 @@ $ ansible-playbook playbook.yml \
 
 ### Community PostgreSQL
 
-| Distribution | 10 | 11 | 12 | 13|
-| ------------------------- |:--:|:--:|:--:|:--:|
-| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian | :x: | :x: | :x: | :x: |
-| Ubuntu | :x: | :x: | :x: | :x: |
-| SLES | :x: | :x: | :x: | :x: |
+| Distribution | 10 | 11 | 12 | 13 | 14 |
+| ------------------------- |:--:|:--:|:--:|:--:|:--:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| ? |
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| ? |
+| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark: |
+| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark: |
+| Debian | :x: | :x: | :x: | :x: | :x: |
+| Ubuntu | :x: | :x: | :x: | :x: | :x: |
+| SLES | :x: | :x: | :x: | :x: | :x: |
 
 ### Enterprise DB Postgres Advanced Server
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Centos 8 | :x:| :x:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
-| Debian | :x: | :x: | :x: |
-| Ubuntu | :x: | :x: | :x: |
-| SLES | :x: | :x: | :x: |
+| Distribution | 10 | 11 | 12 | 13 | 14 |
+| ------------------------- |:--:|:--:|:--:|:--:|:--:|
+| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :x: |
+| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :x:|
+| Centos 8 | :x:| :x:| :white_check_mark:| :white_check_mark:| :x: |
+| Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:| :x: |
+| Debian | :x: | :x: | :x: | :x: | :x: |
+| Ubuntu | :x: | :x: | :x: | :x: | :x: |
+| SLES | :x: | :x: | :x: | :x: | :x: |
 
 - :white_check_mark: - Tested and supported
 - :x: - Not tested and not supported
