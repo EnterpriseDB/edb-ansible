@@ -1,4 +1,5 @@
 ---
+
 pg_instance_name: main
 pg_version: "12"
 use_hostname: true
@@ -71,3 +72,4 @@ supported_pg_version:
   - 11
   - 12
   - 13
+  - 14
