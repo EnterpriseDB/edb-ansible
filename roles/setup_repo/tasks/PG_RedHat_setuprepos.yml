@@ -1,4 +1,10 @@
 ---
+- name: Update the ca-certificates package
+  ansible.builtin.yum:
+    name: ca-certificates
+    state: latest
+  become: true
+
 - name: Download EDB GPG key for RedhHat 8
   rpm_key:
     key: "{{ edb_gpg_key_8 }}"
