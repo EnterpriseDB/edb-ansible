@@ -85,6 +85,7 @@ class LookupModule(LookupBase):
         hostname = variables['inventory_hostname']
 
         myvars = getattr(self._templar, '_available_variables', {})
+        hostvars = myvars['hostvars'][hostname]
 
         for group in variables['group_names']:
             supported_roles = list(
@@ -94,15 +95,16 @@ class LookupModule(LookupBase):
             # Special case for the primary or standby nodes when the host
             # variable pgbouncer is set to true.
             if (group in ['primary', 'standby']
-                    and myvars['hostvars'][hostname].get('pgbouncer', False)):
+                    and hostvars.get('pgbouncer', False)):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_pgbouncer', 'manage_pgbouncer'])
                 )
             # Special case for the primary or standby nodes when the
             # host variable pem_agent is set to true.
-            if (group in ['primary', 'standby']
-                    and myvars['hostvars'][hostname].get('pem_agent', False)):
+            if (group in ['primary', 'standby'] and (
+                    hostvars.get('pem_agent', False)
+                    or hostvars.get('pem_agent_remote', False))):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_pemagent'])
@@ -110,23 +112,21 @@ class LookupModule(LookupBase):
             # Special case for the pemserver, primary or standby nodes when
             # the host variable barman is set to true.
             if (group in ['pemserver', 'primary', 'standby']
-                    and myvars['hostvars'][hostname].get('barman', False)):
+                    and hostvars.get('barman', False)):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_barman'])
                 )
             # Special case for the primary nodes when the host variable
             # dbt2 is set to true.
-            if (group in ['primary']
-                    and myvars['hostvars'][hostname].get('dbt2', False)):
+            if (group in ['primary'] and hostvars.get('dbt2', False)):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_dbt2'])
                 )
             # Special case for the primary nodes when the host variable
             # hammerdb is set to true.
-            if (group in ['primary']
-                    and myvars['hostvars'][hostname].get('hammerdb', False)):
+            if (group in ['primary'] and hostvars.get('hammerdb', False)):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_hammerdb'])
