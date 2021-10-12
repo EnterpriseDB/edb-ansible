@@ -88,6 +88,10 @@ all:
           pem_server_private_ip: xxx.xxx.xxx.xxx
 ```
 
+Note: when setting the `pem_agent_remote` host variable to `true`, PEM agent is
+not installed and configured on the database server, but the database server is
+registered and monitored by the PEM agent running on the PEM server.
+
 ## How to include the `setup_pemagent` role in your Playbook
 
 Below is an example of how to include the `setup_pemagent` role:

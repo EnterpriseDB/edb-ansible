@@ -33,6 +33,10 @@
   when:
     - pem_server_info|length > 0
 
+- name: Set pem_agent_remote
+  set_fact:
+    pem_agent_remote: "{{ node_hostvars.pem_agent_remote | default(False) }}"
+
 - name: Remove pem agent based on force_pemserver/force_initdb/force_pemagent
   block:
     - import_tasks: rm_pemagent.yml
@@ -40,6 +44,7 @@
       ((force_pemserver is defined and force_pemserver)
        or (force_initdb is defined and force_initdb)
        or (force_pemagent is defined and force_pemagent))
+       and not pem_agent_remote
   become: yes
 
 - name: Fetch PEM admin user password
@@ -70,20 +75,34 @@
     - import_tasks: pem_agent_install.yml
     - import_tasks: pem_agent_config.yml
   become: yes
+  when:
+    - not pem_agent_remote
 
 - name: Register database on primary and standby
   block:
     - import_tasks: pem_agent_register_db.yml
   when: >
-    group_names | select('search','primary') | list | count > 0
-    or
-    group_names | select('search','standby') | list | count > 0
-    or
-    force_register_db
+    (group_names | select('search','primary') | list | count > 0
+     or
+     group_names | select('search','standby') | list | count > 0
+     or
+     force_register_db) and not pem_agent_remote
   become: yes
+
+- name: Register remote database on primary and standby
+  block:
+    - import_tasks: pem_agent_register_db_remote.yml
+  when: >
+    (group_names | select('search','primary') | list | count > 0
+     or
+     group_names | select('search','standby') | list | count > 0
+     or
+     force_register_db) and pem_agent_remote
+  become: true
 
 - name: Reset the variables
   set_fact:
     pem_server_info:
     node_hostvars:
     pem_server_exists: false
+    pem_agent_remote: false
