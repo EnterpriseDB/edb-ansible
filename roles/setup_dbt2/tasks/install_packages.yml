@@ -28,6 +28,7 @@
       - postgresql-devel
       - postgresql-libs
       - R
+      - sysstat
       - tmux
     state: present
   become: yes
