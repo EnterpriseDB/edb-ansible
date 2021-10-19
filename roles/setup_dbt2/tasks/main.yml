@@ -30,6 +30,7 @@
       - make
       - postgresql{{ pg_version }}-devel
       - redhat-rpm-config
+      - sysstat
       - tmux
     state: present
   become: yes
