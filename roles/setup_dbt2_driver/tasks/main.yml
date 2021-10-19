@@ -24,6 +24,16 @@
     name: setup_dbt2
     tasks_from: install_dbt2
 
+- name: Download DBTTOOLS
+  git:
+    repo: 'https://git.code.sf.net/p/osdldbt/dbttools'
+    dest: /usr/local/src/dbttools
+
+- name: Install DBTTOOLS
+  shell:
+    cmd: make install
+    chdir: /usr/local/src/dbttools
+
 - name: Reset the variables based on the user input
   set_fact:
       primary_private_ip: ""
