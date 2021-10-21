@@ -27,12 +27,15 @@
   stat:
     path: "{{ pg_data }}/pg_wal"
   register: waldir
+  when:
+    - "'witness' not in group_names"
 
 - name: Ensure parent WAL dir has correct permissions
   file:
     path: "{{ waldir.stat.lnk_source|dirname }}"
     owner: "{{ pg_owner }}"
   when:
+    - "'witness' not in group_names"
     - waldir is defined
     - waldir.stat.islnk
 
@@ -63,9 +66,9 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: yes
 
-- name: Gather the cluste_nodes information and efm_install_version
+- name: Gather the EFM cluster informations and efm_install_version
   set_fact:
-    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+    efm_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.efm_nodes', wantlist=True) }}"
     efm_install_version : "{{ efm_version | replace('.','') }}"
   run_once: true
 
@@ -81,7 +84,7 @@
 - name: Prepare efm_nodes_list based on use_hostname
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.inventory_hostname + ':' + efm_port | string + ' ' }}"
-  loop: "{{ pg_cluster_nodes }}"
+  loop: "{{ efm_cluster_nodes }}"
   loop_control:
     loop_var: node
   when: use_hostname
@@ -93,7 +96,7 @@
     efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':' + efm_port | string + ' ' }}"
   when:
     - not use_hostname
-  loop: "{{ pg_cluster_nodes }}"
+  loop: "{{ efm_cluster_nodes }}"
   loop_control:
     loop_var: node
   run_once: true
@@ -107,7 +110,7 @@
     primary_public_ip: "{{ node.ansible_host }}"
     primary_private_ip: "{{ node.private_ip }}"
   when: node.node_type == 'primary'
-  loop: "{{ pg_cluster_nodes }}"
+  loop: "{{ efm_cluster_nodes }}"
   loop_control:
     loop_var: node
   run_once: true
@@ -144,6 +147,7 @@
   become: yes
   when:
     - efm_pgpool2_integration
+    - "'witness' not in group_names"
 
 - name: EFM configuration
   block:
@@ -152,7 +156,7 @@
   no_log: "{{ disable_logging }}"
   become: yes
 
-- name: Efm parameters settings
+- name: EFM parameters settings
   include_tasks: efm_cluster_set_params.yml
   no_log: "{{ disable_logging }}"
 

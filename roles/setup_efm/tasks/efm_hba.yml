@@ -5,3 +5,5 @@
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
+  when:
+    - "'witness' not in group_names"

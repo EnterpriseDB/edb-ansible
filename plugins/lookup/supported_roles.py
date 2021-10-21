@@ -74,7 +74,12 @@ GROUP_ROLES = {
     ],
     'hammerdbserver': [
         'setup_hammerdbserver'
-    ]
+    ],
+    'witness': [
+        'setup_repo',
+        'install_dbserver',
+        'setup_efm'
+    ],
 }
 
 
