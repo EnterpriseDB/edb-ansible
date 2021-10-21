@@ -17,7 +17,7 @@
           }
       ]
   when: not pg_ssl
-  loop: "{{ pg_cluster_nodes }}"
+  loop: "{{ efm_cluster_nodes }}"
   loop_control:
     loop_var: node
   run_once: true
@@ -39,7 +39,7 @@
           }
       ]
   when: pg_ssl
-  loop: "{{ pg_cluster_nodes }}"
+  loop: "{{ efm_cluster_nodes }}"
   loop_control:
     loop_var: node
   run_once: true
