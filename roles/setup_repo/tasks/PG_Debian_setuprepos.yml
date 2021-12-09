@@ -19,6 +19,18 @@
     - not auth_conf.stat.exists or auth_conf.stat.size == 0
   become: true
 
+- name: Install gpg
+  ansible.builtin.package:
+    name: gpg
+    state: present
+  become: true
+
+- name: Install acl
+  ansible.builtin.package:
+    name: acl
+    state: present
+  become: true
+
 - name: Add EDB GPGP Debian keys
   apt_key:
     url: "{{ edb_deb_keys }}"
