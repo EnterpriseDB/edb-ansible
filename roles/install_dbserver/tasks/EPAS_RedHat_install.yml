@@ -18,7 +18,7 @@
   when: os in ['RedHat8','CentOS8']
   become: yes
 
-- name: Install EPAS packages
+- name: "Install EPAS < 14 packages"
   package:
     name:
       - edb-as{{ pg_version }}-server
@@ -35,3 +35,25 @@
       - edb-as{{ pg_version }}-server-sslutils
     state: present
   become: yes
+  when: >-
+    pg_version|int < 14
+
+- name: "Install EPAS >= 14 packages"
+  package:
+    name:
+      - edb-as{{ pg_version }}-server
+      - edb-as{{ pg_version }}-server-core
+      - edb-as{{ pg_version }}-server-contrib
+      - edb-as{{ pg_version }}-server-libs
+      - edb-as{{ pg_version }}-server-client
+      - edb-as{{ pg_version }}-server-llvmjit
+      - edb-as{{ pg_version }}-server-sslutils
+      - edb-as{{ pg_version }}-server-indexadvisor
+      - edb-as{{ pg_version }}-server-sqlprofiler
+      - edb-as{{ pg_version }}-server-sqlprotect
+      - edb-as{{ pg_version }}-server-sslutils
+      - edb-as{{ pg_version }}-server-edb_wait_states
+    state: present
+  become: yes
+  when: >-
+    pg_version|int >= 14

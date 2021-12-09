@@ -22,7 +22,7 @@ pg_unix_socket_directories:
 # postgres port
 pg_port: 5432
 
-pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer --pwfile /dev/zero"
+pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer"
 pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
 
 # postgres database
