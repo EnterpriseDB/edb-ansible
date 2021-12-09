@@ -1,5 +1,5 @@
 ---
-- name: Install EPAS Packages
+- name: "Install EPAS < 14 Packages"
   package:
     name:
       - python3-pip
@@ -17,6 +17,29 @@
     update_cache: yes
   become: true
   register: install_package
+  when: >-
+    pg_version|int < 14
+
+- name: "Install EPAS >= 14 Packages"
+  package:
+    name:
+      - python3-pip
+      - python3-psycopg2
+      - edb-as{{ pg_version }}-server
+      - edb-as{{ pg_version }}-server-core
+      - edb-as{{ pg_version }}-server-client
+      - edb-as{{ pg_version }}-server-sslutils
+      - edb-as{{ pg_version }}-server-indexadvisor
+      - edb-as{{ pg_version }}-server-sqlprofiler
+      - edb-as{{ pg_version }}-server-sqlprotect
+      - edb-as{{ pg_version }}-server-sslutils
+      - edb-as{{ pg_version }}-server-edb-wait-states
+    state: present
+    update_cache: yes
+  become: true
+  register: install_package
+  when: >-
+    pg_version|int >= 14
 
 - name: Install python-psycopg2
   package:
@@ -25,7 +48,7 @@
       - python-ipaddress
     state: present
     update_cache: yes
-  when: os in ['Ubuntu18', 'Debian9']
+  when: os in ['Ubuntu18', 'Debian9', 'Debian10']
   become: true
 
 - name: Stop the service {{ epas_service }}

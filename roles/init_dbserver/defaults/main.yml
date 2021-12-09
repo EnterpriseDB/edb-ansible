@@ -2,7 +2,7 @@
 # postgres settings
 os: ""
 pg_type: PG
-pg_version: 12
+pg_version: 14
 pg_ssl: true
 
 pg_instance_name: main
