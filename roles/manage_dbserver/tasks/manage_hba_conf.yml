@@ -30,6 +30,7 @@
       loop_var: line_item
   no_log: "{{ disable_logging }}"
   register: hba_update
+  throttle: 1
 
 - name: Reload the pg service
   systemd:
