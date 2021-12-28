@@ -33,7 +33,8 @@ GROUP_ROLES = {
         'init_dbserver',
         'manage_dbserver',
         'setup_efm',
-        'autotuning'
+        'autotuning',
+        'setup_repmgr',
     ],
     'standby': [
         'setup_repo',
@@ -41,7 +42,8 @@ GROUP_ROLES = {
         'setup_replication',
         'manage_dbserver',
         'setup_efm',
-        'autotuning'
+        'autotuning',
+        'setup_repmgr',
     ],
     'pemserver': [
         'setup_repo',
@@ -78,7 +80,8 @@ GROUP_ROLES = {
     'witness': [
         'setup_repo',
         'install_dbserver',
-        'setup_efm'
+        'setup_efm',
+        'setup_repmgr',
     ],
 }
 
@@ -135,5 +138,13 @@ class LookupModule(LookupBase):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_hammerdb'])
+                )
+            # Special case for the witness nodes when the host variable
+            # init_dbserver is set to true. This is required for repmgr: the
+            # witness node must have a dedicated database instance running.
+            if (group in ['witness'] and hostvars.get('init_dbserver', False)):
+                supported_roles = list(
+                    set(supported_roles)
+                    | set(['init_dbserver'])
                 )
         return supported_roles
