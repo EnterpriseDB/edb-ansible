@@ -1,0 +1,22 @@
+- name: Ensure the directory {{ pg_user_home }}/.ssh exists
+  ansible.builtin.file:
+    state: directory
+    path: "{{ pg_user_home }}/.ssh"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+  become: true
+
+- name: Check if the SSH private key exists
+  ansible.builtin.stat:
+    path: "{{ pg_user_home }}/.ssh/id_rsa"
+  register: postgres_ssh_private_key
+  become: true
+
+- name: Ensure Postgres owner's SSH keys exist
+  community.crypto.openssh_keypair:
+    path: "{{ pg_user_home }}/.ssh/id_rsa"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+  when: not postgres_ssh_private_key.stat.exists
+  become: true
