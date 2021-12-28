@@ -1,0 +1,33 @@
+- name: Make sure /var/log/repmgr exists
+  ansible.builtin.file:
+    path: /var/log/repmgr
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    state: directory
+  become: true
+
+- name: Register repmgr node
+  ansible.builtin.shell: |
+    set -o pipefail
+    {{ pg_bin_path }}/repmgr \
+      -f {{ repmgr_configuration_file }} \
+      {{ repmgr_role }} register -F &>> /var/log/repmgr/register.log
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: "{{ pg_owner }}"
+  throttle: 1
+  when: "repmgr_role in ('primary', 'standby')"
+
+- name: Register repmgr witness node
+  ansible.builtin.shell: |
+    set -o pipefail
+    {{ pg_bin_path }}/repmgr \
+      -f {{ repmgr_configuration_file }} \
+      {{ repmgr_role }} register -F -h {{ repmgr_primary_info.private_ip }} &>> /var/log/repmgr/register.log
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: "{{ pg_owner }}"
+  throttle: 1
+  when: "repmgr_role in ('witness')"

@@ -1,0 +1,48 @@
+- name: Read shared_preload_libraries
+  community.postgresql.postgresql_query:
+    query: >-
+      SELECT setting FROM pg_settings
+      WHERE name = 'shared_preload_libraries'
+    port: "{{ pg_port }}"
+    db: "{{ pg_database }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+  no_log: "{{ disable_logging }}"
+  become: true
+  become_user: "{{ pg_owner }}"
+  register: spl
+
+- name: Initialize variables
+  ansible.builtin.set_fact:
+    spl_list: "{{ spl.query_result[0].setting.split(',') | map('regex_replace', '[\"]+', '') | map('trim') | list }}"
+    new_spl_list: []
+    update_spl: false
+
+- name: Add 'repmgr' to SPL if needed
+  ansible.builtin.set_fact:
+    new_spl_list: "{{ spl_list + ['repmgr'] }}"
+    update_spl: true
+  when: "'repmgr' not in spl_list"
+
+- name: Update SPL
+  community.postgresql.postgresql_query:
+    query: >-
+      ALTER SYSTEM SET shared_preload_libraries TO {{ new_spl_list | map('quote') | join(',') }}
+    port: "{{ pg_port }}"
+    db: "{{ pg_database }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    autocommit: true
+  no_log: "{{ disable_logging }}"
+  become: true
+  become_user: "{{ pg_owner }}"
+  when:
+    - update_spl
+
+- name: Restart Postgres service
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    state: restarted
+  become: true
+  when:
+    - update_spl
