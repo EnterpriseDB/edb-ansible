@@ -1,22 +1,5 @@
 ---
 
-- name: Update packages
-  package: name=* state=present
-  become: yes
-
-- name: Install EPEL
-  package:
-    name:
-      - epel-release
-    state: present
-  become: yes
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: Enable PowerPools (dnf)
-  shell: dnf config-manager --set-enabled powertools
-  become: yes
-  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts ['distribution_major_version'] == '8'
-
 - name: Install packages for DBT-2
   package:
     name:
