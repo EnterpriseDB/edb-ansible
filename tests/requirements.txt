@@ -1,0 +1,5 @@
+cryptography==3.2.1
+jinja2
+pytest
+pytest-testinfra
+paramiko

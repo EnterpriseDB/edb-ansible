@@ -33,3 +33,6 @@ clean:
 
 install: clean build
 	ansible-galaxy collection install $(DIR)/edb_devops-edb_postgres-$(EDB_ANSIBLE_VERSION).tar.gz --force
+
+install-build:
+	ansible-galaxy collection install $(DIR)/edb_devops-edb_postgres-$(EDB_ANSIBLE_VERSION).tar.gz --force
