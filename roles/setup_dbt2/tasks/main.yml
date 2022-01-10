@@ -17,10 +17,6 @@
 - name: Include DBT-2 client systems into pg_hba
   include_tasks: update_pg_hba.yml
 
-- name: Update packages
-  package: name=* state=present
-  become: yes
-
 - name: Install packages for DBT-2
   package:
     name:
