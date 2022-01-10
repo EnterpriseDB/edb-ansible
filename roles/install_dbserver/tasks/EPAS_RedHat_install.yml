@@ -2,7 +2,7 @@
 - name: Install python packages
   package:
     name:
-      - python-pip
+      - python2-pip
       - python-psycopg2
       - python-ipaddress
     state: present
