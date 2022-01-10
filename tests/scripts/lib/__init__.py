@@ -1,0 +1,2 @@
+SSH_PRIVATE_KEY_FILE="id_rsa"
+SSH_PUBLIC_KEY_FILE="id_rsa.pub"

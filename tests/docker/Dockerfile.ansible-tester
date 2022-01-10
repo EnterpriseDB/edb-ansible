@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1
+
+FROM debian:10-slim
+
+RUN apt update
+RUN apt install -y python3
+RUN apt install -y python3-pip openssh-client build-essential
+RUN pip3 install pip --upgrade
+RUN pip3 install ansible-base
+RUN pip3 install paramiko
+RUN pip3 install pytest-testinfra
+RUN pip3 install pyyaml
+RUN ansible-galaxy collection install community.postgresql:=1.1.1
+RUN ansible-galaxy collection install ansible.posix:=1.1.1
+RUN ansible-galaxy collection install community.general:=2.1.1
+RUN ansible-galaxy collection install community.crypto:=1.4.0
