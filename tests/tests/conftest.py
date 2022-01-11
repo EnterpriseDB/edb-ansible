@@ -110,3 +110,16 @@ def get_standbys():
 
 def get_pgpool2():
     return get_hosts('pgpool2')
+
+
+def get_pg_unix_socket_dir():
+    pg_type = get_pg_type()
+    pg_version = get_pg_version()
+    sys_os = get_os()
+    if pg_type == 'PG':
+        return '/var/run/postgresql'
+    elif pg_type == 'EPAS':
+        if sys_os.startswith('centos'):
+            return '/var/run/edb/as%s' % pg_version
+        elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
+            return '/var/run/edb-as'
