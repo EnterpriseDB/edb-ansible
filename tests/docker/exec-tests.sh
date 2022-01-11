@@ -21,4 +21,5 @@ export EDB_SSH_USER=root
 export EDB_SSH_KEY=/root/.ssh/id_rsa
 export EDB_SSH_CONFIG=/root/.ssh/ssh_config
 export EDB_INVENTORY=/workspace/tests/cases/${CASE_NAME}/inventory.yml
+export EDB_ANSIBLE_VARS=/workspace/tests/cases/${CASE_NAME}/vars.json
 py.test -v -k ${CASE_NAME} /workspace/tests/tests
