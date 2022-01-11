@@ -31,3 +31,19 @@ cases:
     - debian9
     - debian10
     - ubuntu20
+  init_dbserver:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - centos7
+    - centos8
+    - debian9
+    - debian10
+    - ubuntu20
