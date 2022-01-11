@@ -121,6 +121,50 @@ $ test-runner.py \
   --pg-version 14
 ```
 
+### Manual test execution
+
+When implementing new test cases, it can be more efficient to execute the tests
+without using the `test-runner.py` script. This can be done with the following
+command lines:
+
+```shell
+$ export EDB_PG_TYPE=<pg-type>
+$ export EDB_PG_VERSION=<pg-version>
+$ export EDB_REPO_USERNAME=<edb-repo-username>
+$ export EDB_REPO_PASSWORD=<edb-repo-password>
+$ make -C cases/<test-case> <os>
+```
+
+Below is an example of running the tests for test case `init_dbserver`, in
+version 14 of PostgreSQL, on CentOS8:
+
+```shell
+$ export EDB_PG_TYPE=PG
+$ export EDB_PG_VERSION=14
+$ export EDB_REPO_USERNAME=<edb-repo-username>
+$ export EDB_REPO_PASSWORD=<edb-repo-password>
+$ make -C cases/init_dbserver centos8
+```
+
+Containers hosting Postgres and the components we had tested with the help of
+the previous command are not automatically destroyed. For cleaning up those,
+the following command should be executed:
+
+```shell
+$ make -C cases/<test-case> clean
+```
+
+Because the container are not automatically destroyed, this method is useful
+for tests development and debugging: it is possible to open a shell session
+on the running container.
+
+```shell
+# Fetch the container id from the output of the following command
+$ docker ps
+# Start a new bash session on the container
+$ docker exec -it <container-id> /bin/bash
+```
+
 ### Logs
 
 In case of test failure, standard output and error are stored in dedicated
