@@ -1,9 +1,5 @@
 ---
 
-- name: Update packages
-  package: name=* state=present
-  become: yes
-
 - name: Install packages for Touchstone
   package:
     name:
