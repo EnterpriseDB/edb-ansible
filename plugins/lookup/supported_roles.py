@@ -69,10 +69,11 @@ GROUP_ROLES = {
         'install_dbserver'
     ],
     'dbt2_driver': [
-        'setup_dbt2_driver'
+        'setup_repo',
+        'setup_dbt2_driver',
     ],
     'dbt2_client': [
-        'setup_dbt2_client'
+        'setup_dbt2_client',
     ],
     'hammerdbserver': [
         'setup_hammerdbserver'
