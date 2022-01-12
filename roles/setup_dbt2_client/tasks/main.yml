@@ -14,15 +14,10 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
-- name: Include DBT-2 required package installation
+- name: Include DBT-2 kit client installation
   include_role:
     name: setup_dbt2
-    tasks_from: install_packages
-
-- name: Include DBT-2 kit installation
-  include_role:
-    name: setup_dbt2
-    tasks_from: install_dbt2
+    tasks_from: install_packages_client
 
 - name: Reset the variables based on the user input
   set_fact:

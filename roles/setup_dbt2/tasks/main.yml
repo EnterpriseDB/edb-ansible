@@ -17,28 +17,5 @@
 - name: Include DBT-2 client systems into pg_hba
   include_tasks: update_pg_hba.yml
 
-- name: Install packages for DBT-2
-  package:
-    name:
-      - cmake
-      - gcc
-      - git
-      - make
-      - postgresql{{ pg_version }}-devel
-      - redhat-rpm-config
-      - sysstat
-      - tmux
-    state: present
-  become: yes
-
 - name: Include DBT-2-installation
-  include_tasks: install_dbt2.yml
-
-- name: Install DBT-2 UDF
-  shell:
-    cmd: make install
-    chdir: /usr/local/src/dbt2/storedproc/pgsql/c
-  environment:
-    PATH: "{{ ansible_env.PATH }}:/usr/pgsql-{{ pg_version }}/bin"
-    USE_PGXS: "1"
-  become: yes
+  include_tasks: install_packages_db.yml
