@@ -2,7 +2,7 @@
 - name: Install python packages
   package:
     name:
-      - python2-pip
+      - python-pip
       - python-psycopg2
       - python-ipaddress
     state: present
@@ -15,7 +15,7 @@
       - python3-pip
       - python3-psycopg2
     state: present
-  when: os in ['RedHat8','CentOS8']
+  when: os in ['RedHat8','CentOS8','Rocky8']
   become: yes
 
 - name: "Install EPAS < 14 packages"

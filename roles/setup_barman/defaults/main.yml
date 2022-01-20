@@ -15,3 +15,4 @@ supported_os:
   - CentOS8
   - RHEL7
   - RHEL8
+  - Rocky8

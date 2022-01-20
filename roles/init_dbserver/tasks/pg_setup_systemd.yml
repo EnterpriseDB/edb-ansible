@@ -10,7 +10,7 @@
     group: root
   become: true
   when:
-    - ansible_distribution in ['RedHat', 'CentOS']
+    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']
 
 - name: Update systemd unit file
   ansible.builtin.lineinfile:
@@ -28,4 +28,4 @@
       regexp: "^PIDFile=.*"
       insertafter: "^\\[Service\\]$"
   when:
-    - ansible_distribution in ['RedHat', 'CentOS']
+    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']

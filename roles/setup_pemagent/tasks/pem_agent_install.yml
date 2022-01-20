@@ -10,5 +10,5 @@
   dnf:
     name: "{{ pem_agent_package }}"
     state: present
-  when: os in [ 'CentOS8','RHEL8']
+  when: os in [ 'CentOS8','RHEL8', 'Rocky8']
   become: yes
