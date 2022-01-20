@@ -9,7 +9,7 @@
   failed_when: disable_builtin_postgres.rc != 0
   ignore_errors: yes
   become: yes
-  when: os in ['RedHat8','CentOS8']
+  when: os in ['RedHat8','CentOS8', 'Rocky8']
 
 - name: Install require python package
   package:
@@ -30,7 +30,7 @@
       - python3-psycopg2
     state: present
   become: yes
-  when: os in ['RedHat8','CentOS8']
+  when: os in ['RedHat8','CentOS8','Rocky8']
 
 - name: Install Postgres
   package:

@@ -38,6 +38,6 @@
       - python3-pip
       - python3-psycopg2
     state: absent
-  when: os in ['RedHat8','CentOS8']
+  when: os in ['RedHat8','CentOS8','Rocky8']
   become: yes
 

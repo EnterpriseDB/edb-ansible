@@ -27,11 +27,11 @@
   when:
     - os in ['CentOS7', 'RHEL7']
 
-- name: Set the variable tuned_disk_elevator for CentOS/RHEL 8
+- name: Set the variable tuned_disk_elevator for CentOS/RHEL 8/Rocky 8
   set_fact:
     tuned_disk_elevator: "mq-deadline"
   when:
-    - os in ['CentOS8', 'RHEL8']
+    - os in ['CentOS8', 'RHEL8', 'Rocky8']
 
 - name: Set the variable tuned_disk_elevator for Debian
   set_fact:
