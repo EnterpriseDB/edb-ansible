@@ -5,6 +5,7 @@ tshirt_size: "medium"
 supported_os:
   - CentOS8
   - RHEL8
+  - Rocky8
 
 supported_tshirt_size:
   - small
