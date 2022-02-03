@@ -1,0 +1,14 @@
+{
+  "use_hostname": false,
+  "pg_data": "/opt/pgdata",
+  "pg_wal": "/opt/pgwal",
+  "pg_database": "edb",
+  "pg_conf_param": "shared_buffers",
+  "pg_slot": "test_slot",
+  "pg_test_database": "testdb",
+  "pg_script_table": "test1",
+  "pg_query_table": "test2",
+  "pg_extension": "hstore"
+
+
+}

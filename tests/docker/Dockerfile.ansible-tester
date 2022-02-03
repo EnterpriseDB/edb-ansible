@@ -6,7 +6,7 @@ RUN apt update
 RUN apt install -y python3
 RUN apt install -y python3-pip openssh-client build-essential
 RUN pip3 install pip --upgrade
-RUN pip3 install ansible-base
+RUN pip3 install ansible-core==2.11.2
 RUN pip3 install paramiko
 RUN pip3 install pytest-testinfra
 RUN pip3 install pyyaml
