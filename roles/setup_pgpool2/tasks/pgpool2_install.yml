@@ -5,10 +5,10 @@
   when: os in ['CentOS7', 'RHEL7']
   become: yes
 
-- name: Install pgpoolII package on CentOS8 or RHEL8
+- name: Install pgpoolII package on CentOS8 or RHEL8 or Rocky8
   dnf:
     name: "{{ pgpool2_package_name }}"
-  when: os in ['CentOS8', 'RHEL8']
+  when: os in ['CentOS8', 'RHEL8', 'Rocky8']
   become: yes
 
 - name: Install openssl package on CentOS7 or RHEL7
@@ -19,10 +19,10 @@
     - pgpool2_ssl
   become: yes
 
-- name: Install openssl package on CentOS8 or RHEL8
+- name: Install openssl package on CentOS8 or RHEL8 or Rocky8
   dnf:
     name: "openssl"
   when:
-    - os in ['CentOS8', 'RHEL8']
+    - os in ['CentOS8', 'RHEL8', 'Rocky8']
     - pgpool2_ssl
   become: yes

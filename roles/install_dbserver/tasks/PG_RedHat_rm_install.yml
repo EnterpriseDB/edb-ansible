@@ -25,7 +25,7 @@
       - python3-psycopg2
     state: absent
   become: yes
-  when: os in ['RedHat8','CentOS8']
+  when: os in ['RedHat8','CentOS8','Rocky8']
 
 - name: Remove Postgres
   package:

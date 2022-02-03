@@ -69,6 +69,7 @@ supported_os:
   - Ubuntu20
   - Debian9
   - Debian10
+  - Rocky8
 
 supported_pg_type:
   - EPAS
