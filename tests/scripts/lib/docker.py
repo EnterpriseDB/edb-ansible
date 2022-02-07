@@ -74,7 +74,7 @@ class DockerContainer():
         self.exec('/bin/chown root:root /root/.ssh/authorized_keys')
 
 """
-CentOS family
+CentOS/RockyLinux family
 """
 class DockerCentosContainer(DockerContainer):
 
@@ -86,7 +86,7 @@ class DockerCentos7Container(DockerCentosContainer):
     pass
 
 
-class DockerCentos8Container(DockerCentosContainer):
+class DockerRocky8Container(DockerCentosContainer):
     pass
 
 
@@ -115,8 +115,8 @@ class DockerUbuntu20Container(DockerDebianContainer):
 def DockerOSContainer(id, os):
     if os == 'centos7':
         return DockerCentos7Container(id)
-    elif os == 'centos8':
-        return DockerCentos8Container(id)
+    elif os == 'rocky8':
+        return DockerRocky8Container(id)
     elif os == 'debian9':
         return DockerDebian9Container(id)
     elif os == 'debian10':

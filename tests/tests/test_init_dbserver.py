@@ -51,7 +51,7 @@ def test_init_dbserver_service():
     host = get_primary()
     pg_version = get_pg_version()
 
-    if get_os().startswith('centos'):
+    if get_os().startswith('centos') or get_os().startswith('rocky'):
         if get_pg_type() == 'PG':
             service = 'postgresql-%s' % pg_version
         elif get_pg_type() == 'EPAS':
@@ -80,7 +80,7 @@ def test_init_dbserver_socket():
         sockets = [
             "tcp://5444",
         ]
-        if get_os().startswith('centos'):
+        if get_os().startswith('centos') or get_os().startswith('rocky'):
             sockets.append(
                 "unix:///var/run/edb/as%s/.s.PGSQL.5444" % get_pg_version()
             )
@@ -108,6 +108,5 @@ def test_init_dbserver_data_directory():
         cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
 
         data_directory = cmd.stdout.strip()
-
-    assert host.file(data_directory).linked_to == pg_data, \
-        "Postgres data_directory is not linked to '%s'" % pg_data
+        assert host.file(data_directory).linked_to == pg_data, \
+            "Postgres data_directory is not linked to '%s'" % pg_data

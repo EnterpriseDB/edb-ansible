@@ -9,7 +9,7 @@ from conftest import (
 )
 
 def test_setup_repo_edb_centos():
-    if not get_os().startswith('centos'):
+    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
         pytest.skip()
 
     host = get_primary()
@@ -20,7 +20,7 @@ def test_setup_repo_edb_centos():
         "Access to the EDB package repository not configured"
 
 def test_setup_repo_pgdg_centos():
-    if not get_os().startswith('centos'):
+    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
         pytest.skip()
 
     if get_pg_type() != 'PG':

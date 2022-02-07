@@ -9,7 +9,7 @@ import yaml
 # <role_name>/vars.json
 EDB_ANSIBLE_VARS = os.getenv('EDB_ANSIBLE_VARS')
 # Operating system name of the containers
-EDB_OS = os.getenv('EDB_OS', 'centos8')
+EDB_OS = os.getenv('EDB_OS', 'rocky8')
 # Path to the ansible inventory file: <role_name>/inventory.yml
 EDB_INVENTORY = os.getenv('EDB_INVENTORY')
 # Postgres version
@@ -119,7 +119,7 @@ def get_pg_unix_socket_dir():
     if pg_type == 'PG':
         return '/var/run/postgresql'
     elif pg_type == 'EPAS':
-        if sys_os.startswith('centos'):
+        if sys_os.startswith('centos') or sys_os.startswith('rocky'):
             return '/var/run/edb/as%s' % pg_version
         elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
             return '/var/run/edb-as'

@@ -91,7 +91,7 @@ optional arguments:
 
 The example below shows how to run the tests for:
 - the `install_dbserver` test case
-- on `centos7` and `centos8` operating systems
+- on `centos7` and `rocky8` operating systems
 - PostgreSQL engine only
 - for versions `13` and `14`
 
@@ -100,14 +100,14 @@ $ test-runner.py \
   --edb-repo-username <edb-repo-username> \
   --edb-repo-password <edb-repo-password> \
   --pg-version 14 13 \
-  --os centos8 centos7 \
+  --os rocky8 centos7 \
   --pg-type PG \
   -k install_dbserver
 
 Test install_dbserver with PG/13 on centos7 ... OK
 Test install_dbserver with PG/14 on centos7 ... OK
-Test install_dbserver with PG/13 on centos8 ... OK
-Test install_dbserver with PG/14 on centos8 ... OK
+Test install_dbserver with PG/13 on rocky8 ... OK
+Test install_dbserver with PG/14 on rocky8 ... OK
 
 Tests passed: 4/4 100.00%
 ```
@@ -136,14 +136,14 @@ $ make -C cases/<test-case> <os>
 ```
 
 Below is an example of running the tests for test case `init_dbserver`, in
-version 14 of PostgreSQL, on CentOS8:
+version 14 of PostgreSQL, on RockyLinux8:
 
 ```shell
 $ export EDB_PG_TYPE=PG
 $ export EDB_PG_VERSION=14
 $ export EDB_REPO_USERNAME=<edb-repo-username>
 $ export EDB_REPO_PASSWORD=<edb-repo-password>
-$ make -C cases/init_dbserver centos8
+$ make -C cases/init_dbserver rocky8
 ```
 
 Containers hosting Postgres and the components we had tested with the help of
