@@ -4,7 +4,6 @@
     name: postgresql-{{ pg_version }}
     state: stopped
   become: yes
-  ignore_errors: yes
 
 - name: Remove require python package
   package:

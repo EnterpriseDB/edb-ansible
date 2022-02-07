@@ -8,8 +8,5 @@ jobs:
     name: ansible-lint
     steps:
       - uses: actions/checkout@v2
-
-      - name: Lint Ansible Playbook
-        uses: ansible/ansible-lint-action@master
-        with:
-          targets: "playbook.yml"
+      - run: |
+          docker run --rm -v $(pwd):/data cytopia/ansible-lint playbook.yml

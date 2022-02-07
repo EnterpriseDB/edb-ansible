@@ -78,7 +78,8 @@
   when: not pgpool2_ssl_server_crt.stat.exists
 
 # Apply configuration changes
-- include_role:
+- name: Include pgpool2_manage_configuration
+  include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   vars:
