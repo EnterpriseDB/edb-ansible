@@ -11,7 +11,7 @@ from conftest import (
 
 
 def test_install_dbserver_pg_centos():
-    if not get_os().startswith('centos'):
+    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
         pytest.skip()
     if get_pg_type() != 'PG':
         pytest.skip()
@@ -33,7 +33,7 @@ def test_install_dbserver_pg_centos():
             'python-psycopg2',
             'python-ipaddress'
         ]
-    elif get_os() == 'centos8':
+    elif get_os() == 'rocky8':
         packages += [
             'python3-pycurl',
             'python3-libselinux',
@@ -45,7 +45,7 @@ def test_install_dbserver_pg_centos():
 
 
 def test_install_dbserver_epas_centos():
-    if not get_os().startswith('centos'):
+    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
         pytest.skip()
     if get_pg_type() != 'EPAS':
         pytest.skip()
@@ -71,7 +71,7 @@ def test_install_dbserver_epas_centos():
             'python-psycopg2',
             'python-ipaddress',
         ]
-    elif get_os() == 'centos8':
+    elif get_os() == 'rocky8':
         packages += [
             'python3-pip',
             'python3-psycopg2',
