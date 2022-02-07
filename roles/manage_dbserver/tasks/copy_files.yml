@@ -5,7 +5,7 @@
       dest: "{{ line_item.remote_file }}"
       owner: "{{ line_item.owner | default(pg_owner) }}"
       group: "{{ line_item.group | default(pg_owner) }}"
-      mode: "{{ line_item.mode | default(0644) }}"
+      mode: "{{ line_item.mode | default('0644')}}"
   with_items: "{{ pg_copy_files }}"
   loop_control:
       loop_var: line_item

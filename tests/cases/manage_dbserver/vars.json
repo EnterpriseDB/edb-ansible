@@ -2,13 +2,75 @@
   "use_hostname": false,
   "pg_data": "/opt/pgdata",
   "pg_wal": "/opt/pgwal",
-  "pg_database": "edb",
-  "pg_conf_param": "shared_buffers",
-  "pg_slot": "test_slot",
-  "pg_test_database": "testdb",
   "pg_script_table": "test1",
   "pg_query_table": "test2",
-  "pg_extension": "hstore"
-
+  "pg_extension": "sslutils",
+  "pg_profile_path": "/var/lib/pgsql",
+  "epas_profile_path": "/var/lib/edb",
+  "pg_postgres_conf_params": [
+    {
+       "name": "shared_buffers",
+       "value": "256MB"
+    }
+ ],
+  "pg_databases": [
+    {
+       "name": "testdb",
+       "owner": "enterprisedb",
+       "encoding": "UTF-8"
+    }
+ ],
+  "pg_hba_ip_addresses": [
+  {
+     "contype": "host",
+     "users": "all",
+     "databases": "postgres",
+     "method": "trust",
+     "source": "192.168.56.128",
+     "state": "present"
+  }
+],
+  "pg_slots": [
+  {
+     "name": "test_slot",
+     "slot_type": "physical",
+     "state": "present"
+  }
+],
+  "pg_grant_roles": [
+    {
+       "role": "pg_monitor",
+       "user": "enterprisedb"
+    }
+  ],
+  "pg_copy_files": [
+    {
+       "file": "./create-table.sql",
+       "remote_file": "/tmp/create-table.sql",
+       "mode": "0644"
+    }
+ ],
+ "pg_sql_scripts": [
+    {
+       "file_path": "/tmp/create-table.sql",
+       "db": "testdb"
+    }
+  ],
+  "pg_query": [
+    {
+       "query": "CREATE TABLE IF NOT EXISTS test2()",
+       "db": "postgres"
+    }
+ ],
+ "pg_pgpass_values": [
+    {
+       "host": "127.0.0.1",
+       "database": "postgres",
+       "user": "my_user",
+       "password": 1234,
+       "state": "present",
+       "create": true
+    }
+  ]
 
 }
