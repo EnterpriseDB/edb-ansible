@@ -92,7 +92,7 @@
 # Executing yum/dnf updateinfo -y makes the import of GPG keys effective even
 # if command's return is different from 0.
 - name: Execute yum updateinfo
-  ansible.builtin.shell: yum updateinfo -y
+  ansible.builtin.command: yum updateinfo -y
   register: updateinfo_output
   become: true
   failed_when: false
