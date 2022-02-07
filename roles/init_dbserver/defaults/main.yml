@@ -56,7 +56,7 @@ pg_superuser_password: ""
 pg_random_password: true
 
 # Input variables
-input _user: ""
+input_user: ""
 input_password: ""
 
 etc_hosts_lists: []

@@ -1,2 +1,4 @@
-skip_list:
-- "503"
+warn_list:
+  - command-instead-of-module  # Using command rather than module
+  - no-handler  # Tasks that run when changed should likely be handlers
+  - package-latest  # Package installs should not use latest

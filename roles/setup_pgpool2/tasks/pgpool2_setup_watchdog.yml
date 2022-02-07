@@ -100,7 +100,8 @@
       node_item
 
 # Update the configuration file
-- include_role:
+- name: Include pgpooL2_manage_configuration
+  include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   vars:

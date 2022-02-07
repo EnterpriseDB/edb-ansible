@@ -137,7 +137,8 @@
 
 - name: PgPoolII integration
   block:
-    - include_role:
+    - name: Include pgpool2_install.yml
+      include_role:
         name: setup_pgpool2
         tasks_from: pgpool2_install.yml
       vars:

@@ -3,7 +3,6 @@
   systemd:
     name: "{{ epas_service }}"
     state: stopped
-  ignore_errors: yes
   become: true
 
 - name: Remove EPAS Packages
