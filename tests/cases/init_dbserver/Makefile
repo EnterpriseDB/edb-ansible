@@ -3,8 +3,8 @@ include ../../Makefile.mk
 build-centos7:
 	docker compose up primary1-centos7 -d
 
-build-centos8:
-	docker compose up primary1-centos8 -d
+build-rocky8:
+	docker compose up primary1-rocky8 -d
 
 build-debian9:
 	docker compose up primary1-debian9 -d

@@ -15,10 +15,10 @@ services:
     volumes:
     - ../../..:/workspace
     command: "/workspace/tests/docker/exec-tests.sh"
-  primary1-centos8:
+  primary1-rocky8:
     build:
       context: ../../docker
-      dockerfile: Dockerfile.centos8
+      dockerfile: Dockerfile.rocky8
     cap_add:
     - SYS_ADMIN
     volumes:
