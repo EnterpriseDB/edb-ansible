@@ -30,6 +30,13 @@
      "state": "present"
   }
 ],
+"pg_extensions": [
+   {
+      "name": "hstore",
+      "database": "postgres",
+      "state": "present"
+   }
+],
   "pg_slots": [
   {
      "name": "test_slot",
