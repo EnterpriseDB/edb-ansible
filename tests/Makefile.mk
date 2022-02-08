@@ -7,7 +7,8 @@ post-build:
 	python3 ../../scripts/build-inventory.py --compose-dir .
 	python3 ../../scripts/ssh-build-add-hosts-sh.py --compose-dir . --ssh-dir .ssh
 	python3 ../../scripts/ssh-build-ssh-config.py --ssh-dir .ssh
-
+	python3 ../../scripts/build-vars.py
+	
 centos7: export EDB_OS=centos7
 rocky8: export EDB_OS=rocky8
 debian9: export EDB_OS=debian9
