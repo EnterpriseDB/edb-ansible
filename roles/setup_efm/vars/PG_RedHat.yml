@@ -27,5 +27,5 @@ pg_port: 5432
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 
 # pgpool2 binary dir
-pgpool2_bin_path: "/usr/pgpool-{{ pg_version }}/bin"
-pgpool2_package_name: "pgpool-II-{{ pg_version }}"
+pgpool2_bin_path: "/usr/bin"
+pgpool2_package_name: "pgpool-II"
