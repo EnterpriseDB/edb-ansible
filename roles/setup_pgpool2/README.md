@@ -16,7 +16,7 @@ When executing the role via ansible these are the required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12 and 13
+  Postgres Versions supported are: 10, 11, 12, 13 and 14
 
   * ***pg_type***
 

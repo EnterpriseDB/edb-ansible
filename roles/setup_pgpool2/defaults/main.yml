@@ -1,4 +1,5 @@
 ---
+use_hostname: true
 # Default configuration values
 pgpool2_port: 9999
 pgpool2_listen_addresses: '*'

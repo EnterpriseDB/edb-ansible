@@ -146,7 +146,7 @@
 # Build the configuration file
 - name: Build configuration file {{ pgpool2_configuration_file }}
   template:
-    src: "./templates/pgpool.conf.{{ pg_type }}.template"
+    src: "./templates/pgpool.conf.template"
     dest: "{{ pgpool2_configuration_file }}"
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"

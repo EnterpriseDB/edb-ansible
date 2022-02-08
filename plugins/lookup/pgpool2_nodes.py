@@ -47,6 +47,7 @@ class LookupModule(LookupBase):
         primary_private_ip = terms[0] if len(terms) > 0 else None
 
         # Lookup for pgpool2 nodes with a matching primary_private_ip
+        node_id = 0
         for host in variables['groups']['pgpool2']:
             hostvars = myvars['hostvars'][host]
 
@@ -58,6 +59,7 @@ class LookupModule(LookupBase):
 
             nodes.append(
                 dict(
+                    node_id=node_id,
                     node_type='pgpool2',
                     ansible_host=hostvars['ansible_host'],
                     private_ip=hostvars['private_ip'],
@@ -66,4 +68,5 @@ class LookupModule(LookupBase):
                     primary_private_ip=hostvars.get('primary_private_ip', None),
                 )
             )
+            node_id += 1
         return nodes
