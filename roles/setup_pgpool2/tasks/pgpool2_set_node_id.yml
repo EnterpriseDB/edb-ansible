@@ -1,0 +1,16 @@
+---
+- name: Set _pgpool2_node_id
+  ansible.builtin.set_fact:
+    _pgpool2_node_id: "{{ item.node_id }}"
+  when: >
+    item.inventory_hostname == inventory_hostname
+  loop: "{{ pgpool2_nodes }}"
+
+- name: Saving node id
+  ansible.builtin.copy:
+    dest: "{{ pgpool2_node_id_file }}"
+    content: "{{ _pgpool2_node_id }}\n"
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    mode: "0600"
+  become: true

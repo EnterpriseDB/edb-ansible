@@ -190,6 +190,11 @@
     pgpool2_node_list: "{{ _pgpool2_node_list }}"
     pgpool2_current_node: "{{ _pgpool2_current_node }}"
 
+- name: Include the pgpool2_set_node_id
+  include_tasks: pgpool2_set_node_id.yml
+  vars:
+    pgpool2_nodes: "{{ _pgpool2_nodes }}"
+
 - name: Include the pgpool2_restart_service
   include_tasks: pgpool2_restart_service.yml
 
