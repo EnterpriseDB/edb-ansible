@@ -1,5 +1,5 @@
 ---
-# Configure pgpoolII SR checking and master_slave_mode
+# Configure pgpoolII SR checking and streaming replication
 
 # Build random password for pgpool2_sr_user if needed
 - name: Build random password for pgpool2_sr_user
@@ -48,14 +48,8 @@
     pgpool2_sr_configuration: >-
       [
         {
-          'key': 'master_slave_mode',
-          'value': 'on',
-          'state': 'present',
-          'quoted': false
-        },
-        {
-          'key': 'master_slave_sub_mode',
-          'value': 'stream',
+          'key': 'backend_clustering_mode',
+          'value': 'streaming_replication',
           'state': 'present',
           'quoted': true
         },

@@ -35,65 +35,40 @@
           'key': 'arping_cmd',
           'value': '/bin/sudo /sbin/arping -U $_IP_$ -w 1 -I {{ pgpool2_vip_dev }}',
           'quoted': true
-        },
-        {
-          'key': 'wd_hostname',
-          'value': '{{ pgpool2_current_node }}',
-          'quoted': true
-        },
-        {
-          'key': 'wd_port',
-          'value': '{{ pgpool2_wd_port }}',
-          'quoted': true
         }
       ]
 
-- name: Initialize pgpool2_other_node_list
-  set_fact:
-    pgpool2_other_node_list: []
-
-- name: Populate pgpool2_other_node_list
-  set_fact:
-    pgpool2_other_node_list: >-
-      {{ pgpool2_other_node_list + [ node_item ] }}
-  loop: "{{ pgpool2_node_list }}"
-  loop_control:
-    loop_var:
-      node_item
-  when:
-    - node_item != pgpool2_current_node
-
-- name: Add other pgpool2 nodes in watchdog configuration
+- name: Add pgpool2 nodes in watchdog configuration
   set_fact:
     pgpool2_watchdog_configuration: >-
       {{ pgpool2_watchdog_configuration }} + [
         {
-          'key': 'other_pgpool_hostname{{ ansible_loop.index0 }}',
+          'key': 'hostname{{ ansible_loop.index0 }}',
           'value': '{{ node_item }}',
           'quoted': true
         },
         {
-          'key': 'other_pgpool_port{{ ansible_loop.index0 }}',
+          'key': 'pgpool_port{{ ansible_loop.index0 }}',
           'value': '{{ pgpool2_port }}',
           'quoted': false
         },
         {
-          'key': 'other_wd_port{{ ansible_loop.index0 }}',
+          'key': 'wd_port{{ ansible_loop.index0 }}',
           'value': '{{ pgpool2_wd_port }}',
           'quoted': false
         },
         {
-          'key': 'heartbeat_destination{{ ansible_loop.index0 }}',
+          'key': 'heartbeat_hostname{{ ansible_loop.index0 }}',
           'value': '{{ node_item }}',
           'quoted': true
         },
         {
-          'key': 'heartbeat_destination_port{{ ansible_loop.index0 }}',
+          'key': 'heartbeat_port{{ ansible_loop.index0 }}',
           'value': '{{ pgpool2_wd_heartbeat_port }}',
           'quoted': false
         }
       ]
-  loop: "{{ pgpool2_other_node_list }}"
+  loop: "{{ pgpool2_node_list }}"
   loop_control:
     extended: yes
     loop_var:
