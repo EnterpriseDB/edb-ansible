@@ -123,3 +123,17 @@ def get_pg_unix_socket_dir():
             return '/var/run/edb/as%s' % pg_version
         elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
             return '/var/run/edb-as'
+
+def get_pg_profile_dir():
+    pg_type = get_pg_type()
+    sys_os = get_os()
+    if pg_type == 'PG':
+        if sys_os.startswith('centos') or sys_os.startswith('rocky'):
+            return '/var/lib/pgsql'
+        elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
+            return '/var/lib/postgresql'
+    elif pg_type == 'EPAS':
+        if sys_os.startswith('centos'):
+            return '/var/lib/edb/'
+        elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
+            return '/var/lib/edb-as'
