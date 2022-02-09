@@ -1,0 +1,5 @@
+./pytest_cache
+/logs
+/tests/__pycache__/
+.ssh*
+/scripts/lib
