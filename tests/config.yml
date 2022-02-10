@@ -11,7 +11,7 @@ cases:
     - EPAS
     os:
     - centos7
-    - centos8
+    - rocky8
     - debian9
     - debian10
     - ubuntu20
@@ -27,7 +27,7 @@ cases:
     - EPAS
     os:
     - centos7
-    - centos8
+    - rocky8
     - debian9
     - debian10
     - ubuntu20
@@ -43,7 +43,7 @@ cases:
     - EPAS
     os:
     - centos7
-    - centos8
+    - rocky8
     - debian9
     - debian10
     - ubuntu20

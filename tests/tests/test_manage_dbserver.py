@@ -67,6 +67,27 @@ def test_manage_dbserver_files():
     assert host.file('%s' % pg_sql_script).exists, \
         "File(s) were not properly copied over"
 
+def test_manage_dbserver_create_user():
+    ansible_vars = load_ansible_vars()
+    pg_user = 'postgres'
+    pg_group = 'postgres'
+    pg_created_user = ansible_vars['pg_users'][0]['name']
+
+
+    if get_pg_type() == 'EPAS':
+        pg_user = 'enterprisedb'
+        pg_group = 'enterprisedb'
+
+    host = get_primary()
+    socket_dir = get_pg_unix_socket_dir()
+    with host.sudo(pg_user):
+        query = "Select * from pg_user WHERE usename='%s'" % pg_created_user
+        cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
+        result = cmd.stdout.strip()
+    
+    assert len(result) > 0, \
+        "User was not sucessfully created."
+
 def test_manage_dbserver_sql_script():
     ansible_vars = load_ansible_vars()
     pg_user = 'postgres'
@@ -86,7 +107,7 @@ def test_manage_dbserver_sql_script():
         cmd = host.run('cat %s' % pg_sql_script)
         query = cmd.stdout.strip()
         cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
-        query = "Select * from pg_tables where tablename = '%s'" % pg_script_table
+        query = "Select * from pg_tables WHERE tablename = '%s'" % pg_script_table
         cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
         result = cmd.stdout.strip()
     
@@ -217,7 +238,7 @@ def test_manage_dbserver_query():
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
-        query = "Select * from pg_tables where tablename = '%s'" % pg_query_table
+        query = "Select * from pg_tables WHERE tablename = '%s'" % pg_query_table
         cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
         result = cmd.stdout.strip()
 
