@@ -133,7 +133,7 @@ def get_pg_profile_dir():
         elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
             return '/var/lib/postgresql'
     elif pg_type == 'EPAS':
-        if sys_os.startswith('centos'):
+        if sys_os.startswith('centos') or sys_os.startswith('rocky'):
             return '/var/lib/edb/'
         elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
             return '/var/lib/edb-as'
