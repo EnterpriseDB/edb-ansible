@@ -84,6 +84,10 @@ GROUP_ROLES = {
         'setup_efm',
         'setup_repmgr',
     ],
+    'proxy': [
+        'setup_repo',
+        'setup_harp_proxy',
+    ],
 }
 
 
@@ -95,6 +99,9 @@ class LookupModule(LookupBase):
 
         myvars = getattr(self._templar, '_available_variables', {})
         hostvars = myvars['hostvars'][hostname]
+
+        # BDR roles available
+        bdr_roles = ['primary', 'read_only', 'lead_master', 'witness']
 
         for group in variables['group_names']:
             supported_roles = list(
@@ -109,9 +116,9 @@ class LookupModule(LookupBase):
                     set(supported_roles)
                     | set(['setup_pgbouncer', 'manage_pgbouncer'])
                 )
-            # Special case for the primary or standby nodes when the
+            # Special case for the primary, standby or proxy nodes when the
             # host variable pem_agent is set to true.
-            if (group in ['primary', 'standby'] and (
+            if (group in ['primary', 'standby', 'proxy'] and (
                     hostvars.get('pem_agent', False)
                     or hostvars.get('pem_agent_remote', False))):
                 supported_roles = list(
@@ -148,4 +155,37 @@ class LookupModule(LookupBase):
                     set(supported_roles)
                     | set(['init_dbserver'])
                 )
+
+            # BDR cases
+            if (group in ['primary'] and hostvars.get('bdr')):
+                # BDR nodes are part of the primary group and must have the
+                # 'bdr' hostvar defined as well as the 'bdr.roles' list
+                # should contain at least one of the BDR roles available
+                # (primary, read_only, lead_master, and witness).
+                if len(set(bdr_roles) & set(hostvars['bdr'].get('roles', []))):
+                    supported_roles = list(
+                        set(supported_roles)
+                        | set(['setup_bdr'])
+                    )
+            # etcd case
+            if (group in ['primary', 'proxy', 'barmanserver']
+                    and hostvars.get('bdr')):
+                # etcd can be deployed on BDR nodes, proxy nodes and barman
+                # nodes. The etcd hostvar must be set to true.
+                if hostvars['bdr'].get('etcd', False):
+                    supported_roles = list(
+                        set(supported_roles)
+                        | set(['setup_etcd'])
+                    )
+            # Harp manager case
+            if (group in ['primary'] and hostvars.get('bdr')):
+                # Harp manager is deployed on the primary BDR nodes when the
+                # hostvar harp_manager is set to true.
+                host_bdr_roles = hostvars['bdr'].get('roles', [])
+                harp_manager = hostvars['bdr'].get('harp_manager', False)
+                if (len(set(['primary']) & set(host_bdr_roles)) and harp_manager):  # noqa
+                    supported_roles = list(
+                        set(supported_roles)
+                        | set(['setup_harp_manager'])
+                    )
         return supported_roles
