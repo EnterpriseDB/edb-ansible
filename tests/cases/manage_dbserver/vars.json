@@ -4,6 +4,11 @@
  "pg_wal": "/opt/pgwal",
  "pg_script_table": "test1",
  "pg_query_table": "test2",
+ "pg_users":[
+  {
+    "name": "test_user"
+  }
+ ],
  "pg_postgres_conf_params": [
   {
    "name": "shared_buffers",
@@ -13,7 +18,7 @@
  "pg_databases": [
   {
    "name": "testdb",
-   "owner": "enterprisedb",
+   "owner": "test_user",
    "encoding": "UTF-8"
   }
  ],
@@ -49,7 +54,7 @@
  "pg_grant_roles": [
   {
    "role": "pg_monitor",
-   "user": "enterprisedb"
+   "user": "test_user"
   }
  ],
  "pg_copy_files": [

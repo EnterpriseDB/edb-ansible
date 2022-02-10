@@ -1,9 +1,0 @@
-# syntax=docker/dockerfile:1
-
-FROM alekseychudov/centos8-systemd
-
-RUN dnf install sudo -y
-RUN dnf install python3 -y
-RUN dnf install ca-certificates -y
-RUN dnf install openssh-clients -y
-RUN dnf install openssh-server -y
