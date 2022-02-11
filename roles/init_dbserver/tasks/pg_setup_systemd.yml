@@ -27,5 +27,8 @@
     - line: "PIDFile={{ pg_default_data }}/postmaster.pid"
       regexp: "^PIDFile=.*"
       insertafter: "^\\[Service\\]$"
+    - line: "ExecStopPost=+/usr/bin/systemctl daemon-reload"
+      regexp: "^ExecStopPost=.*"
+      insertafter: "^\\[Service\\]$"
   when:
     - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']
