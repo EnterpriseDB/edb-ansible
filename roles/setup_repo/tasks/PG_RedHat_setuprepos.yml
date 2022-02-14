@@ -92,8 +92,32 @@
 # Executing yum/dnf updateinfo -y makes the import of GPG keys effective even
 # if command's return is different from 0.
 - name: Execute yum updateinfo
-  ansible.builtin.command: yum updateinfo -y
+  ansible.builtin.shell: >
+    set -o pipefail;
+    yum updateinfo -y
   register: updateinfo_output
   become: true
   failed_when: false
   changed_when: updateinfo_output.rc != 0
+
+# Adding BDR repository if BDR nodes are defined
+- name: Install curl package if not available
+  ansible.builtin.package:
+    name: curl
+    state: present
+  become: yes
+
+- name: Install BDR packages if BDR is enabled
+  ansible.builtin.shell: >
+      set -o pipefail;
+      curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/rpm" | bash
+  args:
+    executable: /bin/bash
+  register: reposub
+  become: true
+  failed_when: >
+    reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+  when: >
+    bdr_nodes_ips is defined and ansible_host in bdr_nodes_ips
+    and pg_version|int >= 13
+  loop: "{{ edb_2q_repositories }}"
