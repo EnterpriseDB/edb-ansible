@@ -5,13 +5,18 @@
 #PG_RPMREPO: "https://yum.enterprisedb.com/edb-repo-rpms/edb-repo-latest.noarch.rpm"
 # After 06/23/2020 - Redesigned EDB Portal
 
+# EDB repository username, password and subscription token
+repo_username: ""
+repo_password: ""
+tpa_subscription_token: ""
+
 # EDB RPM Repo
 edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
 edb_gpg_key_8: "https://yum.enterprisedb.com/ENTERPRISEDB-GPG-KEY"
-
-# EDB repository username and password
-repo_username: ""
-repo_password: ""
+edb_2q_base_repo_link: "https://techsupport.enterprisedb.com/api/repository/{{ tpa_subscription_token }}/products"
+edb_2q_repositories:
+  - bdr4/release
+  - harp/release
 
 # debian/ubuntu Repo
 edb_deb_repo_url: "deb [arch=amd64] https://apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"

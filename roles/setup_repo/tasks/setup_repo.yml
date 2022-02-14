@@ -30,6 +30,17 @@
       msg: "repo_username = {{ repo_username }} or repo_password = {{ repo_password }} are not valid!."
   when: (repo_username | length < 1 or repo_password | length < 1)
 
+- name: Capture if bdr_nodes_ips if defined
+  set_fact:
+      bdr_nodes_ips: "{{ lookup('edb_devops.edb_postgres.bdr_nodes')|flatten|map(attribute='ansible_host')|flatten }}"
+
+- name: Validate tpa_subscription_token
+  fail:
+      msg: "tpa_subscription_token  is not defined correctly."
+  when: >
+      tpa_subscription_token | length < 1
+      and bdr_nodes_ip is defined and bdr_nodes_ips | length > 0
+
 - name: Cleanup the repos based on force_repo
   include_tasks: "PG_{{ ansible_os_family }}_rm_repos.yml"
   when:
