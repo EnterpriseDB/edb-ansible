@@ -3,3 +3,4 @@
 /tests/__pycache__/
 .ssh*
 /scripts/lib
+**/.DS_Store
