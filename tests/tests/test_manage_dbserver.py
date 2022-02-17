@@ -134,7 +134,7 @@ def test_manage_dbserver_hba_file():
     result = cmd.stdout.strip()
 
     assert len(result) > 0, \
-    "pg_hba.conf file was not sucessfully modified"
+        "pg_hba.conf file was not sucessfully modified"
     
 def test_manage_dbserver_conf_params():
     ansible_vars = load_ansible_vars()
@@ -155,7 +155,7 @@ def test_manage_dbserver_conf_params():
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
-    "Database parameter %s does not exist" % pg_conf_param
+        "Database parameter %s does not exist" % pg_conf_param
 
 def test_manage_dbserver_pg_slots():
     ansible_vars = load_ansible_vars()
@@ -177,7 +177,7 @@ def test_manage_dbserver_pg_slots():
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
-    "Replication slots %s does not exist" % pg_slot
+        "Replication slots %s does not exist" % pg_slot
 
 def test_manage_dbserver_pg_extension():
     ansible_vars = load_ansible_vars()
@@ -199,7 +199,7 @@ def test_manage_dbserver_pg_extension():
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
-    "PG extension %s does not exist" % pg_extension
+        "PG extension %s does not exist" % pg_extension
 
 def test_manage_dbserver_pg_grant_roles():
     ansible_vars = load_ansible_vars()
@@ -221,7 +221,7 @@ def test_manage_dbserver_pg_grant_roles():
         result = cmd.stdout.strip()
     print(cmd)
     assert len(result) > 0, \
-    "User %s has not been granted the %s role" % (pg_user, pg_role)
+        "User %s has not been granted the %s role" % (pg_user, pg_role)
 
 def test_manage_dbserver_query():
     ansible_vars = load_ansible_vars()
@@ -243,7 +243,7 @@ def test_manage_dbserver_query():
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
-    "Query wwas not succesfully executed" % pg_query_table
+        "Query wwas not succesfully executed" % pg_query_table
 
 def test_manage_dbserver_database():
     ansible_vars = load_ansible_vars()
@@ -265,4 +265,4 @@ def test_manage_dbserver_database():
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
-    "Query was not succesfully executed" % pg_database
+        "Query was not succesfully executed" % pg_database
