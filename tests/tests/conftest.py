@@ -45,8 +45,6 @@ def get_hosts(group_name):
     Returns the list of testinfra host instances, based on Ansible group name
     """
     global HOSTS
-    # if HOSTS:
-    #     return HOSTS
 
     inventory_data = load_inventory()
     children = inventory_data['all']['children']
