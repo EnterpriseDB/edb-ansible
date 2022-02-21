@@ -13,7 +13,7 @@ pg_ssl: true
 
 pem_server_exists: false
 # efm information
-efm_version: "4.2"
+efm_version: "4.4"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "{{ pg_instance_name }}"
 
