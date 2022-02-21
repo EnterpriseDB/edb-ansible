@@ -3,6 +3,9 @@
   systemd:
     name: "{{ efm_service }}"
     state: stopped
+  when:
+      - ansible_facts.services[efm_service + '.service'] is defined
+      - ansible_facts.services[efm_service + '.service']['state'] != 'running'
   become: yes
 
 - name: Remove EFM properties File

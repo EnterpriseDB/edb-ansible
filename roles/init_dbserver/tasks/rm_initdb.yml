@@ -6,6 +6,7 @@
   systemd:
     name: "{{ efm_service }}"
     state: stopped
+    enabled: false
   when:
     - ansible_facts.services[efm_service] is defined
     - ansible_facts.services[efm_service].state == 'running'
@@ -15,6 +16,7 @@
   systemd:
     name: "{{ pg_service }}"
     state: stopped
+    enabled: false
   when:
     - ansible_facts.services[pg_service] is defined
     - ansible_facts.services[pg_service].state == 'running'
