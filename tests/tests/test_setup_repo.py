@@ -6,9 +6,13 @@ from conftest import (
     get_os,
     get_pg_type,
     get_primary,
+    EDB_ENABLE_REPO,
 )
 
 def test_setup_repo_edb_centos():
+    if not EDB_ENABLE_REPO:
+        pytest.skip()
+
     if not get_os().startswith('centos') and not get_os().startswith('rocky'):
         pytest.skip()
 
@@ -34,6 +38,9 @@ def test_setup_repo_pgdg_centos():
         "Access to the PGDG package repository not configured"
 
 def test_setup_repo_edb_debian():
+    if not EDB_ENABLE_REPO:
+        pytest.skip()
+
     if not (get_os().startswith('debian') or get_os().startswith('ubuntu')):
         pytest.skip()
 

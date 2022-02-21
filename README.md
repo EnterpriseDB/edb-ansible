@@ -339,8 +339,8 @@ playbook:
       set_fact:
         pg_version: 13
         pg_type: "PG"
-        repo_username: ""
-        repo_password: ""
+        repo_username: "<edb-package-repository-username>"
+        repo_password: "<edb-package-repository-password>"
         disable_logging: false
 
   roles:
@@ -378,6 +378,18 @@ playbook:
 
 You can customize the above example to install Postgres, EPAS, EFM or PEM or
 limit what roles you would like to execute.
+
+### Access to EDB's package repository
+
+By default, the `setup_repo` role requires to define the credentials (variables
+`repo_username` and `repo_password`) that will be used to configure the access
+to EDB's package repository. Having access to EDB package repository is
+necessary to deploy EDB softwares like EPAS, EFM or PEM.
+
+When deploying softwares coming only from the community repository (PGDG) like
+PostgreSQL, barman or pgbouncer, it's not needed to configure access to EDB's
+repository. To disable it, the variable `enable_edb_repo` must be set to
+`false`.
 
 ## Default user and passwords
 

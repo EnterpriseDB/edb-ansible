@@ -16,6 +16,8 @@ EDB_INVENTORY = os.getenv('EDB_INVENTORY')
 EDB_PG_VERSION = os.getenv('EDB_PG_VERSION')
 # Postgres type
 EDB_PG_TYPE = os.getenv('EDB_PG_TYPE')
+# Use EDB repo
+EDB_ENABLE_REPO = (os.getenv('EDB_ENABLE_REPO').lower() in ['true', '1'])
 # SSH parameters
 EDB_SSH_USER = os.getenv('EDB_SSH_USER', 'root')
 EDB_SSH_KEY = os.getenv('EDB_SSH_KEY', '../.ssh/id_rsa')

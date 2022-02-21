@@ -28,7 +28,7 @@ if __name__ == '__main__':
         container = docker.DockerOSContainer(c['ID'], os)
         inventory_vars["%s_ip" % inventory_name] = container.ip()
 
-    templates_dir = env.compose_dir
+    templates_dir = str(env.compose_dir)
     file_loader = FileSystemLoader(templates_dir)
     jenv = Environment(loader=file_loader, trim_blocks=True)
     template = jenv.get_template('inventory.yml.j2')
