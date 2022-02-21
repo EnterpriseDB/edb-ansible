@@ -28,7 +28,7 @@
 - name: Validate Credentials
   fail:
       msg: "repo_username = {{ repo_username }} or repo_password = {{ repo_password }} are not valid!."
-  when: (repo_username | length < 1 or repo_password | length < 1)
+  when: enable_edb_repo|bool and (repo_username | length < 1 or repo_password | length < 1)
 
 - name: Capture if bdr_nodes_ips if defined
   set_fact:

@@ -6,6 +6,7 @@
 # After 06/23/2020 - Redesigned EDB Portal
 
 # EDB repository username, password and subscription token
+enable_edb_repo: true
 repo_username: ""
 repo_password: ""
 tpa_subscription_token: ""

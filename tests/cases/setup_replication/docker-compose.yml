@@ -6,8 +6,9 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.ansible-tester
     environment:
-    - EDB_REPO_USERNAME
-    - EDB_REPO_PASSWORD
+    - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
+    - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
+    - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
     - EDB_PG_TYPE
     - EDB_PG_VERSION
     - CASE_NAME=setup_replication
@@ -16,6 +17,8 @@ services:
     - ../../..:/workspace
     command: "/workspace/tests/docker/exec-tests.sh"
   primary1-rocky8:
+    # Required for running systemd containers via GitHub actions
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.rocky8
@@ -26,6 +29,8 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   standby1-rocky8:
+    # Required for running systemd containers via GitHub actions
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.rocky8
@@ -36,6 +41,8 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   standby2-rocky8:
+    # Required for running systemd containers via GitHub actions
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.rocky8
