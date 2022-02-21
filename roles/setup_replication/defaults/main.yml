@@ -32,6 +32,7 @@ standby_physical_slots: []
 etc_hosts_lists: []
 upstream_public_ip: ""
 upstream_hostname: ""
+edb_audit_directory: ""
 
 supported_os:
   - CentOS7

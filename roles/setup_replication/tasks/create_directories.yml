@@ -49,7 +49,7 @@
     mode: 0700
     state: directory
   become: yes
-  when: pg_log|length > 0 and not pg_data in pg_log
+  when: pg_log|length > 0 and pg_data not in pg_log
 
 - name: Ensure postgres wal directory exists
   file:
@@ -59,7 +59,7 @@
     mode: 0700
     state: directory
   become: yes
-  when: pg_wal|length > 0 and not pg_data in pg_wal
+  when: pg_wal|length > 0 and pg_data not in pg_wal
 
 - name: Create unix socket domain directories
   file:
@@ -95,6 +95,18 @@
     - pg_default_data != pg_data
     - not sym.stat.islnk
   become: yes
+
+- name: Create edb_audit_directory if defined
+  file:
+    path: "{{ edb_audit_directory }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
+  become: yes
+  when: >
+    edb_audit_directory|length > 0 and pg_data not in edb_audit_directory
+    and edb_audit_directory.startswith('/')
 
 - name: Ensure pg_data has symlink to default if pg_data is not default
   file:

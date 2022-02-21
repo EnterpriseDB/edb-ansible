@@ -5,7 +5,7 @@
   become: yes
   register: pg_version_stat
 
-- name: Verify pg_wal and accordingly add the in the initdb
+- name: Verify pg_wal and accordingly add in initdb
   set_fact:
     pg_initdb_options: "{{ pg_initdb_options + ' --waldir=' + pg_wal }}"
   when: pg_wal|length > 0  and not pg_data in pg_wal

@@ -1,7 +1,7 @@
 ---
 
 pg_instance_name: main
-pg_version: "12"
+pg_version: "14"
 use_hostname: true
 pem_agent: false
 pass_dir: "~/.edb"
@@ -11,7 +11,7 @@ pg_pem_admin_password: ""
 pg_ssl: true
 
 # efm information
-efm_version: "4.2"
+efm_version: "4.4"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "efm"
 
