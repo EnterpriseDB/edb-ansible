@@ -11,6 +11,7 @@ ANSIBLE_PIPELINING=1 ansible-playbook \
 	-i /workspace/tests/cases/${CASE_NAME}/inventory.yml \
 	--extra-vars "repo_username=${EDB_REPO_USERNAME}" \
 	--extra-vars "repo_password=${EDB_REPO_PASSWORD}" \
+	--extra-vars "enable_edb_repo=${EDB_ENABLE_REPO}" \
 	--extra-vars "pg_type=${EDB_PG_TYPE}" \
 	--extra-vars "pg_version=${EDB_PG_VERSION}" \
 	--extra-vars "@/workspace/tests/cases/${CASE_NAME}/vars.json" \

@@ -46,7 +46,8 @@ def load_configuration(configuration):
 
 
 def exec_test_case(case_name, case_config, edb_repo_username,
-                   edb_repo_password, pg_version_list, pg_type_list, os_list):
+                   edb_repo_password, pg_version_list, pg_type_list, os_list,
+                   edb_enable_repo):
     n_success = 0
     n_executed = 0
     for os in case_config['os']:
@@ -67,7 +68,8 @@ def exec_test_case(case_name, case_config, edb_repo_username,
                     edb_repo_password,
                     os,
                     pg_type,
-                    pg_version
+                    pg_version,
+                    edb_enable_repo,
                 )
                 n_executed += 1
                 if success:
@@ -76,11 +78,12 @@ def exec_test_case(case_name, case_config, edb_repo_username,
 
 
 def exec_test(case_name, edb_repo_username, edb_repo_password, os, pg_type,
-              pg_version):
+              pg_version, edb_enable_repo):
     env = os_.environ.copy()
     env.update({
         'EDB_REPO_USERNAME': edb_repo_username,
         'EDB_REPO_PASSWORD': edb_repo_password,
+        'EDB_ENABLE_REPO': edb_enable_repo,
         'EDB_PG_VERSION': pg_version,
         'EDB_PG_TYPE': pg_type,
     })
@@ -170,15 +173,22 @@ if __name__ == '__main__':
         '--edb-repo-username',
         dest='edb_repo_username',
         type=str,
+        default='',
         help="EDB package repository username",
-        required=True,
     )
     parser.add_argument(
         '--edb-repo-password',
         dest='edb_repo_password',
         type=str,
+        default='',
         help="EDB package repository password",
-        required=True,
+    )
+    parser.add_argument(
+        '--edb-enable-repo',
+        dest='edb_enable_repo',
+        choices=['true', 'false'],
+        default='true',
+        help="Use EDB package repository",
     )
     parser.add_argument(
         '--pg-version',
@@ -231,7 +241,7 @@ if __name__ == '__main__':
 
         test_cases.append(
             (name, config, env.edb_repo_username, env.edb_repo_password,
-             env.pg_version, env.pg_type, env.os)
+             env.pg_version, env.pg_type, env.os, env.edb_enable_repo)
         )
 
 

@@ -11,6 +11,7 @@
     state: present
   when:
     - ansible_distribution_major_version == "8"
+    - enable_edb_repo|bool
   become: yes
 
 - name: Download PGDG GPG key for CentOS8/RHEL8
@@ -67,6 +68,7 @@
     name: "{{ edb_rpm_repo }}"
     state: present
   become: yes
+  when: enable_edb_repo|bool
 
 - name: Set Credentials for EDB Yum Repo
   replace:
@@ -74,6 +76,7 @@
     regexp: '<username>:<password>'
     replace: "{{ repo_username }}:{{ repo_password }}"
   become: yes
+  when: enable_edb_repo|bool
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:
