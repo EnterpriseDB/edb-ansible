@@ -18,7 +18,7 @@ def test_manage_dbserver_files():
     pg_profile_path = get_pg_profile_dir()
     pg_sql_script = ansible_vars['pg_sql_scripts'][0]['file_path']
     profile_prefix = 'pgsql'
-    print(pg_profile_path)
+
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
@@ -219,7 +219,7 @@ def test_manage_dbserver_pg_grant_roles():
         query = "Select rolname FROM pg_roles WHERE pg_has_role('%s', oid, 'member') AND rolname = '%s'" % (pg_user, pg_role)
         cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
         result = cmd.stdout.strip()
-    print(cmd)
+
     assert len(result) > 0, \
         "User %s has not been granted the %s role" % (pg_user, pg_role)
 
