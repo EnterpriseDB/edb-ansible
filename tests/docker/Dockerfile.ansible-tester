@@ -10,7 +10,7 @@ RUN pip3 install ansible-core>=2.11
 RUN pip3 install paramiko
 RUN pip3 install pytest-testinfra
 RUN pip3 install pyyaml
-RUN ansible-galaxy collection install community.postgresql:=1.1.1
-RUN ansible-galaxy collection install ansible.posix:=1.1.1
-RUN ansible-galaxy collection install community.general:=2.1.1
-RUN ansible-galaxy collection install community.crypto:=1.4.0
+RUN ansible-galaxy collection install community.postgresql:=1.6.0
+RUN ansible-galaxy collection install ansible.posix:=1.3.0
+RUN ansible-galaxy collection install community.general:=2.5.8
+RUN ansible-galaxy collection install community.crypto:=1.9.12
