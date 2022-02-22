@@ -93,6 +93,10 @@
     mode: 0600
   become: yes
 
+- name: Configure SSL
+  include_tasks: pgbouncer_setup_ssl.yml
+  when: pgbouncer_ssl
+
 - name: Generate PgBouncer systemd unit file {{ pgbouncer_systemd_unit_file }}
   template:
     backup: yes
