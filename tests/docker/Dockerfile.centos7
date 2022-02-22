@@ -8,3 +8,4 @@ RUN yum install python3 -y
 RUN yum install ca-certificates -y
 RUN yum install openssh-clients -y
 RUN yum install openssh-server -y
+RUN yum install which -y

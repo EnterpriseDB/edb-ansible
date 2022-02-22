@@ -79,3 +79,16 @@ cases:
     - debian9
     - debian10
     - ubuntu20
+  setup_efm:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - centos7
+    - rocky8
+

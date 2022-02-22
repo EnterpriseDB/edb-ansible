@@ -16,3 +16,4 @@ RUN dnf install python3 -y
 RUN dnf install ca-certificates -y
 RUN dnf install openssh-clients -y
 RUN dnf install openssh-server -y
+RUN dnf install which -y
