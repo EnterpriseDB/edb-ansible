@@ -48,6 +48,18 @@ pgbouncer_syslog_ident: "pgbouncer"
 pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
 # Systemd unit file
 pgbouncer_systemd_unit_file: "/etc/systemd/system/pgbouncer.service.d/pgbouncer.conf"
+# Enable SSL
+pgbouncer_ssl: true
+pgbouncer_ssl_csr_dn:
+  CN: "pgbouncer-server.fqdn"
+  O: ""
+  OU: ""
+  L: ""
+  ST: ""
+  C: ""
+  EMAIL: "example@mail.com"
+# SSL dir
+pgbouncer_ssl_dir: "/etc/pgbouncer/ssl"
 
 available_pool_mode:
   - transaction

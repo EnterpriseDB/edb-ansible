@@ -1,0 +1,78 @@
+---
+# Tasks for setting up SSL mode for pgbouncer
+
+# Make sure the directory configured to contain SSL files exists
+- name: Create SSL directory {{ pgbouncer_ssl_dir }}
+  ansible.builtin.file:
+    path: "{{ pgbouncer_ssl_dir }}"
+    state: directory
+    owner: "{{ pgbouncer_user }}"
+    group: "{{ pgbouncer_group }}"
+    mode: 0700
+  become: true
+
+- name: Check if the root CA certificate exists
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_ssl_dir }}/ca.crt"
+  become: true
+  register: pgbouncer_ssl_root_ca
+
+- name: Check if the server key exists
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_ssl_dir }}/server.key"
+  become: true
+  register: pgbouncer_ssl_server_key
+
+- name: Check if the server CRT exists
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_ssl_dir }}/server.crt"
+  become: true
+  register: pgbouncer_ssl_server_crt
+
+- name: Create root CA
+  ansible.builtin.shell:
+    cmd: >-
+      openssl req -new -x509 -days 365 -nodes \
+        -out {{ pgbouncer_ssl_dir }}/ca.crt \
+        -keyout {{ pgbouncer_ssl_dir }}/ca.key \
+        -subj "/CN=root-ca"
+  become: true
+  become_user: "{{ pgbouncer_user }}"
+  when: not pgbouncer_ssl_root_ca.stat.exists
+
+- name: Create server key
+  ansible.builtin.command:
+    cmd: >-
+      openssl genrsa -out {{ pgbouncer_ssl_dir }}/server.key
+  become: true
+  become_user: "{{ pgbouncer_user }}"
+  when: not pgbouncer_ssl_server_key.stat.exists
+
+- name: Set tmp_dn
+  ansible.builtin.set_fact:
+    tmp_dn: "{{ pgbouncer_ssl_csr_dn }}"
+
+- name: Create certificate request
+  ansible.builtin.shell:
+    cmd: >-
+      openssl req -new \
+        -key {{ pgbouncer_ssl_dir }}/server.key \
+        -out {{ pgbouncer_ssl_dir }}/server.csr \
+        -subj "/C={{ tmp_dn.C }}/L={{ tmp_dn.L }}/O={{ tmp_dn.O }}/CN={{ tmp_dn.CN }}/emailAddress={{ tmp_dn.EMAIL }}"
+  become: true
+  become_user: "{{ pgbouncer_user }}"
+  when: not pgbouncer_ssl_server_key.stat.exists
+
+- name: Create the CA-signed server certificate
+  ansible.builtin.shell:
+    cmd: >-
+      openssl x509 -req \
+        -in {{ pgbouncer_ssl_dir }}/server.csr \
+        -days 365 \
+        -CA {{ pgbouncer_ssl_dir }}/ca.crt \
+        -CAkey {{ pgbouncer_ssl_dir }}/ca.key \
+        -CAcreateserial \
+        -out {{ pgbouncer_ssl_dir }}/server.crt
+  become: true
+  become_user: "{{ pgbouncer_user }}"
+  when: not pgbouncer_ssl_server_crt.stat.exists
