@@ -10,8 +10,12 @@ listen_port = {{ pgbouncer_listen_port }}
 
 auth_type = {{ pgbouncer_auth_type }}
 auth_file = {{ pgbouncer_auth_file }}
-{% if pgbouncer_auth_user is defined %}auth_user = {{ pgbouncer_auth_user }}{% endif %}
-{% if pgbouncer_auth_query is defined %}auth_query = {{ pgbouncer_auth_query }}{% endif %}
+{% if pgbouncer_auth_user is defined %}
+auth_user = {{ pgbouncer_auth_user }}
+{% endif %}
+{% if pgbouncer_auth_query is defined %}
+auth_query = {{ pgbouncer_auth_query }}
+{% endif %}
 
 admin_users = {{ pgbouncer_admin_users }}
 stats_users = {{ pgbouncer_stats_users }}
@@ -20,5 +24,13 @@ pool_mode = {{ pgbouncer_pool_mode }}
 server_reset_query = {{ pgbouncer_server_reset_query }}
 max_client_conn = {{ pgbouncer_max_client_conn }}
 default_pool_size = {{ pgbouncer_default_pool_size }}
+
+{% if pgbouncer_ssl %}
+client_tls_sslmode = prefer
+client_tls_key_file = {{ pgbouncer_ssl_dir }}/server.key
+client_tls_cert_file = {{ pgbouncer_ssl_dir }}/server.crt
+client_tls_ca_file = {{ pgbouncer_ssl_dir }}/ca.crt
+server_tls_sslmode = prefer
+{% endif %}
 
 %include {{ pgbouncer_databases_file }}
