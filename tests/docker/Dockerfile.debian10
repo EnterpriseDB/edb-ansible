@@ -12,4 +12,10 @@ RUN apt install python3-apt -y
 RUN apt install gpg -y
 RUN apt install acl -y
 RUN apt install apt-transport-https -y
+RUN apt-get update -y
+RUN apt-get install software-properties-common -y
+RUN apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' -y
+RUN apt-get update -y
+RUN apt-get install openjdk-8-jdk -y
 RUN systemctl disable ssh
+

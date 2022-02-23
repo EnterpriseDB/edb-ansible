@@ -11,7 +11,7 @@
     - name: Initialize the user defined variables
       set_fact:
         disable_logging: false
-        efm_version: 4.2
+        efm_version: 4.4
 
   roles:
     - role: setup_repo
