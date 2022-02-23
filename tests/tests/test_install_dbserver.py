@@ -58,7 +58,6 @@ def test_install_dbserver_epas_centos():
         'edb-as%s-server-contrib' % pg_version,
         'edb-as%s-server-libs' % pg_version,
         'edb-as%s-server-client' % pg_version,
-        'edb-as%s-server-llvmjit' % pg_version,
         'edb-as%s-server-sslutils' % pg_version,
         'edb-as%s-server-indexadvisor' % pg_version,
         'edb-as%s-server-sqlprofiler' % pg_version,
@@ -76,11 +75,15 @@ def test_install_dbserver_epas_centos():
             'python3-pip',
             'python3-psycopg2',
         ]
-    if pg_version < 14:
+    if pg_version > 10:
+        packages += [
+            'edb-as%s-server-llvmjit' % pg_version,
+        ]
+    if pg_version > 10 and pg_version < 14:
         packages += [
             'edb-as%s-server-edb-modules' % pg_version,
         ]
-    else:
+    elif pg_version >= 14:
         packages += [
             'edb-as%s-server-edb_wait_states' % pg_version,
         ]
