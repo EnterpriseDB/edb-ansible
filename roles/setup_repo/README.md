@@ -1,13 +1,14 @@
 # setup_repo
 
-This Ansible Galaxy Role sets up and configures the repositories from which
+This Ansible Role sets up and configures the repositories from which
 packages will be retrieved for any PostgresSQL or EnterpriseDB Postgres
 Advanced Server installations.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
 
-For more details refer to the: *Database engines supported* section.
+For more details refer to the
+[Database engines supported](#database-engines-supported) section.
 
 **Note:**
 Should there be a need to install and/or configure a PostgreSQL or EnterpriseDB
@@ -24,36 +25,57 @@ The only dependency required for this ansible galaxy role is:
 
 ## Role variables
 
-When executing the role via ansible these are the required variables:
+When executing the role via Ansible these are the required variables:
 
-  * ***pg_type***
+  * **pg_version**
 
-  Database Engine supported are: PG and EPAS
+  Postgres Versions supported are: `10`, `11`, `12`, `13` and `14`
 
-  * ***repo_username***
+  * **pg_type**
 
-  If you have `pg_type` = EPAS, then you need to include `repo_username`
+  Database Engine supported are: `PG` and `EPAS`
 
-  * ***repo_password***
+  * **enable_edb_repo**
 
-  If you have `pg_type` = EPAS, then you need to include `repo_password`
+  Configure access to EDB package repository. Default: `true`
 
-  * ***yum_additional_repos***
+  * **repo_username**
+
+  Username used to access EDB package repository.
+  Required when **enable_edb_repo** is set to `true`.
+
+  * **repo_password**
+
+  Password used to access EDB package repository.
+  Required when **enable_edb_repo** is set to `true`.
+
+  * **yum_additional_repos**
 
   List of additional YUM repositories. List items are dictionnaries:
+  * *name* - Repository name
+  * *description* - Repository description
+  * *baseurl* - Repository URL
+  * *gpgkey* - GPG key locatio. Default: `None`
+  * *gpgcheck* - Enable package signature checking with GPG. Default: `false`
 
-    * *name*: Repository name
-    * *description*: Repository description
-    * *baseurl*: Repository URL
-    * *gpgkey*: GPG key locatio. Default: None
-    * *gpgcheck*: Enable package signature checking with GPG. Default: false
+  Example:
+  ```yaml
+        # Additional repositories
+        yum_additional_repos:
+          - name: "Additional Repo. 1"
+            description: "Description of the repo."
+            baseurl: https://my.repo.internal/CentOS$releasever-$basearch
+            gpgkey: https://my.repo.internal/key.asc
+            gpgcheck: true
+          - name: "Local Repo"
+            baseurl: file:///opt/my_local_repo
+  ```
 
   * **apt_additional_repos**
 
   List of additional APT repositories. List items are dictionnaries:
-
-    * *repo*: Debian repository connection string
-    * *filename*: Repository file name on disk: `<filename>.list`
+  * *repo* - Debian repository connection string
+  * *filename* - Repository file name on disk: `<filename>.list`
 
 
 The rest of the variables can be configured and are available in the:
@@ -77,30 +99,31 @@ all:
     primary:
       hosts:
         primary1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
+          ansible_host: 110.0.0.1
+          private_ip: 10.0.0.1
     standby:
       hosts:
         standby1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
-          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          ansible_host: 110.0.0.2
+          private_ip: 10.0.0.2
+          upstream_node_private_ip: 10.0.0.1
           replication_type: synchronous
         standby2:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
-          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          ansible_host: 110.0.0.3
+          private_ip: 10.0.0.3
+          upstream_node_private_ip: 10.0.0.1
           replication_type: asynchronous
 ```
 
 ### How to include the `setup_repo` role in your Playbook
 
-Below is an example of how to include the `setup_repo` role:
+Below is an example of how to include the `setup_repo` role for setting up
+repositories access to EDB Postgres Advanced Server packages in version 14:
 
 ```yaml
 ---
 - hosts: all
-  name: Setup Postgres Repositories
+  name: Setup EPAS Repositories
   become: yes
   gather_facts: yes
 
@@ -110,19 +133,34 @@ Below is an example of how to include the `setup_repo` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 13
+        pg_version: 14
+        pg_type: "EPAS"
+        repo_username: "<edb-repo-username>"
+        repo_password: "<edb-repo-password>"
+
+  roles:
+    - setup_repo
+```
+
+Following is another example of how to include the `setup_repo` role for
+setting up repositories access to PostgreSQL packages in version 14:
+
+```yaml
+---
+- hosts: all
+  name: Setup PostgreSQL Repositories
+  become: yes
+  gather_facts: yes
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 14
         pg_type: "PG"
-        repo_username: "xxxxxxxx"
-        repo_password: "xxxxxxxx"
-        # Additional repositories
-        yum_additional_repos:
-          - name: "Additional Repo. 1"
-            description: "Description of the repo."
-            baseurl: https://my.repo.internal/CentOS$releasever-$basearch
-            gpgkey: https://my.repo.internal/key.asc
-            gpgcheck: true
-          - name: "Local Repo"
-            baseurl: file:///opt/my_local_repo
+        enable_edb_repo: false
 
   roles:
     - setup_repo
@@ -136,48 +174,48 @@ All the variables are available at:
 
 ## Database engines supported
 
-### Community PostgreSQL
+### PostgreSQL
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Centos 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :x:| :x:| :x:|  :white_check_mark:|
-| Debian 9 (Stretch) - x86_64 | :x:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 10 (Buster) - x86_64 | :x:| :x:| :white_check_mark:| :white_check_mark:| 
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
-### Enterprise DB Postgres Advanced Server
+### EnterpriseDB Postgres Advanced Server
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| Centos 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Centos 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :x:| :x:| :x:|  :white_check_mark:|
-| Debian 9 (Stretch) - x86_64 | :x:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 10 (Buster) - x86_64 | :x:| :x:| :white_check_mark:| :white_check_mark:| 
-
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 
 ## Playbook execution examples
 
 ```bash
-# To setup community repos. access on CentOS7 hosts with the user centos
+# To setup community repos
 $ ansible-playbook playbook.yml \
-  -u centos \
-  --private-key <key.pem> \
-  --extra-vars="os=CentOS7 pg_type=PG "
+  -u <ssh-user> \
+  --private-key <ssh-private-key> \
+  --extra-vars="pg_type=PG pg_version=14 enable_edb_repo=false"
 ```
+
 ```bash
-# To setup EDB repos. access on RHEL8 hosts with the user ec2-user
+# To setup EDB repos
 $ ansible-playbook playbook.yml \
-  -u ec2-user \
-  --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_type=EPAS repo_username=<username> repo_password=<password>"
+  -u <ssh-user> \
+  --private-key <ssh-private-key> \
+  --extra-vars="pg_type=EPAS pg_version=14 repo_username=<edb-repo-username> repo_password=<edb-repo-password>"
 ```
 
 ## License
@@ -187,9 +225,8 @@ BSD
 ## Author information
 
 Author:
-
   * Doug Ortiz
   * Vibhor Kumar (Co-Author)
-  * EDB Postgres 
-  * DevOps 
-  * edb-devops@enterprisedb.com www.enterprisedb.com
+  * Julien Tachoires (Co-Author)
+
+Contact: **edb-devops@enterprisedb.com**

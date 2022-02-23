@@ -1,18 +1,19 @@
 # install_dbserver
 
-This Ansible Galaxy Role Installs Postgres or EnterpriseDB Postgresql Advanced
-Server versions: 10, 11, 12 and 13 on Instances previously configured. 
+This Ansible role installs PostgreSQL or EnterpriseDB Postgresql Advanced
+Server versions: 10, 11, 12, 13 or 14 on machines previously configured. 
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
 
-For more details refer to the: *Database engines supported* section.
+For more details refer to the
+[Database engines supported](#database-engines-supported) section.
 
 **Note:**
-The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server
-for replication it only installs Postgres or EnterpriseDB Postgres Advanced
-Server across multiple nodes: Main and Standby.
-Should there be a need to configure a Postgres or EnterpriseDB Postgres
+This role does not configure PostgreSQL nor EnterpriseDB Postgres Advanced
+Server for replication it only installs PostgreSQL or EnterpriseDB Postgres
+Advanced Server binaries across multiple nodes.
+Should there be a need to configure a PostgreSQL or EnterpriseDB Postgres
 Advanced Server Cluster for replication you can utilize the `setup_replication`
 role.
 
@@ -33,16 +34,16 @@ The only dependencies required for this ansible galaxy role are:
 
 When executing the role via ansible these are the required variables:
 
-  * ***pg_version***
+  * **pg_version**
 
-  Postgres Versions supported are: 10, 11, 12 and 13
+  Postgres Versions supported are: `10`, `11`, `12`, `13` and `14`
 
-  * ***pg_type***
+  * **pg_type**
 
-  Database Engine supported are: PG and EPAS
+  Database Engine supported are: `PG` and `EPAS`
 
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `install_dbserver` role in your Playbook*
+section: [How to include the install_dbserver role in your Playbook](#how-to-include-the-install_dbserver-role-in-your-playbook)
 
 The rest of the variables can be configured and are available in the:
 
@@ -65,31 +66,31 @@ all:
     pemserver:
       hosts:
         pemserver1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
+          ansible_host: 110.0.0.4
+          private_ip: 10.0.0.4
     primary:
       hosts:
         primary1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
+          ansible_host: 110.0.0.1
+          private_ip: 10.0.0.1
           pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
+          pem_server_private_ip: 10.0.0.4
     standby:
       hosts:
         standby1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
-          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          ansible_host: 110.0.0.2
+          private_ip: 10.0.0.2
+          upstream_node_private_ip: 10.0.0.1
           replication_type: synchronous
           pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
+          pem_server_private_ip: 10.0.0.4
         standby2:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
-          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          ansible_host: 110.0.0.3
+          private_ip: 10.0.0.3
+          upstream_node_private_ip: 10.0.0.1
           replication_type: asynchronous
           pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
+          pem_server_private_ip: 10.0.0.4
 ```
 
 ### How to include the `install_dbserver` role in your Playbook
@@ -109,7 +110,7 @@ Below is an example of how to include the `install_dbserver` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 13
+        pg_version: 14
         pg_type: "PG"
 
   roles:
@@ -124,49 +125,47 @@ All the variables are available at:
 
 ## Database engines supported
 
-### Community Postgresql
+### PostgreSQL
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :x: | :x: | :x: |  :white_check_mark:|
-| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:| 
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+### EnterpriseDB Postgres Advanced Server
 
-### Enterprise DB Postgresql Advanced Server
-
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :x: | :x: | :x: |  :white_check_mark:|
-| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:| 
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13 with the user centos
+# To deploy PostgreSQL version 14
 $ ansible-playbook playbook.yml \
-  -i inventory.yml \
-  -u centos \
-  --private-key <key.pem> \
-  --extra-vars="pg_version=13 pg_type=PG"
+  -u <ssh-user> \
+  --private-key <ssh-private-key> \
+  --extra-vars="pg_type=PG pg_version=14"
 ```
+
 ```bash
-# To deploy EPAS version 12 with the user ec2-user
+# To deploy EPAS version14
 $ ansible-playbook playbook.yml \
-  -i inventory.yml \
-  -u ec2-user \
-  --private-key <key.pem> \
-  --extra-vars="pg_version=12 pg_type=EPAS"
+  -u <ssh-user> \
+  --private-key <ssh-private-key> \
+  --extra-vars="pg_type=EPAS pg_version=14"
 ```
 
 ## License
@@ -176,10 +175,8 @@ BSD
 ## Author information
 
 Author:
-
   * Doug Ortiz
-  * Vibhor Kumar (Reviewer)
-  * Julien Tachoires
-  * EDB Postgres
-  * DevOps
-  * edb-devops@enterprisedb.com www.enterprisedb.com
+  * Vibhor Kumar (Co-Author)
+  * Julien Tachoires (Co-Author)
+
+Contact: **edb-devops@enterprisedb.com**
