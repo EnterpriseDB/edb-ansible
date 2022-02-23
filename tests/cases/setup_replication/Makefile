@@ -9,6 +9,7 @@ build-rocky8:
 	docker compose up primary1-rocky8 -d
 	docker compose up standby1-rocky8 -d
 	docker compose up standby2-rocky8 -d
+	
 build-debian9:
 	docker compose up primary1-debian9 -d
 	docker compose up standby1-debian9 -d
