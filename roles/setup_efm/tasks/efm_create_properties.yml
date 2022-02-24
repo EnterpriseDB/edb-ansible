@@ -52,7 +52,7 @@
   become: yes
   when:
   - not efm_service_file.stat.exists
-  - os != 'Debian9'
+  - os != 'Debian9' and os!= 'Debian10'
 
 - name: Copy the efm service file
   template:
@@ -64,4 +64,4 @@
   become: yes
   when:
   - not efm_service_file.stat.exists
-  - os == 'Debian9'
+  - os == 'Debian9' or os == 'Debian10'
