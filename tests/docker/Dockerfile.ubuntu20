@@ -13,4 +13,5 @@ RUN apt install python3-apt -y
 RUN apt install gpg -y
 RUN apt install acl -y
 RUN apt install apt-transport-https -y
+RUN apt install iputils-ping -y
 RUN systemctl disable ssh
