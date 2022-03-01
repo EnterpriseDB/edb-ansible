@@ -35,6 +35,7 @@ GROUP_ROLES = {
         'setup_efm',
         'autotuning',
         'setup_repmgr',
+        'setup_dbt2',
     ],
     'standby': [
         'setup_repo',
