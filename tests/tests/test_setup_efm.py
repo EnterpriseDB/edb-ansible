@@ -62,3 +62,33 @@ def test_setup_efm_pg_read_all_settings():
 
     assert 'pg_read_all_settings' in result[efm_index], \
         "EFM role is not a pg_read_all_settings"
+
+def test_setup_efm_redhat():
+    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
+        pytest.skip()
+
+    host = get_primary()
+    packages = [
+        'java-1.8.0-openjdk',
+        'mailx',
+        'edb-efm44'
+    ]
+
+    for package in packages:
+        assert host.package(package).is_installed, \
+            "Package %s not installed" % packages
+
+def test_setup_efm_debian():
+    if not (get_os().startswith('debian') or get_os().startswith('ubuntu')):
+        pytest.skip()
+
+    host = get_primary()
+    packages = [
+        'openjdk-8-jdk',
+        'bsd-mailx',
+        'edb-efm44'
+    ]
+
+    for package in packages:
+        assert host.package(package).is_installed, \
+            "Package %s not installed" % packages
