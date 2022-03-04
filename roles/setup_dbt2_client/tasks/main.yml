@@ -1,4 +1,9 @@
 ---
+- name: Gather service facts
+  service_facts:
+
+- name: Reference variables
+  include_vars: "{{ pg_type }}.yml"
 
 - name: Gather the pg_cluster_nodes information
   set_fact:
@@ -17,7 +22,29 @@
 - name: Include DBT-2 kit client installation
   include_role:
     name: setup_dbt2
-    tasks_from: install_packages_client
+    tasks_from: dbt2_install_packages_client
+
+- name: Include DBT-2 user creation
+  include_role:
+    name: setup_dbt2
+    tasks_from: dbt2_setup_user
+
+- name: Open DBT-2 Client port {{ dbt2_client_port }}
+  ansible.posix.firewalld:
+    port: "{{ dbt2_client_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: true
+
+- name: Include DBT-2 .pgpass configuration
+  include_role:
+    name: setup_dbt2
+    tasks_from: dbt2_configure_pgpass
 
 - name: Reset the variables based on the user input
   set_fact:

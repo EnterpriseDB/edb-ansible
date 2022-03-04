@@ -1,4 +1,6 @@
 ---
+- name: Reference variables
+  include_vars: "{{ pg_type }}.yml"
 
 - name: Gather the pg_cluster_nodes information
   set_fact:
@@ -15,7 +17,16 @@
   no_log: "{{ disable_logging }}"
 
 - name: Include DBT-2 client systems into pg_hba
-  include_tasks: update_pg_hba.yml
+  include_tasks: dbt2_update_pg_hba.yml
 
-- name: Include DBT-2-installation
-  include_tasks: install_packages_db.yml
+- name: Include DBT-2 installation
+  include_tasks: dbt2_install_packages_db.yml
+
+- name: Include DBT-2 user creation
+  include_tasks: dbt2_setup_user.yml
+
+- name: Include DBT-2 database user creation
+  include_tasks: dbt2_setup_db_user.yml
+
+- name: Include DBT-2 .pgpass configuration
+  include_tasks: dbt2_configure_pgpass.yml
