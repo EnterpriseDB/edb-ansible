@@ -1,8 +1,10 @@
 ---
-
 - name: Gather the pg_cluster_nodes information
   set_fact:
     pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Reference variables
+  include_vars: "{{ pg_type }}.yml"
 
 - name: Get the primary private IP address
   set_fact:
@@ -17,7 +19,17 @@
 - name: Include DBT-2 kit driver installation
   include_role:
     name: setup_dbt2
-    tasks_from: install_packages_driver
+    tasks_from: dbt2_install_packages_driver
+
+- name: Include DBT-2 user creation
+  include_role:
+    name: setup_dbt2
+    tasks_from: dbt2_setup_user
+
+- name: Include DBT-2 .pgpass configuration
+  include_role:
+    name: setup_dbt2
+    tasks_from: dbt2_configure_pgpass
 
 - name: Reset the variables based on the user input
   set_fact:
