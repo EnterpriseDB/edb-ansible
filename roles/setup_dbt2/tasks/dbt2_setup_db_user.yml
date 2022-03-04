@@ -1,0 +1,24 @@
+---
+- name: Generate the dbt2_db_user_password
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pg_dbt2_user }}"
+    input_password: "{{ pg_dbt2_user_password }}"
+  when: pg_dbt2_user_password|length < 1
+
+- name: Set pg_dbt2_user_password
+  ansible.builtin.set_fact:
+     pg_dbt2_user_password: "{{ input_password }}"
+  when: pg_dbt2_user_password|length < 1
+
+- name: Create DBT-2 database user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+  vars:
+    pg_users:
+      - name: "{{ pg_dbt2_user }}"
+        pass: "{{ pg_dbt2_user_password }}"
+        role_attr_flags: superuser
