@@ -60,10 +60,7 @@ def test_setup_pemagent_service():
     assert host.service(service).is_enabled, \
         "Pemagent service not enabled"
 
-def test_setup_pemagent_pg():
-    if get_pg_type() != 'PG':
-        pytest.skip()
-
+def test_setup_pemagent_packages():
     host= get_pemserver()
     pg_version = get_pg_version()
     packages = [
@@ -73,18 +70,4 @@ def test_setup_pemagent_pg():
     for package in packages:
         assert host.package(package).is_installed, \
             "Package %s not installed" % packages
-
-def test_setup_pemagent_epas():
-    if get_pg_type() != 'EPAS':
-        pytest.skip()
-
-    host= get_pemserver()
-    packages = [
-        'edb-pem-agent'
-    ]
-
-    for package in packages:
-        assert host.package(package).is_installed, \
-            "Package %s not installed" % packages
-
 
