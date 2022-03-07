@@ -1,0 +1,15 @@
+---
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: {{ inventory_vars['primary1_ip'] }}
+          private_ip: {{ inventory_vars['primary1_ip'] }}
+          pem_agent: true
+          pem_server_private_ip: {{ inventory_vars['pem1_ip'] }}
+    pemserver:
+      hosts:
+        pem1:
+          ansible_host: {{ inventory_vars['pem1_ip'] }}
+          private_ip: {{ inventory_vars['pem1_ip'] }}
