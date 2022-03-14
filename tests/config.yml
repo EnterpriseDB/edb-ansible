@@ -121,5 +121,18 @@ cases:
     os:
     - centos7
     - rocky8
+  setup_pgpool2:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - centos7
+    - rocky8
 
 
