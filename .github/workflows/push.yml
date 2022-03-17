@@ -58,3 +58,11 @@ jobs:
       - run: sudo apt install ansible -y
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_pgpool2 rocky8
+  manage-pgpool2:
+    runs-on: ubuntu-latest
+    name: Execute manage_pgpool2 tests for PostgreSQL 14 on RockyLinux8
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt install ansible -y
+      - run: make
+      - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/manage_pgpool2 rocky8
