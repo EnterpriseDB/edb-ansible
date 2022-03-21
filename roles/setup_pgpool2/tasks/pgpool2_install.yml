@@ -19,6 +19,14 @@
     - pgpool2_ssl
   become: yes
 
+- name: Install pgpool-II-pcp package on CentOS7 or RHEL7 or Rocky8
+  yum:
+    name: "pgpool-II-pcp"
+  when:
+    - os in ['CentOS7', 'RHEL7', 'Rocky8']
+    - pg_type == 'PG'
+  become: yes
+
 - name: Install openssl package on CentOS8 or RHEL8 or Rocky8
   dnf:
     name: "openssl"
