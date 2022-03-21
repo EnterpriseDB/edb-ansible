@@ -11,6 +11,8 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 RUN dnf install glibc-langpack-en -y
+RUN dnf -qy module disable postgresql -y
+RUN dnf update -y
 RUN dnf install sudo -y
 RUN dnf install python3 -y
 RUN dnf install ca-certificates -y
