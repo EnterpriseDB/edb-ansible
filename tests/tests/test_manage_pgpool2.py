@@ -9,10 +9,6 @@ from conftest import (
 )
 
 def test_manage_pgpool_pcp_user():
-    #PCP commands only available for pg-pool-4.3 which is only available for EPAS
-    if get_pg_type() == 'PG':
-        pytest.skip()
-
     ansible_vars = load_ansible_vars()
     pcp_user = ansible_vars['pcp_users'][0]['name']
     pcp_pass = ansible_vars['pcp_users'][0]['pass']
@@ -36,10 +32,6 @@ def test_manage_pgpool_pcp_user():
         "pcp command succesfully works"
 
 def test_manage_pgpool_pcp_node_count():
-    #PCP commands only available for pg-pool-4.3 which is only available for EPAS
-    if get_pg_type() == 'PG':
-        pytest.skip()
-
     ansible_vars = load_ansible_vars()
     pcp_user = ansible_vars['pcp_users'][0]['name']
     pcp_pass = ansible_vars['pcp_users'][0]['pass']
