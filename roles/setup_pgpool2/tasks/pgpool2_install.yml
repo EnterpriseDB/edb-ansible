@@ -20,7 +20,7 @@
   become: yes
 
 - name: Install pgpool-II-pcp package on CentOS7 or RHEL7 or Rocky8
-  yum:
+  package:
     name: "pgpool-II-pcp"
   when:
     - os in ['CentOS7', 'RHEL7', 'Rocky8']
