@@ -1,0 +1,15 @@
+---
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: {{ inventory_vars['primary1_ip'] }}
+          private_ip: {{ inventory_vars['primary1_ip'] }}
+          pgbouncer: true
+    pgbouncer:
+      hosts:
+        pooler1:
+          ansible_host: {{ inventory_vars['pooler1_ip'] }}
+          private_ip: {{ inventory_vars['pooler1_ip'] }}
+          primary_private_ip: {{ inventory_vars['primary1_ip'] }}
