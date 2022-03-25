@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  ansible-tester:
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.ansible-tester
+    environment:
+    - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
+    - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
+    - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
+    - EDB_PG_TYPE
+    - EDB_PG_VERSION
+    - CASE_NAME=setup_pgbouncer
+    - EDB_OS
+    volumes:
+    - ../../..:/workspace
+    command: "/workspace/tests/docker/exec-tests.sh"
+  primary1-rocky8:
+    # Required for running systemd containers via GitHub actions
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky8
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  pooler1-rocky8:
+    # Required for running systemd containers via GitHub actions
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky8
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  primary1-centos7:
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.centos7
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  pooler1-centos7:
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.centos7
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
