@@ -112,6 +112,10 @@ def get_pgpool2():
     return get_hosts('pgpool2')
 
 
+def get_pgbouncer():
+    return get_hosts('pgbouncer')
+
+
 def get_pg_unix_socket_dir():
     pg_type = get_pg_type()
     pg_version = get_pg_version()

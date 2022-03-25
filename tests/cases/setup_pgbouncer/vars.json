@@ -1,0 +1,23 @@
+{
+  "use_hostname": false,
+  "pg_data": "/opt/pgdata",
+  "pg_wal": "/opt/pgwal",
+  "pgbouncer_listen_port": 6432,
+  "pgbouncer_listen_addr": "*",
+  "pgbouncer_users": [
+    {
+     "name": "test",
+     "pass": "password",
+     "auth": "scram"
+    }
+   ],
+  "pgbouncer_admin_users": "pgbouncer_admin",
+  "pgbouncer_auth_user_list":
+  [
+    {
+    "username": "pgbouncer_admin",
+    "password": "password",
+    "state": "present"
+    }
+  ]
+}
