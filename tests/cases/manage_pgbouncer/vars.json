@@ -1,0 +1,32 @@
+{
+  "use_hostname": false,
+  "pg_data": "/opt/pgdata",
+  "pg_wal": "/opt/pgwal",
+  "pgbouncer_listen_port": 6432,
+  "pgbouncer_listen_addr": "*",
+  "pgbouncer_user": "pgbouncer",
+  "pgbouncer_group": "pgbouncer",
+  "pgbouncer_pid_file": "/run/pgbouncer/pgbouncer.pid",
+  "pgbouncer_databases_file": "/etc/pgbouncer/databases.ini",
+  "pgbouncer_auth_file": "/etc/pgbouncer/userlist.txt",
+  "pgbouncer_admin_users": "pgbouncer_admin",
+  "pgbouncer_databases_list": [
+    {
+      "dbname": "test_db",
+      "port": 5432,
+      "pool_size": 50,
+      "pool_mode": "transaction",
+      "max_db_connections": 100,
+      "reserve_pool": 10,
+      "state": "present"
+    }
+  ],
+  "pgbouncer_auth_user_list":
+  [
+    {
+    "username": "pgbouncer_admin",
+    "password": "password",
+    "state": "present"
+    }
+  ]
+}
