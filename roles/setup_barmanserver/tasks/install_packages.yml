@@ -17,6 +17,14 @@
   when: os in ['CentOS8', 'RHEL8', 'Rocky8']
   become: yes
 
+- name: Remove require python package
+  package:
+    name:
+      - python-psycopg2
+    state: absent
+  when: os in ['RedHat7','CentOS7']
+  become: yes
+
 - name: Install Barman packages for CentOS/RHEL 7
   yum:
     name:
