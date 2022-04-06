@@ -55,7 +55,7 @@ The `install_dbserver` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
-### Inventory file content
+### Example of inventory file
 
 Content of the `inventory.yml` file:
 
@@ -92,6 +92,8 @@ all:
           pem_agent: true
           pem_server_private_ip: 10.0.0.4
 ```
+
+Note: don't forget to replace IP addresses.
 
 ### How to include the `install_dbserver` role in your Playbook
 

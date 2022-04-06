@@ -152,7 +152,7 @@ available for you.
 By default the location of your installed collection is:
 `~/.ansible/collections/ansible_collections`
 
-## Inventory file content
+## Example of inventory file
 
 Content of the `inventory.yml` file:
 
@@ -189,6 +189,8 @@ all:
           pem_agent: true
           pem_server_private_ip: 10.0.0.4
 ```
+
+Note: don't forget to replace IP addresses.
 
 ## How to include the roles in your Playbook
 
