@@ -88,7 +88,7 @@ The `setup_repo` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
-### Inventory file content
+### Example of inventory file
 
 Content of the `inventory.yml` file:
 
@@ -114,6 +114,8 @@ all:
           upstream_node_private_ip: 10.0.0.1
           replication_type: asynchronous
 ```
+
+Note: don't forget to replace IP addresses.
 
 ### How to include the `setup_repo` role in your Playbook
 
