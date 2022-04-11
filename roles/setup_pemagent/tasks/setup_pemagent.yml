@@ -60,7 +60,7 @@
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
   when:
-    - use_hostname
+    - use_hostname|bool
 
 - name: Configure pemagent and pemserver HBA
   block:

@@ -2,13 +2,13 @@
   ansible.builtin.set_fact:
     _local_host: "{{ local_node.inventory_hostname }}"
     _remote_host: "{{ remote_node.inventory_hostname }}"
-  when: use_hostname
+  when: use_hostname|bool
 
 - name: Set _local_host and _remote_host when not using hostname
   ansible.builtin.set_fact:
     _local_host: "{{ local_node.private_ip }}"
     _remote_host: "{{ remote_node.private_ip }}"
-  when: not use_hostname
+  when: not use_hostname|bool
 
 - name: Fetch remote server SSH public key
   ansible.builtin.slurp:
