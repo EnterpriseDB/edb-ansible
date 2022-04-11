@@ -187,4 +187,18 @@ cases:
     - centos7
     - rocky8
     - debian10
+  setup_barman_:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - centos7
+    - rocky8
+    - debian10
 
