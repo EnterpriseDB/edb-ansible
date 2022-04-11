@@ -40,6 +40,11 @@
   become: true
   become_user: barman
 
+- name: Remove file (delete file)
+  ansible.builtin.file:
+    path: /run/nologin
+    state: absent
+
 - name: Execute ssh command for testing
   ansible.builtin.command:
     cmd: "ssh {{ pg_owner }}@{{ _pg_host }} /bin/true"
