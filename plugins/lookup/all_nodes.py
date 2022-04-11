@@ -19,7 +19,7 @@ EXAMPLES = """
 RETURN = """
 _value:
   description:
-    - List: list of dict containing the inventory hostname, the private ip and 
+    - List: list of dict containing the inventory hostname, the private ip and
       the public ip.
   type: list
   elements: dict
@@ -35,7 +35,17 @@ class LookupModule(LookupBase):
         added_nodes = {}
         myvars = getattr(self._templar, '_available_variables', {})
 
+        allowed_groups = [
+            'primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
+            'barmanserver', 'dbt2_driver', 'dbt2_client', 'hammerdbserver',
+            'witness', 'proxy',
+        ]
         for group, nodes in variables['groups'].items():
+            # Ignore hosts that are not part of any group used in this
+            # collection.
+            if group not in allowed_groups:
+                continue
+
             for inventory_hostname in nodes:
                 if inventory_hostname in added_nodes:
                     continue
@@ -44,6 +54,6 @@ class LookupModule(LookupBase):
                 all_nodes.append(dict(
                     inventory_hostname=inventory_hostname,
                     private_ip=hostvars.get('private_ip', None),
-                    public_ip=hostvars.get('public_ip', None),
+                    ansible_host=hostvars.get('ansible_host', None),
                 ))
         return all_nodes
