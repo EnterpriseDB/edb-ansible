@@ -87,7 +87,7 @@
   loop: "{{ efm_cluster_nodes }}"
   loop_control:
     loop_var: node
-  when: use_hostname
+  when: use_hostname|bool
   run_once: true
   no_log: "{{ disable_logging }}"
 
@@ -95,7 +95,7 @@
   set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':' + efm_port | string + ' ' }}"
   when:
-    - not use_hostname
+    - not use_hostname|bool
   loop: "{{ efm_cluster_nodes }}"
   loop_control:
     loop_var: node
@@ -126,7 +126,7 @@
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
-  when: use_hostname
+  when: use_hostname|bool
 
 - name: EFM installation
   block:

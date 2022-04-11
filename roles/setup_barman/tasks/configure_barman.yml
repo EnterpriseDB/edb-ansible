@@ -17,12 +17,12 @@
 - name: Set _pg_host when not using hostname
   set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
-  when: "not use_hostname"
+  when: "not use_hostname|bool"
 
 - name: Set _pg_host when using hostname
   set_fact:
     _pg_host: "{{ inventory_hostname }}"
-  when: use_hostname
+  when: use_hostname|bool
 
 - name: Ensure the barman configuration for the current host is present
   template:

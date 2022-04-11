@@ -6,7 +6,6 @@ pg_wal: ""
 pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
 pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_version }}.service"
 
-use_hostname: true
 primary_host_name: ""
 
 pg_owner: "postgres"
