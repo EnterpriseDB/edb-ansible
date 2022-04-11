@@ -1,5 +1,5 @@
 ---
-dbt2_version: "0.45.1"
+dbt2_version: "0.47.0"
 dbt2_user: dbt2
 dbt2_user_home: /home/dbt2
 pg_dbt2_user: dbt2
