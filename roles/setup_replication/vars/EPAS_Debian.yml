@@ -5,7 +5,6 @@ pg_log: "/var/log/edb"
 pg_wal: ""
 pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
 
-use_hostname: true
 primary_host_name: ""
 
 pg_owner: "enterprisedb"
