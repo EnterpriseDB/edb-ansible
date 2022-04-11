@@ -2,8 +2,7 @@
 # default empty rpm repo
 # port constants
 
-os: ""
-pg_version: "13"
+pg_version: 14
 dsable_logging: yes
 
 force_replication: false

@@ -15,7 +15,7 @@ When executing the role via ansible these are the required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12 and 13
+  Postgres Versions supported are: 10, 11, 12, 13 and 14
 
   * ***pg_type***
 
@@ -141,7 +141,7 @@ Below is an example of how to include the `manage_pgpool2` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 13
+        pg_version: 14
         pg_type: "PG"
 
         pgpool2_configuration:

@@ -2,7 +2,7 @@
 
 os: ""
 pg_type: "PG"
-pg_version: 12
+pg_version: 14
 
 epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
 epas_service: "edb-as@{{ pg_version }}-main"
