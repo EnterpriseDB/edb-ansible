@@ -32,7 +32,7 @@ node_name='{{ repmgr_node_info['inventory_hostname'] }}'			 # An arbitrary (but 
 				 # The string's maximum length is 63 characters and it should
 				 # contain only printable ASCII characters.
 
-conninfo='dbname={{ pg_repmgr_dbname }} user={{ pg_repmgr_user }} port={{ pg_port }} host={% if use_hostname %}{{ repmgr_node_info['inventory_hostname'] }}{% else %}{{ repmgr_node_info['private_ip'] }}{% endif %} connect_timeout=2'			 # Database connection information as a conninfo string.
+conninfo='dbname={{ pg_repmgr_dbname }} user={{ pg_repmgr_user }} port={{ pg_port }} host={% if use_hostname|bool %}{{ repmgr_node_info['inventory_hostname'] }}{% else %}{{ repmgr_node_info['private_ip'] }}{% endif %} connect_timeout=2'			 # Database connection information as a conninfo string.
 				 # All servers in the cluster must be able to connect to
 				 # the local node using this string.
 				 #

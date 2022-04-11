@@ -35,7 +35,7 @@
   run_once: true
   no_log: "{{ disable_logging }}"
   when:
-    - not use_hostname
+    - not use_hostname|bool
 
 - name: Prepare pgpool2_nodes when use_hostname
   set_fact:
@@ -46,7 +46,7 @@
   run_once: true
   no_log: "{{ disable_logging }}"
   when:
-    - use_hostname
+    - use_hostname|bool
 
 - name: Copy the pcp_control.sh to the server
   template:
