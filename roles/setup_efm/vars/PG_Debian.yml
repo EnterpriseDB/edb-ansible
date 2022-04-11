@@ -1,8 +1,4 @@
 ---
-# efm credentials
-os: ""
-pg_version: ""
-
 pg_efm_user: "efm"
 pg_efm_user_password: ""
 

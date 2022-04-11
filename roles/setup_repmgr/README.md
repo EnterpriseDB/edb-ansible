@@ -125,7 +125,7 @@ Below is an example of how to include the `setup_repmgr` role:
     - name: Initialize the user defined variables
       set_fact:
         pg_type: "PG"
-        pg_version: "14"
+        pg_version: 14
 
         repmgr_failover: automatic
         repmgr_reconnect_attemps: 2
@@ -137,13 +137,17 @@ Below is an example of how to include the `setup_repmgr` role:
 
 ## Database engines supported
 
-### Community PostgreSQL and Repmgr
+### Community PostgreSQL
 
-| Distribution | 10 | 11 | 12 | 13 | 14 |
-| ------------------------- |:--:|:--:|:--:|:--:|:--:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 10 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 - :x: - Not supported

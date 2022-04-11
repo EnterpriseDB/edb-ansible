@@ -1,7 +1,7 @@
 # init_dbserver
 
 This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql
-Advanced Server versions: 10, 11, 12 and 13 on instances previously configured.
+Advanced Server versions: 10, 11, 12, 13 and 14 on instances previously configured.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -36,7 +36,7 @@ When executing the role via ansible there are three required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12 and 13
+  Postgres Versions supported are: 10, 11, 12, 13 and 14
 
   * ***pg_type***
 
@@ -113,7 +113,7 @@ Below is an example of how to include the `init_dbserver` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 13
+        pg_version: 14
         pg_type: "PG"
 
   roles:
@@ -133,29 +133,28 @@ All the variables are available at:
 
 ## Database engines supported
 
-### Community PostgreSQL
+### PostgreSQL
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :x: | :x: | :x: |  :white_check_mark:|
-| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:| 
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+### EnterpriseDB Postgres Advanced Server
 
-### Enterprise DB Postgres Advanced Server
-
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|  :white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :x:| :x: | :x: |  :white_check_mark:|
-| Debian 9 (Stretch) - x86_64 | :x: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 10 (Buster) - x86_64 | :x: | :x: | :white_check_mark:| :white_check_mark:| 
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 

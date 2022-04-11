@@ -1,7 +1,7 @@
 ---
 # efm credentials
 os: ""
-pg_version: ""
+pg_version: 14
 efm_version: 4.4
 
 pg_instance_name: main

@@ -1,8 +1,4 @@
 ---
-# efm credentials
-os: ""
-pg_version: ""
-
 pg_owner: "enterprisedb"
 pg_database: "postgres"
 
