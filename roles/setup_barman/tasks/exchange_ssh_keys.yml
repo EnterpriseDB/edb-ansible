@@ -18,13 +18,13 @@
   set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
     _barman_host: "{{ _barman_server_info[0].private_ip }}"
-  when: "not use_hostname"
+  when: "not use_hostname|bool"
 
 - name: Set _pg_host and _barman_host when using hostname
   set_fact:
     _pg_host: "{{ inventory_hostname }}"
     _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
-  when: use_hostname
+  when: use_hostname|bool
 
 - name: Fetch barman server SSH public key
   slurp:

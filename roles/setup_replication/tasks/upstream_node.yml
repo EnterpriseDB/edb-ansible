@@ -3,7 +3,7 @@
 - name: Get upstream node public ip
   set_fact:
     upstream_public_ip: "{{ node.ansible_host }}"
-    upstream_hostname: "{{ node.inventory_hostname if use_hostname else '' }}"
+    upstream_hostname: "{{ node.inventory_hostname if use_hostname|bool else '' }}"
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
     - node.private_ip == hostvars[inventory_hostname].upstream_node_private_ip

@@ -22,7 +22,7 @@
         - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:{{ efm_port }}"}
         - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
-  when: not use_hostname
+  when: not use_hostname|bool
 
 - name: Prepare the necessary parameters
   set_fact:
@@ -31,7 +31,7 @@
         - { name: bind.address, value: "{{ inventory_hostname }}:{{ efm_port }}"}
         - { name: application.name, value: "{{ inventory_hostname }}" }
         - { name: is.witness, value: "{{ efm_witness }}" }
-  when: use_hostname
+  when: use_hostname|bool
 
 - name: Initialize efm_lb_parameters
   set_fact:

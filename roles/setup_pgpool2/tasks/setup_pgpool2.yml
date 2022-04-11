@@ -56,13 +56,13 @@
   set_fact:
     _pgpool2_current_node: "{{ hostvars[inventory_hostname].private_ip }}"
   when:
-    - not use_hostname
+    - not use_hostname|bool
 
 - name: Set _pgpool2_current_node when use_hostname
   set_fact:
     _pgpool2_current_node: "{{ ansible_hostname }}"
   when:
-    - use_hostname
+    - use_hostname|bool
 
 - name: Build the list of Postgres backends when not use_hostname
   set_fact:
@@ -77,7 +77,7 @@
   loop_control:
     loop_var: server
   when:
-    - not use_hostname
+    - not use_hostname|bool
 
 - name: Build the list of Postgres backends when use_hostname
   set_fact:
@@ -92,7 +92,7 @@
   loop_control:
     loop_var: server
   when:
-    - use_hostname
+    - use_hostname|bool
 
 - name: Set the _pgpool2_primary_public_ip variable
   set_fact:
@@ -117,7 +117,7 @@
   loop_control:
     loop_var: server
   when:
-    - not use_hostname
+    - not use_hostname|bool
 
 - name: Build the list of pgpool2 nodes when use_hostname
   set_fact:
@@ -126,7 +126,7 @@
   loop_control:
     loop_var: server
   when:
-    - use_hostname
+    - use_hostname|bool
 
 - name: Include the pgpool2_install
   include_tasks: pgpool2_install.yml
@@ -141,7 +141,7 @@
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
-  when: use_hostname
+  when: use_hostname|bool
 
 - name: Include the pgpool2_configure_backends
   include_tasks: pgpool2_configure_backends.yml

@@ -42,7 +42,7 @@
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
   when:
-    - use_hostname
+    - use_hostname|bool
 
 - name: Remove pem server based on force_pemserver/force_initdb
   block:

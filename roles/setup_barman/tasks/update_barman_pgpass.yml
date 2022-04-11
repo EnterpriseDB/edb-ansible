@@ -18,13 +18,13 @@
   set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
   when:
-    - not use_hostname
+    - not use_hostname|bool
 
 - name: Set _pg_host when use_hostname is true
   set_fact:
     _pg_host: "{{ inventory_hostname }}"
   when:
-    - use_hostname
+    - use_hostname|bool
 
 - name: Ensure barman .pgpass file contains one entry for {{ ansible_host }}
   lineinfile:

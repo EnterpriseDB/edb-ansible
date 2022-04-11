@@ -7,12 +7,12 @@
 - name: Set _barman_host when not using hostname
   set_fact:
     _barman_host: "{{ _barman_server_info[0].private_ip }}"
-  when: "not use_hostname"
+  when: "not use_hostname|bool"
 
 - name: Set _barman_host when using hostname
   set_fact:
     _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
-  when: use_hostname
+  when: use_hostname|bool
 
 - name: Ensure wal_level is configured to replica
   include_role:
