@@ -1,7 +1,7 @@
 ---
 # defaults file for manage_dbserver
 pg_instance_name: main
-pg_version: 12
+pg_version: 14
 pg_type: "PG"
 
 efm_cluster_name: "{{ pg_instance_name }}"

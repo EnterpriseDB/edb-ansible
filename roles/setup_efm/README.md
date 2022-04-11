@@ -4,7 +4,7 @@ This Ansible Galaxy Role Installs EFM versions: 3.10 and 4.0 on instances
 previously configured.
 
 **Note:**
-The role only installs EPAS: 10, 11, 12 or 13 along with EFM: 3.10 or 4.0
+The role only installs EPAS: 10, 11, 12, 13 or 14 along with EFM: 3.10 or 4.x
 across multiple nodes.
 
 **Not all Distribution or versions are supported on all the operating systems
@@ -45,7 +45,7 @@ When executing the role via ansible there are three required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12 and 13
+  Postgres Versions supported are: 10, 11, 12, 13 and 14
 
   * ***pg_type***
 
@@ -110,7 +110,7 @@ Below is an example of how to include the `setup_efm` role:
     - name: Initialize the user defined variables
       set_fact:
         pg_type: "PG"
-        pg_version: "13"
+        pg_version: 14
 
         efm_version: 4.0
         efm_parameters:
@@ -131,23 +131,30 @@ All the variables are available at:
 
 ## Database engines supported
 
-### Community PostgreSQL and EFM 3.10/4.0
+### Community PostgreSQL and EFM 3.10/4.x
 
-| Distribution | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 8 | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+### PostgreSQL
 
-### Enterprise DB Postgres Advanced Server and EFM 3.10/4.0
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+### EnterpriseDB Postgres Advanced Server and EFM 3.10/4.x
 
-| Distribution | 10 | 11 | 12 |
-| ------------------------- |:--:|:--:|:--:|
-| CentOS 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Red Hat Linux 7 | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8 | :x:| :x:| :white_check_mark:|
-| Red Hat Linux 8 | :x:| :x:| :white_check_mark:|
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 - :x: - Not supported
@@ -155,13 +162,13 @@ All the variables are available at:
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13 on CentOS7 hosts with the user centos
-# EFM version 4.0
+# To deploy community Postgres version 14 on CentOS7 hosts with the user centos
+# EFM version 4.4
 $ ansible-playbook playbook.yml \
   -u centos \
   -i inventory.yml \
   --private-key <key.pem> \
-  --extra-vars="pg_version=13 pg_type=PG efm_version=4.0"
+  --extra-vars="pg_version=14 pg_type=PG efm_version=4.4"
 ```
 ```bash
 # To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user EFM version

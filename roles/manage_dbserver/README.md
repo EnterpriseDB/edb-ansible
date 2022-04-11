@@ -203,7 +203,7 @@ Below is an example of how to include the `manage_dbserver` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 13
+        pg_version: 14
         pg_type: "PG"
 
         pg_postgres_conf_params:

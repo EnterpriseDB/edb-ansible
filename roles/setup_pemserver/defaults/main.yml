@@ -1,7 +1,7 @@
 ---
 
 pg_instance_name: main
-pg_version: "14"
+pg_version: 14
 use_hostname: true
 pem_agent: false
 pass_dir: "~/.edb"

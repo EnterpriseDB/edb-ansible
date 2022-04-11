@@ -274,7 +274,7 @@ Below is an example of how to include the `setup_pgbouncer` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 13
+        pg_version: 14
         pg_type: "PG"
 
   roles:
