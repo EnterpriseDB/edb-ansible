@@ -50,20 +50,21 @@ def test_setup_barman_status():
 def test_setup_barman_user():
     ansible_vars = load_ansible_vars()
     barman_user = ansible_vars['barman_user']
-    host = get_primary()
-
+    port = '5432'
     pg_user = 'postgres'
+
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
+        port = '5444'
 
     host= get_primary()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
         query = "Select * from pg_user where usename = '%s'" % barman_user
-        cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
+        cmd = host.run('psql -At -p %s -h %s -c "%s" postgres' % (port, socket_dir, query))
         result = cmd.stdout.strip()
-    
+
     assert len(result) > 0, \
         "Barman user does not exist in primary database"
 
