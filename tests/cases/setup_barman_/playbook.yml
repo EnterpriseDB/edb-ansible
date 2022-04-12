@@ -1,5 +1,13 @@
 ---
 - hosts: all
+  tasks:
+    - name: Remove /run/nologin
+      ansible.builtin.file:
+        path: /run/nologin
+        state: absent
+      become: true
+
+- hosts: all
   name: Postgres deployment playbook
   become: yes
   gather_facts: yes
