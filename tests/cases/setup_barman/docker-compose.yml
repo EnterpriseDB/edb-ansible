@@ -11,7 +11,7 @@ services:
     - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
     - EDB_PG_TYPE
     - EDB_PG_VERSION
-    - CASE_NAME=setup_barman_
+    - CASE_NAME=setup_barman
     - EDB_OS
     volumes:
     - ../../..:/workspace
