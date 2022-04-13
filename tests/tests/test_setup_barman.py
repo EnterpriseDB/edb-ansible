@@ -68,5 +68,18 @@ def test_setup_barman_user():
     assert len(result) > 0, \
         "Barman user does not exist in primary database"
 
+def test_setup_barman_backup():
+    ansible_vars = load_ansible_vars()
+    barman_user = ansible_vars['barman_user']
+    barman_home = ansible_vars['barman_home']
+    host = get_barmanserver()
+
+    with host.sudo(barman_user):
+        cmd = host.run('barman backup primary1-main | grep completed')
+        result = cmd.stdout.strip()
+
+    assert len(result) > 0, \
+        "Backup for primary1-main's server has failed"
+
 
 
