@@ -1,9 +1,10 @@
 ---
-dbt2_version: "0.48.0"
-dbttools_version: "0.2.0"
+dbt2_version: "0.48.1"
+dbttools_version: "0.3.0"
 driver_pub_key: ""
 pg_dbt2_dbname: dbt2
 pg_version: 14
+
 
 supported_os:
   - CentOS7
