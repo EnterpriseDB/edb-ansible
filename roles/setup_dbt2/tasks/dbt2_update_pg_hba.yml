@@ -11,6 +11,7 @@
         'method': 'trust'
       }
   with_items: "{{ groups['dbt2_client'] }}"
+  when: "{{ 'dbt2_client' in groups }}"
   register: dbt2client_list
 
 - name: Gather DBT-2 driver addresses
@@ -28,6 +29,7 @@
 
 - name: Make a list of DBT-2 client addresses
   set_fact: hba_entries={{ dbt2client_list.results | map(attribute='ansible_facts.dbt2client_item') | list }}
+  when: "{{ 'dbt2_client' in groups }}"
 
 - name: Make a list of DBT-2 driver addresses
   set_fact: hba_entries_driver={{ dbt2driver_list.results | map(attribute='ansible_facts.dbt2driver_item') | list }}
@@ -38,6 +40,7 @@
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ hba_entries }}"
+  when: "{{ 'dbt2_client' in groups }}"
 
 - name: Update pg_hba.conf for access from the DBT-2 drivers' private IP addresses
   include_role:
