@@ -49,7 +49,6 @@
   vars:
     pg_hba_ip_addresses: "{{ hba_entries_driver }}"
 
-
 - name: Reset hba_entries
   set_fact:
     hba_entries: []

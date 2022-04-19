@@ -8,11 +8,35 @@
     tasks_from: dbt2_install_packages_driver
 
 - name: Include DBT-2 user creation
-  include_role:
-    name: setup_dbt2
-    tasks_from: dbt2_setup_user
+  include_tasks: dbt2_setup_user.yml
 
 - name: Include DBT-2 .pgpass configuration
   include_role:
     name: setup_dbt2
     tasks_from: dbt2_configure_pgpass
+
+- name: Make a list of DBT-2 client system addresses
+  set_fact:
+    ssh_targets: "{{ ssh_targets + [ hostvars[item]['private_ip'] ] }}"
+  with_items: "{{ groups['dbt2_client'] }}"
+  when: "{{ 'dbt2_client' in groups }}"
+  register: ssh_targets_list
+
+- name: Make a list of database system addresses
+  set_fact:
+    ssh_targets: "{{ ssh_targets + [ hostvars[item]['private_ip'] ] }}"
+  with_items: "{{ groups['primary'] }}"
+  register: ssh_targets_list
+
+- name: Gather SSH public keys from DBT-2 client and database systems.
+  ansible.builtin.command: ssh-keyscan {{ item }}
+  register: ssh_keyscan
+  with_items: "{{ ssh_targets_list.results | map(attribute='ansible_facts.ssh_targets') | list }}"
+  when: "{{ 'dbt2_client' in groups }}"
+
+- name: Add DBT-2 client servers and database systems to known_hosts
+  ansible.builtin.known_hosts:
+    path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
+    name: "{{ item.item }}"
+    key: "{{ item.stdout }}"
+  with_items: "{{ ssh_keyscan.results }}"

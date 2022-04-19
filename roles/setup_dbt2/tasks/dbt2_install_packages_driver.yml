@@ -3,7 +3,7 @@
 - name: Install packages for DBT-2
   dnf:
     name:
-      - 'https://github.com/osdldbt/dbttools-packaging/releases/download/v0.1.0/dbttools-0.1.0-1.el8.x86_64.rpm'
+      - 'https://github.com/osdldbt/dbttools-packaging/releases/download/v0.1.0/dbttools-0.2.0-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-driver-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-scripts-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-exec-{{ dbt2_version }}-1.el8.x86_64.rpm'

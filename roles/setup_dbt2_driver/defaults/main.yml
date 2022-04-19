@@ -1,11 +1,5 @@
 ---
-dbt2_user: dbt2
-dbt2_user_home: /home/dbt2
-pg_dbt2_user: dbt2
-pg_dbt2_dbname: dbt2
-pg_dbt2_user_password: ""
-pg_version: 14
-
+ssh_targets: []
 supported_os:
   - CentOS7
   - CentOS8

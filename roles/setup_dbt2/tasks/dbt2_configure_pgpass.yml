@@ -1,24 +1,10 @@
 ---
-- name: Generate the dbt2_db_user_password
-  ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: generate_password
-  vars:
-    input_user: "{{ pg_dbt2_user }}"
-    input_password: "{{ pg_dbt2_user_password }}"
-  when: pg_dbt2_user_password|length < 1
-
-- name: Set pg_dbt2_user_password
-  ansible.builtin.set_fact:
-     pg_dbt2_user_password: "{{ input_password }}"
-  when: pg_dbt2_user_password|length < 1
-
-- name: Generate .pgpass file for the DBT-2 user
+- name: Generate .pgpass file for the DBT-2
   ansible.builtin.template:
-    dest: "{{ dbt2_user_home }}/.pgpass"
+    dest: "{{ pg_user_home }}/.pgpass"
     mode: "0600"
     src: pgpass.template
   vars:
-    pg_superuser_override: "{{ pg_dbt2_user }}"
-    pg_superuser_password_override: "{{ pg_dbt2_user_password }}"
-  become_user: "{{ dbt2_user }}"
+    pg_superuser_override: "{{ pg_owner }}"
+    pg_superuser_password_override: "{{ pg_superuser_password }}"
+  become_user: "{{ pg_owner }}"

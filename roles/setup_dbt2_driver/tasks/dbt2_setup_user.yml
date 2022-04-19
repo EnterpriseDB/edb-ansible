@@ -1,0 +1,14 @@
+---
+- name: Ensure user {{ pg_owner }} exists
+  ansible.builtin.user:
+    name: "{{ pg_owner }}"
+    create_home: true
+    home: "{{ pg_user_home }}"
+    shell: /bin/bash
+    generate_ssh_key: true
+  become: true
+
+- name: Include DBT-2 environment setup
+  include_role:
+    name: setup_dbt2
+    tasks_from: dbt2_setup_env

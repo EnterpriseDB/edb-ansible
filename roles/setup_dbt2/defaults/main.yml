@@ -1,11 +1,9 @@
 ---
-dbt2_version: "0.47.0"
-dbt2_user: dbt2
-dbt2_user_home: /home/dbt2
-pg_dbt2_user: dbt2
+dbt2_version: "0.48.0"
+driver_pub_key: ""
 pg_dbt2_dbname: dbt2
-pg_dbt2_user_password: ""
 pg_version: 14
+
 
 supported_os:
   - CentOS7

@@ -1,8 +1,2 @@
 ---
-dbt2_user: dbt2
-dbt2_user_home: /home/dbt2
 dbt2_client_port: 30000
-pg_dbt2_user: dbt2
-pg_dbt2_dbname: dbt2
-pg_dbt2_user_password: ""
-pg_version: 14
