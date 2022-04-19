@@ -10,3 +10,13 @@
     state: present
     disable_gpg_check: yes
   become: yes
+
+- name: Install additional supporting packages
+  package:
+    name:
+      - perf
+      - rsync
+      - tmux
+    state: present
+  when: os in ['RedHat8','CentOS8','Rocky8']
+  become: yes
