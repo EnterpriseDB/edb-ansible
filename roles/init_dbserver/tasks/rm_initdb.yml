@@ -35,9 +35,16 @@
   become: yes
   when: pg_log|length > 0
 
-- name: Remove postgres wal directory exists
+- name: Remove postgres wal directory if exists
   file:
     path: "{{ pg_wal }}"
     state: absent
   become: yes
   when: pg_wal|length > 0
+
+- name: remove postgres local wal archive directory if exists
+  file:
+    path: "{{ pg_local_wal_archive_dir }}"
+    state: absent
+  become: yes
+  when: pg_local_wal_archive_dir|length > 0

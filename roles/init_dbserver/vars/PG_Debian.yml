@@ -1,5 +1,6 @@
 ---
 pg_wal: ""
+pg_local_wal_archive_dir: ""
 pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
 pg_encoding: ""
