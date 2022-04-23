@@ -1,5 +1,12 @@
 {
   "use_hostname": false,
   "pg_data": "/opt/pgdata",
-  "pg_wal": "/opt/pgwal"
+  "pg_wal": "/opt/pgwal",
+  "pg_local_wal_archive_dir": "/opt/wal_archive",
+  "pg_postgres_conf_params": [
+    {
+      "name": "archive_command",
+      "value": "test ! -f /opt/wal_archive/%f && cp %p /opt/wal_archive/%f"
+    }
+  ]
 }
