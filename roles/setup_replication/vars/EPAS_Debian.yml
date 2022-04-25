@@ -3,7 +3,6 @@ pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_log: "/var/log/edb"
 pg_wal: ""
-pg_local_wal_archive_dir: ""
 pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
 
 primary_host_name: ""
