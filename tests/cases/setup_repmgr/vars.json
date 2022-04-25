@@ -1,0 +1,8 @@
+{
+  "use_hostname": false,
+  "pg_data": "/var/lib/pgsql/14/main/data",
+  "pg_wal": "/opt/pgwal",
+  "repmgr_failover": "automatic",
+  "repmgr_reconnect_attempts": 2,
+  "repmgr_reconnect_interval": 2  
+}

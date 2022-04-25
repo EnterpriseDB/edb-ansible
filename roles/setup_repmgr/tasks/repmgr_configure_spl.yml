@@ -43,6 +43,7 @@
   ansible.builtin.systemd:
     name: "{{ pg_service }}"
     state: restarted
+    daemon_reload: true
   become: true
   when:
     - update_spl

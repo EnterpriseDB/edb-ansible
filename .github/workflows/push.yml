@@ -82,3 +82,11 @@ jobs:
       - run: sudo apt install ansible -y
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/manage_pgbouncer rocky8
+  setup-repmgr:
+    runs-on: ubuntu-latest
+    name: Execute setup_repmgr tests for PostgreSQL 14 on RockyLinux8
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt install ansible -y
+      - run: make
+      - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_repmgr rocky8
