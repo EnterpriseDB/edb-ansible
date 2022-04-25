@@ -19,6 +19,7 @@ use_hostname: true
 pass_dir: "~/.edb"
 
 pg_wal: ""
+pg_local_wal_archive_dir: ""
 pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
 pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
 edb_audit_directory: ""
