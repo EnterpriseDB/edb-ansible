@@ -37,6 +37,16 @@
   become: yes
   when: pg_wal|length > 0 and pg_data not in pg_wal
 
+- name: Ensure postgres local wal archive directory exists
+  file:
+    path: "{{ pg_local_wal_archive_dir }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
+  become: yes
+  when: pg_local_wal_archive_dir|length > 0
+
 - name: Create unix socket domain directories
   file:
     path: "{{ line_item }}"
