@@ -8,6 +8,7 @@ dsable_logging: yes
 force_replication: false
 use_replication_slots: true
 use_hostname: true
+update_etc_file: true
 
 pg_instance_name: main
 

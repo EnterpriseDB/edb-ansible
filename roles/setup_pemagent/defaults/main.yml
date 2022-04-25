@@ -1,6 +1,7 @@
 ---
 pg_instance_name: main
 use_hostname: true
+update_etc_file: true
 force_pem_install: false
 pem_agent: false
 pass_dir: "~/.edb"
