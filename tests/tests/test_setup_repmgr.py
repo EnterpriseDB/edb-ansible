@@ -78,12 +78,12 @@ def test_setup_repmgr_node_status_redhat():
 
     pg_user = 'postgres'
     pg_group = 'postgres'
-
+    pg_version = get_pg_version()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
     
     for host in hosts:
         with host.sudo(pg_user):
-            cmd = host.run('/usr/pgsql-14/bin/repmgr -f /etc/repmgr/14/repmgr-main.conf node status')
+            cmd = host.run('/usr/pgsql-%s/bin/repmgr -f /etc/repmgr/%s/repmgr-main.conf node status' % (pg_version, pg_version))
             result = cmd.stdout.strip()
 
         assert len(result) > 0, \
@@ -112,12 +112,12 @@ def test_setup_repmgr_node_check_redhat():
 
     pg_user = 'postgres'
     pg_group = 'postgres'
-
+    pg_version = get_pg_version()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
     
     for host in hosts:
         with host.sudo(pg_user):
-            cmd = host.run('/usr/pgsql-14/bin/repmgr -f /etc/repmgr/14/repmgr-main.conf node check')
+            cmd = host.run('/usr/pgsql-%s/bin/repmgr -f /etc/repmgr/%s/repmgr-main.conf node check' % (pg_version, pg_version))
             result = cmd.stdout.strip().split('\n')
 
         assert len(result) > 0, \
