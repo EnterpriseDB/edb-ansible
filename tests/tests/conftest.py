@@ -115,6 +115,9 @@ def get_pgpool2():
 def get_pgbouncer():
     return get_hosts('pgbouncer')
 
+def get_witness():
+    return get_hosts('witness')
+
 
 def get_pg_unix_socket_dir():
     pg_type = get_pg_type()
