@@ -79,7 +79,9 @@
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
   no_log: "{{ disable_logging }}"
-  when: use_hostname|bool
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
 
 - name: Call upstream update based on the upstream node
   block:

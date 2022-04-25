@@ -43,6 +43,7 @@
   become: yes
   when:
     - use_hostname|bool
+    - update_etc_file|bool
 
 - name: Remove pem server based on force_pemserver/force_initdb
   block:

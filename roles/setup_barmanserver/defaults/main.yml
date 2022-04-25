@@ -14,6 +14,8 @@ barman_log_file: "/var/log/barman/barman.log"
 barman_log_level: "INFO"
 barman_compression: "gzip"
 etc_hosts_lists: []
+use_hostname: true
+update_etc_file: true
 
 supported_os:
   - Debian10

@@ -36,7 +36,9 @@
 
 - name: Include linux_update_etc_hosts.yml
   ansible.builtin.include_tasks: linux_update_etc_hosts.yml
-  when: use_hostname|bool
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
 
 - name: Include repmgr_install.yml
   ansible.builtin.include_tasks: repmgr_install.yml
