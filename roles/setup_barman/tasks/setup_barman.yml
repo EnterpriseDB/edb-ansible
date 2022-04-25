@@ -32,7 +32,9 @@
   block:
     - import_tasks: linux_update_etc_hosts.yml
   become: yes
-  when: use_hostname|bool
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
 
 - name: Include the package installation tasks
   include_role:
