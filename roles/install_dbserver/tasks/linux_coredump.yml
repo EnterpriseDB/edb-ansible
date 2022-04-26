@@ -1,0 +1,40 @@
+---
+- name: Ensure core dump directory exists
+  file:
+    path: "{{ core_dump_directory }}"
+    owner: root
+    mode: "0733"
+    state: directory
+  become: yes
+  no_log: "{{ disable_logging }}"
+
+- name: Add core dump parameters in sysctl.conf
+  ansible.posix.sysctl:
+    name: "{{ line_item.name }}"
+    value: "{{ line_item.value }}"
+    state: "{{ line_item.state|default('present') }}"
+    reload: yes
+  with_items: "{{ sysctl_params }}"
+  loop_control:
+    loop_var: line_item
+  become: yes
+  no_log: "{{ disable_logging }}"
+
+- name: Update limits.conf file
+  community.general.pam_limits:
+    domain: "{{ pg_owner }}"
+    limit_type: soft
+    limit_item: core
+    value: unlimited
+  become: yes
+  no_log: "{{ disable_logging }}"
+
+- name: Install debug packages
+  package:
+    name: edb-as{{ pg_version }}-*-debuginfo
+    state: present
+  become: yes
+  no_log: "{{ disable_logging }}"
+  when: >-
+    pg_type == 'EPAS'
+  no_log: "{{ disable_logging }}"
