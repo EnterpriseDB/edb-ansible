@@ -3,10 +3,10 @@
 pg_version: 14
 pg_instance_name: main
 barman_cli_package: "barman-cli-2.12-1"
+use_hostname: true
 
 barman_pg_user: "barman"
 etc_hosts_lists: []
-use_hostname: true
 update_etc_file: true
 
 pass_dir: "~/.edb"
