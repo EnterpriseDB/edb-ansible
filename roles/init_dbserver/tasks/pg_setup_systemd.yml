@@ -32,3 +32,18 @@
       insertafter: "^\\[Service\\]$"
   when:
     - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']
+
+- name: Add LimitCORE in systemd file
+  ansible.builtin.lineinfile:
+    path: "/etc/systemd/system/{{ pg_service }}.service"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    insertafter: "{{ item.insertafter | default('EOF') }}"
+  become: true
+  loop:
+    - line: "LimitCORE=infinity"
+      regexp: "^LimitCORE=.*"
+      insertafter: "^\\[Service\\]$"
+  when:
+    - enable_core_dump|bool
+    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']

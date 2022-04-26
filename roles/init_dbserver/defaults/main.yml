@@ -4,7 +4,6 @@ os: ""
 pg_type: PG
 pg_version: 14
 pg_ssl: true
-
 pg_instance_name: main
 
 # EFM service information
@@ -16,6 +15,7 @@ disable_logging: yes
 use_replication_slots: true
 use_hostname: true
 update_etc_file: true
+enable_core_dump: false
 
 pass_dir: "~/.edb"
 

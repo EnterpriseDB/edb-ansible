@@ -3,12 +3,19 @@
 os: ""
 pg_type: "PG"
 pg_version: 14
+pg_owner: "{{ 'enterprisedb' if pg_type == 'EPAS' else 'postgres' }}"
+enable_core_dump: false
+core_dump_directory: "/var/coredumps"
 
 epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
 epas_service: "edb-as@{{ pg_version }}-main"
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 deb_cluster_name: "main"
 pg_service: "postgresql@{{ pg_version }}-main"
+
+sysctl_params:
+  - { "name": "kernel.core_pattern", "value": "/var/coredumps/core-%e-%p", "state": "present"}
+  - { "name": "fs.suid_dumpable", "value": "2", "state": "present"}
 
 supported_os:
   - CentOS7
