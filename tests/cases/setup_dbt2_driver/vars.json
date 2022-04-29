@@ -1,0 +1,6 @@
+{
+  "use_hostname": false,
+  "pg_data": "/opt/pgdata",
+  "pg_wal": "/opt/pgwal",
+  "dbt2_user": "dbt2"
+}

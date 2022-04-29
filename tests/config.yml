@@ -240,4 +240,17 @@ cases:
     - EPAS
     os:
     - rocky8
+  setup_dbt2_driver:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - centos7
 
