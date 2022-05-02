@@ -119,7 +119,7 @@ class LookupModule(LookupBase):
                 )
             # Special case for the primary, standby or proxy nodes when the
             # host variable pem_agent is set to true.
-            if (group in ['primary', 'standby', 'proxy'] and (
+            if (group in ['primary', 'standby', 'proxy', 'barmanserver'] and (
                     hostvars.get('pem_agent', False)
                     or hostvars.get('pem_agent_remote', False))):
                 supported_roles = list(

@@ -4,6 +4,7 @@
      path: "/etc/hosts"
      line: "{{ item }}"
   loop: "{{ etc_hosts_lists }}"
+  no_log: "{{ disable_logging }}"
 
 - name: Update /etc/hosts file, based on the inventory
   ansible.builtin.lineinfile:
@@ -11,7 +12,9 @@
      line: "{{ item.private_ip }} {{ item.inventory_hostname }}"
      regexp: ".*\\s{{ item.inventory_hostname | regex_escape() }}$"
   loop: "{{ lookup('edb_devops.edb_postgres.all_nodes', wantlist=True) }}"
+  no_log: "{{ disable_logging }}"
 
 - name: Update system hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
+  no_log: "{{ disable_logging }}"

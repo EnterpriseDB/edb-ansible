@@ -50,7 +50,7 @@ class LookupModule(LookupBase):
             pemsrv_private_ip = terms[0]
 
         # Lookup for pem servers with a matching private_ip
-        for node_type in ['primary', 'standby']:
+        for node_type in ['primary', 'standby', 'barmanserver']:
             if node_type not in variables['groups']:
                 continue
             for host in variables['groups'][node_type]:
