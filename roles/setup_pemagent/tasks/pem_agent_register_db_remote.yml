@@ -6,6 +6,7 @@
   become: true
   register: server_registered
   delegate_to: "{{ pem_server_info[0].ansible_host }}"
+  no_log: "{{ disable_logging }}"
 
 - name: Get the pg_pem_agent_password
   ansible.builtin.include_role:
@@ -21,6 +22,7 @@
   ansible.builtin.set_fact:
      pg_pem_agent_password: "{{ input_password }}"
   when: pg_pem_agent_password|length < 1
+  no_log: "{{ disable_logging }}"
 
 - name: Register remote dbserver with efm
   ansible.builtin.shell: |
@@ -53,6 +55,7 @@
   when: not server_registered.stat.exists and efm_enabled
   become: yes
   delegate_to: "{{ pem_server_info[0].ansible_host }}"
+  no_log: "{{ disable_logging }}"
 
 - name: Register remote dbserver
   ansible.builtin.shell: |
@@ -83,3 +86,4 @@
   when: not server_registered.stat.exists and not efm_enabled
   become: yes
   delegate_to: "{{ pem_server_info[0].ansible_host }}"
+  no_log: "{{ disable_logging }}"

@@ -28,6 +28,7 @@
            "contype": "host"
            },
       ]
+  no_log: "{{ disable_logging }}"
 
 - name: Update PEM server to allow connections from the agent
   include_role:
@@ -40,6 +41,7 @@
   loop: "{{ pem_server_info }}"
   loop_control:
     loop_var: node
+  no_log: "{{ disable_logging }}"
 
 - name: Set the local entries for pemagent
   set_fact:
@@ -60,6 +62,7 @@
     group_names | select('search','primary') | list | count > 0
     or
     group_names | select('search','standby') | list | count > 0
+  no_log: "{{ disable_logging }}"
 
 - name: Update hba config
   include_role:
@@ -71,3 +74,4 @@
     group_names | select('search','primary') | list | count > 0
     or
     group_names | select('search','standby') | list | count > 0
+  no_log: "{{ disable_logging }}"

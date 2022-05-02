@@ -1,4 +1,5 @@
 ---
+pem_server_version_int: 0
 pg_instance_name: main
 use_hostname: true
 update_etc_file: true
@@ -11,6 +12,7 @@ pg_pem_admin_password: ""
 pg_pem_agent_user: "pemagent"
 pg_pem_agent_password: ""
 pg_ssl: true
+disable_logging: true
 
 pem_server_exists: false
 # efm information
@@ -20,10 +22,14 @@ efm_cluster_name: "{{ pg_instance_name }}"
 
 pem_agent_package:
   - edb-pem-agent
+pg_backup_api_package:
+  - pg-backup-api
 
 pem_agent_service: pemagent
+pg_backup_api_service: pg-backup-api
 
 pem_agent_bin_path: "/usr/edb/pem/agent/bin"
+pem_agent_confg_path: "/usr/edb/pem/agent/etc"
 
 pem_agent_certificate_path: "/etc/edb/certs/pem"
 pem_agent_service_name: "pem-server-agent"

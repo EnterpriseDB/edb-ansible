@@ -1,14 +1,15 @@
 ---
 - name: Install require packages for PEM agent
-  yum:
+  package:
     name: "{{ pem_agent_package }}"
     state: present
-  when: os in [ 'CentOS7','RHEL7']
+  no_log: "{{ disable_logging }}"
   become: yes
 
 - name: Install require packages for PEM agent
-  dnf:
-    name: "{{ pem_agent_package }}"
+  package:
+    name: "{{ pg_backup_api_package }}"
     state: present
-  when: os in [ 'CentOS8','RHEL8', 'Rocky8']
   become: yes
+  no_log: "{{ disable_logging }}"
+  when: pem_server_version_int|int >= 840
