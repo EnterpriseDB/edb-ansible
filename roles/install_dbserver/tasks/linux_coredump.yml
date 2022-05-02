@@ -37,4 +37,3 @@
   no_log: "{{ disable_logging }}"
   when: >-
     pg_type == 'EPAS'
-  no_log: "{{ disable_logging }}"

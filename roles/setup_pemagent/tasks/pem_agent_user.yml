@@ -24,3 +24,4 @@
        - name: "{{ pg_pem_agent_user }}"
          pass: "{{ pg_pem_agent_password }}"
          groups: pg_monitor
+  no_log: "{{ disable_logging }}"

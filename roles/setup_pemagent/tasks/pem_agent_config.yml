@@ -4,6 +4,7 @@
     path: "{{ pem_agent_bin_path }}/../etc/.agentregistered"
   become: yes
   register: pemagent_configured
+  no_log: "{{ disable_logging }}"
 
 - name: install pem agent
   shell: |
@@ -29,6 +30,7 @@
   when: not pemagent_configured.stat.exists
   become: yes
   throttle: 1
+  no_log: "{{ disable_logging }}"
 
 - name: Start the pem agent service
   systemd:
@@ -37,3 +39,4 @@
     enabled: yes
     state: started
   become: yes
+  no_log: "{{ disable_logging }}"
