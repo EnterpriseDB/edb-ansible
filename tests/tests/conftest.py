@@ -123,6 +123,11 @@ def get_witness():
 def get_hammerdb():
     return get_hosts('hammerdbserver')
 
+
+def get_dbt2_driver():
+    return get_hosts('dbt2_driver')
+    
+
 def get_pg_unix_socket_dir():
     pg_type = get_pg_type()
     pg_version = get_pg_version()
