@@ -253,4 +253,17 @@ cases:
     os:
     - rocky8
     - centos7
+  setup_dbt2_client:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - centos7
 

@@ -126,6 +126,10 @@ def get_hammerdb():
 
 def get_dbt2_driver():
     return get_hosts('dbt2_driver')
+
+
+def get_dbt2_client():
+    return get_hosts('dbt2_client')
     
 
 def get_pg_unix_socket_dir():
