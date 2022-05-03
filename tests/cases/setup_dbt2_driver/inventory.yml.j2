@@ -1,0 +1,13 @@
+---
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: {{ inventory_vars['primary1_ip'] }}
+          private_ip: {{ inventory_vars['primary1_ip'] }}
+    dbt2_driver:
+      hosts:
+        dbt2_driver1:
+          ansible_host: {{ inventory_vars['dbt2_driver1_ip'] }}
+          private_ip: {{ inventory_vars['dbt2_driver1_ip'] }}
