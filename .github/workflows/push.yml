@@ -106,3 +106,11 @@ jobs:
       - run: sudo apt install ansible -y
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_dbt2_driver rocky8
+  setup-dbt2-client:
+    runs-on: ubuntu-latest
+    name: Execute setup_dbt2_client tests for PostgreSQL 14 on RockyLinux8
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt install ansible -y
+      - run: make
+      - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_dbt2_client rocky8
