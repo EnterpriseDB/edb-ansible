@@ -45,7 +45,7 @@
   no_log: "{{ disable_logging }}"
 
 - name: Capture PEM server version number
-  shell: >
+  shell: |
     set -o pipefail
     set -eu
     {{ pem_agent_bin_path }}/pemagent --version|cut -d":" -f2|head -n2|tail -n1
