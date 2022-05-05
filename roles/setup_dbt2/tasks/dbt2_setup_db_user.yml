@@ -19,3 +19,4 @@
     mode: 0600
     line: "{{ driver_pub_key }}"
     create: yes
+  become_user: "{{ pg_owner }}"
