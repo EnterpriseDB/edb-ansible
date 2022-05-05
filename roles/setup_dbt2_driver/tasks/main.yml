@@ -25,6 +25,7 @@
   set_fact:
     ssh_targets: "{{ ssh_targets + [ hostvars[item]['private_ip'] ] }}"
   with_items: "{{ groups['primary'] }}"
+  when: "{{ 'primary' in groups }}"
 
 - name: Gather SSH public keys from DBT-2 client and database systems.
   ansible.builtin.command: ssh-keyscan {{ item }}
