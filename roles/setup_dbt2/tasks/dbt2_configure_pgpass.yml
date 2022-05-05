@@ -1,4 +1,17 @@
 ---
+- name: Get the pg_superuser_password
+  include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pg_owner }}"
+    input_password: ""
+  no_log: true
+
+- name: Set pg_superuser_password
+  set_fact:
+     pg_superuser_password: "{{ input_password }}"
+
 - name: Generate .pgpass file for the DBT-2
   ansible.builtin.template:
     dest: "{{ pg_user_home }}/.pgpass"
