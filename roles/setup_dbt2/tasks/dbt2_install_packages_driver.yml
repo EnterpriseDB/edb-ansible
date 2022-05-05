@@ -7,6 +7,8 @@
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-driver-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-scripts-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-exec-{{ dbt2_version }}-1.el8.x86_64.rpm'
+      - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-db-{{ dbt2_version }}-1.el8.x86_64.rpm'
+      - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-plpgsql-{{ dbt2_version }}-1.el8.x86_64.rpm'
     state: present
     disable_gpg_check: yes
   become: yes
