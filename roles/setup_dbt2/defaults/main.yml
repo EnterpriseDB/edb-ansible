@@ -5,7 +5,6 @@ driver_pub_key: ""
 pg_dbt2_dbname: dbt2
 pg_version: 14
 
-
 supported_os:
   - CentOS7
   - CentOS8
