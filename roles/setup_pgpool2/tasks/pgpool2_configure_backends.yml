@@ -3,44 +3,44 @@
 - name: Build backends configuration
   set_fact:
     pgpool2_backends_configuration: >-
-      {{ pgpool2_backends_configuration | default([]) }} + [
+      {{ pgpool2_backends_configuration | default([]) + [
         {
-          'key': 'backend_hostname{{ ansible_loop.index0 }}',
-          'value': '{{ backend_item.hostname }}',
+          'key': 'backend_hostname' + ansible_loop.index0 | string,
+          'value': backend_item.hostname,
           'state': 'present',
           'quoted': true
         },
         {
-          'key': 'backend_port{{ ansible_loop.index0 }}',
-          'value': '{{ pg_port }}',
+          'key': 'backend_port'+ ansible_loop.index0 | string,
+          'value': pg_port,
           'state': 'present',
           'quoted': false
         },
         {
-          'key': 'backend_data_directory{{ ansible_loop.index0 }}',
-          'value': '{{ pg_data }}',
+          'key': 'backend_data_directory' + ansible_loop.index0 | string,
+          'value': pg_data,
           'state': 'present',
           'quoted': true
         },
         {
-          'key': 'backend_weight{{ ansible_loop.index0 }}',
+          'key': 'backend_weight' + ansible_loop.index0 | string,
           'value': '1',
           'state': 'present',
           'quoted': false
         },
         {
-          'key': 'backend_application_name{{ ansible_loop.index0 }}',
-          'value': '{{ backend_item.inventory_hostname }}',
+          'key': 'backend_application_name' + ansible_loop.index0 | string,
+          'value': backend_item.inventory_hostname,
           'state': 'present',
           'quoted': true
         },
         {
-          'key': 'backend_flag{{ ansible_loop.index0 }}',
+          'key': 'backend_flag' + ansible_loop.index0 | string,
           'value': 'ALLOW_TO_FAILOVER',
           'state': 'present',
           'quoted': true
         }
-      ]
+      ] }}
   loop: "{{ pgpool2_backends }}"
   loop_control:
     extended: yes
