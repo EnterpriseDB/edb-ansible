@@ -67,12 +67,12 @@
 - name: Build the list of Postgres backends when not use_hostname
   set_fact:
     _pgpool2_backends: >-
-      {{ _pgpool2_backends | default([]) }} + [
-         {
-           'hostname': '{{ server.private_ip }}',
-           'inventory_hostname': '{{ server.inventory_hostname }}'
-         }
-       ]
+      {{ _pgpool2_backends | default([]) + [
+          {
+            'hostname': server.private_ip,
+            'inventory_hostname': server.inventory_hostname
+          }
+        ] }}
   loop: "{{ _pg_cluster_nodes }}"
   loop_control:
     loop_var: server
@@ -82,12 +82,12 @@
 - name: Build the list of Postgres backends when use_hostname
   set_fact:
     _pgpool2_backends: >-
-      {{ _pgpool2_backends | default([]) }} + [
-         {
-           'hostname': '{{ server.inventory_hostname }}',
-           'inventory_hostname': '{{ server.inventory_hostname }}'
-         }
-       ]
+      {{ _pgpool2_backends | default([]) + [
+          {
+            'hostname': server.inventory_hostname,
+            'inventory_hostname': server.inventory_hostname
+          }
+        ] }}
   loop: "{{ _pg_cluster_nodes }}"
   loop_control:
     loop_var: server

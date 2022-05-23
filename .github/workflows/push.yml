@@ -15,7 +15,8 @@ jobs:
     name: Execute setup_repo tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_repo rocky8
   install-dbserver:
@@ -23,7 +24,8 @@ jobs:
     name: Execute install_dbserver tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/install_dbserver rocky8
   initdb-dbserver:
@@ -31,7 +33,8 @@ jobs:
     name: Execute init_dbserver tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/init_dbserver rocky8
   setup-replication:
@@ -39,7 +42,8 @@ jobs:
     name: Execute setup_replication tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_replication rocky8
   manage-dbserver:
@@ -47,7 +51,8 @@ jobs:
     name: Execute manage_dbserver tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/manage_dbserver rocky8
   setup-pgpool2:
@@ -55,7 +60,8 @@ jobs:
     name: Execute setup_pgpool2 tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_pgpool2 rocky8
   manage-pgpool2:
@@ -63,7 +69,8 @@ jobs:
     name: Execute manage_pgpool2 tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/manage_pgpool2 rocky8
   setup-pgbouncer:
@@ -71,7 +78,8 @@ jobs:
     name: Execute setup_pgbouncer tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_pgbouncer rocky8
   manage-pgbouncer:
@@ -79,7 +87,8 @@ jobs:
     name: Execute manage_pgbouncer tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/manage_pgbouncer rocky8
   setup-repmgr:
@@ -87,7 +96,8 @@ jobs:
     name: Execute setup_repmgr tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_repmgr rocky8
   setup-hammerdbserver:
@@ -95,7 +105,8 @@ jobs:
     name: Execute setup_hammerdbserver tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_hammerdbserver rocky8
   setup-dbt2-driver:
@@ -103,7 +114,8 @@ jobs:
     name: Execute setup_dbt2_driver tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_dbt2_driver rocky8
   setup-dbt2-client:
@@ -111,6 +123,7 @@ jobs:
     name: Execute setup_dbt2_client tests for PostgreSQL 14 on RockyLinux8
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt install ansible -y
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_dbt2_client rocky8
