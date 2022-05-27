@@ -1,0 +1,24 @@
+---
+
+- name: Install additional supporting packages
+  package:
+    name:
+      - bc
+      - gcc
+      - perf
+      - psmisc
+      - python3-docutils
+      - R-core
+      - sysstat
+      - tmux
+    state: present
+  when: os in ['RedHat8','CentOS8','Rocky8']
+  become: yes
+
+- name: Install packages for DBT-3 Database
+  dnf:
+    name:
+      - 'https://github.com/osdldbt/dbt3-packaging/releases/download/v{{ dbt3_version }}/dbt3-{{ dbt3_version }}-1.el8.x86_64.rpm'
+    state: present
+    disable_gpg_check: yes
+  become: yes

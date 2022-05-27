@@ -1,0 +1,10 @@
+---
+dbt3_version: "1.11.0"
+pg_version: 14
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Rocky8

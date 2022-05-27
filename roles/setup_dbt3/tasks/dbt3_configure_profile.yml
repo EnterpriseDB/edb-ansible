@@ -1,0 +1,7 @@
+---
+- name: Install DBT-3 profile
+  ansible.builtin.template:
+    dest: "{{ pg_user_home }}/.dbt3_profile"
+    mode: "0644"
+    src: dbt3_profile
+  become_user: "{{ pg_owner }}"
