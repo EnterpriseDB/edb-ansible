@@ -40,6 +40,13 @@
       - postgresql{{ pg_version }}
       - postgresql{{ pg_version }}-server
       - postgresql{{ pg_version }}-contrib
+    state: present
+  become: yes
+
+- name: Install sslutils
+  package:
+    name:
       - sslutils_{{ pg_version }}
     state: present
   become: yes
+  when: pg_ssl

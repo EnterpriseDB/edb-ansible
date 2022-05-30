@@ -3,7 +3,15 @@
   systemd:
     name: "{{ epas_service }}"
     state: stopped
-  become: true
+  become: yes
+
+- name: Remove sslutils
+  package:
+    name:
+      - edb-as{{ pg_version }}-server-sslutils
+    state: absent
+  become: yes
+  when: pg_ssl
 
 - name: Remove EPAS packages
   package:
@@ -15,11 +23,9 @@
       - edb-as{{ pg_version }}-server-libs
       - edb-as{{ pg_version }}-server-client
       - edb-as{{ pg_version }}-server-llvmjit
-      - edb-as{{ pg_version }}-server-sslutils
       - edb-as{{ pg_version }}-server-indexadvisor
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
-      - edb-as{{ pg_version }}-server-sslutils
     state: absent
   become: yes
 
