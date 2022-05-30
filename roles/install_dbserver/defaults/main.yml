@@ -12,6 +12,7 @@ epas_service: "edb-as@{{ pg_version }}-main"
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 deb_cluster_name: "main"
 pg_service: "postgresql@{{ pg_version }}-main"
+pg_ssl: true
 
 sysctl_params:
   - { "name": "kernel.core_pattern", "value": "/var/coredumps/core-%e-%p", "state": "present"}
