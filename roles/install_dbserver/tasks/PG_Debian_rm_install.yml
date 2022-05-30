@@ -14,10 +14,18 @@
       - postgresql-{{ pg_version }}
       - postgresql-{{ pg_version }}
       - postgresql-server-dev-{{ pg_version }}
+    state: absent
+    update_cache: yes
+  become: true
+
+- name: Remove sslutils
+  package:
+    name:
       - postgresql-{{ pg_version }}-sslutils
     state: absent
     update_cache: yes
   become: true
+  when: pg_ssl
 
 - name: Remove python-psycopg2
   package:
