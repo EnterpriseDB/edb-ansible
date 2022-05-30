@@ -8,11 +8,9 @@
       - edb-as{{ pg_version }}-server-core
       - edb-as{{ pg_version }}-server-edb-modules
       - edb-as{{ pg_version }}-server-client
-      - edb-as{{ pg_version }}-server-sslutils
       - edb-as{{ pg_version }}-server-indexadvisor
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
-      - edb-as{{ pg_version }}-server-sslutils
     state: present
     update_cache: yes
   become: true
@@ -28,11 +26,9 @@
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
       - edb-as{{ pg_version }}-server-client
-      - edb-as{{ pg_version }}-server-sslutils
       - edb-as{{ pg_version }}-server-indexadvisor
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
-      - edb-as{{ pg_version }}-server-sslutils
       - edb-as{{ pg_version }}-server-edb-wait-states
     state: present
     update_cache: yes
@@ -40,6 +36,14 @@
   register: install_package
   when: >-
     pg_version|int >= 14
+
+- name: Install sslutils
+  package:
+    name:
+      - edb-as{{ pg_version }}-server-sslutils
+    state: present
+  become: true
+  when: pg_ssl
 
 - name: Install python-psycopg2
   package:

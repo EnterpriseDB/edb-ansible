@@ -8,11 +8,19 @@
       - postgresql-{{ pg_version }}
       - postgresql-{{ pg_version }}
       - postgresql-server-dev-{{ pg_version }}
-      - postgresql-{{ pg_version }}-sslutils
     state: present
     update_cache: yes
   register: install_package
   become: true
+
+- name: Install sslutils
+  package:
+    name:
+      - postgresql-{{ pg_version }}-sslutils
+    state: present
+    update_cache: yes
+  become: true
+  when: pg_ssl
 
 - name: Install python-psycopg2
   package:
