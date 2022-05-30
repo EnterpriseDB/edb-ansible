@@ -7,7 +7,7 @@
       - python-ipaddress
     state: present
   when: os in ['RedHat7','CentOS7']
-  become: yes
+  become: true
 
 - name: Install python packages
   package:
@@ -16,7 +16,7 @@
       - python3-psycopg2
     state: present
   when: os in ['RedHat8','CentOS8','Rocky8']
-  become: yes
+  become: true
 
 - name: "Install EPAS 10 packages"
   package:
@@ -30,7 +30,7 @@
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
     state: present
-  become: yes
+  become: true
   when: >-
     pg_version|int < 11
 
@@ -48,7 +48,7 @@
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
     state: present
-  become: yes
+  become: true
   when: >-
     pg_version|int > 10 and pg_version|int < 14
 
@@ -66,7 +66,7 @@
       - edb-as{{ pg_version }}-server-sqlprotect
       - edb-as{{ pg_version }}-server-edb_wait_states
     state: present
-  become: yes
+  become: true
   when: >-
     pg_version|int >= 14
 
@@ -75,5 +75,5 @@
     name:
       - edb-as{{ pg_version }}-server-sslutils
     state: present
-  become: yes
+  become: true
   when: pg_ssl

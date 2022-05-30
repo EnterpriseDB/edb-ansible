@@ -3,7 +3,7 @@
   systemd:
     name: postgresql-{{ pg_version }}
     state: stopped
-  become: yes
+  become: true
 
 - name: Remove require python package
   package:
@@ -14,7 +14,7 @@
       - python-ipaddress
     state: absent
   when: os in ['RedHat7','CentOS7']
-  become: yes
+  become: true
 
 - name: Remove require python package
   package:
@@ -23,7 +23,7 @@
       - python3-libselinux
       - python3-psycopg2
     state: absent
-  become: yes
+  become: true
   when: os in ['RedHat8','CentOS8','Rocky8']
 
 - name: Remove Postgres
@@ -34,4 +34,4 @@
       - postgresql{{ pg_version }}-contrib
       - sslutils_{{ pg_version }}
     state: absent
-  become: yes
+  become: true

@@ -3,14 +3,14 @@
   systemd:
     name: "{{ epas_service }}"
     state: stopped
-  become: yes
+  become: true
 
 - name: Remove sslutils
   package:
     name:
       - edb-as{{ pg_version }}-server-sslutils
     state: absent
-  become: yes
+  become: true
   when: pg_ssl
 
 - name: Remove EPAS packages
@@ -27,7 +27,7 @@
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
     state: absent
-  become: yes
+  become: true
 
 - name: Remove python packages
   package:
@@ -36,7 +36,7 @@
       - python-psycopg2
     state: absent
   when: os in ['RedHat7','CentOS7']
-  become: yes
+  become: true
 
 - name: Remove python packages
   package:
@@ -45,5 +45,5 @@
       - python3-psycopg2
     state: absent
   when: os in ['RedHat8','CentOS8','Rocky8']
-  become: yes
+  become: true
 

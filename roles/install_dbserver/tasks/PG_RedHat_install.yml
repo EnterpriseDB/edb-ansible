@@ -8,7 +8,7 @@
   changed_when: disable_builtin_postgres.rc == 0
   failed_when: disable_builtin_postgres.rc != 0
   ignore_errors: yes
-  become: yes
+  become: true
   when: os in ['RedHat8','CentOS8', 'Rocky8']
 
 - name: Install require python package
@@ -20,7 +20,7 @@
       - python-ipaddress
     state: present
   when: os in ['RedHat7','CentOS7']
-  become: yes
+  become: true
 
 - name: Install require python package
   package:
@@ -29,7 +29,7 @@
       - python3-libselinux
       - python3-psycopg2
     state: present
-  become: yes
+  become: true
   when: os in ['RedHat8','CentOS8','Rocky8']
 
 - name: Install Postgres
@@ -41,12 +41,12 @@
       - postgresql{{ pg_version }}-server
       - postgresql{{ pg_version }}-contrib
     state: present
-  become: yes
+  become: true
 
 - name: Install sslutils
   package:
     name:
       - sslutils_{{ pg_version }}
     state: present
-  become: yes
+  become: true
   when: pg_ssl

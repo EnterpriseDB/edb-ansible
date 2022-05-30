@@ -3,7 +3,7 @@
   systemd:
     name: "{{ pg_service }}"
     state: stopped
-  become: yes
+  become: true
 
 - name: Remove postgreSQL
   package:
@@ -16,7 +16,7 @@
       - postgresql-server-dev-{{ pg_version }}
     state: absent
     update_cache: yes
-  become: yes
+  become: true
 
 - name: Remove sslutils
   package:
@@ -24,7 +24,7 @@
       - postgresql-{{ pg_version }}-sslutils
     state: absent
     update_cache: yes
-  become: yes
+  become: true
   when: pg_ssl
 
 - name: Remove python-psycopg2
@@ -35,4 +35,4 @@
     state: absent
     update_cache: yes
   when: os in ['Ubuntu18','Debian9', 'Debian10']
-  become: yes
+  become: true

@@ -3,7 +3,7 @@
   systemd:
     name: "{{ epas_service }}"
     state: stopped
-  become: yes
+  become: true
 
 - name: Remove sslutils
   package:
@@ -11,7 +11,7 @@
       - edb-as{{ pg_version }}-server-sslutils
     state: absent
     update_cache: yes
-  become: yes
+  become: true
   when: pg_ssl
 
 - name: Remove EPAS Packages
@@ -28,7 +28,7 @@
       - edb-as{{ pg_version }}-server-sqlprotect
     state: absent
     update_cache: yes
-  become: yes
+  become: true
 
 - name: Remove python-psycopg2
   package:
@@ -38,4 +38,4 @@
     state: absent
     update_cache: yes
   when: os in ['Ubuntu18', 'Debian9']
-  become: yes
+  become: true
