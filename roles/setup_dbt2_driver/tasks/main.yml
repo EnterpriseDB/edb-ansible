@@ -31,7 +31,6 @@
   ansible.builtin.command: ssh-keyscan {{ item }}
   register: ssh_keyscan
   loop: "{{ ssh_targets }}"
-  when: "{{ 'dbt2_client' in groups }}"
 
 - name: Add DBT-2 client servers and database systems to known_hosts
   ansible.builtin.known_hosts:
