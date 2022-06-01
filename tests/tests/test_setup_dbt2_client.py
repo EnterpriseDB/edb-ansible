@@ -27,10 +27,9 @@ def test_setup_dbt2_client_sudo():
     ansible_vars = load_ansible_vars()
     limit_file_path = ansible_vars['limit_file_path']
 
-    cmd = host.run('cat %s | grep dbt2' % limit_file_path)
+    cmd = host.run('cat %s | grep postgres' % limit_file_path)
     results = cmd.stdout.strip().split('\n')
     
     for result in results:
-        print(result)
         assert '10000' in result, \
         "%s no file limits was not increased" % limit_file_path
