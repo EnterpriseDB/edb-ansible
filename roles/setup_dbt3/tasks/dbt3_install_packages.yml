@@ -5,6 +5,7 @@
     name:
       - bc
       - gcc
+      - patch
       - perf
       - psmisc
       - python3-docutils

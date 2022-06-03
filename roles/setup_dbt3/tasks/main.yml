@@ -5,5 +5,8 @@
 - name: Include DBT-3 installation
   include_tasks: dbt3_install_packages.yml
 
+- name: Include TPC installation
+  include_tasks: dbt3_tpc.yml
+
 - name: Include DBT-3 profile configuration
   include_tasks: dbt3_configure_profile.yml

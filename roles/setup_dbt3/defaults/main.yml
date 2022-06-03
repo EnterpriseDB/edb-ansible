@@ -1,6 +1,7 @@
 ---
 dbt3_version: "1.11.0"
 pg_version: 14
+tpcfile: ""
 
 supported_os:
   - CentOS7

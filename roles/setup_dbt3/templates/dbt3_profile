@@ -1,6 +1,6 @@
 export DSS_PATH="/tmp/dss"
-export DSS_QUERY="/usr/local/src/dbt3/queries/pgsql"
-export DSS_CONFIG="/usr/local/src/dbt3/src/dbgen"
+export DSS_QUERY="/usr/local/share/dbt3/queries/pgsql"
+export DSS_CONFIG="{{ pg_user_home}}/TPC-H_Tools_v3.0.0/dbgen"
 
 export DBGEN="$DSS_CONFIG/dbgen"
 export QGEN="$DSS_CONFIG/qgen"
