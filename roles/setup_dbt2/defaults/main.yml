@@ -5,6 +5,16 @@ driver_pub_key: ""
 pg_dbt2_dbname: dbt2
 pg_version: 14
 
+# These variables are set in respective vars files.
+pg_data: ""
+pg_group: ""
+pg_instance_name: ""
+pg_owner: ""
+pg_port: ""
+pg_superuser: ""
+pg_superuser_password: ""
+pg_user_home: ""
+
 supported_os:
   - CentOS7
   - CentOS8
