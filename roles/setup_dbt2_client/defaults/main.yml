@@ -1,2 +1,11 @@
 ---
 dbt2_client_port: 30000
+dbt2_version: "0.48.1"
+
+# The following variables are set by the respective vars file.
+pg_data: ""
+pg_instance_name: ""
+pg_owner: ""
+pg_port: ""
+pg_superuser: ""
+pg_user_home: ""

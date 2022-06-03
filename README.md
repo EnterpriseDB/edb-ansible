@@ -30,9 +30,9 @@ currently supports the following ansible roles:
 | [manage_pgpool2](roles/manage_pgpool2/README.md)             | Manage Pgpool-II settings and users. |
 | [setup_barman](roles/setup_barman/README.md)                 | Set up EPAS/PostgreSQL backups with Barman. |
 | [setup_barmanserver](roles/setup_barmanserver/README.md)     | Set up Barman (Postgres backup) server. |
-| [setup_dbt2](roles/setup_dbt2/README.md)                     | Install the DBT-2 benchmark kit. |
-| [setup_dbt2_client](roles/setup_dbt2_client/README.md)       | Set up a server for the client DBT-2. |
-| [setup_dbt2_driver](roles/setup_dbt2_driver/README.md)       | Set up a driver server for DBT-2. |
+| [setup_dbt2](roles/setup_dbt2/README.md)                     | Set up a database server for DBT-2. |
+| [setup_dbt2_client](roles/setup_dbt2_client/README.md)       | Set up a client (a.k.a. transaction manager) for the client DBT-2. |
+| [setup_dbt2_driver](roles/setup_dbt2_driver/README.md)       | Set up emulated terminals (a.k.a. driver) for DBT-2. |
 | [setup_efm](roles/setup_efm/README.md)                       | Set up EDB Failover Manager (EFM) for PostgreSQL/EPAS HA cluster. |
 | [setup_hammerdb](roles/setup_hammerdb/README.md)             | Install HammerDB. |
 | [setup_hammerdbserver](roles/setup_hammerdbserver/README.md) | Set up a server for HammerDB. |

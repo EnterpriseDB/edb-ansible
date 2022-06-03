@@ -1,6 +1,7 @@
 # setup_dbt2
 
-This role is for installing DBT-2.
+this role is for setting up [dbt-2](https://www.github.com/osdldbt/dbt2) related
+components on the database server.
 
 ## Requirements
 
@@ -44,8 +45,7 @@ section: *How to include the `setup_dbt2` role in your Playbook*.
 
 ### Inventory file content
 
-Content of the `inventory.yml` file for 3-tier client-server architecture.
-A 2-tier configuration can be used by removing the `dbt2_client` section:
+Content of the `inventory.yml`:
 
 ```yaml
 all:
@@ -56,16 +56,6 @@ all:
           ansible_host: 10.1.1.3
           private_ip: 10.1.1.3
           dbt2: true
-    dbt2_driver:
-      hosts:
-        dbt2_driver1.dbt2.internal:
-          ansible_host: 10.1.1.19
-          private_ip: 10.1.1.19
-    dbt2_client:
-      hosts:
-        dbt2_client.dbt2.internal:
-          ansible_host: 10.1.1.11
-          private_ip: 10.1.1.11
 ```
 
 ### Playbook file content
@@ -77,7 +67,7 @@ Below is an example of how to include the `setup_dbt2` role:
 ```yaml
 ---
 - hosts: all
-  name: Postgres deployment playbook for 3-tier DBT-2 configuration.
+  name: Postgres deployment playbook for DBT-2 database server configuration.
   become: yes
   gather_facts: yes
   any_errors_fatal: True
@@ -93,11 +83,6 @@ Below is an example of how to include the `setup_dbt2` role:
       when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
       when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
-    - role: setup_dbt2_driver
-      when: "'setup_dbt2_driver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
-    - role: setup_dbt2_client
-      when: "'setup_dbt2_client' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
-    - role: setup_dbt2
       when: "'setup_dbt2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: autotuning
       when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

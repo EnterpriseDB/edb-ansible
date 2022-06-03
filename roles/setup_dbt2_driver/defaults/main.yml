@@ -6,3 +6,14 @@ supported_os:
   - RedHat7
   - RedHat8
   - Rocky8
+
+dbt2_version: "0.48.1"
+dbttools_version: "0.3.0"
+
+# These variables are set in the respective vars file.
+pg_data: ""
+pg_instance_name: ""
+pg_owner: ""
+pg_port: ""
+pg_superuser: ""
+pg_user_home: ""
