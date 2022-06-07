@@ -17,12 +17,22 @@
 - name: Set _pg_host when not using hostname
   ansible.builtin.set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
-  when: "not use_hostname|bool"
+  when:
+    - "not use_hostname|bool"
+    - hostvars[inventory_hostname].primary_vip is not defined
 
 - name: Set _pg_host when using hostname
   ansible.builtin.set_fact:
     _pg_host: "{{ inventory_hostname }}"
-  when: use_hostname|bool
+  when:
+    - use_hostname|bool
+    - hostvars[inventory_hostname].primary_vip is not defined
+
+- name: Set _pg_host when not using virtual ip address
+  ansible.builtin.set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].primary_vip }}"
+  when:
+    - hostvars[inventory_hostname].primary_vip is defined
 
 - name: Add a crontab entry for barman backup at 00:00 every day
   ansible.builtin.lineinfile:
