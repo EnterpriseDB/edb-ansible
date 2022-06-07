@@ -17,12 +17,22 @@
 - name: Set _pg_host when not using hostname
   set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
-  when: "not use_hostname|bool"
+  when:
+    - "not use_hostname|bool"
+    - hostvars[inventory_hostname].primay_vip is not defined
 
 - name: Set _pg_host when using hostname
   set_fact:
     _pg_host: "{{ inventory_hostname }}"
-  when: use_hostname|bool
+  when:
+    - use_hostname|bool
+    - hostvars[inventory_hostname].primay_vip is not defined
+
+- name: Set _pg_host when using virtual ip address
+  set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].primary_vip }}"
+  when:
+    - hostvars[inventory_hostname].primay_vip is defined
 
 - name: Ensure the barman configuration for the current host is present
   template:

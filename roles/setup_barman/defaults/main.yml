@@ -2,7 +2,7 @@
 
 pg_version: 14
 pg_instance_name: main
-barman_cli_package: "barman-cli-2.12-1"
+barman_cli_package: "barman-cli-2.19-1"
 use_hostname: true
 
 barman_pg_user: "barman"
