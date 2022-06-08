@@ -33,7 +33,7 @@
   package:
     name:
       - python-pip
-      - python-psycopg2
+      - python2-psycopg2
     state: absent
   when: os in ['RedHat7','CentOS7']
   become: true
