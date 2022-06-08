@@ -16,7 +16,7 @@
     name:
       - python-pycurl
       - libselinux-python
-      - python-psycopg2
+      - python2-psycopg2
       - python-ipaddress
     state: present
   when: os in ['RedHat7','CentOS7']
