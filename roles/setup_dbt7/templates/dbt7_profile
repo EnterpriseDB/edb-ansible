@@ -1,0 +1,19 @@
+export DSHOME="{{ pg_user_home}}/DSGen-software-code-3.2.0rc1"
+export DSQUERY="${DSHOME}/query_templates"
+export DSTOOLS="${DSHOME}/tools"
+export DS_DATA="/tmp/dbt7data"
+
+export DBT7PGDATA="{{ dbt7_pgdata }}"
+export DBT7DBNAME=dbt7
+
+# Set PGHOST to connect to a specific hostname or Unix-domain socket.
+# Set PGPORT to connect to a non-default TCP port.
+
+export DEFAULT_LOAD_PARAMETERS=""
+export DEFAULT_PERF_PARAMETERS=""
+
+# Uncomment one of the following to generate the desired EXPLAIN output with the
+# data maintenance test.  Otherwise the DELETE and INSERT statements will
+# execute without any EXPLAIN output.
+#export DBT7DMPREFIX="LOAD 'auto_explain'; SET auto_explain.log_min_duration TO 0; SET auto_explain.log_level TO notice;"
+#export DBT7DMPREFIX="LOAD 'auto_explain'; SET auto_explain.log_min_duration TO 0; SET auto_explain.log_analyze TO on; SET auto_explain.log_level TO notice;"
