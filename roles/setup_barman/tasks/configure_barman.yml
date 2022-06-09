@@ -30,9 +30,9 @@
 
 - name: Set _pg_host when using virtual ip address
   set_fact:
-    _pg_host: "{{ hostvars[inventory_hostname].primary_vip }}"
+    _pg_host: "{{ hostvars[inventory_hostname].barman_primary_vip }}"
   when:
-    - hostvars[inventory_hostname].primay_vip is defined
+    - hostvars[inventory_hostname].barman_primary_vip is defined
 
 - name: Ensure the barman configuration for the current host is present
   template:

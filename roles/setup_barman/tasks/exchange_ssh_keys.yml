@@ -20,7 +20,6 @@
     _barman_host: "{{ _barman_server_info[0].private_ip }}"
   when:
     - "not use_hostname|bool"
-    - hostvars[inventory_hostname].primary_vip is not defined
 
 - name: Set _pg_host and _barman_host when using hostname
   set_fact:
@@ -28,14 +27,6 @@
     _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
   when:
     - use_hostname|bool
-    - hostvars[inventory_hostname].primary_vip is not defined
-
-- name: Set _pg_host and _barman_host when using virtual ip
-  set_fact:
-    _pg_host: "{{ hostvars[inventory_hostname].primary_vip }}"
-    _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
-  when:
-    - hostvars[inventory_hostname].primary_vip is defined
 
 - name: Fetch barman server SSH public key
   slurp:
