@@ -123,6 +123,61 @@ all:
           barman_backup_method: postgres
 ```
 
+
+In the High-Availability context, when using a Virtual IP address for routing
+read/write traffic to the primary node, then it's possible to configure barman
+to use this VIP address as Postgres connection endpoint. This way, in case of
+timeline change (following a failover or switchover event), barman will be able
+to automatically fetch new WAL records coming from the new primary node,
+without requiring any manual operation.
+
+This configuration is only possible when using the `postgres` backup method,
+which is based on backup and WAL archiving using streaming replication.
+
+Above is an example of inventory file implementing this type of configuration:
+```yaml
+---
+all:
+  children:
+    barmanserver:
+      hosts:
+        barman:
+          ansible_host: 192.168.122.2
+          private_ip: 192.168.122.2
+    primary:
+      hosts:
+        pg1:
+          ansible_host: 192.168.122.3
+          private_ip: 192.168.122.3
+          # Enable barman
+          barman: true
+          # Private IP address of the barman server
+          barman_server_private_ip: 192.168.122.2
+          # Backup and WAL archiving using the streaming protocol
+          barman_backup_method: postgres
+          # VIP of the primary node. Assuming this VIP address is already
+          # present on the system.
+          barman_primary_vip: 192.168.122.222
+    standby:
+      hosts:
+        pg2:
+          ansible_host: 192.168.122.4
+          private_ip: 192.168.122.4
+          upstream_node_private_ip: 192.168.122.3
+          # Enable barman
+          barman: true
+          # Private IP address of the barman server
+          barman_server_private_ip: 192.168.122.2
+          # Backup and WAL archiving using the streaming protocol
+          barman_backup_method: postgres
+          # VIP of the primary node. Assuming this VIP address is already
+          # present on the system.
+          barman_primary_vip: 192.168.122.222
+          # We don't want to create barman configuration and backup for this
+          # instance.
+          barman_no_configuration: true
+```
+
 ### How to include the `setup_barman` role in your Playbook
 
 Below is an example of how to include the `setup_barman` role:

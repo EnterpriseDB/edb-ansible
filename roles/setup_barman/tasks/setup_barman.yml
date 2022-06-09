@@ -17,6 +17,13 @@
   when: >
     barman_backup_method not in ['postgres', 'rsync']
 
+- name: Fail if barman_primary_vip is defined and barman_backup_method is not Postgres
+  fail:
+    msg: "The hostvar barman_primary_vip is not compatible with rsync backups"
+  when:
+    - hostvars[inventory_hostname].barman_primary_vip is defined
+    - barman_backup_method != 'postgres'
+
 - name: Check support for Operating System
   fail:
     msg: "Operating System = {{ os }} not supported."
@@ -64,9 +71,18 @@
 
 - name: Include the barman configuration tasks
   include_tasks: configure_barman.yml
+  when: >
+    hostvars[inventory_hostname].barman_no_configuration is not defined
+    or hostvars[inventory_hostname].barman_no_configuration|bool == False
 
 - name: Include the Postgres configuration tasks for backup
   include_tasks: configure_pg_backup.yml
+  when: >
+    hostvars[inventory_hostname].barman_no_configuration is not defined
+    or hostvars[inventory_hostname].barman_no_configuration|bool == False
 
 - name: Include the barman post configuration tasks
   include_tasks: post_configure_barman.yml
+  when: >
+    hostvars[inventory_hostname].barman_no_configuration is not defined
+    or hostvars[inventory_hostname].barman_no_configuration|bool == False

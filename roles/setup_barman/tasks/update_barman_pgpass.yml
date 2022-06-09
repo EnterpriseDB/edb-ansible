@@ -19,20 +19,20 @@
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
   when:
     - not use_hostname|bool
-    - hostvars[inventory_hostname].primary_vip is not defined
+    - hostvars[inventory_hostname].barman_primary_vip is not defined
 
 - name: Set _pg_host when use_hostname is true
   set_fact:
     _pg_host: "{{ inventory_hostname }}"
   when:
     - use_hostname|bool
-    - hostvars[inventory_hostname].primary_vip is not defined
+    - hostvars[inventory_hostname].barman_primary_vip is not defined
 
 - name: Set _pg_host using virtual ip address
   set_fact:
-    _pg_host: "{{ hostvars[inventory_hostname].primary_vip }}"
+    _pg_host: "{{ hostvars[inventory_hostname].barman_primary_vip }}"
   when:
-    - hostvars[inventory_hostname].primary_vip is defined
+    - hostvars[inventory_hostname].barman_primary_vip is defined
 
 - name: Ensure barman .pgpass file contains one entry for {{ ansible_host }}
   lineinfile:
