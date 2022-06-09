@@ -10,10 +10,8 @@
     name: setup_dbt2
     tasks_from: dbt2_install_packages_client
 
-- name: Include DBT-2 user creation
-  include_role:
-    name: setup_dbt2
-    tasks_from: dbt2_setup_user
+- name: Include DBT-2 user setup configuration
+  include_tasks: dbt2_setup_user.yml
 
 - name: "Open DBT-2 Client port {{ dbt2_client_port }}"
   ansible.posix.firewalld:
@@ -32,12 +30,12 @@
     name: setup_dbt2
     tasks_from: dbt2_configure_pgpass
 
-- name: "Increase nofile limits for user {{ dbt2_user }}"
+- name: "Increase nofile limits for user {{ pg_owner }}"
   ansible.builtin.lineinfile:
     path: /etc/security/limits.conf
     line: "{{ item }}"
     state: present
   loop:
-    - "{{ dbt2_user }}    hard  nofile  10000"
-    - "{{ dbt2_user }}    soft  nofile  10000"
+    - "{{ pg_owner }}    hard  nofile  10000"
+    - "{{ pg_owner }}    soft  nofile  10000"
   become: true

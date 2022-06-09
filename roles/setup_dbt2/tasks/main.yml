@@ -8,11 +8,11 @@
 - name: Include DBT-2 installation
   include_tasks: dbt2_install_packages_db.yml
 
-- name: Include DBT-2 user creation
-  include_tasks: dbt2_setup_user.yml
-
-- name: Include DBT-2 database user creation
-  include_tasks: dbt2_setup_db_user.yml
-
 - name: Include DBT-2 .pgpass configuration
   include_tasks: dbt2_configure_pgpass.yml
+
+- name: Include DBT-2 user setup configuration
+  include_tasks: dbt2_setup_db_user.yml
+
+- name: Include DBT-2 environment configuration
+  include_tasks: dbt2_setup_env.yml

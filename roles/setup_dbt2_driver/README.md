@@ -1,13 +1,10 @@
 # setup_dbt2_driver
 
-This role is for setting up a driver server for
-[DBT-2](http://osdldbt.sourceforge.net/).  DBT-2(TM) is an OLTP transactional
-performance test. It simulates a wholesale parts supplier where several workers
-access a database, update customer information and check on parts inventories.
-DBT-2 is a fair usage implementation of the the TPC's [TPC-C(TM)
-Benchmark](http://www.tpc.org/tpcc/) specification. The results of a test run
-include transactions per second, CPU utilization, I/O activity, and memory
-utilization.
+This role is for setting up a server for the
+[DBT-2](https://www.github.com/osdldbt/dbt2) terminal emulators (a.k.a. the
+driver) transaction manager.
+
+This is required in a 3-tier or 2-tier client-server configurations.
 
 ## Requirements
 
@@ -18,19 +15,84 @@ Following are the requirements of this role.
 
 ## Role Variables
 
-The variables that can be configured and are available in the:
+When executing the role via ansible these are the required variables:
 
-  * [roles/setup_dbt2_driver/defaults/main.yml](./defaults/main.yml)
+  * ***dbt2_version***
 
-Below is the documentation of the rest of the main variables:
+  These playbooks can install any version of DBT-2 that is packaged from GitHub.
+  See the following link for available versions:
+  https://github.com/osdldbt/dbt2-packaging/releases
 
-### `dbt2_version`
+  * ***dbttools_version***
 
-The release version of DBT-2.  Default: HEAD
+  These playbooks can install any version of DBT Tools that is packaged from
+  GitHub but specific versions may be required depending on the version of DBT-2
+  used.  Unless you have a specific reason to install a specific version, you
+  will generally want to use the latest avaialble versions.  See the following
+  link for available versions:
+  https://github.com/osdldbt/dbttools-packaging/releases
 
-Example:
+  * ***pg_owner***
+
+  This is used to ensure the operating system user to use for running the DBT-2
+  client is created.  For ease of autoamtion, this should be the same user that
+  is defined for the `setup_dbt2` role.  A different default is set depending
+  on which `vars` file is inherited, which is based on the PostgreSQL
+  distribution selected.
+
+These variables can be assigned in the `pre_tasks` definition of the
+section: *How to include the `setup_dbt2_driver` role in your Playbook*.
+
+## Example Playbook
+
+### Inventory file content
+
+Content of the `inventory.yml` file:
+
 ```yaml
-dbt2_version: HEAD
+all:
+  children:
+    dbt2_driver:
+      hosts:
+        dbt2_driver.dbt2.internal:
+          ansible_host: 10.1.1.19
+          private_ip: 10.1.1.19
+```
+
+### Playbook file content
+
+Content of the `inventory.yml` file:
+
+Below is an example of how to include the `setup_dbt2_driver` role:
+
+```yaml
+---
+- hosts: all
+  name: Postgres deployment playbook for DBT-2 terminal emulator configuration.
+  become: yes
+  gather_facts: yes
+  any_errors_fatal: True
+  max_fail_percentage: 0
+
+  collections:
+    - edb_devops.edb_postgres
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_dbt2_driver
+      when: "'setup_dbt2_driver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+```
+
+## Playbook execution examples
+
+```bash
+# To deploy community Postgres version 13 with the user centos
+$ ansible-playbook playbook.yml \
+  -i inventory.yml \
+  -u centos \
+  --private-key <key.pem> \
+  --extra-vars="pg_version=13 pg_type=PG"
 ```
 
 ## License

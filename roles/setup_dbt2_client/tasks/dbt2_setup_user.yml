@@ -1,0 +1,20 @@
+---
+- name: Ensure group {{ pg_group }} exists
+  ansible.builtin.group:
+    name: "{{ pg_group }}"
+    state: present
+
+- name: Ensure user {{ pg_owner }} exists
+  ansible.builtin.user:
+    name: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    create_home: true
+    home: "{{ pg_user_home }}"
+    shell: /bin/bash
+    generate_ssh_key: false
+  become: true
+
+- name: Include DBT-2 db user setup
+  include_role:
+    name: setup_dbt2
+    tasks_from: dbt2_setup_db_user

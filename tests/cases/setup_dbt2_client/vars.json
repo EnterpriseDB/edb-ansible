@@ -2,6 +2,6 @@
   "use_hostname": false,
   "pg_data": "/opt/pgdata",
   "pg_wal": "/opt/pgwal",
-  "dbt2_user": "dbt2",
+  "postgres_user": "postgres",
   "limit_file_path": "/etc/security/limits.conf"
 }

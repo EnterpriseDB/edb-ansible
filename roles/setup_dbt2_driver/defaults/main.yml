@@ -1,14 +1,19 @@
 ---
-dbt2_user: dbt2
-dbt2_user_home: /home/dbt2
-pg_dbt2_user: dbt2
-pg_dbt2_dbname: dbt2
-pg_dbt2_user_password: ""
-pg_version: 14
-
+ssh_targets: []
 supported_os:
   - CentOS7
   - CentOS8
   - RedHat7
   - RedHat8
   - Rocky8
+
+dbt2_version: "0.48.1"
+dbttools_version: "0.3.0"
+
+# These variables are set in the respective vars file.
+pg_data: ""
+pg_instance_name: ""
+pg_owner: ""
+pg_port: ""
+pg_superuser: ""
+pg_user_home: ""
