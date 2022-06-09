@@ -135,3 +135,11 @@ jobs:
       - run: sudo apt install ansible -y
       - run: make
       - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_dbt2 rocky8
+  setup-dbt3:
+    runs-on: ubuntu-latest
+    name: Execute setup_dbt3 tests for PostgreSQL 14 on RockyLinux8
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt install ansible -y
+      - run: make
+      - run: EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_dbt3 rocky8
