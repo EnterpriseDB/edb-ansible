@@ -1,11 +1,19 @@
 ---
-dbt2_version: "0.47.0"
-dbt2_user: dbt2
-dbt2_user_home: /home/dbt2
-pg_dbt2_user: dbt2
+dbt2_version: "0.48.1"
+dbttools_version: "0.3.0"
+driver_pub_key: ""
 pg_dbt2_dbname: dbt2
-pg_dbt2_user_password: ""
 pg_version: 14
+
+# These variables are set in respective vars files.
+pg_data: ""
+pg_group: ""
+pg_instance_name: ""
+pg_owner: ""
+pg_port: ""
+pg_superuser: ""
+pg_superuser_password: ""
+pg_user_home: ""
 
 supported_os:
   - CentOS7
