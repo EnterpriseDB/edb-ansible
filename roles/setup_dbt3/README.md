@@ -15,21 +15,30 @@ Following are the requirements of this role.
 
 When executing the role via ansible these are the required variables:
 
-  * ***dbt3-version***
+  * ***dbt3_pgdata***
+
+  This variable is to be used to specify a custom PGDATA directory that DBT-3
+  will use separately from the default PGDATA that may be used in other
+  playbooks.  Thus do not set this to a directory that may be used elsewhere.
+  You are not likely to use this unless you are testing specific source based
+  installations of PostgreSQL or doing any other highly customized testing with
+  logical or physical system configurations.
+
+  * ***dbt3_version***
 
   These playbooks can install any version of DBT-3 that is packaged from GitHub.
   See the following link for available versions:
   https://github.com/osdldbt/dbt3-packaging/releases
-
-  * ***pg_version***
-
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
 
   * ***have_tpcfile***
 
   The is a boolean use for CI purposes where we cannot redistribute TPC code
   thus the CI system will not attempt to run the tasks specific for setting up
   the TPC code.
+
+  * ***pg_version***
+
+  Postgres Versions supported are: 10, 11, 12, 13 and 14
 
   * ***tpcfile***
 

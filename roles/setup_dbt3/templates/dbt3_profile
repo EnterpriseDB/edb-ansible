@@ -5,10 +5,8 @@ export DSS_CONFIG="{{ pg_user_home}}/TPC-H_Tools_v3.0.0/dbgen"
 export DBGEN="$DSS_CONFIG/dbgen"
 export QGEN="$DSS_CONFIG/qgen"
 
-export DBT3_DIR=/pgdata/dbt3
-
 export PGDATABASE=dbt3
-export PGDATA=$DBT3_DIR/pgdata
+export PGDATA={{ dbt3_pgdata }}
 
 export PGPORT=5432
 
