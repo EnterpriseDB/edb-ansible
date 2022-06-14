@@ -7,6 +7,7 @@
 
 - name: Include TPC installation
   include_tasks: dbt3_tpc.yml
+  when: tpcfile != ""
 
 - name: Include DBT-3 profile configuration
   include_tasks: dbt3_configure_profile.yml
