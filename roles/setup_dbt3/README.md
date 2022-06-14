@@ -25,6 +25,12 @@ When executing the role via ansible these are the required variables:
 
   Postgres Versions supported are: 10, 11, 12, 13 and 14
 
+  * ***have_tpcfile***
+
+  The is a boolean use for CI purposes where we cannot redistribute TPC code
+  thus the CI system will not attempt to run the tasks specific for setting up
+  the TPC code.
+
   * ***tpcfile***
 
   This is the full path to the TPC-H Tools zip file that must be downloaded by

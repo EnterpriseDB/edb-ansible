@@ -1,6 +1,7 @@
 ---
 dbt3_version: "1.11.0"
 pg_version: 14
+have_tpcfile: True
 tpcfile: ""
 
 supported_os:
