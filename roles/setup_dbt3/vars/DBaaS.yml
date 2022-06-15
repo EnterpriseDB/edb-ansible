@@ -1,0 +1,4 @@
+---
+pg_port: "5432"
+pg_superuser: "postgres"
+pg_superuser_password: "postgres"
