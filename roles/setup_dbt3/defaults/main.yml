@@ -1,0 +1,13 @@
+---
+dbt3_version: "1.11.0"
+dbt3_pgdata: "/pgdata/dbt3/pgdata"
+pg_version: 14
+have_tpcfile: True
+tpcfile: ""
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Rocky8

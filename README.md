@@ -33,6 +33,7 @@ currently supports the following ansible roles:
 | [setup_dbt2](roles/setup_dbt2/README.md)                     | Set up a database server for DBT-2. |
 | [setup_dbt2_client](roles/setup_dbt2_client/README.md)       | Set up a client (a.k.a. transaction manager) for the client DBT-2. |
 | [setup_dbt2_driver](roles/setup_dbt2_driver/README.md)       | Set up emulated terminals (a.k.a. driver) for DBT-2. |
+| [setup_dbt3](roles/setup_dbt3/README.md)                     | Install the DBT-3 benchmark kit. |
 | [setup_efm](roles/setup_efm/README.md)                       | Set up EDB Failover Manager (EFM) for PostgreSQL/EPAS HA cluster. |
 | [setup_hammerdb](roles/setup_hammerdb/README.md)             | Install HammerDB. |
 | [setup_hammerdbserver](roles/setup_hammerdbserver/README.md) | Set up a server for HammerDB. |
