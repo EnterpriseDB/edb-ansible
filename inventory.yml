@@ -1,56 +1,50 @@
 ---
 all:
   children:
-#    pemserver:
-#      hosts:
-#        pemserver1:
-#          ansible_host: xxx.xxx.xxx.xxx
-#          private_ip: xxx.xxx.xxx.xxx
-#    barmanserver:
-#      hosts:
-#        barman1:
-#          ansible_host: xxx.xxx.xxx.xxx
-#          private_ip: xxx.xxx.xxx.xxx
-    pgbouncer:
+    pemserver:
       hosts:
-        pooler1:
-          ansible_host: 192.168.60.103
-          private_ip: 192.168.60.103
+        pemserver1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+    barmanserver:
+      hosts:
+        barman1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
     primary:
       hosts:
         primary1:
-          ansible_host: 192.168.60.101
-          private_ip: 192.168.60.101
-          hostname: primary
-#          pem_agent: true
-#          pem_server_private_ip: xxx.xxx.xxx.xxx
-#          barman: true
-#          barman_server_private_ip: xxx.xxx.xxx.xxx
-#          barman_backup_method: rsync
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+          barman: true
+          barman_server_private_ip: xxx.xxx.xxx.xxx
+          barman_backup_method: rsync
     standby:
       hosts:
         standby1:
-          ansible_host: 192.168.60.102
-          private_ip: 192.168.60.102
-          upstream_node_private_ip: 192.168.60.101
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
+          replication_type: synchronous
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+          barman: true
+          barman_server_private_ip: xxx.xxx.xxx.xxx
+          barman_backup_method: postgres
+        standby2:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
+          upstream_node_private_ip: xxx.xxx.xxx.xxx
           replication_type: asynchronous
-#          pem_agent: true
-#          pem_server_private_ip: xxx.xxx.xxx.xxx
-#          barman: true
-#          barman_server_private_ip: xxx.xxx.xxx.xxx
-#          barman_backup_method: postgres
-#        standby2:
-#          ansible_host: xxx.xxx.xxx.xxx
-#          private_ip: xxx.xxx.xxx.xxx
-#          upstream_node_private_ip: xxx.xxx.xxx.xxx
-#          replication_type: asynchronous
-#          pem_agent: true
-#          pem_server_private_ip: xxx.xxx.xxx.xxx
-#          barman: true
-#          barman_server_private_ip: xxx.xxx.xxx.xxx
-#          barman_backup_method: postgres
-#    hammerdbserver:
-#      hosts:
-#        hammerdb1:
-#          ansible_host: xxx.xxx.xxx.xxx
-#          private_ip: xxx.xxx.xxx.xxx
+          pem_agent: true
+          pem_server_private_ip: xxx.xxx.xxx.xxx
+          barman: true
+          barman_server_private_ip: xxx.xxx.xxx.xxx
+          barman_backup_method: postgres
+    hammerdbserver:
+      hosts:
+        hammerdb1:
+          ansible_host: xxx.xxx.xxx.xxx
+          private_ip: xxx.xxx.xxx.xxx
