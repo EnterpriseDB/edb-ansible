@@ -160,6 +160,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - debian10
   manage_pgbouncer:
     pg_version:
     - 10
@@ -173,6 +174,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - debian10
   setup_barmanserver:
     pg_version:
     - 10
