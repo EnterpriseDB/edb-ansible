@@ -96,8 +96,8 @@ Debian family
 class DockerDebianContainer(DockerContainer):
 
     def start_sshd(self):
-        self.exec('/bin/chmod 0755 /run/sshd')
-        self.exec('/bin/systemctl start ssh')
+        # self.exec('/bin/chmod 0755 /var/run/ssh') location doesn't exist in debian10 testing
+        self.exec('/bin/systemctl start ssh.service')
 
 
 class DockerDebian9Container(DockerDebianContainer):

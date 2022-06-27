@@ -1,12 +1,7 @@
 ---
-- name: Install PgBouncer package on CentOS7 or RHEL7
-  yum:
+- name: Install PgBouncer package
+  package:
     name: "{{ pgbouncer_package_name }}"
-  when: os in ['CentOS7', 'RHEL7']
+    state: present
   become: yes
 
-- name: Install PgBouncer package on CentOS8 or RHEL8 or Rocky8
-  dnf:
-    name: "{{ pgbouncer_package_name }}"
-  when: os in ['CentOS8', 'RHEL8', 'Rocky8']
-  become: yes
