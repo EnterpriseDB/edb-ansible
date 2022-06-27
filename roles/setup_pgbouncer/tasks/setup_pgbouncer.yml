@@ -9,6 +9,9 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Include OS and pg_type dependent variables
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
 - name: Check PgBouncer pool_mode configuration value
   fail:
     msg: "PgBouncer pooling mode = {{ pgbouncer_pool_mode }} not valid.
