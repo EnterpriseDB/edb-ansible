@@ -3,7 +3,7 @@
 pgbouncer_user: "pgbouncer"
 pgbouncer_group: "pgbouncer"
 # PID file
-pgbouncer_pid_file: "/var/run/pgbouncer/pgbouncer.pid"
+pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
 # Databases configuration file
 pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
 # Authentication file path
@@ -20,4 +20,3 @@ supported_os:
   - RHEL7
   - RHEL8
   - Rocky8
-  - Debian10
