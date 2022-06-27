@@ -7,7 +7,6 @@ RUN apt install sudo -y
 RUN apt install python3 -y
 RUN apt install ca-certificates -y
 RUN apt install openssh-client -y
-RUN apt install openssl -y
 RUN apt install openssh-server -y
 RUN apt install python3-apt -y
 RUN apt install gpg -y
