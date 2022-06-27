@@ -12,8 +12,8 @@
       set_fact:
         pg_version: 14
         pg_type: "PG"
-        repo_username: "hannah_stoik"
-        repo_password: "F2fxHCBxfIS3LOWc"
+        repo_username: ""
+        repo_password: ""
         disable_logging: false
 
   roles:
