@@ -14,6 +14,15 @@
     generate_ssh_key: false
   become: true
 
+- name: Ensure user {{ pg_owner }} has .ssh directory
+  ansible.builtin.file:
+    path: "{{ pg_user_home }}/.ssh"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
+  become_user: "{{ pg_owner }}"
+
 - name: Include DBT-2 db user setup
   include_role:
     name: setup_dbt2
