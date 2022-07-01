@@ -6,12 +6,19 @@ from conftest import (
     get_pgbouncer,
     get_pg_version,
     get_primary,
-    get_pg_unix_socket_dir
+    get_pg_unix_socket_dir,
+    get_os
 )
 
 def test_setup_pgbouncer_service():
     host = get_pgbouncer()[0]
     service = 'pgbouncer'
+
+    if get_pg_type() == 'EPAS':
+        if get_os() == 'debian10':
+            service = 'edb-pgbouncer116'
+        elif get_os().startswith(("centos", "rocky")):
+            service = 'edb-pgbouncer-1.16'
 
     assert host.service(service).is_running, \
         "pgbouncer service not running"
@@ -25,6 +32,11 @@ def test_setup_pgbouncer_packages():
     packages = [
         'pgbouncer'
     ]
+
+    if get_pg_type() == 'EPAS':
+        packages = [
+            'edb-pgbouncer116'
+        ]
 
     for package in packages:
         assert host.package(package).is_installed, \

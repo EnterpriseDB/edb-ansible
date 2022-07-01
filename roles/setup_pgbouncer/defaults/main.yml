@@ -1,4 +1,47 @@
 ---
+# PgBouncer listen port & address
+pgbouncer_listen_port: 6432
+pgbouncer_listen_addr: "*"
+
+# Pool size and maximum  number of client connections
+pgbouncer_default_pool_size: 20
+pgbouncer_max_client_conn: 100
+
+# Maximum limit of file descriptors that pgbouncer can open
+pgbouncer_fd_limit: 2048
+
+# Pool mode
+pgbouncer_pool_mode: "session"
+
+# Reset query
+pgbouncer_server_reset_query: "DISCARD ALL"
+
+# PgBouncer administration & statistics users
+pgbouncer_admin_users: "pgbouncer_admin"
+pgbouncer_stats_users: "pgbouncer_stats"
+
+# PgBouncer authentication part
+pgbouncer_auth_type: "scram-sha-256"
+
+# User authentication with auth_query
+# pgbouncer_auth_user: "pgbouncer"
+# pgbouncer_auth_query: "SELECT usename, passwd FROM pg_shadow WHERE usename = $1"
+
+# Systemd unit file
+pgbouncer_systemd_unit_file: "/etc/systemd/system/pgbouncer.service.d/pgbouncer.conf"
+pgbouncer_syslog: 0
+pgbouncer_syslog_ident: "pgbouncer"
+
+# Enable SSL
+pgbouncer_ssl: true
+pgbouncer_ssl_csr_dn:
+  CN: "pgbouncer-server.fqdn"
+  O: ""
+  OU: ""
+  L: ""
+  ST: ""
+  C: ""
+  EMAIL: "example@mail.com"
 
 available_pool_mode:
   - transaction

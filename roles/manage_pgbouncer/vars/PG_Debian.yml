@@ -1,0 +1,11 @@
+---
+# PgBouncer system user & group
+pgbouncer_user: "pgbouncer"
+pgbouncer_group: "pgbouncer"
+
+# Databases configuration file
+pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
+# Authentication file path
+pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
+# PID file
+pgbouncer_pid_file: "/var/run/pgbouncer/pgbouncer.pid"
