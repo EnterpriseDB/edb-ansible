@@ -4,6 +4,7 @@ all:
     primary:
       hosts:
         primary1:
+          dbt2: true
           ansible_host: {{ inventory_vars['primary1_ip'] }}
           private_ip: {{ inventory_vars['primary1_ip'] }}
     dbt2_driver:

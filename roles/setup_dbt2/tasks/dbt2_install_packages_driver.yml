@@ -1,6 +1,6 @@
 ---
 
-- name: Install packages for DBT-2
+- name: Install packages for DBT-2 Driver
   dnf:
     name:
       - 'https://github.com/osdldbt/dbttools-packaging/releases/download/v{{ dbttools_version }}/dbttools-{{ dbttools_version }}-1.el8.x86_64.rpm'
@@ -17,6 +17,7 @@
   package:
     name:
       - perf
+      - python3-docutils
       - rsync
       - tmux
     state: present

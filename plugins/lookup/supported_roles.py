@@ -35,9 +35,6 @@ GROUP_ROLES = {
         'setup_efm',
         'autotuning',
         'setup_repmgr',
-        'setup_dbt2',
-        'setup_dbt3',
-        'setup_dbt7',
     ],
     'standby': [
         'setup_repo',
@@ -142,6 +139,20 @@ class LookupModule(LookupBase):
                 supported_roles = list(
                     set(supported_roles)
                     | set(['setup_dbt2'])
+                )
+            # Special case for the primary nodes when the host variable
+            # dbt3 is set to true.
+            if (group in ['primary'] and hostvars.get('dbt3', False)):
+                supported_roles = list(
+                    set(supported_roles)
+                    | set(['setup_dbt3'])
+                )
+            # Special case for the primary nodes when the host variable
+            # dbt7 is set to true.
+            if (group in ['primary'] and hostvars.get('dbt7', False)):
+                supported_roles = list(
+                    set(supported_roles)
+                    | set(['setup_dbt7'])
                 )
             # Special case for the primary nodes when the host variable
             # hammerdb is set to true.
