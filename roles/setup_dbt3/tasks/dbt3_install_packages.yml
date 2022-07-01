@@ -13,7 +13,7 @@
       - sysstat
       - tmux
     state: present
-  when: os in ['RedHat8','CentOS8','Rocky8']
+  when: ansible_os_family == "RedHat"
   become: yes
 
 - name: Install packages for DBT-3 Database
@@ -22,4 +22,5 @@
       - 'https://github.com/osdldbt/dbt3-packaging/releases/download/v{{ dbt3_version }}/dbt3-{{ dbt3_version }}-1.el8.x86_64.rpm'
     state: present
     disable_gpg_check: yes
+  when: ansible_os_family == "RedHat"
   become: yes
