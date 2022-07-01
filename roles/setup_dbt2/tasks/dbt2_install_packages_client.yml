@@ -1,6 +1,5 @@
 ---
-
-- name: Install packages for DBT-2
+- name: Install packages for DBT-2 Client
   dnf:
     name:
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{dbt2_version }}/dbt2-client-{{ dbt2_version }}-1.el8.x86_64.rpm'
@@ -9,6 +8,7 @@
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-plpgsql-{{ dbt2_version }}-1.el8.x86_64.rpm'
     state: present
     disable_gpg_check: yes
+  when: ansible_os_family == "RedHat"
   become: yes
 
 - name: Install additional supporting packages
@@ -18,5 +18,5 @@
       - rsync
       - tmux
     state: present
-  when: os in ['RedHat8','CentOS8','Rocky8']
+  when: ansible_os_family == "RedHat"
   become: yes
