@@ -9,6 +9,7 @@
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-scripts-{{ dbt2_version }}-1.el8.x86_64.rpm'
     state: present
     disable_gpg_check: yes
+  when: ansible_os_family == "RedHat"
   become: yes
 
 - name: Install additional supporting packages
@@ -18,5 +19,5 @@
       - rsync
       - tmux
     state: present
-  when: os in ['RedHat8','CentOS8','Rocky8']
+  when: ansible_os_family == "RedHat"
   become: yes
