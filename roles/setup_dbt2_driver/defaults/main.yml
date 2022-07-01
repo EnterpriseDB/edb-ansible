@@ -7,8 +7,8 @@ supported_os:
   - RedHat8
   - Rocky8
 
-dbt2_version: "0.48.1"
-dbttools_version: "0.3.0"
+dbt2_version: "0.48.3"
+dbttools_version: "0.3.1"
 
 # These variables are set in the respective vars file.
 pg_data: ""
