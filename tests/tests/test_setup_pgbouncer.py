@@ -15,7 +15,7 @@ def test_setup_pgbouncer_service():
     service = 'pgbouncer'
 
     if get_pg_type() == 'EPAS':
-        if get_os() == 'debian10':
+        if get_os().startswith("debian"):
             service = 'edb-pgbouncer116'
         elif get_os().startswith(("centos", "rocky")):
             service = 'edb-pgbouncer-1.16'

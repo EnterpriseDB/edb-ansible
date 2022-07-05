@@ -11,3 +11,7 @@ build-rocky8:
 build-debian10:
 	docker compose up primary1-debian10 -d
 	docker compose up pooler1-debian10 -d
+
+build-debian9:
+	docker compose up primary1-debian9 -d
+	docker compose up pooler1-debian9 -d
