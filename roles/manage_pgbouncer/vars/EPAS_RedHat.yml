@@ -1,0 +1,11 @@
+---
+# PgBouncer system user & group
+pgbouncer_user: "enterprisedb"
+pgbouncer_group: "enterprisedb"
+
+# Databases configuration file
+pgbouncer_databases_file: "/etc/edb/pgbouncer1.16/databases.ini"
+# Authentication file path
+pgbouncer_auth_file: "/etc/edb/pgbouncer1.16/userlist.txt"
+# PID file
+pgbouncer_pid_file: "/run/edb/pgbouncer1.16/edb-pgbouncer-1.16.pid"

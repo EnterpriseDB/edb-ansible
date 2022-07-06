@@ -1,0 +1,25 @@
+---
+# RPM package name
+pgbouncer_package_name: "edb-pgbouncer116"
+
+# PgBouncer service name
+pgbouncer_service_name: "edb-pgbouncer116"
+
+# PgBouncer system user & group
+pgbouncer_user: "enterprisedb"
+pgbouncer_group: "enterprisedb"
+
+# PgBouncer authentication part
+pgbouncer_auth_file: "/etc/edb/pgbouncer1.16/userlist.txt"
+
+# PID file
+pgbouncer_pid_file: "/var/run/edb/pgbouncer1.16/edb-pgbouncer-1.16.pid"
+# Configuration file
+pgbouncer_config_file: "/etc/edb/pgbouncer1.16/pgbouncer.ini"
+# Log file
+pgbouncer_log_file: "/var/log/edb/pgbouncer1.16/edb-pgbouncer-1.16.log"
+# Databases configuration file
+pgbouncer_databases_file: "/etc/edb/pgbouncer1.16/databases.ini"
+
+# SSL dir
+pgbouncer_ssl_dir: "/etc/edb/pgbouncer1.16/ssl"

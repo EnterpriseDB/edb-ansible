@@ -103,17 +103,18 @@
     dest: "{{ pgbouncer_systemd_unit_file }}"
     src: ./templates/pgbouncer.unit.conf.template
     mode: 0644
+  when: pg_type == 'PG'
   become: yes
 
 - name: Stop PgBouncer service
   systemd:
-    name: pgbouncer
+    name: "{{ pgbouncer_service_name }}"
     state: stopped
   become: yes
 
 - name: Enable and start PgBouncer service
   systemd:
-    name: pgbouncer
+    name: "{{ pgbouncer_service_name }}"
     enabled: true
     daemon_reload: yes
     state: started
