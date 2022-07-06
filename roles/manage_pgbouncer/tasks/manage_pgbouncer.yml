@@ -5,6 +5,9 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Include OS and pg_type dependent variables
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
 - name: Include the pgbouncer_set_databases
   include_tasks: pgbouncer_set_databases.yml
 

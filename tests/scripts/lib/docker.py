@@ -96,8 +96,7 @@ Debian family
 class DockerDebianContainer(DockerContainer):
 
     def start_sshd(self):
-        self.exec('/bin/chmod 0755 /run/sshd')
-        self.exec('/bin/systemctl start ssh')
+        self.exec('/bin/systemctl start ssh.service')
 
 
 class DockerDebian9Container(DockerDebianContainer):
