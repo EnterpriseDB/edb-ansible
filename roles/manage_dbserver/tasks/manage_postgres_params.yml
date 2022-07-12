@@ -21,7 +21,7 @@
     params_restart_required: True
   when:
     - pg_postgres_conf_params|length > 0
-    - line_item.restart_required
+    - line_item.changed and line_item.restart_required
   with_items: "{{ params.results }}"
   loop_control:
     loop_var: line_item
