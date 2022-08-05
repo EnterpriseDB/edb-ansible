@@ -1,0 +1,25 @@
+---
+
+- name: Ensure the directory {{ pgbackrest_home }}/.ssh exists
+  file:
+    state: directory
+    path: "{{ pgbackrest_home }}/.ssh"
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0700
+  become: true
+
+- name: Check if the SSH private key exists
+  stat:
+    path: "{{ pgbackrest_home }}/.ssh/id_rsa"
+  register: pgbackrest_ssh_private_key
+  become: true
+
+- name: Ensure pgBackRest user's SSH keys exist
+  community.crypto.openssh_keypair:
+    path: "{{ pgbackrest_home }}/.ssh/id_rsa"
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+  when: not pgbackrest_ssh_private_key.stat.exists
+  become: true
+

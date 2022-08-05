@@ -1,0 +1,38 @@
+---
+
+# pgBackRest package info
+pgbackrest_package_name: "pgbackrest"
+
+pgbackrest_user: "pgbackrest"
+pgbackrest_group: "pgbackrest"
+pgbackrest_configuration_file: "/etc/pgbackrest.conf"
+pgbackrest_home: "/var/lib/pgbackrest"
+pgbackrest_log_file: "/var/log/pgbackrest/pgbackrest.log"
+pgbackrest_log_level: "info"
+archive_repo_directory: "/var/lib/pgbackrest/backups"
+etc_hosts_lists: []
+use_hostname: true
+update_etc_file: true
+repo_cipher_type: "aes-256-cbc"
+repo_cipher_password: "acbd"
+
+primary_node_hostname: "primary1"
+standby_node_hostname: "standby1"
+backup_standby: "y"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+  - Rocky8
+  - Debian10
+
+supported_log_level:
+  - off
+  - error
+  - warn
+  - info
+  - detail
+  - debug
+  - trace

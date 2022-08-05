@@ -1,0 +1,20 @@
+---
+
+- name: Ensure logging directory {{ pgbackrest_log_file }} exists
+  file:
+    path: "{{ pgbackrest_log_file | dirname }}"
+    state: directory
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0755
+  become: yes
+
+- name: Ensure archive directory {{ archive_repo_directory }} exists
+  file:
+    path: "{{ archive_repo_directory }}"
+    state: directory
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0755
+  become: yes
+
