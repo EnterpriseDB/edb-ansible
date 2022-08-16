@@ -5,7 +5,7 @@
 #PG_RPMREPO: "https://yum.enterprisedb.com/edb-repo-rpms/edb-repo-latest.noarch.rpm"
 # After 06/23/2020 - Redesigned EDB Portal
 
-# EDB repository username, password and subscription token
+# EDB repository username, password, token and subscription token
 enable_edb_repo: true
 repo_token: ""
 repo_username: ""
