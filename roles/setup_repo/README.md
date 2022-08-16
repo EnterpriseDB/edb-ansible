@@ -42,12 +42,17 @@ When executing the role via Ansible these are the required variables:
   * **repo_username**
 
   Username used to access EDB package repository.
-  Required when **enable_edb_repo** is set to `true`.
+  Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
 
   * **repo_password**
 
   Password used to access EDB package repository.
-  Required when **enable_edb_repo** is set to `true`.
+  Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
+
+  * **repo_token**
+
+  EDB repository token used to access EDB package repository.
+  Required when **enable_edb_repo** is set to `true` and **repo_username** and **repo_password** aren't used.
 
   * **yum_additional_repos**
 
@@ -139,6 +144,7 @@ repositories access to EDB Postgres Advanced Server packages in version 14:
         pg_type: "EPAS"
         repo_username: "<edb-repo-username>"
         repo_password: "<edb-repo-password>"
+        repo_token: "<edb-repo-token>"
 
   roles:
     - setup_repo
@@ -218,6 +224,11 @@ $ ansible-playbook playbook.yml \
   -u <ssh-user> \
   --private-key <ssh-private-key> \
   --extra-vars="pg_type=EPAS pg_version=14 repo_username=<edb-repo-username> repo_password=<edb-repo-password>"
+# OR
+$ ansible-playbook playbook.yml \
+  -u <ssh-user> \
+  --private-key <ssh-private-key> \
+  --extra-vars="pg_type=EPAS pg_version=14 repo_token=<edb-repo-token>"
 ```
 
 ## License
