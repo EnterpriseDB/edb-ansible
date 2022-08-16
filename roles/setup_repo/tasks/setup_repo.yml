@@ -2,6 +2,7 @@
 - name: Set the os variable
   set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+    os_family: "{{ ansible_distribution }}"
 
 - name: Check support for Operating System
   fail:
@@ -27,8 +28,20 @@
 
 - name: Validate Credentials
   fail:
-      msg: "repo_username = {{ repo_username }} or repo_password = {{ repo_password }} are not valid!."
-  when: enable_edb_repo|bool and (repo_username | length < 1 or repo_password | length < 1)
+      msg: "repo_username = {{ repo_username }} or repo_password = {{ repo_password }} or repo_token = {{ repo_token }} are not valid!."
+  when:
+    - enable_edb_repo|bool
+    - repo_token | length < 1 and (repo_username | length < 1 or repo_password | length < 1)
+
+- name: Define EDB repo script link for RedHat family
+  set_fact:
+      edb_repo_script_link: "https://downloads.enterprisedb.com/{{ repo_token }}/enterprise/setup.rpm.sh"
+  when: os_family in ['RedHat','CentOS','Rocky']
+
+- name: Define EDB repo script link for Debian
+  set_fact:
+      edb_repo_script_link: "https://downloads.enterprisedb.com/{{ repo_token }}/enterprise/setup.deb.sh"
+  when: os_family in ['Ubuntu','Debian']
 
 - name: Capture if bdr_nodes_ips if defined
   set_fact:

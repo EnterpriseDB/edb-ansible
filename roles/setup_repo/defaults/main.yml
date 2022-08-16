@@ -7,6 +7,7 @@
 
 # EDB repository username, password and subscription token
 enable_edb_repo: true
+repo_token: ""
 repo_username: ""
 repo_password: ""
 tpa_subscription_token: ""

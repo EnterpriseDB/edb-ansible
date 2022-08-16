@@ -68,7 +68,8 @@
     name: "{{ edb_rpm_repo }}"
     state: present
   become: yes
-  when: enable_edb_repo|bool
+  when: >
+    enable_edb_repo|bool and repo_token|length < 1
 
 - name: Set Credentials for EDB Yum Repo
   replace:
@@ -76,7 +77,8 @@
     regexp: '<username>:<password>'
     replace: "{{ repo_username }}:{{ repo_password }}"
   become: yes
-  when: enable_edb_repo|bool
+  when: >
+    enable_edb_repo|bool and repo_token|length < 1
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:
@@ -124,3 +126,16 @@
     bdr_nodes_ips is defined and ansible_host in bdr_nodes_ips
     and pg_version|int >= 13
   loop: "{{ edb_2q_repositories }}"
+
+- name: Install EDB repository 2.0
+  ansible.builtin.shell: >
+      set -o pipefail;
+      curl -1sLf "{{ edb_repo_script_link }}" | bash
+  args:
+    executable: /bin/bash
+  register: reposub
+  become: true
+  failed_when: >
+    reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+  when: >
+    enable_edb_repo|bool and repo_token|length > 0

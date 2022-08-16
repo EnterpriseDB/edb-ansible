@@ -14,6 +14,7 @@
         pg_type: "PG"
         repo_username: ""
         repo_password: ""
+        repo_token: ""
         disable_logging: false
 
   roles:
