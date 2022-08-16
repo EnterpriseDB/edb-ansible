@@ -216,6 +216,7 @@ playbook:
         pg_type: "EPAS"
         repo_username: "<edb-package-repository-username>"
         repo_password: "<edb-package-repository-password>"
+        repo_token: "<edb-package-repository-token>"
         disable_logging: false
 
   roles:
@@ -257,7 +258,7 @@ limit what roles you would like to execute.
 ### Access to EDB's package repository
 
 By default, the `setup_repo` role requires to define credentials (variables
-`repo_username` and `repo_password`) that will be used to configure the access
+`repo_username` and `repo_password` or `repo_token`) that will be used to configure the access
 to EDB's package repository. Having access to EDB package repository is
 necessary to deploy EDB softwares like EPAS, EFM or PEM.
 
@@ -307,6 +308,13 @@ $ ansible-playbook playbook.yml \
   -u <ssh-user> \
   --private-key <ssh-private-key> \
   --extra-vars="pg_version=12 pg_type=EPAS repo_username=<edb-repo-username> repo_password=<edb-repo-password>"
+# OR
+$ ansible-playbook playbook.yml \
+  -i inventory.yml \
+  -u <ssh-user> \
+  --private-key <ssh-private-key> \
+  --extra-vars="pg_version=12 pg_type=EPAS repo_token=<edb-repo-token>"
+
 ```
 
 ## Database engines supported

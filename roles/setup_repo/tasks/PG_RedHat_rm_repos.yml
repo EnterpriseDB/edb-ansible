@@ -16,6 +16,7 @@
     - "/etc/yum.repos.d/pgdg-redhat-all.repo"
     - "/etc/yum.repos.d/edb.repo"
     - "/etc/yum.repos.d/edb.repo.rpmsave"
+    - "/etc/yum.repos.d/enterprisedb-enterprise.repo"
   loop_control:
     loop_var: item_file
   become: yes

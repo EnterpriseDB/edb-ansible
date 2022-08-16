@@ -7,6 +7,7 @@
 
 # EDB repository username, password and subscription token
 enable_edb_repo: true
+repo_token: ""
 repo_username: ""
 repo_password: ""
 tpa_subscription_token: ""
@@ -18,6 +19,7 @@ edb_2q_base_repo_link: "https://techsupport.enterprisedb.com/api/repository/{{ t
 edb_2q_repositories:
   - bdr4/release
   - harp/release
+edb_repo_script_link: "https://downloads.enterprisedb.com/{{ repo_token }}/enterprise/setup.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}.sh"
 
 # debian/ubuntu Repo
 edb_deb_repo_url: "deb [arch=amd64] https://apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"
