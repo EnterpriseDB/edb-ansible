@@ -1,0 +1,15 @@
+# Original work Copyright 2019-2020, EnterpriseDB Corporation
+#
+# Installs Roles and Collections requirements
+# ansible-galaxy install --force -r requirements.yml
+#
+# pip install openshift pyyaml kubernetes 
+# pip install pyhelm
+---
+- name: Deploy CloudNativePG-Sandbox Playbook
+  hosts: localhost
+  gather_facts: false
+
+  roles:
+    - role: remove_cloudnativepg_sandbox
+

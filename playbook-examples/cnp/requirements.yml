@@ -1,0 +1,12 @@
+# Original work Copyright 2019-2020, EnterpriseDB Corporation
+#
+# Installs Roles and Collections requirements
+# ansible-galaxy install --force -r requirements.yml
+
+---
+collections:
+  - name: kubernetes.core
+#    version: 2.1.1
+  - name: kubernetes.core.helm_repository
+  - name: community.kubernetes.helm
+  - name: kubernetes.core.k8s
