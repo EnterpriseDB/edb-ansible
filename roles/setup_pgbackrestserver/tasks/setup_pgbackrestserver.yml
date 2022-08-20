@@ -9,9 +9,6 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
-- name: Gather service facts
-  service_facts:
-
 - name: Update /etc/hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml

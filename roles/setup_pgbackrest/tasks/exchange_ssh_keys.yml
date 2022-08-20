@@ -85,9 +85,10 @@
   loop_control:
     loop_var: _item
   delegate_to: "{{ _pgbackrest_server_public_ip }}"
-  become: yes
+  delegate_facts: true
+  become: true
   become_user: "{{ pgbackrest_user }}"
-#  no_log: "{{ disable_logging }}"
+  no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the Postgres server
   command: ssh-keyscan {{ _pgbackrest_host }}

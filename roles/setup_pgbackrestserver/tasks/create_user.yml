@@ -9,9 +9,9 @@
 - name: Ensure pgBackRest system user {{ pgbackrest_user }} exists
   user:
     name: "{{ pgbackrest_user }}"
-    system: true
+    system: yes
     group: "{{ pgbackrest_group }}"
-    state: present
-    create_home: true
+    create_home: yes
     home: "{{ pgbackrest_home }}"
+    state: present
   become: yes

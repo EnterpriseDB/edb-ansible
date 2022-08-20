@@ -9,6 +9,24 @@
     mode: 0700
   become: true
 
+- name: Ensure the directory {{ pgbackrest_home }} exists
+  file:
+    state: directory
+    path: "{{ pgbackrest_home }}"
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0755
+  become: true
+
+- name: Ensure the directory {{ pgbackrest_home }}/.ansible/tmp exists
+  file:
+    state: directory
+    path: "{{ pgbackrest_home }}/.ansible/tmp"
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0700
+  become: true
+
 - name: Check if the SSH private key exists
   stat:
     path: "{{ pgbackrest_home }}/.ssh/id_rsa"

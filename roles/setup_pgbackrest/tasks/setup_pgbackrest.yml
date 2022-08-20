@@ -9,9 +9,6 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
-- name: Gather service facts
-  service_facts:
-
 - name: Reference pg_type variables
   include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
@@ -26,10 +23,11 @@
     - use_hostname|bool
     - update_etc_file|bool
 
-- name: Include the package installation tasks
-  include_role:
-    name: setup_pgbackrestserver
-    tasks_from: pgbackrest_install
+- name: Install pgBackRest package
+  package:
+    name: "{{ pgbackrest_package_name }}"
+    state: present
+  become: yes
 
 - name: Include the SSH keys generation tasks
   include_tasks: generate_ssh_keys.yml

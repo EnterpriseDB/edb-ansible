@@ -91,7 +91,6 @@ GROUP_ROLES = {
     'pgbackrestserver': [
         'setup_repo',
         'setup_pgbackrestserver',
-        'setup_pgbackrest',
     ],
 }
 

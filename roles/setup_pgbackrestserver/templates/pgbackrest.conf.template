@@ -1,7 +1,7 @@
 # /etc/pgbackrest.conf
 [global]
 repo1-path={{ archive_repo_directory }}
-repo1-host-config={{ pgbackrest_config_file }}
+repo1-host-config={{ pgbackrest_configuration_file }}
 repo1-retention-full=2
 log-level-console={{ pgbackrest_log_level }}
 log-level-file=debug

@@ -8,6 +8,6 @@ log-level-file=debug
 
 [{{ pg_instance_name }}]
 pg1-path={{ pg_data }}
-{% if {{ backup_standby }} is defined %}
+{% if backup_standby is defined %}
 recovery-option=primary_conninfo=host={{ primary_node_hostname }} user={{ replication_user }}
 {% endif %}
