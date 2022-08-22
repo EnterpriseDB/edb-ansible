@@ -1,0 +1,18 @@
+# Original work Copyright 2019-2020, EnterpriseDB Corporation
+#
+# Installs Roles and Collections requirements
+# ansible-galaxy install --force -r requirements.yml
+#
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnp-sandbox
+spec:
+  instances: 3
+
+  storage:
+    size: 1Gi
+
+  monitoring:
+    enablePodMonitor: true

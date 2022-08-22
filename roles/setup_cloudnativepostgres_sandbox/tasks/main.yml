@@ -1,0 +1,25 @@
+---
+# Original work Copyright 2019-2020, EnterpriseDB Corporation
+#
+# Installs Roles and Collections requirements
+# ansible-galaxy install --force -r requirements.yml
+#
+# pip install pyhelm
+# tasks file for DeployCloudNativePostgres-Sandbox
+- name: Add CloudNative Postgres Helm Repository
+  kubernetes.core.helm_repository:
+    name: cnp-sandbox
+    repo_url: "{{ cnp_helm_chart_url }}"
+    
+- name: Install CloudNative Postgres Helm chart
+  community.kubernetes.helm:
+    name: cnp-sandbox
+    chart_ref: cnp-sandbox/cnp-sandbox
+    release_namespace: default
+#    create_namespace: true
+  
+- name: Deploy 'cnp-sandbox-monitored-cluster' manifest to the k8s cluster
+  kubernetes.core.k8s:
+    state: present
+    src: ./cnp-sandbox-monitored-cluster.yml
+    namespace: default

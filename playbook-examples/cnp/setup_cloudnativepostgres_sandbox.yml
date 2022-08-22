@@ -1,0 +1,18 @@
+# Original work Copyright 2019-2020, EnterpriseDB Corporation
+#
+# Installs Roles and Collections requirements
+# ansible-galaxy install --force -r requirements.yml
+#
+# pip install openshift pyyaml kubernetes 
+# pip install pyhelm
+---
+- name: Deploy CloudNativePostgres-Sandbox Playbook
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+     cnp_helm_chart_url: "https://enterprisedb.github.io/cnp-sandbox/"
+
+  roles:
+    - role: setup_cloudnativepostgres_sandbox
+
