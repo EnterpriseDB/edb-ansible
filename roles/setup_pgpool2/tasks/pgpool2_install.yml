@@ -5,6 +5,18 @@
   when: os in ['CentOS7', 'RHEL7']
   become: yes
 
+- name: Disable builtin postgresql module
+  shell: >
+    dnf -qy module disable postgresql
+  args:
+    executable: /bin/bash
+  register: disable_builtin_postgres
+  changed_when: disable_builtin_postgres.rc == 0
+  failed_when: disable_builtin_postgres.rc != 0
+  ignore_errors: yes
+  become: true
+  when: os in ['RHEL8','CentOS8', 'Rocky8']
+
 - name: Install pgpoolII package on CentOS8 or RHEL8 or Rocky8
   dnf:
     name: "{{ pgpool2_package_name }}"
