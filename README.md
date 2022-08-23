@@ -46,6 +46,7 @@ currently supports the following ansible roles:
 | [setup_repmgr](roles/setup_repmgr/README.md)                 | Set up Repmgr for PostgreSQL/EPAS HA cluster. |
 | [setup_repo](roles/setup_repo/README.md)                     | Set up the EDB, PostgreSQL Community and EPEL repositories. |
 | [setup_touchstone](roles/setup_touchstone/README.md)         | Set up additional packages and software for characterizing system performance. |
+| [manage_dbpatches](roles/manage_dbpatches/README.md)             | Manage applying patches on dbservers part of EFM cluster. |
 
 
 ## Pre-Requisites
