@@ -44,11 +44,23 @@
 
 - name: Execute ssh command for testing
   ansible.builtin.command:
-    cmd: "ssh {{ pg_owner }}@{{ _pg_host }} /bin/true"
+    cmd: "ssh -p {{ ssh_port }} {{ pg_owner }}@{{ _pg_host }} /bin/true"
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   changed_when: false
   become: true
   become_user: barman
+
+# The execute of this task will fail, but it does not matter because the goal
+# is the creation of the target incoming directory for WAL archives.
+- name: Execute barman check a first time in order to create barman directories
+  ansible.builtin.command:
+    cmd: "/usr/bin/barman check {{ inventory_hostname }}-{{ pg_instance_name }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
+  become: true
+  become_user: barman
+  failed_when: false
+  when:
+    - "'primary' in group_names"
 
 - name: Archive the first WAL file using barman
   ansible.builtin.command:

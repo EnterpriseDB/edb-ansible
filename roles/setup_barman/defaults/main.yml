@@ -5,9 +5,13 @@ pg_instance_name: main
 barman_cli_package: "barman-cli-2.19-1"
 use_hostname: true
 
+barman_user: "barman"
+barman_home: "/var/lib/barman"
 barman_pg_user: "barman"
 etc_hosts_lists: []
 update_etc_file: true
+# SSH listening port
+ssh_port: 22
 
 pass_dir: "~/.edb"
 
