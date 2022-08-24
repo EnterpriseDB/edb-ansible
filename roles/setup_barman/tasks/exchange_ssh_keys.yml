@@ -70,16 +70,33 @@
     create: yes
 
 - name: Run ssh-keyscan from the Barman server
-  command: ssh-keyscan {{ _pg_host }}
+  command: ssh-keyscan -p {{ ssh_port }} {{ _pg_host }}
   register: _barman_ssh_keyscan_output
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: yes
   changed_when: false
 
+# The SSH key name format used by the known_hosts module differs if the SSH
+# port value is equal to the default value (22) or not.
+# When the SSH port value is not the default value, format is: [hostname]:port
+- name: Set _ssh_pg_keyname and _ssh_barman_keyname when SSH port is 22
+  set_fact:
+    _ssh_pg_keyname: "{{ _pg_host }}"
+    _ssh_barman_keyname: "{{ _barman_host }}"
+  when:
+    - ssh_port == 22
+
+- name: Set _ssh_pg_keyname and _ssh_barman_keyname when SSH port is different than 22
+  set_fact:
+    _ssh_pg_keyname: "[{{ _pg_host }}]:{{ ssh_port }}"
+    _ssh_barman_keyname: "[{{ _barman_host }}]:{{ ssh_port }}"
+  when:
+    - ssh_port != 22
+
 - name: Add {{ pg_owner }} SSH public key into barman server known hosts
   known_hosts:
     path: "{{ barman_home + '/.ssh/known_hosts' }}"
-    name: "{{ _pg_host }}"
+    name: "{{ _ssh_pg_keyname }}"
     key: "{{ _item }}"
   with_items: "{{ _barman_ssh_keyscan_output.stdout_lines }}"
   loop_control:
@@ -90,7 +107,7 @@
   no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the Postgres server
-  command: ssh-keyscan {{ _barman_host }}
+  command: ssh-keyscan -p {{ ssh_port }} {{ _barman_host }}
   register: _pg_ssh_keyscan_output
   become: yes
   changed_when: false
@@ -98,7 +115,7 @@
 - name: Add {{ barman_user }} SSH public key into Postgres server known hosts
   known_hosts:
     path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
-    name: "{{ _barman_host }}"
+    name: "{{ _ssh_barman_keyname }}"
     key: "{{ _item }}"
   with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
   loop_control:
