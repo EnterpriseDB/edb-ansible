@@ -50,7 +50,7 @@
     set -eu
     {{ pem_agent_bin_path }}/pemagent --version|cut -d":" -f2|head -n2|tail -n1
   changed_when: false
-  delegate_to: "{{ pem_server_info[0].ansible_host }}"
+  delegate_to: "{{ pem_server_info[0].inventory_hostname }}"
   register: pem_server_version_output
   become: yes
   no_log: "{{ disable_logging }}"

@@ -48,7 +48,7 @@
     _pgpool2_backends: []
     _pgpool2_node_list: []
     _pgpool2_ip_list: []
-    _pgpool2_primary_public_ip: ""
+    _pgpool2_primary_inventory_hostname: ""
     _pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
     _pgpool2_nodes: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
 
@@ -94,9 +94,9 @@
   when:
     - use_hostname|bool
 
-- name: Set the _pgpool2_primary_public_ip variable
+- name: Set the _pgpool2_primary_inventory_hostname variable
   set_fact:
-    _pgpool2_primary_public_ip: "{{ server.ansible_host }}"
+    _pgpool2_primary_inventory_hostname: "{{ server.inventory_hostname }}"
   when:
     - server.node_type == 'primary'
   loop: "{{ _pg_cluster_nodes }}"
@@ -149,7 +149,7 @@
   include_tasks: pgpool2_configure_backends.yml
   when:
     - _pgpool2_backends|length > 0
-    - _pgpool2_primary_public_ip|length > 0
+    - _pgpool2_primary_inventory_hostname|length > 0
   vars:
     pgpool2_backends: "{{ _pgpool2_backends }}"
 
@@ -157,9 +157,9 @@
   include_tasks: pgpool2_setup_sr_mode.yml
   when:
     - _pgpool2_backends|length > 0
-    - _pgpool2_primary_public_ip|length > 0
+    - _pgpool2_primary_inventory_hostname|length > 0
   vars:
-    pgpool2_primary_public_ip: "{{ _pgpool2_primary_public_ip }}"
+    pgpool2_primary_inventory_hostname: "{{ _pgpool2_primary_inventory_hostname }}"
 
 - name: Include the pgpool2_setup_ssl
   include_tasks: pgpool2_setup_ssl.yml
@@ -175,7 +175,7 @@
   include_tasks:
     file: pgpool2_configure_backend_pg_hba.yml
     apply:
-      delegate_to: "{{ server.ansible_host }}"
+      delegate_to: "{{ server.inventory_hostname }}"
   loop: "{{ _pg_cluster_nodes }}"
   loop_control:
     loop_var: server
@@ -203,7 +203,7 @@
 - name: Create and update pgpool2 database user
   include_tasks: pgpool2_create_db_user.yml
   vars:
-    pgpool2_primary_public_ip: "{{ _pgpool2_primary_public_ip }}"
+    pgpool2_primary_inventory_hostname: "{{ _pgpool2_primary_inventory_hostname }}"
 
 - name: Create pcp user for pgpool2
   include_tasks: pgpool2_create_pcp_user.yml
