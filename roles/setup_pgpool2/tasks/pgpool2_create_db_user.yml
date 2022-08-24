@@ -21,7 +21,7 @@
     name: manage_dbserver
     tasks_from: manage_users
     apply:
-      delegate_to: "{{ pgpool2_primary_public_ip }}"
+      delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_users:
        - name: "{{ pg_pgpool_user }}"
@@ -36,7 +36,7 @@
     name: manage_dbserver
     tasks_from: manage_privileges
     apply:
-      delegate_to: "{{ pgpool2_primary_public_ip }}"
+      delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_grant_privileges:
        - roles: "{{ pg_pgpool_user }}"

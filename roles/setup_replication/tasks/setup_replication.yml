@@ -45,7 +45,7 @@
 
 - name: Get the primary information
   set_fact:
-    primary_public_ip: "{{ node.ansible_host }}"
+    primary_inventory_hostname: "{{ node.inventory_hostname }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
@@ -72,7 +72,7 @@
   import_tasks: primary_settings.yml
   run_once: true
   no_log: "{{ disable_logging }}"
-  delegate_to: "{{ primary_public_ip }}"
+  delegate_to: "{{ primary_inventory_hostname }}"
 
 - name: Update /etc/hosts based on use_hostname
   block:
@@ -102,13 +102,13 @@
   import_tasks: primary_synchronous_param.yml
   when: synchronous_standbys|length > 0
   run_once: true
-  delegate_to: "{{ primary_public_ip }}"
+  delegate_to: "{{ primary_inventory_hostname }}"
   no_log: "{{ disable_logging }}"
 
 - name: Reset the variables based on the user input
   set_fact:
       primary_private_ip: ""
-      primary_public_ip: ""
+      primary_inventory_hostname: ""
       primary_host_name: ""
       standby_names: []
       pg_allow_ip_addresses: []

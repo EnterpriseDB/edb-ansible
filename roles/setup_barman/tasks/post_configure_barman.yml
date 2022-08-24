@@ -10,9 +10,9 @@
   when:
     - _barman_server_info|length == 0
 
-- name: Set _barman_server_public_ip
+- name: Set _barman_server_inventory_hostname
   ansible.builtin.set_fact:
-    _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
+    _barman_server_inventory_hostname: "{{ _barman_server_info[0].inventory_hostname }}"
 
 - name: Set _pg_host when not using hostname
   ansible.builtin.set_fact:
@@ -31,13 +31,13 @@
     line: "0 0 * * * barman /usr/bin/barman backup {{ inventory_hostname }}-{{ pg_instance_name }}"
     state: present
     path: /etc/cron.d/barman
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
 
 - name: Start barman cron
   ansible.builtin.command:
     cmd: "/usr/bin/barman cron"
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   changed_when: false
   become: true
   become_user: barman
@@ -45,7 +45,7 @@
 - name: Execute ssh command for testing
   ansible.builtin.command:
     cmd: "ssh {{ pg_owner }}@{{ _pg_host }} /bin/true"
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   changed_when: false
   become: true
   become_user: barman
@@ -53,7 +53,7 @@
 - name: Archive the first WAL file using barman
   ansible.builtin.command:
     cmd: "/usr/bin/barman switch-wal {{ inventory_hostname }}-{{ pg_instance_name }} --archive"
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
   become_user: barman
   when:
@@ -62,7 +62,7 @@
 - name: Execute barman check
   ansible.builtin.command:
     cmd: "/usr/bin/barman check {{ inventory_hostname }}-{{ pg_instance_name }}"
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
   become_user: barman
   when:
@@ -71,7 +71,7 @@
 - name: Take a barman backup
   ansible.builtin.command:
     cmd: "/usr/bin/barman backup {{ inventory_hostname }}-{{ pg_instance_name }}"
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
   become_user: barman
   when:

@@ -1,8 +1,8 @@
 ---
 
-- name: Get upstream node public ip
+- name: Get upstream node info
   set_fact:
-    upstream_public_ip: "{{ node.ansible_host }}"
+    upstream_inventory_hostname: "{{ node.inventory_hostname }}"
     upstream_hostname: "{{ node.inventory_hostname if use_hostname|bool else '' }}"
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
@@ -13,4 +13,4 @@
 
 - name: Add standby slot in upstream node
   import_tasks: upstream_node_slots.yml
-  delegate_to: "{{ upstream_public_ip }}"
+  delegate_to: "{{ upstream_inventory_hostname }}"

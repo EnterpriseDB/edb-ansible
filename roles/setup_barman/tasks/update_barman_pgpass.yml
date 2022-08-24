@@ -10,9 +10,9 @@
   when:
     - _barman_server_info|length == 0
 
-- name: Set _barman_server_public_ip
+- name: Set _barman_server_inventory_hostname
   set_fact:
-    _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
+    _barman_server_inventory_hostname: "{{ _barman_server_info[0].inventory_hostname }}"
 
 - name: Set _pg_host when use_hostname is false
   set_fact:
@@ -43,7 +43,7 @@
     line: "{{ _pg_host }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
     regexp: "^{{ _pg_host | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
     create: yes
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   throttle: 1
   become: yes
 
