@@ -184,7 +184,7 @@ repmgr_bindir='{{ pg_bin_path }}'			# Path to repmgr binary directory (location 
                                         # (Note: when cloning from Barman, repmgr will honour any
                                         # --waldir/--xlogdir setting present in "pg_basebackup_options"
 #rsync_options=''			# Options to append to "rsync"
-ssh_options='-q -o ConnectTimeout=10'	# Options to append to "ssh"
+ssh_options='-q -o ConnectTimeout=10 -p {{ ssh_port }}'	# Options to append to "ssh"
 
 
 
