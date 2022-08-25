@@ -292,6 +292,13 @@ accounts:
 Examples of utilizing the playbooks for installing: PostgresSQL, EPAS, etc..
 are provided and located within the `playbook-examples` directory.
 
+## SSH port configuration
+
+When using non standard SSH port (different from 22), the port value must be
+set in two places:
+- in the inventory file, for each host, with the host var. `ansible_port`
+- in the playbook or variable file with the variable `ssh_port`
+
 ## Playbook execution examples
 
 ```bash
