@@ -28,6 +28,10 @@ currently supports the following ansible roles:
 | [manage_dbserver](roles/manage_dbserver/README.md)           | Manage EPAS/PostgreSQL clusters and covers common tasks. |
 | [manage_pgbouncer](roles/manage_pgbouncer/README.md)         | Manage PgBouncer pools list and users. |
 | [manage_pgpool2](roles/manage_pgpool2/README.md)             | Manage Pgpool-II settings and users. |
+| [remove_cloudnativepg_sandbox](roles/remove_cloudnativepg_sandbox/README.md)                 | Remove CloudNativePG Sandbox from Kubernetes cluster. |
+| [remove_cloudnativepostgres_sandbox](roles/remove_cloudnativepostgres_sandbox/README.md)                 | Remove CloudNative Postgres Sandbox from Kubernetes cluster. |
+| [setup_cloudnativepg_sandbox](roles/setup_cloudnativepg_sandbox/README.md)                 | Setup CloudNativePG Sandbox from Kubernetes cluster. |
+| [setup_cloudnativepostgres_sandbox](roles/setup_cloudnativepostgres_sandbox/README.md)                 | Setup CloudNative Postgres Sandbox from Kubernetes cluster. |
 | [setup_barman](roles/setup_barman/README.md)                 | Set up EPAS/PostgreSQL backups with Barman. |
 | [setup_barmanserver](roles/setup_barmanserver/README.md)     | Set up Barman (Postgres backup) server. |
 | [setup_dbt2](roles/setup_dbt2/README.md)                     | Set up a database server for DBT-2. |
