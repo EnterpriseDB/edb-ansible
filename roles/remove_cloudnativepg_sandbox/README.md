@@ -9,14 +9,16 @@ privileges.**
 
 The only dependencies required for this ansible galaxy role are:
 
-  1. Ansible
-  2. Python packages: openshift, pyyaml, kubernetes, pyhelm
+  1. AWS EKS CLI, Azure CLI, or Google Cloud CLI - Depends directly on the target cloud
+  2. Kubectl
+  3. Ansible
+  4. Python packages: openshift, pyyaml, kubernetes, pyhelm
      Installed with commands:
      `pip install openshift pyyaml kubernetes`
      `pip install pyhelm`
-  3. `kubernetes.core.helm_repository` - Ansible Module - Required for Helm.
-  4. `community.kubernetes.helm` - Ansible Module - Required for Helm.
-  5. `kubernetes.core.k8s` - Ansible Module - Required for Kubernetes.
+  5. `kubernetes.core.helm_repository` - Ansible Module - Required for Helm.
+  6. `community.kubernetes.helm` - Ansible Module - Required for Helm.
+  7. `kubernetes.core.k8s` - Ansible Module - Required for Kubernetes.
 
 ## Role variables
 
@@ -35,18 +37,23 @@ Below is an example of how to include the `remove_cloudnativepg_sandbox` role:
 ```yaml
 ---
 - hosts: localhost
-  name: Deploy CloudNativePG-Sandbox Playbook
+  name: Remove CloudNativePG-Sandbox Playbook
   gather_facts: yes
 
   roles:
     - remove_cloudnativepg_sandbox
 ```
+## Get the matching `cnp` playbook
+
+Copy the `remove_cloudnativepg_sandbox.yml` playbook located in the `playbook-examples/cnp` directory into the root of the `edb-ansible` directory.
 
 ## Playbook execution examples
 
+Copy the `remove_cloudnativepg_sandbox.yml` playbook located in the `playbook-examples/cnp` directory into the root of the `edb-ansible` directory.
+
 ```bash
 # To Remove CloudNativePG Sandbox from Kubernetes Cluster
-$ ansible-playbook playbook.yml 
+$ ansible-playbook remove_cloudnativepg_sandbox.yml 
 ```
 
 ## License
@@ -58,7 +65,5 @@ BSD
 Author:
 
   * Doug Ortiz
-  * Julien Tachoires
-  * Vibhor Kumar
   * DevOps
   * edb-devops@enterprisedb www.enterprisedb.com
