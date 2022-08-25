@@ -17,3 +17,5 @@ pg_owner: ""
 pg_port: ""
 pg_superuser: ""
 pg_user_home: ""
+
+ssh_port: 22
