@@ -21,17 +21,19 @@
       {{ [ ((ansible_memtotal_mb - ansible_swaptotal_mb) / ansible_memtotal_mb * 100) | int,
            50 ] | max }}
 
-- name: Set the variable tuned_disk_elevator for CentOS/RHEL 7
+- name: Set the variable tuned_disk_elevator on EL7
   set_fact:
     tuned_disk_elevator: "deadline"
   when:
-    - os in ['CentOS7', 'RHEL7']
+    - ansible_distribution_major_version == '7'
+    - ansible_os_family == 'RedHat'
 
-- name: Set the variable tuned_disk_elevator for CentOS/RHEL 8/Rocky 8
+- name: Set the variable tuned_disk_elevator on EL8
   set_fact:
     tuned_disk_elevator: "mq-deadline"
   when:
-    - os in ['CentOS8', 'RHEL8', 'Rocky8']
+    - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
 
 - name: Set the variable tuned_disk_elevator for Debian
   set_fact:
