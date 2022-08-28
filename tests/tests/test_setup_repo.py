@@ -34,7 +34,7 @@ def test_setup_repo_pgdg_centos():
     cmd = host.run("yum repolist")
     assert cmd.succeeded, \
         "Unable to list the package repository list on %s" % host
-    assert "PostgreSQL common RPMs for RHEL / Rocky 8" in cmd.stdout, \
+    assert "PostgreSQL common RPMs for RHEL" in cmd.stdout, \
         "Access to the PGDG package repository not configured"
 
 def test_setup_repo_edb_debian():
