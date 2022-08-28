@@ -5,62 +5,62 @@
     state: latest
   become: true
 
-- name: Download EDB GPG key for RedhHat 8
+- name: Download EDB GPG key for EL8
   rpm_key:
     key: "{{ edb_gpg_key_8 }}"
     state: present
   when:
-    - ansible_distribution_major_version == "8"
+    - ansible_distribution_major_version == '8'
     - enable_edb_repo|bool
   become: yes
 
-- name: Download PGDG GPG key for CentOS8/RHEL8
+- name: Download PGDG GPG key for EL8
   rpm_key:
     key: "{{ pg_gpg_key_8 }}"
     state: present
   when:
-    - ansible_distribution_major_version == "8"
+    - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
   become: yes
 
-- name: Download EPEL GPG key for RedHat 8
+- name: Download EPEL GPG key for EL8
   rpm_key:
     key: "{{ epel_gpg_key_8 }}"
     state: present
   when:
-    - ansible_distribution_major_version == "8"
+    - ansible_distribution_major_version == '8'
   become: yes
 
-- name: Install EPEL repo for RedHat 7
+- name: Install EPEL repo for EL7
   package:
     name: "{{ epel_repo_7 }}"
     state: present
-  when: ansible_distribution_major_version == "7"
+  when: ansible_distribution_major_version == '7'
   become: yes
 
-- name: Install PG repo for RedHat 7
+- name: Install PG repo for EL7
   package:
     name: "{{ pg_rpm_repo_7 }}"
     state: present
   become: yes
   when:
-    - ansible_distribution_major_version == "7"
+    - ansible_distribution_major_version == '7'
     - pg_type == 'PG'
 
-- name: Install EPEL repo for RedHat 8
+- name: Install EPEL repo for EL8
   package:
     name: "{{ epel_repo_8 }}"
     state: present
-  when: ansible_distribution_major_version == "8"
+  when: ansible_distribution_major_version == '8'
   become: yes
 
-- name: Install PG repo for RedHat 8
+- name: Install PG repo for EL8
   package:
     name: "{{ pg_rpm_repo_8 }}"
     state: present
   become: yes
   when:
-    - ansible_distribution_major_version == "8"
+    - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
 
 - name: Install EPAS repo for RedHat

@@ -10,7 +10,7 @@
     group: root
   become: true
   when:
-    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']
+    - ansible_os_family == 'RedHat'
 
 - name: Update systemd unit file
   ansible.builtin.lineinfile:
@@ -31,7 +31,7 @@
       regexp: "^ExecStopPost=.*"
       insertafter: "^\\[Service\\]$"
   when:
-    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']
+    - ansible_os_family == 'RedHat'
 
 - name: Add LimitCORE in systemd file
   ansible.builtin.lineinfile:
@@ -46,4 +46,4 @@
       insertafter: "^\\[Service\\]$"
   when:
     - enable_core_dump|bool
-    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']
+    - ansible_os_family == 'RedHat'
