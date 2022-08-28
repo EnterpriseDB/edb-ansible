@@ -8,10 +8,10 @@
   changed_when: disable_builtin_postgres.rc == 0
   failed_when: disable_builtin_postgres.rc != 0
   ignore_errors: yes
-  become: yes
-  when: os in ['RedHat8','CentOS8', 'Rocky8']
+  become: true
+  when: ansible_distribution_major_version == '8'
 
-- name: Install require python package
+- name: Install require python package on EL7
   package:
     name:
       - python-pycurl
@@ -19,18 +19,18 @@
       - python-psycopg2
       - python-ipaddress
     state: present
-  when: os in ['RedHat7','CentOS7']
-  become: yes
+  when: ansible_distribution_major_version == '7'
+  become: true
 
-- name: Install require python package
+- name: Install require python package on EL8
   package:
     name:
       - python3-pycurl
       - python3-libselinux
       - python3-psycopg2
     state: present
-  become: yes
-  when: os in ['RedHat8','CentOS8','Rocky8']
+  become: true
+  when: ansible_distribution_major_version == '8'
 
 - name: Install Postgres
   package:

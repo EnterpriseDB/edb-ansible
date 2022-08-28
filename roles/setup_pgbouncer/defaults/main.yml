@@ -82,3 +82,5 @@ supported_os:
   - RHEL7
   - RHEL8
   - Rocky8
+  - Debian10
+  - OracleLinux7

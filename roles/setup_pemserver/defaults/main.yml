@@ -63,6 +63,7 @@ supported_os:
   - RHEL7
   - RHEL8
   - Rocky8
+  - OracleLinux7
 
 supported_pg_type:
   - EPAS
