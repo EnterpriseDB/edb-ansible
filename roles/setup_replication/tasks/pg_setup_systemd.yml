@@ -46,4 +46,4 @@
       insertafter: "^\\[Service\\]$"
   when:
     - enable_core_dump|bool
-    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky']
+    - ansible_os_family == 'RedHat'

@@ -1,11 +1,5 @@
 ---
-- name: Install pgpoolII package on CentOS7 or RHEL7
-  yum:
-    name: "{{ pgpool2_package_name }}"
-  when: os in ['CentOS7', 'RHEL7']
-  become: yes
-
-- name: Disable builtin postgresql module
+- name: Disable builtin postgresql module on EL8
   shell: >
     dnf -qy module disable postgresql
   args:
@@ -15,34 +9,32 @@
   failed_when: disable_builtin_postgres.rc != 0
   ignore_errors: yes
   become: true
-  when: os in ['RHEL8','CentOS8', 'Rocky8']
+  when:
+    - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
 
-- name: Install pgpoolII package on CentOS8 or RHEL8 or Rocky8
-  dnf:
+- name: Install pgpoolII package on RedHat
+  ansible.builtin.package:
     name: "{{ pgpool2_package_name }}"
-  when: os in ['CentOS8', 'RHEL8', 'Rocky8']
-  become: yes
-
-- name: Install openssl package on CentOS7 or RHEL7
-  yum:
-    name: "openssl"
+    state: present
   when:
-    - os in ['CentOS7', 'RHEL7']
-    - pgpool2_ssl
-  become: yes
+    - ansible_os_family == 'RedHat'
+  become: true
 
-- name: Install pgpool-II-pcp package on CentOS7 or RHEL7 or Rocky8
-  package:
+- name: Install openssl package on RedHat
+  ansible.builtin.package:
+    name: "openssl"
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - pgpool2_ssl
+  become: true
+
+- name: Install pgpool-II-pcp package on RedHat
+  ansible.builtin.package:
     name: "pgpool-II-pcp"
+    state: present
   when:
-    - os in ['CentOS7', 'RHEL7', 'Rocky8']
+    - ansible_os_family == 'RedHat'
     - pg_type == 'PG'
-  become: yes
-
-- name: Install openssl package on CentOS8 or RHEL8 or Rocky8
-  dnf:
-    name: "openssl"
-  when:
-    - os in ['CentOS8', 'RHEL8', 'Rocky8']
-    - pgpool2_ssl
-  become: yes
+  become: true

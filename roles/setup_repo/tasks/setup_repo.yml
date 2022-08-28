@@ -2,7 +2,6 @@
 - name: Set the os variable
   set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
-    os_family: "{{ ansible_distribution }}"
 
 - name: Check support for Operating System
   fail:
