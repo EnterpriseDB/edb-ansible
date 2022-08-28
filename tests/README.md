@@ -57,6 +57,48 @@ To install the dependencies:
 $ pip3 install -r requirements.txt
 ```
 
+### Docker CE and compose plugin installation on Debian11
+
+#### cgroup configuration
+
+  1. In order to use systemd based docker images, make sure the following grub
+     configuration is being used in `/etc/default/grub`:
+     ```shell
+GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1"
+GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=false"
+    ```
+
+  2. Apply grub configuration changes:
+    ```shell
+$ sudo update-grub
+    ```
+
+  3. Reboot the host.
+
+#### Docker CE installation
+
+Packages installation:
+```shell
+$ sudo apt -y install \
+  apt-transport-https ca-certificates curl gnupg2 software-properties-common
+$ curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
+$ sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/debian \
+   $(lsb_release -cs) \
+   stable"
+$ sudo apt -y install \
+  docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+Starting docker:
+```shell
+$ sudo systemctl enable --now docker
+```
+Adding the current user to the `docker` system group:
+```shell
+$ sudo usermod -aG docker $USER
+$ newgrp docker
+```
+
 ### Test execution
 
 The `test-runner.py` script is intended to ease test execution through only one
