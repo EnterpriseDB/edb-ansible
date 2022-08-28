@@ -17,7 +17,6 @@ services:
     - ../../..:/workspace
     command: "/workspace/tests/docker/exec-tests.sh"
   primary1-rocky8:
-    # Required for running systemd containers via GitHub actions
     privileged: true
     build:
       context: ../../docker
@@ -29,7 +28,6 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   primary1-centos7:
-    # Required for running systemd containers via GitHub actions
     privileged: true
     build:
       context: ../../docker
