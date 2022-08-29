@@ -15,3 +15,7 @@ build-debian10:
 build-debian9:
 	docker compose up primary1-debian9 -d
 	docker compose up pooler1-debian9 -d
+
+build-oraclelinux7:
+	docker compose up primary1-oraclelinux7 -d
+	docker compose up pooler1-oraclelinux7 -d

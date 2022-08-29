@@ -58,15 +58,14 @@ def test_setup_pgbouncer_test_user():
     pgbouncer_address= get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "SHOW users"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' % (pgbouncer_password, 
-                                                                                                pgbouncer_user, 
-                                                                                                address, 
-                                                                                                pgbouncer_port, 
-                                                                                                query,
-                                                                                                pgbouncer_user))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
+            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
+               query, pgbouncer_user)
+        )
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
@@ -89,15 +88,14 @@ def test_setup_pgbouncer_config():
     pgbouncer_address= get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "SHOW config"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' % (pgbouncer_password, 
-                                                                                                pgbouncer_user, 
-                                                                                                address, 
-                                                                                                pgbouncer_port, 
-                                                                                                query,
-                                                                                                'admin_users'))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
+            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
+               query, 'admin_users')
+        )
         result = cmd.stdout.strip()
 
     assert pgbouncer_admin_user in result, \
@@ -120,17 +118,14 @@ def test_setup_pgbouncer_port():
     pgbouncer_address= get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "SHOW active_sockets"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' % (pgbouncer_password, 
-                                                                                                pgbouncer_user, 
-                                                                                                address, 
-                                                                                                pgbouncer_port, 
-                                                                                                query,
-                                                                                                pgbouncer_port))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
+            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
+               query, pgbouncer_port))
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
         "pgbouncer port was not configured properly."
-

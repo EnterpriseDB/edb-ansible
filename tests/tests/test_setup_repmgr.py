@@ -8,7 +8,8 @@ from conftest import (
     get_pg_version,
     get_primary,
     get_witness,
-    get_pg_unix_socket_dir
+    get_pg_unix_socket_dir,
+    os_family,
 )
 
 def test_setup_repmgr_service_redhat():
@@ -22,7 +23,7 @@ def test_setup_repmgr_service_redhat():
             "Repmgr service not running"
 
 def test_setup_repmgr_service_debian():
-    if get_os().startswith('rocky') or get_os().startswith('centos'):
+    if os_family() != 'Debian':
         pytest.skip()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
     service = 'repmgrd'
@@ -31,7 +32,7 @@ def test_setup_repmgr_service_debian():
             "Repmgr service not running"
 
 def test_setup_repmgr_packages_redhat():
-    if get_os().startswith('debian') or get_os().startswith('ubuntu'):
+    if os_family() != 'RedHat':
         pytest.skip()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
     pg_version = get_pg_version()
@@ -44,7 +45,7 @@ def test_setup_repmgr_packages_redhat():
                 "Package %s not installed" % packages
 
 def test_setup_repmgr_packages_debian():
-    if get_os().startswith('rocky') or get_os().startswith('centos'):
+    if os_family() != 'Debian':
         pytest.skip()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
     pg_version = get_pg_version()
@@ -73,14 +74,14 @@ def test_setup_repmgr_user():
             "repmgr was not succesfully created"
 
 def test_setup_repmgr_node_status_redhat():
-    if get_os().startswith('debian') or get_os().startswith('ubuntu'):
+    if os_family() != 'RedHat':
         pytest.skip()
 
     pg_user = 'postgres'
     pg_group = 'postgres'
     pg_version = get_pg_version()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
-    
+
     for host in hosts:
         with host.sudo(pg_user):
             cmd = host.run('/usr/pgsql-%s/bin/repmgr -f /etc/repmgr/%s/repmgr-main.conf node status' % (pg_version, pg_version))
@@ -90,14 +91,14 @@ def test_setup_repmgr_node_status_redhat():
             "repmgr command node status failed"
 
 def test_setup_repmgr_node_status_debian():
-    if get_os().startswith('rocky') or get_os().startswith('centos'):
+    if os_family() != 'Debian':
         pytest.skip()
 
     pg_user = 'postgres'
     pg_group = 'postgres'
 
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
-    
+
     for host in hosts:
         with host.sudo(pg_user):
             cmd = host.run('repmgr -f /etc/repmgr.conf node status')
@@ -107,14 +108,14 @@ def test_setup_repmgr_node_status_debian():
             "repmgr command node status failed"
 
 def test_setup_repmgr_node_check_redhat():
-    if get_os().startswith('debian') or get_os().startswith('ubuntu'):
+    if os_family() != 'RedHat':
         pytest.skip()
 
     pg_user = 'postgres'
     pg_group = 'postgres'
     pg_version = get_pg_version()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
-    
+
     for host in hosts:
         with host.sudo(pg_user):
             cmd = host.run('/usr/pgsql-%s/bin/repmgr -f /etc/repmgr/%s/repmgr-main.conf node check' % (pg_version, pg_version))
@@ -128,14 +129,14 @@ def test_setup_repmgr_node_check_redhat():
                 "This repmgr command node check failed: %s" % line
 
 def test_setup_repmgr_node_check_debian():
-    if get_os().startswith('rocky') or get_os().startswith('centos'):
+    if os_family() != 'Debian':
         pytest.skip()
 
     pg_user = 'postgres'
     pg_group = 'postgres'
 
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
-    
+
     for host in hosts:
         with host.sudo(pg_user):
             cmd = host.run('repmgr -f /etc/repmgr.conf node check')

@@ -72,7 +72,9 @@
         -CA {{ pgbouncer_ssl_dir }}/ca.crt \
         -CAkey {{ pgbouncer_ssl_dir }}/ca.key \
         -CAcreateserial \
+        -CAserial {{ pgbouncer_ssl_dir }}/pgbouncer.srl \
         -out {{ pgbouncer_ssl_dir }}/server.crt
   become: true
   become_user: "{{ pgbouncer_user }}"
-  when: not pgbouncer_ssl_server_crt.stat.exists
+  when:
+  - not pgbouncer_ssl_server_crt.stat.exists

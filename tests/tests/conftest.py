@@ -76,6 +76,16 @@ def get_pg_version():
     return EDB_PG_VERSION
 
 
+def os_family():
+    if (get_os().startswith('centos') or get_os().startswith('rocky')
+        or get_os().startswith('oraclelinux')):
+        return 'RedHat'
+    elif (get_os().startswith('debian') or get_os().startswith('ubuntu')):
+        return 'Debian'
+    else:
+        return 'unknown'
+
+
 def get_pg_type():
     return EDB_PG_TYPE
 
@@ -139,21 +149,48 @@ def get_pg_unix_socket_dir():
     if pg_type == 'PG':
         return '/var/run/postgresql'
     elif pg_type == 'EPAS':
-        if sys_os.startswith('centos') or sys_os.startswith('rocky'):
+        if os_family() == 'RedHat':
             return '/var/run/edb/as%s' % pg_version
-        elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
+        elif os_family() == 'Debian':
             return '/var/run/edb-as'
 
 def get_pg_profile_dir():
     pg_type = get_pg_type()
-    sys_os = get_os()
     if pg_type == 'PG':
-        if sys_os.startswith('centos') or sys_os.startswith('rocky'):
+        if os_family() == 'RedHat':
             return '/var/lib/pgsql'
-        elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
+        elif os_family() == 'Debian':
             return '/var/lib/postgresql'
     elif pg_type == 'EPAS':
-        if sys_os.startswith('centos') or sys_os.startswith('rocky'):
+        if os_family() == 'RedHat':
             return '/var/lib/edb/'
-        elif sys_os.startswith('debian') or sys_os.startswith('ubuntu'):
+        elif os_family() == 'Debian':
             return '/var/lib/edb-as'
+
+
+def get_pgbouncer_pid_file():
+    pg_type = get_pg_type()
+    if pg_type == 'PG':
+        if os_family() == 'RedHat':
+            return '/run/pgbouncer/pgbouncer.pid'
+        elif os_family() == 'Debian':
+            return '/var/run/pgbouncer/pgbouncer.pid'
+    elif pg_type == 'EPAS':
+        if os_family() == 'RedHat':
+            return '/run/edb/pgbouncer1.16/edb-pgbouncer-1.16.pid'
+        elif os_family() == 'Debian':
+            return '/var/run/edb/pgbouncer1.16/edb-pgbouncer-1.16.pid'
+
+
+def get_pgbouncer_auth_file():
+    pg_type = get_pg_type()
+    if pg_type == 'PG':
+        if os_family() == 'RedHat':
+            return '/etc/pgbouncer/userlist.txt'
+        elif os_family() == 'Debian':
+            return '/etc/pgbouncer/userlist.txt'
+    elif pg_type == 'EPAS':
+        if os_family() == 'RedHat':
+            return '/etc/edb/pgbouncer1.16/userlist.txt'
+        elif os_family() == 'Debian':
+            return '/etc/edb/pgbouncer1.16/userlist.txt'

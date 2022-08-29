@@ -7,13 +7,14 @@ from conftest import (
     get_pg_type,
     get_primary,
     EDB_ENABLE_REPO,
+    os_family,
 )
 
 def test_setup_repo_edb_centos():
     if not EDB_ENABLE_REPO:
         pytest.skip()
 
-    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
+    if os_family() != 'RedHat':
         pytest.skip()
 
     host = get_primary()
@@ -24,7 +25,7 @@ def test_setup_repo_edb_centos():
         "Access to the EDB package repository not configured"
 
 def test_setup_repo_pgdg_centos():
-    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
+    if os_family() != 'RedHat':
         pytest.skip()
 
     if get_pg_type() != 'PG':
@@ -41,7 +42,7 @@ def test_setup_repo_edb_debian():
     if not EDB_ENABLE_REPO:
         pytest.skip()
 
-    if not (get_os().startswith('debian') or get_os().startswith('ubuntu')):
+    if os_family() != 'Debian':
         pytest.skip()
 
     host = get_primary()
@@ -52,7 +53,7 @@ def test_setup_repo_edb_debian():
         "Access to the EDB package repository not configured"
 
 def test_setup_repo_pgdg_debian():
-    if not (get_os().startswith('debian') or get_os().startswith('ubuntu')):
+    if os_family() != 'Debian':
         pytest.skip()
 
     if get_pg_type() != 'PG':

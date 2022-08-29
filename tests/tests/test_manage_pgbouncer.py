@@ -5,7 +5,9 @@ from conftest import (
     get_pg_type,
     get_pgbouncer,
     get_pg_version,
-    get_primary
+    get_primary,
+    get_pgbouncer_pid_file,
+    get_pgbouncer_auth_file,
 )
 
 def test_manage_pgbouncer_test_db():
@@ -25,15 +27,14 @@ def test_manage_pgbouncer_test_db():
     pgbouncer_address= get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "SHOW databases"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' % (pgbouncer_password, 
-                                                                                                pgbouncer_user, 
-                                                                                                address, 
-                                                                                                pgbouncer_port, 
-                                                                                                query,
-                                                                                                test_db))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' #  noqa
+            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
+               query, test_db)
+        )
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
@@ -44,7 +45,7 @@ def test_manage_pgbouncer_pid_file():
     pgbouncer_user = ansible_vars['pgbouncer_auth_user_list'][0]['username']
     pgbouncer_password = ansible_vars['pgbouncer_auth_user_list'][0]['password']
     pgbouncer_port = ansible_vars['pgbouncer_listen_port']
-    pgbouncer_pid_file = ansible_vars['pgbouncer_pid_file']
+    pgbouncer_pid_file = get_pgbouncer_pid_file()
 
     pg_user = 'postgres'
     pg_group = 'postgres'
@@ -56,15 +57,14 @@ def test_manage_pgbouncer_pid_file():
     pgbouncer_address= get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "SHOW config"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' % (pgbouncer_password, 
-                                                                                                pgbouncer_user, 
-                                                                                                address, 
-                                                                                                pgbouncer_port, 
-                                                                                                query,
-                                                                                                'pidfile'))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
+            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
+               query, 'pidfile')
+        )
         result = cmd.stdout.strip()
 
     assert pgbouncer_pid_file in result, \
@@ -75,7 +75,7 @@ def test_manage_pgbouncer_auth_file():
     pgbouncer_user = ansible_vars['pgbouncer_auth_user_list'][0]['username']
     pgbouncer_password = ansible_vars['pgbouncer_auth_user_list'][0]['password']
     pgbouncer_port = ansible_vars['pgbouncer_listen_port']
-    pgbouncer_auth_file = ansible_vars['pgbouncer_auth_file']
+    pgbouncer_auth_file = get_pgbouncer_auth_file()
 
     pg_user = 'postgres'
     pg_group = 'postgres'
@@ -87,15 +87,14 @@ def test_manage_pgbouncer_auth_file():
     pgbouncer_address= get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "SHOW config"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' % (pgbouncer_password, 
-                                                                                                pgbouncer_user, 
-                                                                                                address, 
-                                                                                                pgbouncer_port, 
-                                                                                                query,
-                                                                                                'auth_file'))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
+            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
+               query, 'auth_file')
+        )
         result = cmd.stdout.strip()
 
     assert pgbouncer_auth_file in result, \
@@ -117,17 +116,15 @@ def test_manage_pgbouncer_users():
     pgbouncer_address= get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "SHOW users"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' % (pgbouncer_password, 
-                                                                                                pgbouncer_user, 
-                                                                                                address, 
-                                                                                                pgbouncer_port, 
-                                                                                                query,
-                                                                                                'pgbouncer'))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
+            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
+               query, 'pgbouncer')
+        )
         result = cmd.stdout.strip()
     result = result.split('\n')
     assert len(result) == 2, \
         "pgbouncer users have not been successfully created."
-

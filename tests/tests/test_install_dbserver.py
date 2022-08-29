@@ -7,11 +7,12 @@ from conftest import (
     get_pg_version,
     get_pg_type,
     get_primary,
+    os_family,
 )
 
 
 def test_install_dbserver_pg_centos():
-    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
+    if os_family() != 'RedHat':
         pytest.skip()
     if get_pg_type() != 'PG':
         pytest.skip()
@@ -45,7 +46,7 @@ def test_install_dbserver_pg_centos():
 
 
 def test_install_dbserver_epas_centos():
-    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
+    if os_family() != 'RedHat':
         pytest.skip()
     if get_pg_type() != 'EPAS':
         pytest.skip()
@@ -64,7 +65,7 @@ def test_install_dbserver_epas_centos():
         'edb-as%s-server-sqlprotect' % pg_version,
         'edb-as%s-server-sslutils' % pg_version,
     ]
-    if get_os() == 'centos7':
+    if get_os() in ['centos7', 'oraclelinux7']:
         packages += [
             'python2-pip',
             'python2-psycopg2',
@@ -93,7 +94,7 @@ def test_install_dbserver_epas_centos():
 
 
 def test_install_dbserver_pg_debian():
-    if not (get_os().startswith('debian') or get_os().startswith('ubuntu')):
+    if os_family() != 'Debian':
         pytest.skip()
     if get_pg_type() != 'PG':
         pytest.skip()
@@ -119,7 +120,7 @@ def test_install_dbserver_pg_debian():
 
 
 def test_install_dbserver_epas_debian():
-    if not (get_os().startswith('debian') or get_os().startswith('ubuntu')):
+    if os_family() != 'Debian':
         pytest.skip()
     if get_pg_type() != 'EPAS':
         pytest.skip()

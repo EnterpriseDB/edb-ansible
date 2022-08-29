@@ -113,7 +113,7 @@ def test_manage_dbserver_sql_script():
     
     assert len(result) > 0, \
         "SQL scripts were not succesfully executed"
-        
+
 def test_manage_dbserver_hba_file():
     pg_user = 'postgres'
     pg_group = 'postgres'
@@ -135,7 +135,7 @@ def test_manage_dbserver_hba_file():
 
     assert len(result) > 0, \
         "pg_hba.conf file was not sucessfully modified"
-    
+
 def test_manage_dbserver_conf_params():
     ansible_vars = load_ansible_vars()
     pg_conf_param = ansible_vars['pg_postgres_conf_params'][0]['name']

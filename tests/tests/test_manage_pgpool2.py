@@ -27,7 +27,7 @@ def test_manage_pgpool_pcp_user():
         cmd = host.run("chmod 600 ~/.pcppass ")
         cmd = host.run("pcp_node_info -U %s -h localhost -w" % pcp_user)
         result = cmd.stdout.strip()
-        
+
     assert len(result) > 0, \
         "pcp command succesfully works"
 
@@ -47,7 +47,7 @@ def test_manage_pgpool_pcp_node_count():
     with host.sudo(pg_user):
         cmd = host.run("pcp_node_count -U %s -h localhost -w" % pcp_user)
         result = cmd.stdout.strip()
-        
+
     assert result == '1', \
         "Database node count is not equal to 1"
 
@@ -67,14 +67,13 @@ def test_manage_pgpool_test_user():
     pgpool2_address= get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "Select usename from pg_user where usename = '%s'" % pgpool2_user
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" postgres' % (pgpool2_password, 
-                                                                                            pgpool2_user, 
-                                                                                            address, 
-                                                                                            pgpool2_port, 
-                                                                                            query))
+        cmd = host.run(
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" postgres'
+            % (pgpool2_password, pgpool2_user, address, pgpool2_port, query)
+        )
         result = cmd.stdout.strip().split('\n')
 
     assert len(result) == 1, \
@@ -96,14 +95,13 @@ def test_manage_pgpool_pcp_socket():
     pgpool2_address= get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
-    
+
     with host.sudo(pg_user):
         query = "PGPOOL SHOW pcp_socket_dir;"
-        cmd = host.run("PGPASSWORD=%s psql -At -U %s -h %s -p %s -c '%s' postgres" % (pgpool2_password, 
-                                                                                            pgpool2_user, 
-                                                                                            address, 
-                                                                                            pgpool2_port, 
-                                                                                            query))
+        cmd = host.run(
+            "PGPASSWORD=%s psql -At -U %s -h %s -p %s -c '%s' postgres"
+            % (pgpool2_password, pgpool2_user, address, pgpool2_port, query)
+        )
         result = cmd.stdout.strip()
 
     assert result == '/tmp', \

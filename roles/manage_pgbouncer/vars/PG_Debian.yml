@@ -1,4 +1,6 @@
 ---
+pg_port: 5432
+
 # PgBouncer system user & group
 pgbouncer_user: "pgbouncer"
 pgbouncer_group: "pgbouncer"

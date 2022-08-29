@@ -90,6 +90,10 @@ class DockerRocky8Container(DockerCentosContainer):
     pass
 
 
+class DockerOraclelinux7Container(DockerCentosContainer):
+    pass
+
+
 """
 Debian family
 """
@@ -122,5 +126,7 @@ def DockerOSContainer(id, os):
         return DockerDebian10Container(id)
     elif os == 'ubuntu20':
         return DockerUbuntu20Container(id)
+    elif os == 'oraclelinux7':
+        return DockerOraclelinux7Container(id)
     else:
         raise Exception("Unknown OS %s" % os)

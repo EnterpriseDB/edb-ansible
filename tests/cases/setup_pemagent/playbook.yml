@@ -10,7 +10,7 @@
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        disable_logging: false     
+        disable_logging: false
 
   roles:
     - role: setup_repo
@@ -24,6 +24,6 @@
     - role: setup_barmanserver
       when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_barman
-      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"%
+      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pemagent
       when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
