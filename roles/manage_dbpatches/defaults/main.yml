@@ -12,6 +12,9 @@ disable_logging: true
 pass_dir: "~/.edb"
 use_hostname: true
 
+skip_primary: false
+skip_standby: false
+
 pg_efm_user: "efm"
 pg_efm_user_password: ""
 pg_ssl: true
@@ -22,6 +25,7 @@ efm_json_output: ""
 efm_switchover_output: ""
 
 prefer_standby_as_primary: ""
+sleep_between_sync_checks: "3" # in seconds
 
 efm_cluster_name: "{{ pg_instance_name }}"
 efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
