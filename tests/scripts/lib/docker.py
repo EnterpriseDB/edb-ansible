@@ -13,7 +13,7 @@ class DockerInventory():
     def discover(self):
         cp = subprocess.run(
             ['docker', 'compose', 'ps', '--format', 'json'],
-            capture_output=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             cwd=self.cwd,
         )
 
@@ -38,7 +38,7 @@ class DockerContainer():
         a_command = shlex.split(command)
         cp = subprocess.run(
             ['docker', 'exec', self.id] + a_command,
-            capture_output=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
         if cp.returncode != 0:
             raise Exception(cp.stderr.decode('utf-8'))
@@ -48,7 +48,7 @@ class DockerContainer():
         self.log("Copying local file %s to remote %s" % (local, dest))
         cp = subprocess.run(
             ['docker', 'cp', local, '%s:%s' % (self.id, dest)],
-            capture_output=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
         if cp.returncode != 0:
             raise Exception(cp.stderr.decode('utf-8'))
