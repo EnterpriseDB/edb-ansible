@@ -296,3 +296,20 @@ cases:
     os:
     - rocky8
     - centos7
+  manage_dbpatches:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - centos7
+    - oraclelinux7
+    - rocky8
+    - debian9
+    - debian10
+    - ubuntu20
