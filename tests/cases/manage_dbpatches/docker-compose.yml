@@ -1,0 +1,219 @@
+version: '3'
+
+services:
+  ansible-tester:
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.ansible-tester
+    environment:
+    - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
+    - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
+    - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
+    - EDB_PG_TYPE
+    - EDB_PG_VERSION
+    - CASE_NAME=manage_dbpatches
+    - EDB_OS
+    volumes:
+    - ../../..:/workspace
+    command: "/workspace/tests/docker/exec-tests.sh"
+  primary1-rocky8:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky8
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  standby1-rocky8:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky8
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  standby2-rocky8:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky8
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  primary1-centos7:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.centos7
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  standby1-centos7:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.centos7
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  standby2-centos7:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.centos7
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  primary1-debian9:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.debian9
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  standby1-debian9:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.debian9
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  standby2-debian9:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.debian9
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  primary1-debian10:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.debian10
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  standby1-debian10:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.debian10
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  standby2-debian10:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.debian10
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  primary1-ubuntu20:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.ubuntu20
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  standby1-ubuntu20:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.ubuntu20
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
+  standby2-ubuntu20:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.ubuntu20
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
