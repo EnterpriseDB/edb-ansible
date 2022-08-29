@@ -63,15 +63,15 @@ $ pip3 install -r requirements.txt
 
   1. In order to use systemd based docker images, make sure the following grub
      configuration is being used in `/etc/default/grub`:
-     ```shell
+```shell
 GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1"
 GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=false"
-    ```
+```
 
   2. Apply grub configuration changes:
-    ```shell
+```shell
 $ sudo update-grub
-    ```
+```
 
   3. Reboot the host.
 
