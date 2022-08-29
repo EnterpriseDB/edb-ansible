@@ -67,8 +67,40 @@
   ansible.builtin.import_tasks: start_efm_pg_services.yml
   delegate_to: "{{ efm_cluster_primary_ssh_host }}"
 
+- name: Prepare query for synchronization check
+  set_fact:
+    primary_catchup_sql: "DO $BODY$
+                          DECLARE
+                              sleep_seconds bigint := {{ sleep_between_sync_checks }};
+                          BEGIN
+                              WHILE NOT (
+                                      SELECT
+                                          (sent_lsn - replay_lsn) = 0
+                                      FROM
+                                          pg_stat_replication
+                                      WHERE
+                                          application_name = '{{ efm_old_cluster_primary }}')
+                              LOOP
+                                  PERFORM pg_sleep(sleep_seconds);
+                              END LOOP;
+                              RAISE NOTICE '{{ efm_old_cluster_primary }} is synchronized';
+                          END;
+                          $BODY$
+                          LANGUAGE plpgsql;"
+
+- name: Verify the synchronization state with new primary
+  include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+       delegate_to: "{{ efm_cluster_primary_ssh_host }}"
+  vars:
+    pg_query:
+        - query: "{{ primary_catchup_sql }}"
+          db: "{{ pg_database }}"
+
 - name: Perform switchover to "{{ efm_old_cluster_primary }}"
-  ansible.builtin.shell: | 
+  ansible.builtin.shell: |
       set -o pipefail
       {{ efm_bin_path }}/efm set-priority {{ efm_cluster_name }} {{ efm_old_cluster_primary }} 1
       {{ efm_bin_path }}/efm promote {{ efm_cluster_name }} -switchover

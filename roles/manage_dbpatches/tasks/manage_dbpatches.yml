@@ -4,21 +4,24 @@
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
+  ansible.builtin.assert:
+    that: os in supported_os
+    fail_msg: "Operating System = {{ os }} not supported."
+    success_msg: "Operating System = {{ os }} is supported."
 
 - name: Check supported versions for Database engine
-  fail:
-    msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
+  ansible.builtin.assert:
+    that: pg_version|int in supported_pg_version
+    fail_msg: "Database Engine Version = {{ pg_version }} not supported.
+               Supported versions are {{ supported_pg_version }}"
+    success_msg: "Database Engine Version = {{ pg_version }} is supported."
 
 - name: Check support for efm
-  fail:
-    msg: "efm version = {{ efm_version }} not supported.
-         Supported versions are {{ supported_efm_version }}"
-  when: efm_version | string not in supported_efm_version
+  ansible.builtin.assert:
+    that: efm_version | string in supported_efm_version
+    fail_msg: "efm version = {{ efm_version }} not supported.
+               Supported versions are {{ supported_efm_version }}"
+    success_msg: "efm version = {{ efm_version }} is supported."
 
 - name: Reference variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
@@ -47,13 +50,15 @@
   ansible.builtin.import_tasks: validate_efm_cluster.yml
 
 - name: Update standby servers to latest package one at a time
-  throttle: 1
-  block:
-    - name: Include apply db patches tasks
-      ansible.builtin.include_tasks: apply_db_patches.yml
+  ansible.builtin.include_tasks: update_standby_sequential.yml
+  loop: "{{ efm_cluster_nodes }}"
+  loop_control:
+      loop_var: node
+  run_once: true
   when:
-  - "'standby' in group_names"
+  - node.node_type == 'standby'
   - run_in_sequence|bool
+  - not skip_standby
   - pg_package_list|length > 0 or user_package_list|length > 0
 
 - name: Update standby servers to latest package in parallel
@@ -62,9 +67,11 @@
   - "'standby' in group_names"
   - not run_in_sequence|bool
   - pg_package_list|length > 0 or user_package_list|length > 0
+  - not skip_standby
 
 - name: Update primary server to latest package
   ansible.builtin.include_tasks: apply_primary_patches.yml
   when:
   - "'primary' in group_names"
   - pg_package_list|length > 0 or user_package_list|length > 0
+  - not skip_primary
