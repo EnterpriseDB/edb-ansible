@@ -32,7 +32,8 @@ class PgTypeChecker(argparse.Action):
 
 
 class OSChecker(argparse.Action):
-    available_os = ['centos7', 'rocky8', 'debian9', 'debian10', 'ubuntu20']
+    available_os = ['centos7', 'rocky8', 'debian9', 'debian10', 'ubuntu20',
+                    'oraclelinux7']
 
     def __call__(self, parser, namespace, values, option_string=None):
         for v in values:
@@ -95,7 +96,7 @@ def exec_test(case_name, edb_repo_username, edb_repo_password, os, pg_type,
     r = subprocess.run(
         'make -C cases/%s %s' % (case_name, os),
         shell=True,
-        capture_output=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         env=env,
     )
     if r.returncode != 0:
@@ -120,7 +121,7 @@ def exec_test(case_name, edb_repo_username, edb_repo_password, os, pg_type,
 def tears_down(case_name):
     r = subprocess.run(
         ['make', '-C', 'cases/%s' % case_name, 'clean'],
-        capture_output=True
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
     if r.returncode != 0:
         raise Exception(r.sterr.decode('utf-8'))
@@ -129,10 +130,10 @@ def tears_down(case_name):
 def make_build():
     r = subprocess.run(
         ['make', '-C', '..', 'clean', 'build'],
-        capture_output=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
     if r.returncode != 0:
-        raise Exception(r.sterr.decode('utf-8'))
+        raise Exception(r.stderr.decode('utf-8'))
 
 
 def make_log_dir():
