@@ -1,4 +1,6 @@
 ---
+pg_port: 5444
+
 # PgBouncer system user & group
 pgbouncer_user: "enterprisedb"
 pgbouncer_group: "enterprisedb"

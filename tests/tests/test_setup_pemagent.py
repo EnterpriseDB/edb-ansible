@@ -31,7 +31,6 @@ def test_setup_pemagent_pemagent():
 def test_setup_pemagent_agents():
     pg_user = 'postgres'
     pg_group = 'postgres'
-    nodes = [node for node in get_pg_nodes()]
 
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
@@ -39,14 +38,14 @@ def test_setup_pemagent_agents():
 
     host= get_pemserver()
     socket_dir = get_pg_unix_socket_dir()
-    
+
     with host.sudo(pg_user):
         query = "Select id from pem.agent"
         cmd = host.run('psql -At -h %s -c "%s" pem' % (socket_dir, query))
         result = cmd.stdout.strip().split('\n')
 
-    # Seeing if number of agents is equal to the number of nodes
-    assert len(result) == len(nodes), \
+    # Seeing if number of agents is equal to the number of nodes: 3
+    assert len(result) == 3, \
         "Pem agents were created sucessfuly."
 
 def test_setup_pemagent_service():

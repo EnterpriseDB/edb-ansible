@@ -14,3 +14,6 @@ build-debian10:
 
 build-ubuntu20:
 	docker compose up primary1-ubuntu20 -d
+
+build-oraclelinux7:
+	docker compose up primary1-oraclelinux7 -d
