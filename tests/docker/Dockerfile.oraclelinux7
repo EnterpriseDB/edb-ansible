@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+FROM sirkkalap/oraclelinux-systemd
+
+RUN yum update -y
+RUN yum install iproute -y
+RUN yum install sudo -y
+RUN yum install python3 -y
+RUN yum reinstall ca-certificates -y
+RUN yum install openssh-clients -y
+RUN yum install openssl -y
+RUN yum install openssh-server -y
+RUN yum install which -y
