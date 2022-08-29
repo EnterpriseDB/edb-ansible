@@ -245,7 +245,6 @@ cases:
     - EPAS
     os:
     - rocky8
-    - oraclelinux7
   setup_hammerdb:
     pg_version:
     - 10
