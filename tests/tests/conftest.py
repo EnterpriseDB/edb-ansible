@@ -140,7 +140,7 @@ def get_dbt2_driver():
 
 def get_dbt2_client():
     return get_hosts('dbt2_client')
-    
+
 
 def get_pg_unix_socket_dir():
     pg_type = get_pg_type()
@@ -153,6 +153,7 @@ def get_pg_unix_socket_dir():
             return '/var/run/edb/as%s' % pg_version
         elif os_family() == 'Debian':
             return '/var/run/edb-as'
+
 
 def get_pg_profile_dir():
     pg_type = get_pg_type()
@@ -177,9 +178,9 @@ def get_pgbouncer_pid_file():
             return '/var/run/pgbouncer/pgbouncer.pid'
     elif pg_type == 'EPAS':
         if os_family() == 'RedHat':
-            return '/run/edb/pgbouncer1.16/edb-pgbouncer-1.16.pid'
+            return '/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid'
         elif os_family() == 'Debian':
-            return '/var/run/edb/pgbouncer1.16/edb-pgbouncer-1.16.pid'
+            return '/var/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid'
 
 
 def get_pgbouncer_auth_file():
@@ -191,6 +192,6 @@ def get_pgbouncer_auth_file():
             return '/etc/pgbouncer/userlist.txt'
     elif pg_type == 'EPAS':
         if os_family() == 'RedHat':
-            return '/etc/edb/pgbouncer1.16/userlist.txt'
+            return '/etc/edb/pgbouncer1.17/userlist.txt'
         elif os_family() == 'Debian':
-            return '/etc/edb/pgbouncer1.16/userlist.txt'
+            return '/etc/edb/pgbouncer1.17/userlist.txt'
