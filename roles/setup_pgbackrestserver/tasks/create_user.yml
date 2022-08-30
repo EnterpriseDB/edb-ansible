@@ -1,0 +1,17 @@
+---
+
+- name: Ensure pgBackRest system group {{ pgbackrest_group }} exists
+  group:
+    name: "{{ pgbackrest_group }}"
+    state: present
+  become: yes
+
+- name: Ensure pgBackRest system user {{ pgbackrest_user }} exists
+  user:
+    name: "{{ pgbackrest_user }}"
+    system: yes
+    group: "{{ pgbackrest_group }}"
+    create_home: yes
+    home: "{{ pgbackrest_home }}"
+    state: present
+  become: yes

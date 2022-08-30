@@ -102,6 +102,10 @@ def get_barmanserver():
     return get_hosts('barmanserver')[0]
 
 
+def get_pgbackrestserver():
+    return get_hosts('pgbackrestserver')[0]
+
+
 def get_pg_nodes():
     for group in ('primary', 'standby', 'pemserver'):
         for host in get_hosts(group):

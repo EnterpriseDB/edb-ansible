@@ -313,3 +313,24 @@ cases:
     - debian9
     - debian10
     - ubuntu20
+  setup_pgbackrest:
+    pg_version:
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - centos7
+    - debian10
+  setup_pgbackrestserver:
+    pg_version:
+    - 14
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - centos7
+    - debian10
+

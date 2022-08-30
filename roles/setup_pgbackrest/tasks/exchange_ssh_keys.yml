@@ -1,0 +1,115 @@
+---
+
+- name: Get pgBackRest server informations
+  set_fact:
+    _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+
+- name: Fail if pgBackRest server informations are not found
+  fail:
+    msg: "Unable to find pgbackrest server informations"
+  when:
+    - _pgbackrest_server_info|length == 0
+
+- name: Set _pgbackrest_server_public_ip
+  set_fact:
+    _pgbackrest_server_public_ip: "{{ _pgbackrest_server_info[0].ansible_host }}"
+
+- name: Set _pg_host and _pgbackrest_host when not using hostname
+  set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
+    _pgbackrest_host: "{{ _pgbackrest_server_info[0].private_ip }}"
+  when:
+    - "not use_hostname|bool"
+
+- name: Set _pg_host and _pgbackrest_host when using hostname
+  set_fact:
+    _pg_host: "{{ inventory_hostname }}"
+    _pgbackrest_host: "{{ _pgbackrest_server_info[0].inventory_hostname }}"
+  when:
+    - use_hostname|bool
+
+- name: Fetch pgBackRest server SSH public key
+  slurp:
+    src: "{{ pgbackrest_home + '/.ssh/id_rsa.pub' }}"
+  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  register: _pgbackrest_server_ssh_public_key_b64
+  become: yes
+
+- name: Set _pgbackrest_server_ssh_public_key
+  set_fact:
+      _pgbackrest_server_ssh_public_key: "{{ _pgbackrest_server_ssh_public_key_b64.content | b64decode | trim }}"
+
+- name: Fetch {{ pg_owner }} SSH public key
+  slurp:
+    src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
+  register: _pg_ssh_public_key_b64
+  become: yes
+
+- name: Set _pg_ssh_public_key
+  set_fact:
+      _pg_ssh_public_key: "{{ _pg_ssh_public_key_b64.content | b64decode | trim }}"
+
+- name: Ensure {{ pg_owner }} SSH public key is on the pgbackrest server
+  lineinfile:
+    path: "{{ pgbackrest_home + '/.ssh/authorized_keys' }}"
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0600
+    line: "{{ _pg_ssh_public_key }}"
+    create: yes
+  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  become: yes
+
+- name: Ensure {{ pgbackrest_user }} SSH public key is on the Postgres server
+  lineinfile:
+    path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0600
+    line: "{{ _pgbackrest_server_ssh_public_key }}"
+    create: yes
+
+- name: Run ssh-keyscan from the pgBackRest server
+  command: ssh-keyscan {{ _pg_host }}
+  register: _pgbackrest_ssh_keyscan_output
+  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  become: yes
+  changed_when: false
+
+- name: Add {{ pg_owner }} SSH public key into pgbackrest_server known hosts
+  known_hosts:
+    path: "{{ pgbackrest_home + '/.ssh/known_hosts' }}"
+    name: "{{ _pg_host }}"
+    key: "{{ _item }}"
+  with_items: "{{ _pgbackrest_ssh_keyscan_output.stdout_lines }}"
+  loop_control:
+    loop_var: _item
+  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  delegate_facts: true
+  become: true
+  become_user: "{{ pgbackrest_user }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Run ssh-keyscan from the Postgres server
+  command: ssh-keyscan {{ _pgbackrest_host }}
+  register: _pg_ssh_keyscan_output
+  become: yes
+  changed_when: false
+
+- name: Add {{ pgbackrest_user }} SSH public key into Postgres server known hosts
+  known_hosts:
+    path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
+    name: "{{ _pgbackrest_host }}"
+    key: "{{ _item }}"
+  with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
+  loop_control:
+    loop_var: _item
+  become: yes
+  become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Reset local variables
+  set_fact:
+    _pgbackrest_server_info: ""
+    _pg_host: null
+    _pgbackrest_host: null

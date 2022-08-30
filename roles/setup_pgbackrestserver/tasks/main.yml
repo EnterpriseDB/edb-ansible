@@ -1,0 +1,5 @@
+---
+
+# Entry point of the setup_pgbackrestserver role
+- name: Include the setup_pgbackrestserver.yml
+  include_tasks: setup_pgbackrestserver.yml

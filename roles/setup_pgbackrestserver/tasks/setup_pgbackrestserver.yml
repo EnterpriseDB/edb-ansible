@@ -1,0 +1,34 @@
+---
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Update /etc/hosts based on use_hostname
+  block:
+    - import_tasks: linux_update_etc_hosts.yml
+  become: yes
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
+
+- name: Include the create_user installation tasks
+  include_tasks: create_user.yml
+
+- name: Include the create_directories installation tasks
+  include_tasks: create_directories.yml
+
+- name: Include the package installation tasks
+  include_tasks: pgbackrest_install.yml
+
+- name: Include the SSH key generation tasks
+  include_tasks: generate_ssh_keys.yml
+
+- name: Include the generate_config installation tasks
+  include_tasks: generate_config.yml
+

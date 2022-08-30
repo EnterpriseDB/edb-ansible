@@ -1,0 +1,19 @@
+# /etc/pgbackrest.conf
+[global]
+repo1-path={{ archive_repo_directory }}
+repo1-host-config={{ pgbackrest_configuration_file }}
+repo1-retention-full=2
+log-level-console={{ pgbackrest_log_level }}
+log-level-file=debug
+start-fast=y
+repo1-cipher-type={{ repo_cipher_type }}
+repo1-cipher-pass={{ repo_cipher_password }}
+
+[{{ pg_instance_name }}]
+pg1-host={{ primary_node_hostname }}
+pg1-path={{ pg_data }}
+{% if backup_standby is defined %}
+pg2-host={{ standby_node_hostname }}
+pg2-path={{ pg_data }}
+backup-standby={{ backup_standby }}
+{% endif %}

@@ -1,0 +1,19 @@
+---
+
+- name: Install pgBackRest package
+  package:
+    name: "{{ pgbackrest_package_name }}"
+    state: present
+  become: yes
+
+- name: Disable builtin postgresql module
+  shell: >
+    dnf -qy module disable postgresql
+  args:
+    executable: /bin/bash
+  register: disable_builtin_postgres
+  changed_when: disable_builtin_postgres.rc == 0
+  failed_when: disable_builtin_postgres.rc != 0
+  ignore_errors: yes
+  become: true
+  when: os in ['RedHat8','CentOS8', 'Rocky8']
