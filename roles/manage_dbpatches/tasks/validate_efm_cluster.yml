@@ -1,0 +1,17 @@
+---
+- name: Get the efm cluster primary information
+  ansible.builtin.import_tasks: efm_cluster_primary.yml
+
+- name: Verify efm cluster status with inventory cluster groups
+  ansible.builtin.fail:
+    msg: "efm cluster doesnt match with inventory cluster state. Please fix the state and execute."
+  when:
+    - efm_inventory_primary_private_ip != efm_cluster_primary
+    - not use_hostname|bool
+
+- name: Verify efm cluster status with inventory cluster groups
+  ansible.builtin.fail:
+    msg: "efm cluster doesnt match with inventory cluster state. Please fix the state and execute."
+  when:
+    - efm_inventory_primary_hostname != efm_cluster_primary
+    - use_hostname|bool

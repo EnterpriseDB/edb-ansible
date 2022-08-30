@@ -35,7 +35,7 @@
     name: manage_dbserver
     tasks_from: manage_hba_conf
     apply:
-      delegate_to: "{{ node.ansible_host }}"
+      delegate_to: "{{ node.inventory_hostname }}"
   vars:
     pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
   loop: "{{ pem_server_info }}"

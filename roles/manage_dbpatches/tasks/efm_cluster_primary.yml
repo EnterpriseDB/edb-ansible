@@ -1,0 +1,58 @@
+---
+- name: Execute efm cluster status
+  ansible.builtin.command:
+    cmd: "{{ efm_bin_path }}/efm cluster-status-json {{ efm_cluster_name }}"
+  register: efm_output
+  changed_when: false
+  become: true
+
+- name: efm cluster status
+  debug:
+      msg: "{{ efm_output.stdout | from_json }}"
+  when: not disable_logging|bool
+
+- name: Store efm_output as json
+  set_fact:
+      efm_json_output: "{{ efm_output.stdout | from_json }}"
+  when:
+  - efm_output is defined
+  - efm_output.stdout is defined
+  - efm_output.stdout| length > 0
+
+- name: efm cluster status in json
+  debug:
+      msg: "{{ efm_json_output }}"
+  when: not disable_logging|bool
+
+- name: Capture primary information from efm
+  set_fact:
+    efm_cluster_primary: "{{ node }}"
+  with_items: "{{ efm_json_output.nodes }}"
+  loop_control:
+      loop_var: node
+  when:
+  - efm_json_output is defined
+  - efm_json_output| length > 0
+  - efm_json_output.nodes[node].type == 'Primary'
+
+- name: Get the efm current primary public ip
+  set_fact:
+    efm_cluster_primary_ssh_host: "{{ node.inventory_hostname }}"
+  loop: "{{ efm_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:
+  - not use_hostname|bool
+  - node.private_ip == efm_cluster_primary
+  no_log: "{{ disable_logging }}"
+
+- name: Get the efm current primary public ip
+  set_fact:
+    efm_cluster_primary_ssh_host: "{{ node.inventory_hostname }}"
+  loop: "{{ efm_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:
+  - use_hostname|bool
+  - node.inventory_hostname == efm_cluster_primary
+  no_log: "{{ disable_logging }}"

@@ -26,9 +26,12 @@ repmgr_log_file: /var/log/repmgr/repmgr.log
 repmgr_failover: automatic
 # Number of connection attemps in case of failure before triggering an
 # automatic failover.
-repmgr_reconnect_attemps: 3
+repmgr_reconnect_attempts: 3
 # Interval of time, in seconds, between each reconnect attemps
 repmgr_reconnect_interval: 5
+
+# SSH port
+ssh_port: 22
 
 etc_hosts_lists: []
 
@@ -41,6 +44,7 @@ supported_os:
   - Debian9
   - Debian10
   - Rocky8
+  - OracleLinux7
 
 supported_pg_type:
   - PG

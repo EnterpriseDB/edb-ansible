@@ -1,0 +1,26 @@
+---
+- name: Stop failover manager service if exists
+  ansible.builtin.systemd:
+    name: "{{ efm_service }}"
+    state: stopped
+  when:
+    - ansible_facts.services[efm_service + '.service'] is defined
+    - ansible_facts.services[efm_service + '.service'].state == 'running'
+    - ansible_facts.services[efm_service + '.service'].status == 'enabled'
+  become: true
+
+- name: Cleanup the efm lock file if exists
+  file:
+    path: "{{ edb_efm_lock_file }}"
+    state: absent
+  become: true
+
+- name: Stop the pg service
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+  when:
+    - ansible_facts.services[pg_service + '.service'] is defined
+    - ansible_facts.services[pg_service + '.service'].state == 'running'
+    - ansible_facts.services[pg_service + '.service'].status == 'enabled'
+  become: true

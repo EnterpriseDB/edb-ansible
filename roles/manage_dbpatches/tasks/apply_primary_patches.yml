@@ -1,0 +1,125 @@
+---
+- name: Get the efm cluster primary information
+  ansible.builtin.import_tasks: efm_cluster_primary.yml
+
+- name: Save primary information as old primary
+  set_fact:
+    efm_old_cluster_primary: "{{ efm_cluster_primary }}"
+
+- name: Set efm_listen_host
+  set_fact:
+    efm_listen_host: "{{ hostvars[inventory_hostname].private_ip }}"
+
+- name: Stop efm and pg services flush out any old connections/transactions
+  ansible.builtin.import_tasks: stop_efm_pg_services.yml
+
+- name: Start efm and pg services after flushing out old connections/transactions
+  ansible.builtin.import_tasks: start_efm_pg_services.yml
+
+- name: Perform switchover before primary update
+  ansible.builtin.shell: |
+      set -o pipefail
+      export PREFER_STANDBY="{{ prefer_standby_as_primary }}"
+      if [[ -z "${PREFER_STANDBY}" ]]
+      then
+         {{ efm_bin_path }}/efm promote {{ efm_cluster_name }} -switchover
+      else
+        {{ efm_bin_path }}/efm set-priority {{ efm_cluster_name }} {{ prefer_standby_as_primary }} 1;
+         {{ efm_bin_path }}/efm promote {{ efm_cluster_name }} -switchover
+      fi
+  args:
+      executable: /bin/bash
+  register: efm_switchover_output
+  become: true
+  failed_when: efm_switchover_output.rc !=0
+  changed_when: efm_switchover_output.rc ==0
+
+- name: efm switchover status
+  ansible.builtin.debug:
+      msg: "{{ efm_switchover_output.stdout }}"
+  when: not disable_logging|bool
+
+- name: Wait for 3 seconds after switchover
+  ansible.builtin.wait_for:
+    delay: 5
+    timeout: 0
+
+- name: Update primary server to latest package
+  ansible.builtin.import_tasks: apply_db_patches.yml
+
+- name: Get the efm cluster primary information after update
+  ansible.builtin.import_tasks: efm_cluster_primary.yml
+
+- name: Set efm listen host of new primaryy
+  set_fact:
+    efm_listen_host: "{{ efm_cluster_primary }}"
+
+- name: efm switchover status
+  ansible.builtin.debug:
+    msg: "efm_cluster_primary_ssh_host: {{ efm_cluster_primary_ssh_host }}, efm_listen_host: {{ efm_listen_host }}"
+  when: not disable_logging|bool
+
+- name: Stop efm pg services to flush out any old connections/transactions
+  ansible.builtin.import_tasks: stop_efm_pg_services.yml
+  delegate_to: "{{ efm_cluster_primary_ssh_host }}"
+
+- name: Start efm pg services
+  ansible.builtin.import_tasks: start_efm_pg_services.yml
+  delegate_to: "{{ efm_cluster_primary_ssh_host }}"
+
+- name: Prepare query for synchronization check
+  set_fact:
+    primary_catchup_sql: "DO $BODY$
+                          DECLARE
+                              sleep_seconds bigint := {{ sleep_between_sync_checks }};
+                          BEGIN
+                              WHILE NOT (
+                                      SELECT
+                                          (sent_lsn - replay_lsn) = 0
+                                      FROM
+                                          pg_stat_replication
+                                      WHERE
+                                          application_name = '{{ efm_old_cluster_primary }}')
+                              LOOP
+                                  PERFORM pg_sleep(sleep_seconds);
+                              END LOOP;
+                              RAISE NOTICE '{{ efm_old_cluster_primary }} is synchronized';
+                          END;
+                          $BODY$
+                          LANGUAGE plpgsql;"
+
+- name: Verify the synchronization state with new primary
+  include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+       delegate_to: "{{ efm_cluster_primary_ssh_host }}"
+  vars:
+    pg_query:
+        - query: "{{ primary_catchup_sql }}"
+          db: "{{ pg_database }}"
+
+- name: Perform switchover to "{{ efm_old_cluster_primary }}"
+  ansible.builtin.shell: |
+      set -o pipefail
+      {{ efm_bin_path }}/efm set-priority {{ efm_cluster_name }} {{ efm_old_cluster_primary }} 1
+      {{ efm_bin_path }}/efm promote {{ efm_cluster_name }} -switchover
+  args:
+      executable: /bin/bash
+  register: efm_switchover_output
+  become: true
+  failed_when: efm_switchover_output.rc !=0
+  changed_when: efm_switchover_output.rc ==0
+
+- name: efm switchover status
+  ansible.builtin.debug:
+      msg: "{{ efm_switchover_output.stdout }}"
+  when: not disable_logging|bool
+
+- name: Wait for 3 seconds after switchover
+  ansible.builtin.wait_for:
+    delay: 5
+    timeout: 0
+
+- name: Validate EFM cluster with inventory state
+  ansible.builtin.import_tasks: validate_efm_cluster.yml

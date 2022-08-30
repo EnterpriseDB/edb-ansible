@@ -107,7 +107,7 @@
 
 - name: Get the primary information
   set_fact:
-    primary_public_ip: "{{ node.ansible_host }}"
+    primary_inventory_hostname: "{{ node.inventory_hostname }}"
     primary_private_ip: "{{ node.private_ip }}"
   when: node.node_type == 'primary'
   loop: "{{ efm_cluster_nodes }}"
@@ -120,7 +120,7 @@
   import_tasks: create_efm_user.yml
   run_once: true
   no_log: "{{ disable_logging }}"
-  delegate_to: "{{ primary_public_ip }}"
+  delegate_to: "{{ primary_inventory_hostname }}"
 
 - name: Update /etc/hosts based on use_hostname
   block:
@@ -166,6 +166,6 @@
 - name: Reset the variables used in this role
   set_fact:
      efm_nodes_list: ""
-     primary_public_ip: ""
+     primary_inventory_hostname: ""
      input_password: ""
      pg_allow_ip_addresses: []

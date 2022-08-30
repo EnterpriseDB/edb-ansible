@@ -28,6 +28,10 @@ currently supports the following ansible roles:
 | [manage_dbserver](roles/manage_dbserver/README.md)           | Manage EPAS/PostgreSQL clusters and covers common tasks. |
 | [manage_pgbouncer](roles/manage_pgbouncer/README.md)         | Manage PgBouncer pools list and users. |
 | [manage_pgpool2](roles/manage_pgpool2/README.md)             | Manage Pgpool-II settings and users. |
+| [remove_cloudnativepg_sandbox](roles/remove_cloudnativepg_sandbox/README.md)                 | Remove CloudNativePG Sandbox from Kubernetes cluster. |
+| [remove_cloudnativepostgres_sandbox](roles/remove_cloudnativepostgres_sandbox/README.md)                 | Remove CloudNative Postgres Sandbox from Kubernetes cluster. |
+| [setup_cloudnativepg_sandbox](roles/setup_cloudnativepg_sandbox/README.md)                 | Setup CloudNativePG Sandbox from Kubernetes cluster. |
+| [setup_cloudnativepostgres_sandbox](roles/setup_cloudnativepostgres_sandbox/README.md)                 | Setup CloudNative Postgres Sandbox from Kubernetes cluster. |
 | [setup_barman](roles/setup_barman/README.md)                 | Set up EPAS/PostgreSQL backups with Barman. |
 | [setup_barmanserver](roles/setup_barmanserver/README.md)     | Set up Barman (Postgres backup) server. |
 | [setup_dbt2](roles/setup_dbt2/README.md)                     | Set up a database server for DBT-2. |
@@ -46,6 +50,7 @@ currently supports the following ansible roles:
 | [setup_repmgr](roles/setup_repmgr/README.md)                 | Set up Repmgr for PostgreSQL/EPAS HA cluster. |
 | [setup_repo](roles/setup_repo/README.md)                     | Set up the EDB, PostgreSQL Community and EPEL repositories. |
 | [setup_touchstone](roles/setup_touchstone/README.md)         | Set up additional packages and software for characterizing system performance. |
+| [manage_dbpatches](roles/manage_dbpatches/README.md)             | Manage applying patches on dbservers part of EFM cluster. |
 
 
 ## Pre-Requisites
@@ -216,6 +221,7 @@ playbook:
         pg_type: "EPAS"
         repo_username: "<edb-package-repository-username>"
         repo_password: "<edb-package-repository-password>"
+        repo_token: "<edb-package-repository-token>"
         disable_logging: false
 
   roles:
@@ -257,7 +263,7 @@ limit what roles you would like to execute.
 ### Access to EDB's package repository
 
 By default, the `setup_repo` role requires to define credentials (variables
-`repo_username` and `repo_password`) that will be used to configure the access
+`repo_username` and `repo_password` or `repo_token`) that will be used to configure the access
 to EDB's package repository. Having access to EDB package repository is
 necessary to deploy EDB softwares like EPAS, EFM or PEM.
 
@@ -290,6 +296,13 @@ accounts:
 Examples of utilizing the playbooks for installing: PostgresSQL, EPAS, etc..
 are provided and located within the `playbook-examples` directory.
 
+## SSH port configuration
+
+When using non standard SSH port (different from 22), the port value must be
+set in two places:
+- in the inventory file, for each host, with the host var. `ansible_port`
+- in the playbook or variable file with the variable `ssh_port`
+
 ## Playbook execution examples
 
 ```bash
@@ -307,6 +320,13 @@ $ ansible-playbook playbook.yml \
   -u <ssh-user> \
   --private-key <ssh-private-key> \
   --extra-vars="pg_version=12 pg_type=EPAS repo_username=<edb-repo-username> repo_password=<edb-repo-password>"
+# OR
+$ ansible-playbook playbook.yml \
+  -i inventory.yml \
+  -u <ssh-user> \
+  --private-key <ssh-private-key> \
+  --extra-vars="pg_version=12 pg_type=EPAS repo_token=<edb-repo-token>"
+
 ```
 
 ## Database engines supported
@@ -317,6 +337,7 @@ $ ansible-playbook playbook.yml \
 | --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 | CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Oracle Linux 7                    |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
@@ -328,6 +349,7 @@ $ ansible-playbook playbook.yml \
 | --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 | CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Oracle Linux 7                    |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 | Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|

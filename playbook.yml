@@ -14,6 +14,7 @@
         pg_type: "PG"
         repo_username: ""
         repo_password: ""
+        repo_token: ""
         disable_logging: false
 
   roles:
@@ -47,3 +48,5 @@
       when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: autotuning
       when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_dbpatches
+      when: "'manage_dbpatches' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

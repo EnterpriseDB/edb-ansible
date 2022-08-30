@@ -7,3 +7,7 @@ build-centos7:
 build-rocky8:
 	docker compose up primary1-rocky8 -d
 	docker compose up pooler1-rocky8 -d
+
+build-oraclelinux7:
+	docker compose up primary1-oraclelinux7 -d
+	docker compose up pooler1-oraclelinux7 -d

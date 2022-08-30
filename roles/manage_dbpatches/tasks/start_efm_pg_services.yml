@@ -1,0 +1,46 @@
+---
+- name: Start the pg service
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    state: started
+  when:
+    - ansible_facts.services[pg_service + '.service'] is defined
+    - ansible_facts.services[pg_service + '.service'].state == 'running'
+    - ansible_facts.services[pg_service + '.service'].status == 'enabled'
+  become: true
+
+- name: Wait for pg port "{{ pg_port }}" to become open on the host, don't start checking for 2 seconds
+  ansible.builtin.wait_for:
+    port: "{{ pg_port }}"
+    state: started
+    delay: 2
+    timeout: 10
+  become: true
+
+- name: Start failover manager service if exists
+  ansible.builtin.systemd:
+    name: "{{ efm_service }}"
+    state: started
+  when:
+    - ansible_facts.services[efm_service + '.service'] is defined
+    - ansible_facts.services[efm_service + '.service'].state == 'running'
+    - ansible_facts.services[efm_service + '.service'].status == 'enabled'
+  become: true
+
+- name: Wait for efm port "{{ efm_port }}" to become open on the host, don't start checking for 5 seconds
+  ansible.builtin.wait_for:
+    host: "{{ efm_listen_host }}"
+    port: "{{ efm_port }}"
+    state: started
+    delay: 5
+    timeout: 10
+  become: true
+
+- name: Wait for efm admin port "{{ efm_admin_port }}" to become open on the host, don't start checking for 5 seconds
+  ansible.builtin.wait_for:
+    host: "127.0.0.1"
+    port: "{{ efm_admin_port }}"
+    state: started
+    delay: 5
+    timeout: 10
+  become: true

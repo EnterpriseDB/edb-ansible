@@ -1,0 +1,4 @@
+---
+# tasks file for minor
+- name: Include manage patches tasks
+  ansible.builtin.include_tasks: manage_dbpatches.yml

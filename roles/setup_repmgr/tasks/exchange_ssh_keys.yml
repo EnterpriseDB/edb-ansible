@@ -13,7 +13,7 @@
 - name: Fetch remote server SSH public key
   ansible.builtin.slurp:
     src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
-  delegate_to: "{{ remote_node.ansible_host }}"
+  delegate_to: "{{ remote_node.inventory_hostname }}"
   register: _remote_server_ssh_public_key_b64
   become: true
 
@@ -39,7 +39,7 @@
     mode: 0600
     line: "{{ _local_ssh_public_key }}"
     create: true
-  delegate_to: "{{ remote_node.ansible_host }}"
+  delegate_to: "{{ remote_node.inventory_hostname }}"
   become: true
 
 - name: Ensure remote {{ pg_owner }} SSH public key is on the local server
@@ -52,27 +52,44 @@
     create: true
 
 - name: Run ssh-keyscan from the remote server
-  ansible.builtin.command: ssh-keyscan {{ _local_host }}
+  ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _local_host }}
   register: _remote_ssh_keyscan_output
-  delegate_to: "{{ remote_node.ansible_host }}"
+  delegate_to: "{{ remote_node.inventory_hostname }}"
   become: true
   changed_when: false
+
+# The SSH key name format used by the known_hosts module differs if the SSH
+# port value is equal to the default value (22) or not.
+# When the SSH port value is not the default value, format is: [hostname]:port
+- name: Set _ssh_local_keyname and _ssh_remote_keyname when SSH port is 22
+  set_fact:
+    _ssh_local_keyname: "{{ _local_host }}"
+    _ssh_remote_keyname: "{{ _remote_host }}"
+  when:
+    - ssh_port == 22
+
+- name: Set _ssh_local_keyname and _ssh_remote_keyname when SSH port is different than 22
+  set_fact:
+    _ssh_local_keyname: "[{{ _local_host }}]:{{ ssh_port }}"
+    _ssh_remote_keyname: "[{{ _remote_host }}]:{{ ssh_port }}"
+  when:
+    - ssh_port != 22
 
 - name: Add local {{ pg_owner }} SSH public key into remote server known hosts
   ansible.builtin.known_hosts:
     path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
-    name: "{{ _local_host }}"
+    name: "{{ _ssh_local_keyname }}"
     key: "{{ _item }}"
   with_items: "{{ _remote_ssh_keyscan_output.stdout_lines }}"
   loop_control:
     loop_var: _item
-  delegate_to: "{{ remote_node.ansible_host }}"
+  delegate_to: "{{ remote_node.inventory_hostname }}"
   become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the local server
-  ansible.builtin.command: ssh-keyscan {{ _remote_host }}
+  ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _remote_host }}
   register: _local_ssh_keyscan_output
   become: yes
   changed_when: false
@@ -80,7 +97,7 @@
 - name: Add remote SSH public key into local server known hosts
   ansible.builtin.known_hosts:
     path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
-    name: "{{ _remote_host }}"
+    name: "{{ _ssh_remote_keyname }}"
     key: "{{ _item }}"
   with_items: "{{ _local_ssh_keyscan_output.stdout_lines }}"
   loop_control:

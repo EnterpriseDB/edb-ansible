@@ -10,9 +10,9 @@
   when:
     - _barman_server_info|length == 0
 
-- name: Set _barman_server_public_ip
+- name: Set _barman_server_inventory_hostname
   set_fact:
-    _barman_server_public_ip: "{{ _barman_server_info[0].ansible_host }}"
+    _barman_server_inventory_hostname: "{{ _barman_server_info[0].inventory_hostname }}"
 
 - name: Set _pg_host when not using hostname
   set_fact:
@@ -41,7 +41,7 @@
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0700
-  delegate_to: "{{ _barman_server_public_ip }}"
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: yes
   vars:
     pg_host: "{{ _pg_host }}"

@@ -2,6 +2,8 @@
 
 tshirt_size: "medium"
 
+ssh_port: 22
+
 supported_os:
   - CentOS8
   - RHEL8

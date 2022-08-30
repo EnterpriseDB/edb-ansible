@@ -28,7 +28,7 @@
   when: "'primary' in groups"
 
 - name: Gather SSH public keys from DBT-2 client and database systems.
-  ansible.builtin.command: ssh-keyscan {{ item }}
+  ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ item }}
   register: ssh_keyscan
   loop: "{{ ssh_targets }}"
 
@@ -39,3 +39,15 @@
     key: "{{ item.stdout }}"
   with_items: "{{ ssh_keyscan.results }}"
   become_user: "{{ pg_owner }}"
+  when:
+    - ssh_port == 22
+
+- name: Add DBT-2 client servers and database systems to known_hosts
+  ansible.builtin.known_hosts:
+    path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
+    name: "[{{ item.item }}]:{{ ssh_port }}"
+    key: "{{ item.stdout }}"
+  with_items: "{{ ssh_keyscan.results }}"
+  become_user: "{{ pg_owner }}"
+  when:
+    - ssh_port != 22

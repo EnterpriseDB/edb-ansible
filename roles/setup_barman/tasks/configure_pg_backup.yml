@@ -43,8 +43,10 @@
     pg_postgres_conf_params:
       - name: archive_mode
         value: "on"
+      # Note: barman-wal-archive does not allow using a different SSH port than
+      # the default one.
       - name: archive_command
-        value: "barman-wal-archive {{ _barman_host }} {{ inventory_hostname }}-{{ pg_instance_name }} %p"
+        value: "rsync -a -e \"ssh -p {{ ssh_port }}\" %p {{ barman_user }}@{{ _barman_host }}:{{ barman_home }}/{{ inventory_hostname }}-{{ pg_instance_name }}/incoming/%f"
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'rsync'
 

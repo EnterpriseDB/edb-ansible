@@ -1,0 +1,39 @@
+---
+- name: Stop user defined services
+  ansible.builtin.include_tasks: stop_user_defined_services.yml
+  loop: "{{ user_defined_services }}"
+  loop_control:
+    loop_var: service_name
+  when: user_defined_services|length > 0
+
+- name: Set efm_listen_host
+  set_fact:
+    efm_listen_host: "{{ hostvars[inventory_hostname].private_ip }}"
+
+- name: Stop efm pg services
+  ansible.builtin.include_tasks: stop_efm_pg_services.yml
+
+- name: Update database packages
+  package:
+    name: "{{ pg_package_list }}"
+    state: latest
+  when: >
+    ('primary' in group_names or 'standby' in group_names)
+     and pg_package_list|length > 0
+
+- name: Update other packages packages
+  package:
+    name: "{{ user_package_list }}"
+    state: latest
+  when:
+  - user_package_list|length > 0
+
+- name: Start efm pg services
+  ansible.builtin.include_tasks: start_efm_pg_services.yml
+
+- name: Start user defined services
+  ansible.builtin.include_tasks: start_user_defined_services.yml
+  loop: "{{ user_defined_services }}"
+  loop_control:
+    loop_var: service_name
+  when: user_defined_services|length > 0

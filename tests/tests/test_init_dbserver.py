@@ -8,6 +8,7 @@ from conftest import (
     get_pg_type,
     get_pg_unix_socket_dir,
     get_primary,
+    os_family,
 )
 
 
@@ -51,12 +52,12 @@ def test_init_dbserver_service():
     host = get_primary()
     pg_version = get_pg_version()
 
-    if get_os().startswith('centos') or get_os().startswith('rocky'):
+    if os_family() == 'RedHat':
         if get_pg_type() == 'PG':
             service = 'postgresql-%s' % pg_version
         elif get_pg_type() == 'EPAS':
             service = 'edb-as-%s' % pg_version
-    elif get_os().startswith('debian') or get_os().startswith('ubuntu'):
+    elif os_family() == 'Debian':
         if get_pg_type() == 'PG':
             service = 'postgresql@%s-main' % pg_version
         elif get_pg_type() == 'EPAS':
@@ -80,11 +81,11 @@ def test_init_dbserver_socket():
         sockets = [
             "tcp://5444",
         ]
-        if get_os().startswith('centos') or get_os().startswith('rocky'):
+        if os_family() == 'RedHat':
             sockets.append(
                 "unix:///var/run/edb/as%s/.s.PGSQL.5444" % get_pg_version()
             )
-        elif get_os().startswith('debian') or get_os().startswith('ubuntu'):
+        elif os_family() == 'Debian':
             sockets.append(
                 "unix:///var/run/edb-as/.s.PGSQL.5444"
             )
