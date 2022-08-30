@@ -90,6 +90,22 @@
   loop: "{{ apt_additional_repos }}"
   when: apt_additional_repos | length > 0
 
+- name: Install BDR packages if tpa_subscription_token is given
+  ansible.builtin.shell: >
+      set -o pipefail;
+      curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/deb" | bash
+  args:
+    executable: /bin/bash
+  register: reposub
+  become: true
+  failed_when: >
+    reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+  when: >
+    tpa_subscription_token|length > 0
+    and install_bdr_packages|bool
+    and pg_version|int >= 14
+  loop: "{{ edb_2q_repositories }}"
+
 - name: Install EDB repository 2.0
   ansible.builtin.shell: >
       set -o pipefail;

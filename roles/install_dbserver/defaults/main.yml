@@ -3,10 +3,12 @@
 os: ""
 pg_type: "PG"
 pg_version: 14
+bdr_version: 4
 pg_owner: "{{ 'enterprisedb' if pg_type == 'EPAS' else 'postgres' }}"
 enable_core_dump: false
 core_dump_directory: "/var/coredumps"
 
+install_bdr_packages: false
 epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
 epas_service: "edb-as@{{ pg_version }}-main"
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"

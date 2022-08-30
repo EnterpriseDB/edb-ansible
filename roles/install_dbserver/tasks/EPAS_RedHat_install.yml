@@ -71,6 +71,17 @@
   when: >-
     pg_version|int >= 14
 
+- name: "Install BDR packages for EPAS >= 14"
+  package:
+    name:
+      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}
+      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}-debuginfo
+    state: present
+  become: true
+  when: >-
+    pg_version|int >= 14
+    and install_bdr_packages|bool
+
 - name: Install sslutils
   package:
     name:
