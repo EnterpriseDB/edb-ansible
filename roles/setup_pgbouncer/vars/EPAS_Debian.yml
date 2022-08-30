@@ -15,7 +15,7 @@ pgbouncer_auth_file: "/etc/edb/pgbouncer1.17/userlist.txt"
 # PID file
 pgbouncer_pid_file: "/var/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid"
 # Configuration file
-pgbouncer_config_file: "/etc/edb/pgbouncer1.17/edb-pgbouncer-1.17.ini"
+pgbouncer_config_file: "/etc/edb/pgbouncer1.17/pgbouncer.ini"
 # Log file
 pgbouncer_log_file: "/var/log/edb/pgbouncer1.17/edb-pgbouncer-1.17.log"
 # Databases configuration file
