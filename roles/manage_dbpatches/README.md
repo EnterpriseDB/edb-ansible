@@ -104,12 +104,12 @@ all:
           replication_type: asynchronous
 ```
 
-Below is an example of how to include the `init_dbserver` role:
+Below is an example of how to include the `manage_dbpatches` role:
 
 ```yaml
 ---
 - hosts: primary,pemserver
-  name: Initialize Postgres instances
+  name: Apply database patches
   become: yes
   gather_facts: yes
 
