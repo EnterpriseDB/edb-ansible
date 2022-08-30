@@ -112,7 +112,7 @@
     state: present
   become: yes
 
-- name: Install BDR packages if BDR is enabled
+- name: Install BDR packages if tpa_subscription_token is given
   ansible.builtin.shell: >
       set -o pipefail;
       curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/rpm" | bash
@@ -123,8 +123,9 @@
   failed_when: >
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
   when: >
-    bdr_nodes_ips is defined and ansible_host in bdr_nodes_ips
-    and pg_version|int >= 13
+    tpa_subscription_token|length > 0
+    and install_bdr_packages|bool
+    and pg_version|int >= 14
   loop: "{{ edb_2q_repositories }}"
 
 - name: Install EDB repository 2.0

@@ -11,6 +11,7 @@ repo_token: ""
 repo_username: ""
 repo_password: ""
 tpa_subscription_token: ""
+install_bdr_packages: false
 
 # EDB RPM Repo
 edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
