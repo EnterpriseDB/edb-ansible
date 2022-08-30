@@ -1,0 +1,39 @@
+---
+
+- name: Get pgBackRest server informations
+  set_fact:
+    _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+
+- name: Fail if pgbackrest server informations are not found
+  fail:
+    msg: "Unable to find pgBackRest server informations"
+  when:
+    - _pgbackrest_server_info|length == 0
+
+- name: Set _pgbackrest_server_public_ip
+  set_fact:
+    _pgbackrest_server_public_ip: "{{ _pgbackrest_server_info[0].ansible_host }}"
+
+# Create stanza in pgBackRest
+- name: Create stanza
+  ansible.builtin.command:
+    cmd: "pgbackrest --stanza={{ pg_instance_name }} stanza-create"
+  become_user: "{{ pgbackrest_user }}"
+  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  become: yes
+  run_once: true
+
+# do full backup
+- name: Do full backup
+  ansible.builtin.command:
+    cmd: "pgbackrest --stanza={{ pg_instance_name }} --type=full backup"
+  become_user: "{{ pgbackrest_user }}"
+  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  become: yes
+  run_once: true
+
+- name: Reset local variables
+  set_fact:
+    _pgbackrest_server_info: ""
+    _pgbackrest_server_public_ip: null
+

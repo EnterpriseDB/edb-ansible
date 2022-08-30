@@ -1,0 +1,19 @@
+---
+
+- name: Get pgBackRest node informations
+  set_fact:
+    pgbackrest_node_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_nodes', wantlist=True) }}"
+
+- name: Get all node informations
+  set_fact:
+    _all_node_info: "{{ lookup('edb_devops.edb_postgres.all_nodes', wantlist=True) }}"
+
+- name: Get primary node informations
+  set_fact:
+    _primary_node: "{{ item }}"
+  loop: "{{ pgbackrest_node_info | dict2items }}"
+
+
+
+
+

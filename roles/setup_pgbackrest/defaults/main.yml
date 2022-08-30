@@ -1,0 +1,15 @@
+---
+# pgBackRest package info
+pgbackrest_package_name: "pgbackrest"
+etc_hosts_lists: []
+use_hostname: true
+update_etc_file: true
+replication_user: "repuser"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+  - Rocky8
+  - Debian10
