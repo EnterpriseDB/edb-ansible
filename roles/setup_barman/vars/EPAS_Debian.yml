@@ -3,3 +3,6 @@
 pg_owner: enterprisedb
 pg_port: 5444
 pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
+pg_database: "postgres"
+pg_unix_socket_directories:
+  - "/var/run/edb-as"

@@ -19,6 +19,9 @@
     - name: Initialize the user defined variables
       set_fact:
         disable_logging: false
+        pg_postgres_conf_params:
+        - name: wal_level
+          value: logical
 
   roles:
     - role: setup_repo
@@ -27,6 +30,8 @@
       when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
       when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_dbserver
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_barmanserver
       when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_barman

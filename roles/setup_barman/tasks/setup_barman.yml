@@ -5,7 +5,7 @@
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Reference pg_type variables
-  include_vars: "{{ pg_type }}.yml"
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Set barman_backup_method
   set_fact:
