@@ -58,13 +58,14 @@
 
 - name: Prepare synchronous_standby_names
   set_fact:
-    synchronous_standbys: "{{ synchronous_standbys + [ node.inventory_hostname ] }}"
+    _synchronous_standbys: "{{ _synchronous_standbys|default([]) + [ node.inventory_hostname ] }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
   when:
     - node.node_type == 'standby'
     - node.replication_type == 'synchronous'
+    - synchronous_standby_names|length < 1
   no_log: "{{ disable_logging }}"
   run_once: true
 
@@ -100,7 +101,9 @@
 
 - name: Update primary for synchronous replication
   import_tasks: primary_synchronous_param.yml
-  when: synchronous_standbys|length > 0
+  when: >-
+      _synchronous_standbys|length > 0
+      or synchronous_standby_names|length > 0
   run_once: true
   delegate_to: "{{ primary_inventory_hostname }}"
   no_log: "{{ disable_logging }}"
