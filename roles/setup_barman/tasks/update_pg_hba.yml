@@ -9,6 +9,12 @@
           'databases': 'postgres',
           'contype': 'hostssl',
           'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
+        },
+        {
+          'users': 'barman',
+          'databases': 'postgres',
+          'contype': 'host',
+          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
         }
       ]
 
@@ -20,6 +26,12 @@
           'users': 'barman',
           'databases': 'replication',
           'contype': 'hostssl',
+          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
+        },
+        {
+          'users': 'barman',
+          'databases': 'replication',
+          'contype': 'host',
           'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
         }
       ]
