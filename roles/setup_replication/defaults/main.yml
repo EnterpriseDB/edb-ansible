@@ -16,7 +16,7 @@ pg_instance_name: main
 pg_local_wal_archive_dir: ""
 
 # EFM service information
-efm_version: 4.2
+efm_version: 4.5
 efm_cluster_name: "{{ pg_instance_name }}"
 efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
 
