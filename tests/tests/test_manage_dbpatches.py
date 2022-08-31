@@ -40,7 +40,7 @@ def test_manage_dbpatches_service():
     nodes = [node for node in get_pg_cluster_nodes()]
     
     with host.sudo(pg_user):
-        cmd = host.run('/usr/edb/efm-4.4/bin/efm cluster-status main | grep UP')
+        cmd = host.run('/usr/edb/efm-4.5/bin/efm cluster-status main | grep UP')
         result = cmd.stdout.strip().split('\n')
 
     assert len(result) == len(nodes), \

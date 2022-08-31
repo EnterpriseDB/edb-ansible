@@ -2,7 +2,7 @@
 # efm credentials
 os: ""
 pg_version: 14
-efm_version: 4.4
+efm_version: 4.5
 
 pg_instance_name: main
 disable_logging: true
@@ -108,6 +108,7 @@ supported_pg_version:
   - 14
 
 supported_efm_version:
+  - "4.5"
   - "4.4"
   - "4.3"
   - "4.2"
