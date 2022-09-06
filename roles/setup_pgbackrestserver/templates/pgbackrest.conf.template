@@ -1,7 +1,7 @@
 # /etc/pgbackrest.conf
 [global]
 repo1-path={{ archive_repo_directory }}
-repo1-host-config={{ pgbackrest_configuration_file }}
+repo1-host-config={{ primary_pgbr_config_file }}
 repo1-retention-full=2
 log-level-console={{ pgbackrest_log_level }}
 log-level-file=debug
@@ -10,10 +10,27 @@ repo1-cipher-type={{ repo_cipher_type }}
 repo1-cipher-pass={{ repo_cipher_password }}
 
 [{{ pg_instance_name }}]
-pg1-host={{ primary_node_hostname }}
+pg1-host={{ primary_node_hostname[0] }}
 pg1-path={{ pg_data }}
+pg1-host-user={{ primary_host_user }}
 {% if backup_standby is defined %}
-pg2-host={{ standby_node_hostname }}
+pg2-host={{ standby_node_hostname[0] }}
 pg2-path={{ pg_data }}
-backup-standby={{ backup_standby }}
+{% if pg_type == 'EPAS' %}
+pg2-host-user={{ standby_host_user }}
+{% endif %}
+{% if two_standby is defined %}
+pg3-host={{ standby_node_hostname[1] }}
+pg3-path={{ pg_data }}
+{% if pg_type == 'EPAS' %}
+pg3-host-user={{ standby_host_user }}
+{% endif %}
+{% if three_standby is defined %}
+pg4-host={{ standby_node_hostname[2] }}
+pg4-path={{ pg_data }}
+{% if pg_type == 'EPAS' %}
+pg4-host-user={{ standby_host_user }}
+{% endif %}
+{% endif %}
+{% endif %}
 {% endif %}

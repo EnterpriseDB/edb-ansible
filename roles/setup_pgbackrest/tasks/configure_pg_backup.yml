@@ -3,6 +3,11 @@
   set_fact:
     _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
 
+- name: Debug primary_conninfo error
+  ansible.builtin.debug:
+    msg:
+    - "standby_node_hostname: '{{ standby_node_hostname }}'"
+
 - name: Initialize the Postgres parameters list
   set_fact:
     _pg_postgres_conf_params:
@@ -11,7 +16,7 @@
       - name: archive_command
         value: "pgbackrest --stanza={{ pg_instance_name }} archive-push %p"
       - name: primary_conninfo
-        value: "host={{ primary_node_hostname }} user={{ replication_user }}"
+        value: "host={{ primary_node_hostname[0] }} user={{ replication_user }}"
       - name: restore_command
         value: "pgbackrest --stanza={{ pg_instance_name }} archive-get %f \"%p\""
 

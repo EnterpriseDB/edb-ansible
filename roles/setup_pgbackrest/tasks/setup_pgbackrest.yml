@@ -29,6 +29,9 @@
     state: present
   become: yes
 
+- name: Include the define_node_variables tasks
+  include_tasks: define_node_variables.yml
+
 - name: Include the SSH keys generation tasks
   include_tasks: generate_ssh_keys.yml
 

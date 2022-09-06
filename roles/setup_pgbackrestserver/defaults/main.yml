@@ -16,9 +16,9 @@ update_etc_file: true
 repo_cipher_type: "aes-256-cbc"
 repo_cipher_password: "acbd"
 
-primary_node_hostname: "primary1"
-standby_node_hostname: "standby1"
-backup_standby: "y"
+# primary node configuration file location
+primary_pgbr_config_file: "/etc/pgbackrest.conf"
+
 
 supported_os:
   - CentOS7

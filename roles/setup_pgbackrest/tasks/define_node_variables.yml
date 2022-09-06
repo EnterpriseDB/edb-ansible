@@ -1,0 +1,48 @@
+---
+
+- name: Get pgBackRest node informations
+  set_fact:
+    pgbackrest_node_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_nodes', wantlist=True) }}"
+
+- name: Determine if standby
+  set_fact:
+    _standby_list: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | default([]) | list }}"
+
+- name: Determine if backup_standby
+  set_fact:
+    backup_standby: 'y'
+  when: _standby_list|length > 0
+
+- name: Get primary node informations
+  set_fact:
+    primary_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='inventory_hostname') }}"
+  when:
+    - use_hostname|bool
+
+- name: Get primary node informations
+  set_fact:
+    primary_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='ansible_host') }}"
+  when:
+    - "not use_hostname|bool"
+
+- name: Get standby node informations
+  set_fact:
+    standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='inventory_hostname') | list }}"
+  when:
+    - use_hostname|bool
+    - backup_standby is defined
+
+- name: Get standby node informations
+  set_fact:
+    standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='ansible_host') | list }}"
+  when:
+    - "not use_hostname|bool"
+    - backup_standby is defined
+
+- name: Get primary node inventory hostname informations
+  set_fact:
+    primary_node_inventory_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='inventory_hostname') }}"
+
+- name: Reset local variables
+  set_fact:
+    _standby_list: null

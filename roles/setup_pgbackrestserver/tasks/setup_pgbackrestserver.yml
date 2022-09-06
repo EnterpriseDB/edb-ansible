@@ -9,6 +9,9 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Reference pg_type variables
+  include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
+
 - name: Update /etc/hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
@@ -16,6 +19,9 @@
   when:
     - use_hostname|bool
     - update_etc_file|bool
+
+- name: Include the define_node_variables tasks
+  include_tasks: define_node_variables.yml
 
 - name: Include the create_user installation tasks
   include_tasks: create_user.yml
