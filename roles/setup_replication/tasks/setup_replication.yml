@@ -102,8 +102,9 @@
 - name: Update primary for synchronous replication
   import_tasks: primary_synchronous_param.yml
   when: >-
+      _synchronous_standbys is defined and (
       _synchronous_standbys|length > 0
-      or synchronous_standby_names|length > 0
+      or synchronous_standby_names|length > 0 )
   run_once: true
   delegate_to: "{{ primary_inventory_hostname }}"
   no_log: "{{ disable_logging }}"
