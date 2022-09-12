@@ -75,6 +75,13 @@
   when:
     - efm_pgpool2_integration
 
+- name: Add eager efm configuration to efm parameters list
+  set_fact:
+    efm_node_parameters: "{{ efm_node_parameters + efm_eager_failover_params }}"
+  when:
+    - efm_eager_failover|bool
+    - efm_install_version|int >= 40
+
 - name: Add the efm_parameters with initial efm.properties
   set_fact:
     efm_node_parameters: "{{ efm_node_parameters + efm_parameters }}"
@@ -94,6 +101,22 @@
   become: yes
   no_log: "{{ disable_logging }}"
   register: properties_changes
+
+- name: Update {{ pg_service }} to bind {{ efm_service }}
+  ansible.builtin.lineinfile:
+    path: "/etc/systemd/system/{{ pg_service }}.service"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    insertafter: "{{ item.insertafter | default('EOF') }}"
+  become: true
+  loop:
+    - line: "BindsTo={{ efm_service }}.service"
+      regexp: "^BindsTo=.*"
+      insertafter: "^\\[Unit\\]$"
+  when:
+    - efm_eager_failover|bool
+    - ansible_os_family == 'RedHat'
+  register: pg_service_changed
 
 - name: Populate service facts
   service_facts:
@@ -118,6 +141,13 @@
     enabled: yes
     state: restarted
   become: yes
+  when: >-
+    ( efm_nodes_update.changed or ( properties_changes is defined and properties_changes.changed ))
+     and efm_service_file.stat.exists
+
+- name: Force systemd to reread configs of {{ pg_service }} after changes
+  ansible.builtin.systemd:
+    daemon_reload: yes
   when:
-    - efm_nodes_update.changed
-    - efm_service_file.stat.exists
+    - pg_service_changed is defined
+    - pg_service_changed.changed

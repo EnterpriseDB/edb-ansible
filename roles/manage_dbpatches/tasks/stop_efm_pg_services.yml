@@ -1,4 +1,27 @@
 ---
+- name: Update {{ pg_service }} to bind {{ efm_service }}
+  ansible.builtin.lineinfile:
+    path: "/etc/systemd/system/{{ pg_service }}.service"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    insertafter: "{{ item.insertafter | default('EOF') }}"
+  become: true
+  loop:
+    - line: "BindsTo="
+      regexp: "^BindsTo=.*"
+      insertafter: "^\\[Unit\\]$"
+  when:
+    - efm_eager_failover|bool
+    - ansible_os_family == 'RedHat'
+  register: pg_service_changed
+
+- name: Force systemd to reread configs of {{ pg_service }} after changes
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  when:
+    - pg_service_changed is defined
+    - pg_service_changed.changed
+
 - name: Stop failover manager service if exists
   ansible.builtin.systemd:
     name: "{{ efm_service }}"
