@@ -141,9 +141,9 @@
     enabled: yes
     state: restarted
   become: yes
-  when: >-
-    ( efm_nodes_update.changed or ( properties_changes is defined and properties_changes.changed ))
-     and efm_service_file.stat.exists
+  when:
+    - ( efm_nodes_update.changed or properties_changes.changed )
+    - efm_service_file.stat.exists
 
 - name: Force systemd to reread configs of {{ pg_service }} after changes
   ansible.builtin.systemd:

@@ -13,6 +13,7 @@ pass_dir: "~/.edb"
 use_hostname: true
 
 skip_primary: false
+efm_eager_failover: false
 skip_standby: false
 
 pg_efm_user: "efm"
