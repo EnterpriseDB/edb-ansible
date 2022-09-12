@@ -66,10 +66,9 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: yes
 
-- name: Gather the EFM cluster informations and efm_install_version
+- name: Gather the EFM cluster informations
   set_fact:
     efm_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.efm_nodes', wantlist=True) }}"
-    efm_install_version : "{{ efm_version | replace('.','') }}"
   run_once: true
 
 - name: Remove before we start as per force_install

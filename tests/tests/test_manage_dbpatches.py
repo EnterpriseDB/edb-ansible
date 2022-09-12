@@ -72,7 +72,7 @@ def test_manage_dbpatches_redhat():
     packages = [
         'java-1.8.0-openjdk',
         'mailx',
-        'edb-efm44'
+        'edb-efm45'
     ]
 
     for package in packages:
@@ -87,7 +87,7 @@ def test_manage_dbpatches_debian():
     packages = [
         'openjdk-8-jdk',
         'bsd-mailx',
-        'edb-efm44'
+        'edb-efm45'
     ]
 
     for package in packages:

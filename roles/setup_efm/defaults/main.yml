@@ -3,7 +3,8 @@
 os: ""
 pg_version: 14
 efm_version: 4.5
-
+efm_eager_failover: false
+efm_install_version: "{{ efm_version | replace('.','') }}"
 pg_instance_name: main
 disable_logging: true
 force_efm_install: false
@@ -54,6 +55,11 @@ efm_physical_slot_param:
 efm_cascaded_replica_param:
   - { name: promotable, value: false }
   - { name: auto.reconfigure, value: false }
+
+efm_eager_failover_params:
+  - { name: primary.shutdown.as.failure, value: true }
+  - { name: enable.stop.cluster, value: false }
+
 # example of efm_custom_parameters:
 # efm_parameters:
 #   - name: script.notification
