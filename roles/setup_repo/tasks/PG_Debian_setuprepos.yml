@@ -17,8 +17,8 @@
     mode: 0600
   when:
     - os != 'Debian9'
-    - not auth_conf.stat.exists or auth_conf.stat.size == 0
     - enable_edb_repo|bool and repo_token|length < 1
+    - not auth_conf.stat.exists or auth_conf.stat.size == 0
   become: true
 
 - name: Install gpg
