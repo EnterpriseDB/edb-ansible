@@ -96,6 +96,7 @@
     - import_tasks: create_directories.yml
     - import_tasks: pg_basebackup.yml
     - import_tasks: pg_setup_systemd.yml
+    - import_tasks: pg_ssl_send_files.yml
     - import_tasks: configure_node.yml
   become: yes
 

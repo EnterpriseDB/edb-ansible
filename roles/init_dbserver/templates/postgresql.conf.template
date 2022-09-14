@@ -33,3 +33,8 @@ autovacuum_vacuum_cost_limit = 3000
 idle_in_transaction_session_timeout = 10min
 shared_preload_libraries = '{{ pg_shared_libraries_list | join(",") }}'
 cluster_name = '{{ pg_instance_name }}'
+{% if pg_init_conf_params|length > 0 %}
+{% for item in pg_init_conf_params %}
+{{ item.name }} = '{{ item.value }}'
+{% endfor %}
+{% endif %}
