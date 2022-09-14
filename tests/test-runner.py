@@ -124,7 +124,7 @@ def tears_down(case_name):
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
     if r.returncode != 0:
-        raise Exception(r.sterr.decode('utf-8'))
+        raise Exception(r.stderr.decode('utf-8'))
 
 
 def make_build():
