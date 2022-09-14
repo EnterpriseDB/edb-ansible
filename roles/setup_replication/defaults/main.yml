@@ -4,6 +4,7 @@
 
 pg_version: 14
 disable_logging: yes
+pg_remote_ssl_src: no
 
 force_replication: false
 use_replication_slots: true
@@ -35,6 +36,13 @@ etc_hosts_lists: []
 upstream_public_ip: ""
 upstream_hostname: ""
 edb_audit_directory: ""
+
+# Local path to SSL server key and certificate to be sent to the server
+# if empty, they are generated
+pg_ssl_key_file: ""
+pg_ssl_cert_file: ""
+pg_ssl_ca_file: ""
+pg_ssl_crl_file: ""
 
 supported_os:
   - CentOS7

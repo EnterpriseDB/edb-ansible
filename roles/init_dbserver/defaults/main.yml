@@ -5,7 +5,7 @@ pg_type: PG
 pg_version: 14
 pg_ssl: true
 pg_instance_name: main
-
+pg_remote_ssl_src: no
 # EFM service information
 efm_version: 4.5
 efm_cluster_name: "{{ pg_instance_name }}"
@@ -43,6 +43,12 @@ pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
 
+# initial configuration for starting postgres
+# example:
+# pg_init_conf_params:
+# - name: "edb_filter_log.redact_password_commands"
+#   value: "true"
+pg_init_conf_params: []
 # postgres port
 pg_port: 5432
 
