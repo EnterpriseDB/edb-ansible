@@ -47,6 +47,19 @@
     - ansible_distribution_major_version == '7'
     - pg_type == 'PG'
 
+- name: Install dnf-plugins-core for EL8
+  ansible.builtin.package:
+    name: dnf-plugins-core
+    state: present
+  become: true
+  when: ansible_distribution_major_version == '8'
+
+- name: Enable powertools for EL8
+  ansible.builtin.command: >
+    dnf config-manager --set-enabled powertools
+  become: true
+  when: ansible_distribution_major_version == '8'
+
 - name: Install EPEL repo for EL8
   package:
     name: "{{ epel_repo_8 }}"
