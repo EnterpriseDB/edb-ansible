@@ -29,6 +29,7 @@
   register: waldir
   when:
     - "'witness' not in group_names"
+  become: true
 
 - name: Ensure parent WAL dir has correct permissions
   file:
@@ -38,6 +39,7 @@
     - "'witness' not in group_names"
     - waldir is defined
     - waldir.stat.islnk
+  become: true
 
 - name: Gather service facts
   service_facts:
