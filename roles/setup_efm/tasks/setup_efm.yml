@@ -8,6 +8,13 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Check EFM API node state support
+  fail:
+    msg: "EFM API node state not supported on {{ os }}"
+  when:
+    - efm_api_node_state
+    - os not in efm_api_node_state_supported_os
+
 - name: Check supported versions for Database engine
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
@@ -163,6 +170,13 @@
 - name: EFM parameters settings
   include_tasks: efm_cluster_set_params.yml
   no_log: "{{ disable_logging }}"
+
+
+- name: EFM API node state setup
+  include_tasks: efm_api_node_state_setup.yml
+  no_log: "{{ disable_logging }}"
+  when:
+    - efm_api_node_state
 
 - name: Reset the variables used in this role
   set_fact:

@@ -80,6 +80,16 @@ efm_packages_debian:
   - openjdk-8-jdk
   - edb-efm{{ efm_install_version }}
 
+# Enable efm-api-node-state deployment
+efm_api_node_state: false
+efm_api_node_state_version: "0.1.0"
+efm_api_node_state_port: 8000
+efm_api_node_state_listen_addr: "0.0.0.0"
+efm_api_node_state_supported_os:
+  - CentOS7
+  - RedHat7
+  - OracleLinux7
+
 # Integration with pgpoolII
 pgpool2_version: 4.1
 efm_pgpool2_integration: false

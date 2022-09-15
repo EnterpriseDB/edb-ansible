@@ -1,0 +1,8 @@
+[config]
+primary_command = "/usr/edb/efm-api-node-state/scripts/efm_check_primary.sh {{ efm_version }} {{ efm_cluster_name }}"
+standby_command = "/usr/edb/efm-api-node-state/scripts/efm_check_standby.sh {{ efm_version }} {{ efm_cluster_name }}"
+listen_addr = "{{ efm_api_node_state_listen_addr }}"
+port = {{ efm_api_node_state_port }}
+shell = "/bin/sh"
+# DEBUG, INFO, WARN, ERROR
+log_level = "INFO"
