@@ -72,9 +72,6 @@ Backup method. Can be:
 
 Default: `rsync`
 
-Note: `rsync` backups can only be proceeded on primary nodes. Backuping
-standby nodes must be done with the `postgres` backup method.
-
 ## Dependencies
 
 This role does not have any dependencies, but packages repositories should have
