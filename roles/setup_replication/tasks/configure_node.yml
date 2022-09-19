@@ -17,6 +17,8 @@
     creates: "{{ pg_data }}/PG_VERSION"
   become: yes
   become_user: "{{ pg_owner }}"
+  async: 180000
+  poll: 60
 
 - name: Enable and start the service
   systemd:
