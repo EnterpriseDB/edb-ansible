@@ -19,7 +19,7 @@
          --pem-port {{ pem_pg_port | default(pg_port) }} \
          --allow_server_restart true \
          --allow-batch-probes true \
-         --batch-script-user root \
+         --batch-script-user {{ pem_agent_batch_script_user }} \
     && touch {{ pem_agent_bin_path }}/../etc/.agentregistered
   args:
     executable: /bin/bash

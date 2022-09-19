@@ -30,6 +30,7 @@ pg_backup_api_service: pg-backup-api
 
 pem_agent_bin_path: "/usr/edb/pem/agent/bin"
 pem_agent_confg_path: "/usr/edb/pem/agent/etc"
+pem_agent_batch_script_user: "root"
 
 pem_agent_certificate_path: "/etc/edb/certs/pem"
 pem_agent_service_name: "pem-server-agent"
