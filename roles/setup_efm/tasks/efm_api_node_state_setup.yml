@@ -32,6 +32,41 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: true
 
+- name: Update efm efm.properties file
+  ansible.builtin.lineinfile:
+    path: "{{ efm_properties }}"
+    regexp: "{{ item.name + '=' }}"
+    line: "{{ item.name + '=' + item.value|string }}"
+    state: present
+  loop:
+    - name: script.load.balancer.attach
+      value: "/bin/touch /var/run/efm-{{ efm_version }}/efm_trigger_%t"
+    - name: script.load.balancer.detach
+      value: "/bin/rm -f /var/run/efm-{{ efm_version }}/efm_trigger_%t"
+    - name: script.custom.monitor
+      value: "/usr/edb/efm-api-node-state/scripts/efm_monitor.sh {{ efm_version }}"
+    - name: custom.monitor.interval
+      value: 5
+    - name: custom.monitor.timeout
+      value: 10
+    - name: custom.monitor.safe.mode
+      value: "true"
+    - name: auto.resume.period
+      value: 5
+  become: true
+
+- name: Stop the EFM service
+  ansible.builtin.systemd:
+    name: "{{ efm_service }}"
+    state: stopped
+  become: true
+
+- name: Start the EFM service
+  ansible.builtin.systemd:
+    name: "{{ efm_service }}"
+    state: started
+  become: true
+
 - name: Enable and start efm-api-node-state service
   ansible.builtin.systemd:
     name: efm-api-node-state
