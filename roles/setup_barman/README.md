@@ -72,6 +72,8 @@ Backup method. Can be:
 
 Default: `rsync`
 
+Note: When backing up standby nodes with `backup_method = rsync` the minimum supported version of Barman is 2.8.
+
 ## Dependencies
 
 This role does not have any dependencies, but packages repositories should have
