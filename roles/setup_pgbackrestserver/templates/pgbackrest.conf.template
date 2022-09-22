@@ -1,35 +1,55 @@
 # /etc/pgbackrest.conf
 [global]
 repo1-path={{ archive_repo_directory }}
+repo1-host-user={{ pgbackrest_user }}
 repo1-host-config={{ primary_pgbr_config_file }}
-repo1-retention-full=2
-log-level-console={{ pgbackrest_log_level }}
-log-level-file=debug
-start-fast=y
+repo1-host-type=ssh
+repo1-retention-full-type={{ repo_retention_full_type }}
+repo1-retention-full={{ repo_retention_full }}
+log-level-console={{ pgbackrest_log_level_console }}
+log-level-file={{ pgbackrest_log_level_file }}
+lock-path={{ pgbackrest_lock_path }}
 repo1-cipher-type={{ repo_cipher_type }}
 repo1-cipher-pass={{ repo_cipher_password }}
+process-max={{ process_max }}
+delta={{ delta }}
+start-fast=y
 
 [{{ pg_instance_name }}]
 pg1-host={{ primary_node_hostname[0] }}
 pg1-path={{ pg_data }}
 pg1-host-user={{ primary_host_user }}
-{% if backup_standby is defined %}
+{% if pg_type == 'EPAS' %}
+pg1-database={{ pg_database_name }}
+pg1-port={{ pg_port_EPAS }}
+pg1-socket-path={{ pg_unix_socket_EPAS }}
+{% endif %}
+{% if standby_present is defined %}
 pg2-host={{ standby_node_hostname[0] }}
 pg2-path={{ pg_data }}
 {% if pg_type == 'EPAS' %}
 pg2-host-user={{ standby_host_user }}
+pg2-database={{ pg_database_name }}
+pg2-port={{ pg_port_EPAS }}
+pg2-socket-path={{ pg_unix_socket_EPAS }}
 {% endif %}
 {% if two_standby is defined %}
 pg3-host={{ standby_node_hostname[1] }}
 pg3-path={{ pg_data }}
 {% if pg_type == 'EPAS' %}
 pg3-host-user={{ standby_host_user }}
+pg3-database={{ pg_database_name }}
+pg3-port={{ pg_port_EPAS }}
+pg3-socket-path={{ pg_unix_socket_EPAS }}
 {% endif %}
 {% if three_standby is defined %}
 pg4-host={{ standby_node_hostname[2] }}
 pg4-path={{ pg_data }}
 {% if pg_type == 'EPAS' %}
 pg4-host-user={{ standby_host_user }}
+pg4-database={{ pg_database_name }}
+pg4-port={{ pg_port_EPAS }}
+pg4-socket-path={{ pg_unix_socket_EPAS }}
 {% endif %}
 {% endif %}
 {% endif %}

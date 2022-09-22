@@ -53,6 +53,7 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   primary1-centos7:
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.centos7
@@ -63,6 +64,7 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   standby1-centos7:
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.centos7
@@ -73,6 +75,7 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   pgbackrest1-centos7:
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.centos7

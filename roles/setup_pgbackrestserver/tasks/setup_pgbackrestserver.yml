@@ -9,6 +9,31 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Check repo_cipher_password is not empty
+  fail:
+    msg: "repo_cipher_password = {{ repo_cipher_password }} cannot be empty"
+  when:
+    - repo_cipher_type == "aes-256-cbc"
+    - repo_cipher_password|length < 1
+
+- name: Check pgbackrest_log_level_console configuration value
+  fail:
+    msg: "pgBackRest console logging level = {{ pgbackrest_log_level_console }} not valid.
+          Available logging levels are {{ supported_log_level }}"
+  when: pgbackrest_log_level_console not in supported_log_level
+
+- name: Check pgbackrest_log_level_file configuration value
+  fail:
+    msg: "pgBackRest file logging level = {{ pgbackrest_log_level_file }} not valid.
+          Available logging levels are {{ supported_log_level }}"
+  when: pgbackrest_log_level_file not in supported_log_level
+
+- name: Check repo_retention_full_type configuration value
+  fail:
+    msg: "pgBackRest repo retention type = {{ repo_retention_full_type }} not valid.
+          Available repo retention types  are {{ supported_repo_retention_type }}"
+  when: repo_retention_full_type not in supported_repo_retention_type
+
 - name: Reference pg_type variables
   include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
@@ -26,11 +51,11 @@
 - name: Include the create_user installation tasks
   include_tasks: create_user.yml
 
+- name: Include the package installation tasks
+  include_tasks: "pgbackrest_install_{{ pg_type }}.yml"
+
 - name: Include the create_directories installation tasks
   include_tasks: create_directories.yml
-
-- name: Include the package installation tasks
-  include_tasks: pgbackrest_install.yml
 
 - name: Include the SSH key generation tasks
   include_tasks: generate_ssh_keys.yml

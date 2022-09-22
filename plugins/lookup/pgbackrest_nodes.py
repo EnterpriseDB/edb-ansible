@@ -58,7 +58,7 @@ class LookupModule(LookupBase):
         else:
             node_private_ip = terms[0]
 
-        #determine if current node is pgbr node or not
+        # determine if current node is pgbr node or not
         if 'pgbackrest_server_private_ip' in myvars['hostvars'][inventory_hostname]:
             # if not define the pgbr_server_private_ip of the current node
             pgbr_server_private_ip = myvars['hostvars'][inventory_hostname]['pgbackrest_server_private_ip']
@@ -72,7 +72,6 @@ class LookupModule(LookupBase):
             else:
                 # current node is pgbr node
                 pgbr_server_private_ip = myvars['hostvars'][inventory_hostname]['private_ip']
-
 
         # find primary nodes with corresponding pgbr node as pgbackrest_server_private_ip
         # If no primary found in the inventory we return an error

@@ -1,24 +1,52 @@
 ---
 
-# pgBackRest package info
+# pgBackRest RPM package name
 pgbackrest_package_name: "pgbackrest"
 
+# pgBackRest system user and group
 pgbackrest_user: "pgbackrest"
 pgbackrest_group: "pgbackrest"
-pgbackrest_configuration_file: "/etc/pgbackrest.conf"
 pgbackrest_home: "/var/lib/pgbackrest"
+
+# pgBackRest configuration file
+pgbackrest_configuration_file: "/etc/pgbackrest.conf"
+
+# pgBackRest lock path
+pgbackrest_lock_path: "/var/run/pgbackrest"
+
+# pgBackRest logging information
 pgbackrest_log_file: "/var/log/pgbackrest/pgbackrest.log"
-pgbackrest_log_level: "info"
+pgbackrest_log_level_file: "debug"
+pgbackrest_log_level_console: "info"
+
+# pgBackRest archive and backup repository
 archive_repo_directory: "/var/lib/pgbackrest/backups"
-etc_hosts_lists: []
-use_hostname: true
-update_etc_file: true
+repo_retention_full_type: "count"
+repo_retention_full: 2
+
+# pgBackRest repository cipher
 repo_cipher_type: "aes-256-cbc"
-repo_cipher_password: "acbd"
+repo_cipher_password: ""
+
+# backup from standby node
+# backup_standby setting in pgbackrest.conf can only be changed to "y" after initial backup is completed
+backup_standby: "n"
+
+# number of parallel processes to be used during backup and recovery
+process_max: 1
+
+# restore backups using checksums or timestamps
+delta: "n"
 
 # primary node configuration file location
 primary_pgbr_config_file: "/etc/pgbackrest.conf"
 
+# postgres instance name
+pg_instance_name: "main"
+
+etc_hosts_lists: []
+use_hostname: true
+update_etc_file: true
 
 supported_os:
   - CentOS7
@@ -36,3 +64,11 @@ supported_log_level:
   - detail
   - debug
   - trace
+
+supported_repo_cipher_type:
+  - aes-256-cbc
+  - none
+
+supported_repo_retention_type:
+  - count
+  - time

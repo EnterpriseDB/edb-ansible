@@ -8,6 +8,7 @@ all:
           private_ip: {{ inventory_vars['primary1_ip'] }}
           pgbackrest: true
           pgbackrest_server_private_ip: {{ inventory_vars['pgbackrest1_ip'] }}
+          pgbackrest_archive_method: async
     pgbackrestserver:
       hosts:
         pgbackrest1:
@@ -22,3 +23,4 @@ all:
           upstream_node_private_ip: {{ inventory_vars['primary1_ip'] }}
           pgbackrest: true
           pgbackrest_server_private_ip: {{ inventory_vars['pgbackrest1_ip'] }}
+          pgbackrest_archive_method: async

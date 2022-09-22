@@ -9,13 +9,9 @@
   when:
     - _pgbackrest_server_info|length == 0
 
-- name: Set _pgbackrest_server_public_ip
+- name: Set  _pgbackrest_host when not using hostname
   set_fact:
-    _pgbackrest_server_public_ip: "{{ _pgbackrest_server_info[0].ansible_host }}"
-
-- name: Set _pg_host when not using hostname
-  set_fact:
-    _pgbackrest_host: "{{ _pgbackrest_server_info[0].private_ip }}"
+    _pgbackrest_host: "{{ _pgbackrest_server_info[0].ansible_host }}"
   when:
     - "not use_hostname|bool"
 
@@ -25,9 +21,31 @@
   when:
     - use_hostname|bool
 
+- name: Ensure lock directory {{ pgbackrest_lock_path }} exists
+  file:
+    path: "{{ pgbackrest_lock_path }}"
+    state: directory
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0750
+    recurse: yes
+  become: yes
+
+# spool directory needed with archive-async to store transient data during archiving and recovery
+- name: Create spool directory
+  file:
+    path: "{{ pgbackrest_spool_directory }}"
+    state: directory
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0750
+    recurse: yes
+  become: yes
+  when: pgbackrest_archive_method == "async"
+
 - name: Build configuration file {{ pgbackrest_configuration_file }}
   template:
-    src: "./templates/pgbackrest_{{ group_names[0] }}.conf.template"
+    src: "./templates/pgbackrest_{{ group_names[0] }}.{{ pgbackrest_archive_method }}.conf.template"
     dest: "{{ pgbackrest_configuration_file }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
@@ -36,25 +54,7 @@
   vars:
     pgbackrest_host: "{{ _pgbackrest_host }}"
 
-
-#- name: Configure if more than one standby node
-#  ansible.builtin.blockinfile:
-#    path: "{{ pgbackrest_configuration_file }}"
-#    block: |
-#      pg(idx+2)-path=pg_data
-#      pg(idx+2)-host=standby_node_hostname[idx]
-#      {% if pg_type == 'EPAS' %}
-#      pg(idx+2)-host-user=standby_host_user
-#      {% endif %}
-#    loop: "{{ standby_node_hostname }}"
-#    loop_control:
-#      index_var: idx
-#    when:
-#      - idx not 0
-#      - standby_node_hostname|length > 1
-
 - name: Reset local variables
   set_fact:
     _pgbackrest_server_info: ""
-    _pgbackrest_server_public_ip: null
     _pgbackrest_host: null

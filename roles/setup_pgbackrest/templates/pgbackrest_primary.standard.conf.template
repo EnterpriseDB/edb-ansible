@@ -2,11 +2,13 @@
 [global]
 repo1-host={{ pgbackrest_host }}
 repo1-host-user={{ pgbackrest_user }}
-repo1-retention-full=2
+repo1-host-type=ssh
 repo1-cipher-type={{ repo_cipher_type }}
 repo1-cipher-pass={{ repo_cipher_password }}
-log-level-console={{ pgbackrest_log_level }}
-log-level-file=debug
+log-level-console={{ pgbackrest_log_level_console }}
+log-level-file={{ pgbackrest_log_level_file }}
+lock-path={{ pgbackrest_lock_path }}
+start-fast=y
 
 [{{ pg_instance_name }}]
 pg1-path={{ pg_data }}

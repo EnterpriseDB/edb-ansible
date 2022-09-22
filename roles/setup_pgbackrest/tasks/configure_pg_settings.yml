@@ -1,0 +1,21 @@
+---
+
+- name: Initialize the Postgres parameters list
+  set_fact:
+    _pg_postgres_conf_params:
+      - name: archive_mode
+        value: "on"
+      - name: archive_command
+        value: "pgbackrest --stanza={{ pg_instance_name }} archive-push %p"
+
+- name: Apply Postgres autotuning
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params: "{{ _pg_postgres_conf_params }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Reset _pg_postgres_conf_params
+  set_fact:
+    _pg_postgres_conf_params: ""

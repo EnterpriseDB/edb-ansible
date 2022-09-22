@@ -8,13 +8,3 @@
     group: "{{ pgbackrest_group }}"
     mode: 0600
   become: yes
-
-# need or else postgres owns this directory
-- name: Ensure logging directory {{ pgbackrest_log_file }} exists
-  file:
-    path: "{{ pgbackrest_log_file | dirname }}"
-    state: directory
-    owner: "{{ pgbackrest_user }}"
-    group: "{{ pgbackrest_group }}"
-    mode: 0755
-  become: yes

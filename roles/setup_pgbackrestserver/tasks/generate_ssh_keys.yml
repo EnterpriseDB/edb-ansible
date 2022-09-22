@@ -18,6 +18,7 @@
     mode: 0755
   become: true
 
+# exchange of keys will not occur without creation of this directory
 - name: Ensure the directory {{ pgbackrest_home }}/.ansible/tmp exists
   file:
     state: directory

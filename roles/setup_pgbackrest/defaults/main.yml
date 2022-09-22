@@ -1,10 +1,22 @@
 ---
-# pgBackRest package info
+# pgBackRest RPM package info
 pgbackrest_package_name: "pgbackrest"
+
+# replication user setup in postgresql.conf
+replication_user: "repuser"
+
+# spool directory - only used with archive-async
+pgbackrest_spool_directory: "/var/spool/pgbackrest"
+
+# number of parallel processes to be used during backup and recovery
+# recommended to not use more than 25% of available CPU for the backup command
+# only set if archive method is async.
+process_max_backup: 3
+process_max_recovery: 3
+
 etc_hosts_lists: []
 use_hostname: true
 update_etc_file: true
-replication_user: "repuser"
 
 supported_os:
   - CentOS7

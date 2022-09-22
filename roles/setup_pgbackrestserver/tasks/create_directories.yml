@@ -7,6 +7,7 @@
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
     mode: 0755
+    recurse: yes
   become: yes
 
 - name: Ensure archive directory {{ archive_repo_directory }} exists
@@ -15,6 +16,16 @@
     state: directory
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
-    mode: 0755
+    mode: 0750
+    recurse: yes
   become: yes
 
+- name: Ensure lock directory {{ pgbackrest_lock_path }} exists
+  file:
+    path: "{{ pgbackrest_lock_path }}"
+    state: directory
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0750
+    recurse: yes
+  become: yes

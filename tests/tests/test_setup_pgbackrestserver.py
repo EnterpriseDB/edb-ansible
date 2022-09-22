@@ -28,14 +28,14 @@ def test_setup_pgbackrestserver_config_file():
         "%s does not exist" % config_file
 
 
-def test_setup_pgbackrestserver_sudo():
+def test_setup_pgbackrestserver_configuration():
     host = get_pgbackrestserver()
     ansible_vars = load_ansible_vars()
     pgbackrest_user = ansible_vars['pgbackrest_user']
 
     with host.sudo(pgbackrest_user):
-        cmd = host.run('pgbackrest -h')
+        cmd = host.run('pgbackrest --stanza=main check')
         result = cmd.stdout.strip()
 
-    assert len(result) > 0, \
-        "%s could not be used as a sudo user" % pgbackrest_user
+    assert 'completed successfully' in result, \
+        "Configuration for pgBackRest is not properly done."

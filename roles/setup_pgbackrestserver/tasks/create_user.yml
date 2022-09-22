@@ -15,3 +15,12 @@
     home: "{{ pgbackrest_home }}"
     state: present
   become: yes
+
+- name: Ensure postgres user {{ pg_owner }} exists in {{ pgbackrest_group }}
+  user:
+    name: "{{ pg_owner }}"
+    system: yes
+    group: "{{ pgbackrest_group }}"
+    create_home: no
+    state: present
+  become: yes
