@@ -38,7 +38,7 @@ class LookupModule(LookupBase):
         allowed_groups = [
             'primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
             'barmanserver', 'dbt2_driver', 'dbt2_client', 'hammerdbserver',
-            'witness', 'proxy',
+            'witness', 'proxy', 'pgbackrestserver',
         ]
         for group, nodes in variables['groups'].items():
             # Ignore hosts that are not part of any group used in this

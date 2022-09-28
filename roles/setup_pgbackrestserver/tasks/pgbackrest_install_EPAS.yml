@@ -1,0 +1,96 @@
+---
+# in setup_repo role, PGDG repo is omitted for EPAS type.
+# setup access for community repo to gain access to pgbackrest package
+
+# add repo facts for RHEL
+- name: set repo facts for RH os
+  set_fact:
+    pg_gpg_key_8: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
+    pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+    pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+  when: ansible_os_family == 'RedHat'
+
+# add repo facts for Debian
+- name: set repo facts for Debian
+  set_fact:
+    pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+    pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+  when: ansible_os_family == 'Debian'
+
+# Add PG repo for RHEL
+- name: Download PGDG GPG key for EL8
+  rpm_key:
+    key: "{{ pg_gpg_key_8 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
+  become: yes
+
+- name: Install PG repo for EL7
+  package:
+    name: "{{ pg_rpm_repo_7 }}"
+    state: present
+  become: yes
+  when:
+    - ansible_distribution_major_version == '7'
+    - ansible_os_family == 'RedHat'
+
+- name: Install PG repo for EL8
+  package:
+    name: "{{ pg_rpm_repo_8 }}"
+    state: present
+  become: yes
+  when:
+    - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
+
+# Add PG repo for Debian
+- name: Add PG Debian keys
+  apt_key:
+    url: "{{ pg_deb_keys }}"
+    state: present
+  when: ansible_os_family == 'Debian'
+  become: true
+
+- name: Add PG Debian repo
+  apt_repository:
+    repo: "{{ pg_deb_repo_url }}"
+    state: present
+    filename: "pgdg"
+  when: ansible_os_family == 'Debian'
+  become: true
+
+# install pgbackrest packages
+- name: Install pgBackRest package
+  package:
+    name: "{{ pgbackrest_package_name }}"
+    state: present
+  become: yes
+
+- name: Disable builtin postgresql module
+  shell: >
+    dnf -qy module disable postgresql
+  args:
+    executable: /bin/bash
+  register: disable_builtin_postgres
+  changed_when: disable_builtin_postgres.rc == 0
+  failed_when: disable_builtin_postgres.rc != 0
+  ignore_errors: yes
+  become: true
+  when: ansible_os_family == 'RedHat'
+
+- name: Disable builtin postgresql module
+  service:
+    name: postgresql
+    enabled: false
+  become: true
+  when: ansible_os_family == 'Debian'
+
+# service gets shut down during installation of pgBackRest, cannot ssh into other nodes without turning on
+- name: start systemd-user-sessions.service
+  systemd:
+    name: "systemd-user-sessions.service"
+    state: started
+  become: yes
+

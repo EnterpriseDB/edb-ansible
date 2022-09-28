@@ -326,3 +326,28 @@ cases:
     os:
     - centos7
     - oraclelinux7
+  setup_pgbackrest:
+    pg_version:
+    - 14
+    - 13
+    - 12
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - centos7
+    - debian10
+  setup_pgbackrestserver:
+    pg_version:
+    - 14
+    - 13
+    - 12
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - centos7
+    - debian10
+

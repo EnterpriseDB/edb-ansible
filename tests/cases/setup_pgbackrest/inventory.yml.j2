@@ -1,0 +1,26 @@
+---
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: {{ inventory_vars['primary1_ip'] }}
+          private_ip: {{ inventory_vars['primary1_ip'] }}
+          pgbackrest: true
+          pgbackrest_server_private_ip: {{ inventory_vars['pgbackrest1_ip'] }}
+          pgbackrest_archive_method: async
+    pgbackrestserver:
+      hosts:
+        pgbackrest1:
+          ansible_host: {{ inventory_vars['pgbackrest1_ip'] }}
+          private_ip: {{ inventory_vars['pgbackrest1_ip'] }}
+    standby:
+      hosts:
+        standby1:
+          ansible_host: {{ inventory_vars['standby1_ip'] }}
+          private_ip: {{ inventory_vars['standby1_ip'] }}
+          replication_type: asynchronous
+          upstream_node_private_ip: {{ inventory_vars['primary1_ip'] }}
+          pgbackrest: true
+          pgbackrest_server_private_ip: {{ inventory_vars['pgbackrest1_ip'] }}
+          pgbackrest_archive_method: async

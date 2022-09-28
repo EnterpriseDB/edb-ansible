@@ -1,0 +1,56 @@
+---
+
+- name: Get pgBackRest server informations
+  set_fact:
+    _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+
+- name: Fail if pgbackrest server informations are not found
+  fail:
+    msg: "Unable to find pgBackRest server informations"
+  when:
+    - _pgbackrest_server_info|length == 0
+
+- name: Set _pgbackrest_server_public_ip
+  set_fact:
+    _pgbackrest_server_public_ip: "{{ _pgbackrest_server_info[0].ansible_host }}"
+
+# only need to be run when standby_present is defined because they have already been done on just the primary node
+- name: Initialize the Postgres parameters list
+  set_fact:
+    _pg_postgres_conf_params:
+      - name: archive_mode
+        value: "on"
+  when: standby_present is defined
+
+- name: Apply Postgres autotuning
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params: "{{ _pg_postgres_conf_params }}"
+  no_log: "{{ disable_logging }}"
+  when: standby_present is defined
+
+# Create stanza in pgBackRest
+- name: Create stanza
+  ansible.builtin.command:
+    cmd: "pgbackrest --stanza={{ pg_instance_name }} --no-online stanza-create"
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ primary_node_hostname[0] }}"
+  become: yes
+  run_once: true
+
+# do full backup from primary
+- name: Do full backup
+  ansible.builtin.command:
+    cmd: "pgbackrest --stanza={{ pg_instance_name }} --type=full backup"
+  become_user: "{{ pgbackrest_user }}"
+  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  become: yes
+  run_once: true
+
+- name: Reset local variables
+  set_fact:
+    _pgbackrest_server_info: ""
+    _pgbackrest_server_public_ip: null
+    _pg_postgres_conf_params: ""

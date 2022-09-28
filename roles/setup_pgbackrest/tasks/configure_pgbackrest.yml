@@ -1,0 +1,60 @@
+---
+- name: Get pgBackRest server informations
+  set_fact:
+    _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+
+- name: Fail if pgbackrest server informations are not found
+  fail:
+    msg: "Unable to find pgBackRest server informations"
+  when:
+    - _pgbackrest_server_info|length == 0
+
+- name: Set  _pgbackrest_host when not using hostname
+  set_fact:
+    _pgbackrest_host: "{{ _pgbackrest_server_info[0].ansible_host }}"
+  when:
+    - "not use_hostname|bool"
+
+- name: Set _pgbackrest_host when using hostname
+  set_fact:
+    _pgbackrest_host: "{{ _pgbackrest_server_info[0].inventory_hostname }}"
+  when:
+    - use_hostname|bool
+
+- name: Ensure lock directory {{ pgbackrest_lock_path }} exists
+  file:
+    path: "{{ pgbackrest_lock_path }}"
+    state: directory
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0750
+    recurse: yes
+  become: yes
+
+# spool directory needed with archive-async to store transient data during archiving and recovery
+- name: Create spool directory
+  file:
+    path: "{{ pgbackrest_spool_directory }}"
+    state: directory
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0750
+    recurse: yes
+  become: yes
+  when: pgbackrest_archive_method == "async"
+
+- name: Build configuration file {{ pgbackrest_configuration_file }}
+  template:
+    src: "./templates/pgbackrest_{{ group_names[0] }}.{{ pgbackrest_archive_method }}.conf.template"
+    dest: "{{ pgbackrest_configuration_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+  become: yes
+  vars:
+    pgbackrest_host: "{{ _pgbackrest_host }}"
+
+- name: Reset local variables
+  set_fact:
+    _pgbackrest_server_info: ""
+    _pgbackrest_host: null
