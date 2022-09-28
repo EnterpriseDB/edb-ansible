@@ -188,7 +188,7 @@ Content of the `inventory.yml` file:
 ---
 all:
   children:
-    pgbackrest:
+    pgbackrestserver:
       hosts:
         pgbackrest1:
           ansible_host: xxx.xxx.xxx.xxx
@@ -201,7 +201,7 @@ Below is an example of how to include the `setup_pgbackrestserver` role:
 
 ```yaml
 ---
-- hosts: pgbackrest
+- hosts: pgbackrestserver
   name: Deploy pgbackrest servers
   become: yes
   gather_facts: yes
@@ -214,6 +214,7 @@ Below is an example of how to include the `setup_pgbackrestserver` role:
       set_fact:
         pg_version: 14
         pg_type: "PG"
+        repo_cipher_password: "password"
 
   roles:
     - setup_repo

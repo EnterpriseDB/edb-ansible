@@ -120,7 +120,7 @@ Content of the `inventory.yml` file:
 ---
 all:
   children:
-    pgbackrest:
+    pgbackrestserver:
       hosts:
         pgbackrest1:
           ansible_host: xxx.xxx.xxx.xxx
