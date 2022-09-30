@@ -1,0 +1,71 @@
+---
+# efm credentials
+os: ""
+pg_version: 14
+efm_version: 4.5
+efm_eager_failover: false
+efm_install_version: "{{ efm_version | replace('.','') }}"
+pg_instance_name: main
+disable_logging: true
+force_efm_install: false
+pass_dir: "~/.edb"
+use_hostname: true
+update_etc_file: true
+
+pg_efm_user: "efm"
+pg_efm_user_password: ""
+pg_ssl: true
+
+efm_nodes_list: ""
+efm_cluster_name: "{{ pg_instance_name }}"
+efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
+edb_efm_lock_file: "/var/lock/{{ efm_cluster_name }}-{{ efm_version }}/{{ efm_cluster_name }}.lock"
+# common variables require for the role
+primary_public_ip: ""
+primary_private_ip: ""
+input_password: ""
+
+efm_port: 7800
+efm_admin_port: 7809
+
+# example of efm_custom_parameters:
+# efm_parameters:
+#   - name: script.notification
+#     value: "/usr/edb/efm-3.10/bin/notification.sh"
+efm_parameters: []
+efm_password_parameters: ""
+
+efm_properties: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.properties"
+efm_node_file: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.nodes"
+efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
+  - Rocky8
+  - OracleLinux7
+
+supported_pg_type:
+  - EPAS
+  - PG
+
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+
+supported_efm_version:
+  - "4.5"
+  - "4.4"
+  - "4.3"
+  - "4.2"
+  - "4.1"
+  - "4.0"
+  - "3.10"

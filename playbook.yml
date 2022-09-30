@@ -50,3 +50,5 @@
       when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: manage_dbpatches
       when: "'manage_dbpatches' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_efm
+      when: "'manage_efm' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

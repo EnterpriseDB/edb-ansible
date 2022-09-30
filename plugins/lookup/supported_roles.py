@@ -36,6 +36,7 @@ GROUP_ROLES = {
         'autotuning',
         'setup_repmgr',
         'manage_dbpatches',
+        'manage_efm',
     ],
     'standby': [
         'setup_repo',
@@ -46,6 +47,7 @@ GROUP_ROLES = {
         'autotuning',
         'setup_repmgr',
         'manage_dbpatches',
+        'manage_efm',
     ],
     'pemserver': [
         'setup_repo',
@@ -86,6 +88,7 @@ GROUP_ROLES = {
         'setup_efm',
         'setup_repmgr',
         'manage_dbpatches',
+        'manage_efm',
     ],
     'proxy': [
         'setup_repo',
