@@ -151,6 +151,16 @@ pg_databases:
       encoding: UTF-8
 ```
 
+Tablesapces management.
+
+```yaml
+pg_tablespaces:
+    - name: index_tablespace
+      owner: edb
+      location: "/data/index_tablespace"
+      state: present
+```
+
 ## Dependencies
 
 The `manage_dbserver` role does depend on the following roles:

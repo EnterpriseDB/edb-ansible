@@ -2,6 +2,7 @@
 # Variables for EPAS
 pg_port: "5432"
 pg_owner: "postgres"
+pg_group: "postgres"
 pg_user_home: "/var/lib/postgresql"
 pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}"
 pg_database: "postgres"

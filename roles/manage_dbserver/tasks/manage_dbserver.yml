@@ -11,6 +11,7 @@
     - import_tasks: manage_privileges.yml
     - import_tasks: copy_files.yml
     - import_tasks: execute_sql_scripts.yml
+    - import_tasks: manage_tablespaces.yml
 
 - name: Include Postgres update configuration tasks
   block:
