@@ -1,0 +1,42 @@
+---
+
+# Set the shared_buffers value based on the following formula
+# base = RAM / 4
+# if RAM < 3 GB:
+#   base = base * 0.5
+# else if RAM < 8 GB:
+#   base = base * 0.75
+# else if RAM > 64 GB:
+#   base = greatest(16 GB, RAM / 6)
+# shared_buffers = least(base, 64 GB)
+# Above forumla was published as per the following tuning guide
+# https://www.enterprisedb.com/promote/configuring-and-tuning-postgresql-and-epas-linux?aliId=eyJpIjoiUGJRWG1adTEyblZZRFUrKyIsInQiOiJhOXZvRUtoUkZsakRTbGlSeVpWRE5BPT0ifQ%253D%253D
+
+# on systems without swap space.
+- name: Set the variable _system_base_mem_mb
+  set_fact:
+    _system_base_mem_mb: >-
+      {{  (_sys_memtotal_mb | int / 4) | int }}
+
+- name: Set the variable _system_base_mem_mb
+  set_fact:
+    _system_base_mem_mb: >-
+      {{ (_system_base_mem_mb | int * 0.5) | int }}
+  when: _sys_memtotal_mb | int < 3072
+
+- name: Set the variable _system_base_mem_mb
+  set_fact:
+    _system_base_mem_mb: >-
+      {{ ( _system_base_mem_mb| int * 0.75) | int }}
+  when: _sys_memtotal_mb | int  >= 3072 and _sys_memtotal_mb | int < 8192
+
+- name: Set the variable _system_base_mem_mb
+  set_fact:
+    _system_base_mem_mb: >-
+      {{ [ ( _system_base_mem_mb| int / 6 ) | int, 16 * 1024 ] | max }}
+  when: _sys_memtotal_mb | int >= 65536
+
+- name: Set the variable _pg_shared_buffers_mb
+  set_fact:
+    _pg_shared_buffers_mb: >-
+      {{ [_system_base_mem_mb | int,  64 * 1024 ] | min }}

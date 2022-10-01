@@ -13,7 +13,12 @@ vm.overcommit_memory=2
 vm.overcommit_ratio={{ vm_overcommit_ratio }}
 vm.swappiness=1
 {% endif %}
+{% if ansible_memtotal_mb > 4096 %}
+vm.dirty_bytes=1073741824
+vm.dirty_background_bytes=268435456
+{% else %}
 vm.dirty_ratio=30
 vm.dirty_background_ratio=10
+{% endif %}
 [vm]
 transparent_hugepages=never
