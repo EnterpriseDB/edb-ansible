@@ -172,6 +172,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   manage_pgbouncer:
     pg_version:
     - 10
@@ -187,6 +188,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   setup_barmanserver:
     pg_version:
     - 10
