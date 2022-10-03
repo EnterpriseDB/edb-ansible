@@ -202,6 +202,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   setup_barman:
     pg_version:
     - 10
@@ -217,6 +218,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   setup_repmgr:
     pg_version:
     - 10

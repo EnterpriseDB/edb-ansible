@@ -41,5 +41,5 @@
       - barman-cli-cloud
     state: present
   when:
-    - ansible_distribution == 'Debian'
+    - ansible_os_family == 'Debian'
   become: true
