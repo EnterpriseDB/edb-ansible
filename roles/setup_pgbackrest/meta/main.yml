@@ -1,1 +1,33 @@
 ---
+galaxy_info:
+  role_name: setup_pgbackrest
+  namespace: edb_postgres
+  description: Setup pgBackRest backups
+  company: "EnterpriseDB"
+
+  license: BSD
+
+  min_ansible_version: 2.8
+
+  platforms:
+    - name: CentOS
+      versions:
+        - 7
+        - 8
+    - name: Red Hat
+      versions:
+        - 7
+        - 8
+    - name: Debian
+      versions:
+        - 10
+
+  galaxy_tags:
+    - database
+    - postgresql
+    - postgres
+    - edb
+    - backup
+    - pgbackrest
+
+dependencies: []
