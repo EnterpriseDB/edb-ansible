@@ -12,3 +12,4 @@ supported_os:
   - Rocky8
   - Debian10
   - OracleLinux7
+  - Ubuntu20
