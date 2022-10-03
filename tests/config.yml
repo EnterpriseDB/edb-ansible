@@ -342,6 +342,7 @@ cases:
     - rocky8
     - centos7
     - debian10
+    - ubuntu20
   setup_pgbackrestserver:
     pg_version:
     - 14
@@ -354,4 +355,5 @@ cases:
     - rocky8
     - centos7
     - debian10
+    - ubuntu20
 

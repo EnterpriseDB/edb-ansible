@@ -25,3 +25,4 @@ supported_os:
   - RHEL8
   - Rocky8
   - Debian10
+  - Ubuntu20
