@@ -64,14 +64,14 @@
     pg_version|int >= 14
     and install_bdr_packages|bool
 
-- name: Stop the service {{ epas_service }} for EPAS >= 14
+- name: Stop the service {{ epas_service }}
   systemd:
     name: "{{ epas_service }}"
     state: stopped
   when: install_package.changed
   become: true
 
-- name: Drop the default debian database for EPAS >= 14
+- name: Drop the default debian database
   shell: >
     {{ epas_deb_drop_cluster }} --stop {{ pg_version }} {{ deb_cluster_name }}
   when: install_package.changed
