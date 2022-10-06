@@ -172,6 +172,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   manage_pgbouncer:
     pg_version:
     - 10
@@ -187,6 +188,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   setup_barmanserver:
     pg_version:
     - 10
@@ -202,6 +204,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   setup_barman:
     pg_version:
     - 10
@@ -217,6 +220,7 @@ cases:
     - rocky8
     - debian10
     - oraclelinux7
+    - ubuntu20
   setup_repmgr:
     pg_version:
     - 10
@@ -338,6 +342,7 @@ cases:
     - rocky8
     - centos7
     - debian10
+    - ubuntu20
   setup_pgbackrestserver:
     pg_version:
     - 14
@@ -350,4 +355,5 @@ cases:
     - rocky8
     - centos7
     - debian10
+    - ubuntu20
 
