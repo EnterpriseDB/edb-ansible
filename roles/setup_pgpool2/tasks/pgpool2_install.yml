@@ -13,12 +13,10 @@
     - ansible_distribution_major_version == '8'
     - ansible_os_family == 'RedHat'
 
-- name: Install pgpoolII package on RedHat
+- name: Install pgpoolII package
   ansible.builtin.package:
     name: "{{ pgpool2_package_name }}"
     state: present
-  when:
-    - ansible_os_family == 'RedHat'
   become: true
 
 - name: Install openssl package on RedHat
@@ -26,7 +24,6 @@
     name: "openssl"
     state: present
   when:
-    - ansible_os_family == 'RedHat'
     - pgpool2_ssl
   become: true
 

@@ -5,10 +5,10 @@
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Reference pg_type variables
-  include_vars: "{{ pg_type }}.yml"
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Reference pg_type variables
-  include_vars: "../../init_dbserver/vars/{{ pg_type }}_RedHat.yml"
+  include_vars: "../../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Check support for Operating System
   fail:
@@ -28,11 +28,6 @@
   when:
     - pg_type == "EPAS"
     - pgpool2_version not in supported_pgpool2_version
-
-- name: Set service name
-  set_fact:
-    pgpool2_service_name: >-
-      {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II{% endif %}
 
 - name: Include the pgpool2_manage_configuration
   include_tasks: pgpool2_manage_configuration.yml

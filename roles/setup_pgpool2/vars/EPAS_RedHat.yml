@@ -1,0 +1,20 @@
+---
+pgpool2_version: 4.3
+pgpool2_package_name: "edb-pgpool{{ pgpool2_version | string | replace('.', '') }}"
+pgpool2_configuration_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pgpool.conf"
+pcp_configuration_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pcp.conf"
+pgpool2_user: "enterprisedb"
+pgpool2_group: "enterprisedb"
+
+# Default configuration values
+pgpool2_pid_file_name: "/var/run/edb/pgpool{{ pgpool2_version | string }}/edb-pgpool-{{ pgpool2_version | string }}.pid"
+pgpool2_logdir: "/var/log/edb/pgpool{{ pgpool2_version | string }}"
+pgpool2_bin_path: "/usr/edb/pgpool{{ pgpool2_version | string }}/bin"
+
+# Directory containing SSL keys and certs
+pgpool2_ssl_dir: "/etc/sysconfig/edb/pgpool-ssl"
+
+# pgpool service name
+pgpool2_service_name: "edb-pgpool-{{ pgpool2_version }}"
+
+pgpool2_node_id_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pgpool_node_id"

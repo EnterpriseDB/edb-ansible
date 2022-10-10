@@ -6,8 +6,48 @@ from conftest import (
     get_pgpool2,
     get_pg_version,
     get_primary,
-    get_pg_unix_socket_dir
+    get_pg_unix_socket_dir,
+    os_family
 )
+
+def test_setup_pgpool2():
+    host = get_pgpool2()[0]
+
+    if get_pg_type() == 'EPAS':
+        if os_family() == 'Debian':
+            service = 'edb-pgpool43'
+        elif os_family() == 'RedHat':
+            service = 'edb-pgpool-4.3'
+
+    if get_pg_type() == 'PG':
+        if os_family() == 'Debian':
+            service = 'pgpool2'
+        elif os_family() == 'RedHat':
+            service = 'pgpool-II'
+
+    assert host.service(service).is_running, \
+        "pgpool2 service not running"
+
+    assert host.service(service).is_enabled, \
+        "pgpool2 service not enabled"
+
+
+def test_setup_pgpool_packages():
+    host = get_pgpool2()[0]
+    packages = ['openssl']
+    if get_pg_type() == 'EPAS':
+        packages.append('edb-pgpool43')
+
+    if get_pg_type() == 'PG':
+        if os_family() == 'Debian':
+            packages.append('pgpool2')
+        elif os_family() == 'RedHat':
+            packages.append('pgpool-II')
+
+    for package in packages:
+        assert host.package(package).is_installed, \
+            "Package %s not installed" % packages
+
 
 def test_setup_pgpool2_EPAS():
     if get_pg_type() != 'EPAS':
@@ -21,11 +61,15 @@ def test_setup_pgpool2_EPAS():
     assert host.service(service).is_enabled, \
         "pgpool2 service not enabled"
 
+
 def test_setup_pgpool2_PG():
     if get_pg_type() != 'PG':
         pytest.skip()
     host = get_pgpool2()[0]
-    service = 'pgpool-II'
+    if os_family() == 'RedHat':
+        service = 'pgpool-II'
+    elif os_family() == 'Debian':
+        service = 'pgpool2'
 
     assert host.service(service).is_running, \
         "pgpool2 service not running"
@@ -72,7 +116,7 @@ def test_setup_pgpool_test_user():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgpool2_address= get_pgpool2()[0]
+    pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
     

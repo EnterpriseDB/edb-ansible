@@ -1,7 +1,7 @@
 [Service]
 User={{ pgpool2_user }}
 
-EnvironmentFile=-/etc/sysconfig/pgpool-II
+EnvironmentFile=-{{ pgpool2_environment_file }}
 
 ExecStart=
 ExecStart={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} $OPTS

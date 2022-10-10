@@ -1,0 +1,24 @@
+---
+pgpool2_version: 4.3
+# We don't have the choice of the version with community PostgreSQL
+pgpool2_package_name: "pgpool-II"
+pgpool2_configuration_file: "/etc/pgpool-II/pgpool.conf"
+pgpool2_user: "postgres"
+pgpool2_group: "postgres"
+
+# Systemd unit file
+pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II.service.d/pgpool-II.conf"
+pcp_configuration_file: "/etc/pgpool-II/pcp.conf"
+pgpool2_pid_file_name: "/var/run/pgpool-II/pgpool.pid"
+pgpool2_logdir: "/var/log/pgpool-II"
+# Directory containing SSL keys and certs
+pgpool2_ssl_dir: "/etc/pgpool-II/ssl"
+pgpool2_bin_path: "/usr/bin"
+
+# pgpool service name
+pgpool2_service_name: "pgpool-II"
+
+# pgpool environment file
+pgpool2_environment_file: "/etc/sysconfig/pgpool-II"
+
+pgpool2_node_id_file: "/etc/pgpool-II/pgpool_node_id"

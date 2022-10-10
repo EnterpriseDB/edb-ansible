@@ -10,6 +10,7 @@ supported_os:
   - RHEL8
   - Rocky8
   - OracleLinux7
+  - Ubuntu20
 
 supported_pg_version:
   - 10

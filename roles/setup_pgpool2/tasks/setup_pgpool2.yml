@@ -5,10 +5,10 @@
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Reference pg_type variables
-  include_vars: "{{ pg_type }}.yml"
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Reference pg_type variables
-  include_vars: "../../init_dbserver/vars/{{ pg_type }}_RedHat.yml"
+  include_vars: "../../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Check support for Operating System
   fail:
@@ -38,10 +38,11 @@
     - (pgpool2_vip is not defined or pgpool2_vip|length == 0) or
       (pgpool2_vip_dev is not defined or pgpool2_vip_dev|length == 0)
 
-- name: Set the service name
-  set_fact:
-    pgpool2_service_name: >-
-      {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II{% endif %}
+# don't need - now defined in vars yml file
+#- name: Set the service name
+#  set_fact:
+#    pgpool2_service_name: >-
+#      {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II{% endif %}
 
 - name: Initialize local variables
   set_fact:
