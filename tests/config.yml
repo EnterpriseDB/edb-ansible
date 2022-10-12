@@ -144,6 +144,7 @@ cases:
     - rocky8
     - oraclelinux7
     - ubuntu20
+    - debian10
   manage_pgpool2:
     pg_version:
     - 10
@@ -159,6 +160,7 @@ cases:
     - rocky8
     - oraclelinux7
     - ubuntu20
+    - debian10
   setup_pgbouncer:
     pg_version:
     - 10

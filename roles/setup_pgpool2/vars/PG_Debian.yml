@@ -7,9 +7,9 @@ pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 
 # Systemd unit file
-pgpool2_systemd_unit_file: "/etc/init.d/pgpool2"
+pgpool2_systemd_unit_file: "/etc/system/systemd/pgpool2.service"
 pcp_configuration_file: "/etc/pgpool2/pcp.conf"
-pgpool2_pid_file_name: "/var/run/pgpool2/pgpool.pid"
+pgpool2_pid_file_name: "/var/run/postgresql/pgpool.pid"
 pgpool2_logdir: "/var/log/pgpool2"
 # Directory containing SSL keys and certs
 pgpool2_ssl_dir: "/etc/pgpool2/ssl"
