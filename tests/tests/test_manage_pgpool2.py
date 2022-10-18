@@ -93,11 +93,6 @@ def test_manage_pgpool_pcp_socket():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    if os_family() == 'RedHat':
-        pcp_socket_dir = '/tmp'
-    elif os_family() == 'Debian':
-        pcp_socket_dir = '/var/run/postgresql'
-
     pgpool2_address= get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
@@ -110,5 +105,5 @@ def test_manage_pgpool_pcp_socket():
         )
         result = cmd.stdout.strip()
 
-    assert result == pcp_socket_dir, \
+    assert result == '/tmp', \
         "Load Balance is not enabled."

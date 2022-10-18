@@ -4,7 +4,6 @@
   "pg_wal": "/opt/pgwal",
   "pgpool2_load_balancing": true,
   "pgpool2_port": 5433,
-  "pgpool2_socket_dir": "/var/run/postgresql",
   "pgpool2_users":
   [
     {

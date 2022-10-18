@@ -21,9 +21,7 @@ pgpool2_service_name: "pgpool2"
 # pgpool environment file
 pgpool2_environment_file: "/etc/default/pgpool2"
 
-pcp_socket_dir: "/var/run/postgresql"
-pgpool2_socket_dir: "/var/run/postgresql"
-pgpool2_key_file: "/var/lib/postgresql/.pgpoolkey"
-pgpool2_hba_file: "/etc/pgpool2/pgpool_hba.conf"
+pcp_socket_dir: "/tmp"
+pgpool2_socket_dir: "/tmp"
 
 pgpool2_node_id_file: "/etc/pgpool2/pgpool_node_id"

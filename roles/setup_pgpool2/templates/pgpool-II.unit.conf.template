@@ -1,10 +1,8 @@
 [Service]
 User={{ pgpool2_user }}
-
+Type=forking
 EnvironmentFile=-{{ pgpool2_environment_file }}
 
 ExecStart=
-ExecStart={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} $OPTS
-ExecStop={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} -m fast stop
-ExecReload=
-ExecReload={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} reload
+ExecStart={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }}
+Exec_Stop={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} -m fast stop
