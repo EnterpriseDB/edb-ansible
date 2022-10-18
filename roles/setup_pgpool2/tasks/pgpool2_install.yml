@@ -19,7 +19,7 @@
     state: present
   become: true
 
-- name: Install openssl package on RedHat
+- name: Install openssl package
   ansible.builtin.package:
     name: "openssl"
     state: present
@@ -33,5 +33,14 @@
     state: present
   when:
     - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+  become: true
+
+- name: Install libpgpool2 package on Debian
+  ansible.builtin.package:
+    name: "libpgpool2"
+    state: present
+  when:
+    - ansible_os_family == 'Debian'
     - pg_type == 'PG'
   become: true
