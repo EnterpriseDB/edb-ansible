@@ -202,3 +202,7 @@
 
 - name: Create pcp user for pgpool2
   include_tasks: pgpool2_create_pcp_user.yml
+
+#- name: fail to keep around
+#  fail:
+#    msg: "Failed at end"

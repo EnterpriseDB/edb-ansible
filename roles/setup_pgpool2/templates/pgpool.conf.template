@@ -39,7 +39,7 @@ listen_addresses = '{{ pgpool2_listen_addresses }}'
 port = {{ pgpool2_port }}
                                    # Port number
                                    # (change requires restart)
-socket_dir = '/tmp'
+socket_dir = '{{ pgpool2_socket_dir }}'
                                    # Unix domain socket path
                                    # The Debian package defaults to
                                    # /var/run/postgresql
@@ -59,7 +59,7 @@ pcp_listen_addresses = '*'
 pcp_port = {{ pgpool2_pcp_port }}
                                    # Port number for pcp
                                    # (change requires restart)
-pcp_socket_dir = '/tmp'
+pcp_socket_dir = '{{ pcp_socket_dir }}'
                                    # Unix domain socket path for pcp
                                    # The Debian package defaults to
                                    # /var/run/postgresql

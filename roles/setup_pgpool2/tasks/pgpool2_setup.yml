@@ -155,7 +155,7 @@
 
 - name: Create pgpoolII systemd directory
   file:
-    path: "{{ pgpool2_systemd_unit_file | dirname }}"
+    path: "{{ pgpool2_systemd_config_file | dirname }}"
     state: directory
     owner: "root"
     group: "root"
@@ -167,12 +167,18 @@
 - name: Generate pgpoolII systemd unit file
   template:
     backup: yes
-    dest: "{{ pgpool2_systemd_unit_file }}"
+    dest: "{{ pgpool2_systemd_config_file }}"
     src: ./templates/pgpool-II.unit.conf.template
     mode: 0644
   when:
     - pg_type == 'PG'
   become: yes
+
+- name: Insert PID location
+  ansible.builtin.lineinfile:
+    path: "{{ pgpool2_environment_file }}"
+    line: PIDFILE={{ pgpool2_pid_file_name }}
+  become: true
 
 - name: Stop pgpoolII service
   systemd:

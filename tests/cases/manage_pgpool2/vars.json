@@ -7,7 +7,7 @@
   "pgpool2_configuration": [
     {
       "key": "socket",
-      "value": "/tmp",
+      "value": "/var/run/postgresql",
       "quoted": true,
       "state": "present"
     }

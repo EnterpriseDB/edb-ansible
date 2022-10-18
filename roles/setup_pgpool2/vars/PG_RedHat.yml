@@ -7,7 +7,7 @@ pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 
 # Systemd unit file
-pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II.service.d/pgpool-II.conf"
+pgpool2_systemd_config_file: "/etc/systemd/system/pgpool-II.service.d/pgpool-II.conf"
 pcp_configuration_file: "/etc/pgpool-II/pcp.conf"
 pgpool2_pid_file_name: "/var/run/pgpool-II/pgpool.pid"
 pgpool2_logdir: "/var/log/pgpool-II"
@@ -20,5 +20,8 @@ pgpool2_service_name: "pgpool-II"
 
 # pgpool environment file
 pgpool2_environment_file: "/etc/sysconfig/pgpool-II"
+
+pcp_socket_dir: "/tmp"
+pgpool2_socket_dir: "/tmp"
 
 pgpool2_node_id_file: "/etc/pgpool-II/pgpool_node_id"

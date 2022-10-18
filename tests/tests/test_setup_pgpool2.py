@@ -48,36 +48,7 @@ def test_setup_pgpool_packages():
         assert host.package(package).is_installed, \
             "Package %s not installed" % packages
 
-
-def test_setup_pgpool_test_user_test():
-    ansible_vars = load_ansible_vars()
-    pgpool2_user = ansible_vars['pgpool2_users'][0]['name']
-    pgpool2_password = ansible_vars['pgpool2_users'][0]['pass']
-    pgpool2_port = ansible_vars['pgpool2_port']
-
-    pg_user = 'postgres'
-    pg_group = 'postgres'
-
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
-
-    pgpool2_address = get_pgpool2()[0]
-    address = str(pgpool2_address).strip("<>").split('//')[1]
-    host = get_primary()
-
-    with host.sudo(pg_user):
-        query = "SHOW pg_user"
-        cmd = host.run('PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" postgres | grep %s'
-                       % (pgpool2_password, pgpool2_user, address, pgpool2_port,
-                          query, pgpool2_user)
-                       )
-        result = cmd.stdout.strip()
-
-    assert len(result) > 0, \
-        "pgpool test user was not created sucessfully."
-
-
+# combined to test_setup_pgpool2
 def test_setup_pgpool2_EPAS():
     if get_pg_type() != 'EPAS':
         pytest.skip()
@@ -90,7 +61,7 @@ def test_setup_pgpool2_EPAS():
     assert host.service(service).is_enabled, \
         "pgpool2 service not enabled"
 
-
+# combined to test_setup_pgpool2
 def test_setup_pgpool2_PG():
     if get_pg_type() != 'PG':
         pytest.skip()
@@ -106,6 +77,7 @@ def test_setup_pgpool2_PG():
     assert host.service(service).is_enabled, \
         "pgpool2 service not enabled"
 
+# combined to test_setup_pgpool_packages
 def test_setup_pgpool_PG_packages():
     if get_pg_type() != 'PG':
         pytest.skip()
@@ -119,6 +91,7 @@ def test_setup_pgpool_PG_packages():
         assert host.package(package).is_installed, \
             "Package %s not installed" % packages
 
+# combined to test_setup_pgpool_packages
 def test_setup_pgpool_EPAS_packages():
     if get_pg_type() != 'EPAS':
         pytest.skip()
@@ -203,7 +176,7 @@ def test_setup_pgpool_loadbalance():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgpool2_address= get_pgpool2()[0]
+    pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
     

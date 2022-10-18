@@ -5,7 +5,8 @@ from conftest import (
     get_pg_type,
     get_pgpool2,
     get_pg_version,
-    get_primary
+    get_primary,
+    os_family
 )
 
 def test_manage_pgpool_pcp_user():
@@ -64,7 +65,7 @@ def test_manage_pgpool_test_user():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgpool2_address= get_pgpool2()[0]
+    pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
 
@@ -92,6 +93,11 @@ def test_manage_pgpool_pcp_socket():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
+    if os_family() == 'RedHat':
+        pcp_socket_dir = '/tmp'
+    elif os_family() == 'Debian':
+        pcp_socket_dir = '/var/run/postgresql'
+
     pgpool2_address= get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
@@ -104,5 +110,5 @@ def test_manage_pgpool_pcp_socket():
         )
         result = cmd.stdout.strip()
 
-    assert result == '/tmp', \
+    assert result == pcp_socket_dir, \
         "Load Balance is not enabled."
