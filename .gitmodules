@@ -1,0 +1,3 @@
+[submodule "git-config"]
+	path = git-config
+	url = https://github.com/hypersql/git-config.git

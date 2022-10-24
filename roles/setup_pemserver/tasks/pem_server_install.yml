@@ -1,6 +1,0 @@
----
-- name: Install require packages for PEM server
-  package:
-    name: "{{ pem_server_packages }}"
-    state: present
-  become: yes

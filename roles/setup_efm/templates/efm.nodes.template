@@ -1,3 +1,0 @@
-# List of node address:port combinations separated by whitespace.
-# The list should include at least the membership coordinator's address.
-{{ efm_nodes_list }}

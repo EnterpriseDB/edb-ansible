@@ -1,4 +1,0 @@
----
-# Entry point of the setup_efm role
-- name: Include the setup_efm.yml
-  include_tasks: setup_efm.yml

@@ -4,9 +4,6 @@
   become: yes
   gather_facts: yes
 
-  collections:
-    - edb_devops.edb_postgres
-
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:

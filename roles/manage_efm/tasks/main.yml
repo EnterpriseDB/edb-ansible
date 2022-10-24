@@ -1,4 +1,0 @@
----
-# Entry point of the manage_efm role
-- name: Include the manage_efm.yml
-  include_tasks: manage_efm.yml
