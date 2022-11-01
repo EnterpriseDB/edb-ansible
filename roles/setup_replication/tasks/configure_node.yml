@@ -1,35 +1,35 @@
 ---
 - name: Add password in pgpass
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_pgpass
   vars:
     pg_pgpass_values:
-       - user: "{{ pg_replication_user }}"
-         password: "{{ pg_replication_user_password }}"
-         create: yes
+      - user: "{{ pg_replication_user }}"
+        password: "{{ pg_replication_user_password }}"
+        create: true
   no_log: "{{ disable_logging }}"
 
 - name: Create standby
-  shell: >
+  ansible.builtin.shell: >
     PGAPPNAME={{ inventory_hostname }} {{ pg_basebackup }}
   args:
     creates: "{{ pg_data }}/PG_VERSION"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   async: 180000
   poll: 60
 
 - name: Enable and start the service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pg_service }}"
-    daemon_reload: yes
+    daemon_reload: true
     state: started
     enabled: true
-  become: yes
+  become: true
 
 - name: Update standby hba config
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf
   vars:

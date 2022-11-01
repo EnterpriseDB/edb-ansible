@@ -1,48 +1,48 @@
 ---
 - name: Update the ca-certificates package
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name: ca-certificates
-    state: latest
+    state: present
   become: true
 
 - name: Download EDB GPG key for EL8
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ edb_gpg_key_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
     - enable_edb_repo|bool
-  become: yes
+  become: true
 
 - name: Download PGDG GPG key for EL8
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ pg_gpg_key_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
-  become: yes
+  become: true
 
 - name: Download EPEL GPG key for EL8
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ epel_gpg_key_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
-  become: yes
+  become: true
 
 - name: Install EPEL repo for EL7
-  package:
+  ansible.builtin.package:
     name: "{{ epel_repo_7 }}"
     state: present
   when: ansible_distribution_major_version == '7'
-  become: yes
+  become: true
 
 - name: Install PG repo for EL7
-  package:
+  ansible.builtin.package:
     name: "{{ pg_rpm_repo_7 }}"
     state: present
-  become: yes
+  become: true
   when:
     - ansible_distribution_major_version == '7'
     - pg_type == 'PG'
@@ -61,35 +61,35 @@
   when: ansible_distribution_major_version == '8'
 
 - name: Install EPEL repo for EL8
-  package:
+  ansible.builtin.package:
     name: "{{ epel_repo_8 }}"
     state: present
   when: ansible_distribution_major_version == '8'
-  become: yes
+  become: true
 
 - name: Install PG repo for EL8
-  package:
+  ansible.builtin.package:
     name: "{{ pg_rpm_repo_8 }}"
     state: present
-  become: yes
+  become: true
   when:
     - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
 
 - name: Install EPAS repo for RedHat
-  package:
+  ansible.builtin.package:
     name: "{{ edb_rpm_repo }}"
     state: present
-  become: yes
+  become: true
   when: >
     enable_edb_repo|bool and repo_token|length < 1
 
 - name: Set Credentials for EDB Yum Repo
-  replace:
+  ansible.builtin.replace:
     path: /etc/yum.repos.d/edb.repo
     regexp: '<username>:<password>'
     replace: "{{ repo_username }}:{{ repo_password }}"
-  become: yes
+  become: true
   when: >
     enable_edb_repo|bool and repo_token|length < 1
 
@@ -123,7 +123,7 @@
   ansible.builtin.package:
     name: curl
     state: present
-  become: yes
+  become: true
 
 - name: Install BDR packages if tpa_subscription_token is given
   ansible.builtin.shell: >

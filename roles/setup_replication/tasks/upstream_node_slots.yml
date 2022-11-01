@@ -1,18 +1,18 @@
 ---
 - name: Update the pgpass with replication users password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_pgpass
   vars:
     pg_pgpass_values:
-        - user: "{{ pg_replication_user }}"
-          password: "{{ pg_replication_user_password }}"
-          create: yes
+      - user: "{{ pg_replication_user }}"
+        password: "{{ pg_replication_user_password }}"
+        create: true
   no_log: "{{ disable_logging }}"
   run_once: true
 
 - name: Update primary hba config
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf
   vars:
@@ -21,12 +21,12 @@
   run_once: true
 
 - name: Create physical slots of the standbys
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_slots
   vars:
     pg_slots:
-       - name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
-         slot_type: physical
+      - name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+        slot_type: physical
   no_log: "{{ disable_logging }}"
   when: use_replication_slots

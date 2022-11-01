@@ -1,21 +1,21 @@
 ---
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Check if Database Engine is supported
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine = {{ pg_type }} {{ pg_version }}
           is not supported on {{ os }}."
   when: >
@@ -26,14 +26,14 @@
      (pg_version|int < 12 and os in ['Debian10']))
 
 - name: Remove Postgres packages
-  include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_install.yml"
+  ansible.builtin.include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_install.yml"
   when:
     - force_install is defined
     - force_install
 
 - name: Install and Configure Postgres on RedHat
-  include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_install.yml"
+  ansible.builtin.include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_install.yml"
 
 - name: Enable coredump based on enable_core_dump
-  include_tasks: linux_coredump.yml
+  ansible.builtin.include_tasks: linux_coredump.yml
   when: enable_core_dump|bool

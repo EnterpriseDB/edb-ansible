@@ -1,17 +1,17 @@
 ---
 - name: Check if we have PG_VERSION in pg_data
-  stat:
+  ansible.builtin.stat:
     path: "{{ pg_data }}/PG_VERSION"
-  become: yes
+  become: true
   register: pg_version_stat
 
 - name: Verify pg_wal and accordingly add in initdb
-  set_fact:
+  ansible.builtin.set_fact:
     pg_initdb_options: "{{ pg_initdb_options + ' --waldir=' + pg_wal }}"
   when: pg_wal|length > 0  and not pg_data in pg_wal
 
 - name: Initialize database postgres service
-  shell: >
+  ansible.builtin.shell: >
     {{ pg_initdb }} {{ pg_service }}
   args:
     executable: /bin/bash
@@ -19,10 +19,10 @@
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
   when: ansible_os_family == 'RedHat'
-  become: yes
+  become: true
 
 - name: Initialize database postgres service
-  shell: >
+  ansible.builtin.shell: >
     {{ pg_initdb }}
   args:
     executable: /bin/bash
@@ -30,17 +30,17 @@
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
   when: ansible_os_family == 'Debian'
-  become: yes
+  become: true
 
 - name: Copy the postgresql.conf.template to the server
-  template:
+  ansible.builtin.template:
     src: postgresql.conf.template
     dest: "{{ pg_data }}/postgresql.auto.conf"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0600
-  when:  not pg_version_stat.stat.exists
-  become: yes
+  when: not pg_version_stat.stat.exists
+  become: true
 
 - name: Enable and start systemd service
   ansible.builtin.systemd:

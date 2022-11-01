@@ -1,70 +1,74 @@
 ---
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Reference pg_type variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Reference ssl variables
-  include_vars: edb-ssl.yml
+  ansible.builtin.include_vars: edb-ssl.yml
   when: pg_ssl
 
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Open Postgres TCP port {{ pg_port }}
   ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Force cleanup based on force_initdb
-  block:
-    - include_tasks: rm_initdb.yml
+  ansible.builtin.include_tasks: rm_initdb.yml
   when:
     - force_initdb is defined
     - force_initdb
-  become: yes
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  become: true
 
 - name: Check and configure the node as primary or pemserver
+  become: true
   block:
-    - import_tasks: create_directories.yml
-    - import_tasks: pg_setup_systemd.yml
-    - import_tasks: pg_initdb.yml
-    - import_tasks: pg_set_superuser_password.yml
-  become: yes
+    - name: Create require directories
+      ansible.builtin.import_tasks: create_directories.yml
+    - name: Setup systemd for PG
+      ansible.builtin.import_tasks: pg_setup_systemd.yml
+    - name: Call initdb command
+      ansible.builtin.import_tasks: pg_initdb.yml
+    - name: Set superuser password
+      ansible.builtin.import_tasks: pg_set_superuser_password.yml
 
 - name: Configure ssl based on pg_ssl parameter
-  block:
-    - import_tasks: pg_ssl_send_files.yml
-    - import_tasks: pg_ssl_check.yml
-    - import_tasks: pg_ssl_config.yml
-  become: yes
   when:
-     - pg_ssl
+    - pg_ssl
+  become: true
+  block:
+    - name: Send pg_ssl_file if defined
+      ansible.builtin.import_tasks: pg_ssl_send_files.yml
+    - name: Check if we have SSL configured
+      ansible.builtin.import_tasks: pg_ssl_check.yml
+    - name: Configure SSL if not exists
+      ansible.builtin.import_tasks: pg_ssl_config.yml

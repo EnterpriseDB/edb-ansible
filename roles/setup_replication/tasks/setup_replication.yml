@@ -1,64 +1,62 @@
 ---
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Reference EPAS or PG variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Open Postgres TCP port {{ pg_port }}
   ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Force cleanup based on force_initdb/replication
-  block:
-    - include_tasks: rm_replication.yml
+  ansible.builtin.include_tasks: rm_replication.yml
   when: (force_initdb is defined and force_initdb)
       or (force_replication is defined and force_replication)
-  become: yes
 
 - name: Gather the cluste_nodes information
-  set_fact:
+  ansible.builtin.set_fact:
     pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
 
 - name: Get the primary information
-  set_fact:
+  ansible.builtin.set_fact:
     primary_inventory_hostname: "{{ node.inventory_hostname }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
-  when:  node.node_type == 'primary'
+  when: node.node_type == 'primary'
   run_once: true
   no_log: "{{ disable_logging }}"
 
 - name: Prepare host ip lists based on allow_node_ips
-  include_tasks: prepare_hba_value_list.yml
+  ansible.builtin.include_tasks: prepare_hba_value_list.yml
 
 - name: Prepare synchronous_standby_names
-  set_fact:
-    _synchronous_standbys: "{{ _synchronous_standbys|default([]) + [ node.inventory_hostname ] }}"
+  ansible.builtin.set_fact:
+    _synchronous_standbys: "{{ _synchronous_standbys | default([]) + [node.inventory_hostname] }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
@@ -70,38 +68,41 @@
   run_once: true
 
 - name: Update primary for replication
-  import_tasks: primary_settings.yml
+  ansible.builtin.import_tasks: primary_settings.yml
   run_once: true
   no_log: "{{ disable_logging }}"
   delegate_to: "{{ primary_inventory_hostname }}"
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
+  become: true
   no_log: "{{ disable_logging }}"
   when:
     - use_hostname|bool
     - update_etc_file|bool
 
 - name: Call upstream update based on the upstream node
-  block:
-    - import_tasks: upstream_node.yml
+  ansible.builtin.import_tasks: upstream_node.yml
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
   no_log: "{{ disable_logging }}"
 
 - name: Build standby service check
+  become: true
   block:
-    - import_tasks: create_directories.yml
-    - import_tasks: pg_basebackup.yml
-    - import_tasks: pg_setup_systemd.yml
-    - import_tasks: pg_ssl_send_files.yml
-    - import_tasks: configure_node.yml
-  become: yes
+    - name: Create directories if not exists
+      ansible.builtin.import_tasks: create_directories.yml
+    - name: Take PG base backup
+      ansible.builtin.import_tasks: pg_basebackup.yml
+    - name: Setup systemd file
+      ansible.builtin.import_tasks: pg_setup_systemd.yml
+    - name: Send SSL files based on users input
+      ansible.builtin.import_tasks: pg_ssl_send_files.yml
+    - name: Configure standby node
+      ansible.builtin.import_tasks: configure_node.yml
 
 - name: Update primary for synchronous replication
-  import_tasks: primary_synchronous_param.yml
+  ansible.builtin.import_tasks: primary_synchronous_param.yml
   when: >-
       _synchronous_standbys is defined and (
       _synchronous_standbys|length > 0
@@ -111,12 +112,12 @@
   no_log: "{{ disable_logging }}"
 
 - name: Reset the variables based on the user input
-  set_fact:
-      primary_private_ip: ""
-      primary_inventory_hostname: ""
-      primary_host_name: ""
-      standby_names: []
-      pg_allow_ip_addresses: []
-      standby_physical_slots: []
-      force_replication: false
+  ansible.builtin.set_fact:
+    primary_private_ip: ""
+    primary_inventory_hostname: ""
+    primary_host_name: ""
+    standby_names: []
+    pg_allow_ip_addresses: []
+    standby_physical_slots: []
+    force_replication: false
   register: output
