@@ -1,50 +1,50 @@
 ---
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Stop the efm_service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ efm_service }}"
     state: stopped
     enabled: false
   when:
     - ansible_facts.services[efm_service] is defined
     - ansible_facts.services[efm_service].state == 'running'
-  become: yes
+  become: true
 
 - name: Stop pg service if running
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pg_service }}"
     state: stopped
     enabled: false
   when:
     - ansible_facts.services[pg_service] is defined
     - ansible_facts.services[pg_service].state == 'running'
-  become: yes
+  become: true
 
 - name: Remove postgres data directory if exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_data }}"
     state: absent
-  become: yes
+  become: true
 
 - name: Remove postgres log directory if exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_log }}"
     state: absent
-  become: yes
+  become: true
   when: pg_log|length > 0
 
 - name: Remove postgres wal directory if exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_wal }}"
     state: absent
-  become: yes
+  become: true
   when: pg_wal|length > 0
 
 - name: Remove postgres local wal archive directory if exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_local_wal_archive_dir }}"
     state: absent
-  become: yes
+  become: true
   when: pg_local_wal_archive_dir|length > 0

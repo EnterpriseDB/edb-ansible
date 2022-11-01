@@ -1,6 +1,6 @@
 ---
 - name: Install Postgres
-  package:
+  ansible.builtin.package:
     name:
       - ca-certificates
       - python3-pycurl
@@ -9,34 +9,34 @@
       - postgresql-{{ pg_version }}
       - postgresql-server-dev-{{ pg_version }}
     state: present
-    update_cache: yes
+    update_cache: true
   register: install_package
   become: true
 
 - name: Install sslutils
-  package:
+  ansible.builtin.package:
     name:
       - postgresql-{{ pg_version }}-sslutils
     state: present
-    update_cache: yes
+    update_cache: true
   become: true
   when: pg_ssl
 
 - name: Install python-psycopg2
-  package:
+  ansible.builtin.package:
     name:
       - python-psycopg2
       - python-ipaddress
     state: present
-    update_cache: yes
-  when: os in ['Ubuntu18','Debian9', 'Debian10']
+    update_cache: true
+  when: os in ['Ubuntu18','Debian9','Debian10']
   become: true
 
 - name: "Install BDR packages for PG >= 14"
-  package:
+  ansible.builtin.package:
     name:
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}-debuginfo
+      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}
+      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
     state: present
   become: true
   when: >-
@@ -44,14 +44,14 @@
     and install_bdr_packages|bool
 
 - name: Stop the service {{ pg_service }}
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pg_service }}"
     state: stopped
   when: install_package.changed
   become: true
 
 - name: Drop the default debian database
-  shell: >
+  ansible.builtin.shell: >
     {{ pg_deb_drop_cluster }} {{ pg_version }} {{ deb_cluster_name }}
   args:
     executable: /bin/bash

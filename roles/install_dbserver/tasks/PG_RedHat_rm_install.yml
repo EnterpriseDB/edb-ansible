@@ -1,12 +1,12 @@
 ---
 - name: Stop the PG service if it's running
-  systemd:
+  ansible.builtin.systemd:
     name: postgresql-{{ pg_version }}
     state: stopped
   become: true
 
 - name: Remove require python package on EL7
-  package:
+  ansible.builtin.package:
     name:
       - python-pycurl
       - libselinux-python
@@ -17,7 +17,7 @@
   become: true
 
 - name: Remove require python package on EL8
-  package:
+  ansible.builtin.package:
     name:
       - python3-pycurl
       - python3-libselinux
@@ -27,7 +27,7 @@
   when: ansible_distribution_major_version == '8'
 
 - name: Remove Postgres
-  package:
+  ansible.builtin.package:
     name:
       - postgresql{{ pg_version }}
       - postgresql{{ pg_version }}-server

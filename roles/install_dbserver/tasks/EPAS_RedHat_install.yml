@@ -1,7 +1,7 @@
 ---
 
 - name: Install python packages on EL7
-  package:
+  ansible.builtin.package:
     name:
       - python-pip
       - python2-psycopg2
@@ -11,7 +11,7 @@
   become: true
 
 - name: Install python packages on EL8
-  package:
+  ansible.builtin.package:
     name:
       - python3-pip
       - python3-psycopg2
@@ -20,7 +20,7 @@
   become: true
 
 - name: "Install EPAS 10 packages"
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
@@ -36,7 +36,7 @@
     pg_version|int < 11
 
 - name: "Install EPAS 11,12,13 packages"
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
@@ -54,7 +54,7 @@
     pg_version|int > 10 and pg_version|int < 14
 
 - name: "Install EPAS >= 14 packages"
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
@@ -72,10 +72,10 @@
     pg_version|int >= 14
 
 - name: "Install BDR packages for EPAS >= 14"
-  package:
+  ansible.builtin.package:
     name:
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}-debuginfo
+      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}
+      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
     state: present
   become: true
   when: >-
@@ -83,7 +83,7 @@
     and install_bdr_packages|bool
 
 - name: Install sslutils
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server-sslutils
     state: present

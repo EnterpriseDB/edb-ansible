@@ -1,42 +1,42 @@
 ---
-- name: check if we have ca key exists or not
-  stat:
+- name: Check if we have ca key exists or not
+  ansible.builtin.stat:
     path: "{{ pg_data }}/ca_key.key"
-  become: yes
+  become: true
   register: ssl_ca_key
 
-- name: check if we have ca certificate exists or not
-  stat:
+- name: Check if we have ca certificate exists or not
+  ansible.builtin.stat:
     path: "{{ pg_data }}/ca_certificate.crt"
-  become: yes
+  become: true
   register: ssl_ca_certificate
 
-- name: check if we have root.crt exists or not
-  stat:
+- name: Check if we have root.crt exists or not
+  ansible.builtin.stat:
     path: "{{ pg_data }}/root.crt"
-  become: yes
+  become: true
   register: ssl_root_crt
 
-- name: check if we have root crl exists or not
-  stat:
+- name: Check if we have root crl exists or not
+  ansible.builtin.stat:
     path: "{{ pg_data }}/root.crl"
-  become: yes
+  become: true
   register: ssl_root_crl
 
-- name: check if we have server.key exists or not
-  stat:
+- name: Check if we have server.key exists or not
+  ansible.builtin.stat:
     path: "{{ pg_data }}/server.key"
-  become: yes
+  become: true
   register: ssl_server_key
 
-- name: check if we have server.crt exists or not
-  stat:
+- name: Check if we have server.crt exists or not
+  ansible.builtin.stat:
     path: "{{ pg_data }}/server.crt"
-  become: yes
+  become: true
   register: ssl_server_crt
 
-- name: create ssl extension in pg_database
-  include_role:
+- name: Create ssl extension in pg_database
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_extensions
   vars:

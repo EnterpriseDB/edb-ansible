@@ -1,4 +1,4 @@
 ---
 # Entry point of the init_dbserver role
 - name: Include the init_dbserver.yml
-  include_tasks: init_dbserver.yml
+  ansible.builtin.include_tasks: init_dbserver.yml

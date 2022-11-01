@@ -1,6 +1,6 @@
 ---
 - name: "Install EPAS Packages"
-  package:
+  ansible.builtin.package:
     name:
       - python3-pip
       - python3-psycopg2
@@ -11,32 +11,32 @@
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
     state: present
-    update_cache: yes
+    update_cache: true
   become: true
   register: install_package
 
 - name: "Install EPAS < 14 Packages"
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server-edb-modules
     state: present
-    update_cache: yes
+    update_cache: true
   become: true
   when: >-
     pg_version|int < 14
 
 - name: "Install EPAS >= 14 Packages"
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server-edb-wait-states
     state: present
-    update_cache: yes
+    update_cache: true
   become: true
   when: >-
     pg_version|int >= 14
 
 - name: Install sslutils
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server-sslutils
     state: present
@@ -44,20 +44,20 @@
   when: pg_ssl
 
 - name: Install python-psycopg2
-  package:
+  ansible.builtin.package:
     name:
       - python-psycopg2
       - python-ipaddress
     state: present
-    update_cache: yes
+    update_cache: true
   when: os in ['Ubuntu18', 'Debian9', 'Debian10']
   become: true
 
 - name: "Install BDR packages for EPAS >= 14"
-  package:
+  ansible.builtin.package:
     name:
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}-debuginfo
+      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}
+      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
     state: present
   become: true
   when: >-
@@ -65,14 +65,14 @@
     and install_bdr_packages|bool
 
 - name: Stop the service {{ epas_service }}
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ epas_service }}"
     state: stopped
   when: install_package.changed
   become: true
 
 - name: Drop the default debian database
-  shell: >
+  ansible.builtin.shell: >
     {{ epas_deb_drop_cluster }} --stop {{ pg_version }} {{ deb_cluster_name }}
   when: install_package.changed
   register: drop_cluster

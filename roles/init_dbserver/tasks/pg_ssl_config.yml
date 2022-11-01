@@ -1,32 +1,32 @@
 ---
-- name: create ssl cert key
+- name: Create ssl cert key
   community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     query: "select public.openssl_rsa_generate_key(4096);"
     db: "{{ pg_database }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   when: not ssl_ca_key.stat.exists
   register: sql_output
 
-- name: ca key variable
-  set_fact:
+- name: CA key variable
+  ansible.builtin.set_fact:
     ca_key: "{{ sql_output.query_result[0].openssl_rsa_generate_key }}"
   when: not ssl_ca_key.stat.exists
 
-- name: create ca key file in pg_data
-  copy:
+- name: Create CA key file in pg_data
+  ansible.builtin.copy:
     dest: "{{ pg_data }}/ca_key.key"
     content: "{{ ca_key }}"
     mode: 0600
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_ca_key.stat.exists
-  become: yes
+  become: true
 
-- name: create a certificate authority key
+- name: Create a certificate authority key
   community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
@@ -44,36 +44,36 @@
                         '{{ pg_data }}/ca_key.key');"
     db: "{{ pg_database }}"
   when: not ssl_ca_certificate.stat.exists
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   register: sql_output
 
-- name: ca certificate variable
-  set_fact:
+- name: CA certificate variable
+  ansible.builtin.set_fact:
     ca_certificate: "{{ sql_output.query_result[0].openssl_csr_to_crt }}"
   when: not ssl_ca_certificate.stat.exists
 
-- name: create ca certificate file in pg_data
-  copy:
+- name: Create ca certificate file in pg_data
+  ansible.builtin.copy:
     dest: "{{ pg_data }}/ca_certificate.crt"
     content: "{{ ca_certificate }}"
     mode: 0600
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_ca_certificate.stat.exists
-  become: yes
+  become: true
 
-- name: create root.crt using ca certificate file in pg_data
-  copy:
+- name: Create root.crt using ca certificate file in pg_data
+  ansible.builtin.copy:
     dest: "{{ pg_data }}/root.crt"
     content: "{{ ca_certificate }}"
     mode: 0600
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_root_crt.stat.exists
-  become: yes
+  become: true
 
-- name: create a root.crl
+- name: Create a root.crl
   community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
@@ -83,48 +83,48 @@
                            '{{ pg_data }}/ca_key.key');"
     db: "{{ pg_database }}"
   when: not ssl_root_crl.stat.exists
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   register: sql_output
 
-- name: create root.crl
-  copy:
+- name: Create root.crl
+  ansible.builtin.copy:
     dest: "{{ pg_data }}/root.crl"
     content: "{{ sql_output.query_result[0].openssl_rsa_generate_crl }}"
     mode: 0600
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_root_crl.stat.exists
-  become: yes
+  become: true
 
-- name: create ssl server key
+- name: Create ssl server key
   community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     query: "select public.openssl_rsa_generate_key(4096);"
     db: "{{ pg_database }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   when: not ssl_server_key.stat.exists
   register: sql_output
 
-- name: server key variable
-  set_fact:
+- name: Server key variable
+  ansible.builtin.set_fact:
     server_key: "{{ sql_output.query_result[0].openssl_rsa_generate_key }}"
   when: not ssl_server_key.stat.exists
 
-- name: create server key file in pg_data
-  copy:
+- name: Create server key file in pg_data
+  ansible.builtin.copy:
     dest: "{{ pg_data }}/server.key"
     content: "{{ server_key }}"
     mode: 0600
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_server_key.stat.exists
-  become: yes
+  become: true
 
-- name: create a server cert
+- name: Create a server cert
   community.postgresql.postgresql_query:
     login_user: "{{ pg_owner }}"
     port: "{{ pg_port }}"
@@ -142,27 +142,27 @@
                        '{{ pg_data }}/ca_key.key');"
     db: "{{ pg_database }}"
   when: not ssl_server_crt.stat.exists
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   register: sql_output
 
-- name: ca certificate variable
-  set_fact:
+- name: CA certificate variable
+  ansible.builtin.set_fact:
     server_certificate: "{{ sql_output.query_result[0].openssl_csr_to_crt }}"
   when: not ssl_server_crt.stat.exists
 
-- name: create ca certificate file in pg_data
-  copy:
+- name: Create ca certificate file in pg_data
+  ansible.builtin.copy:
     dest: "{{ pg_data }}/server.crt"
     content: "{{ server_certificate }}"
     mode: 0600
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_server_crt.stat.exists
-  become: yes
+  become: true
 
 - name: Call manage_dbserver tasks for ssl update
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_postgres_params.yml
   vars:

@@ -1,7 +1,7 @@
 ---
 
 - name: Get upstream node info
-  set_fact:
+  ansible.builtin.set_fact:
     upstream_inventory_hostname: "{{ node.inventory_hostname }}"
     upstream_hostname: "{{ node.inventory_hostname if use_hostname|bool else '' }}"
   when:
@@ -12,5 +12,5 @@
     loop_var: node
 
 - name: Add standby slot in upstream node
-  import_tasks: upstream_node_slots.yml
+  ansible.builtin.import_tasks: upstream_node_slots.yml
   delegate_to: "{{ upstream_inventory_hostname }}"
