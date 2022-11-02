@@ -32,6 +32,7 @@
   ansible.builtin.package:
     name:
       - perf
+      - postgresql
       - python3-docutils
       - rsync
       - tmux
