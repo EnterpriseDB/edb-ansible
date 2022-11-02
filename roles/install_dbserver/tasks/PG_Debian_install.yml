@@ -5,22 +5,32 @@
       - ca-certificates
       - python3-pycurl
       - python3-psycopg2
-      - postgresql-{{ pg_version }}
+      - postgresql-client-{{ pg_version }}
       - postgresql-{{ pg_version }}
       - postgresql-server-dev-{{ pg_version }}
     state: present
     update_cache: yes
   register: install_package
   become: true
+  when: deb_install==false
 
-- name: Install sslutils
-  package:
-    name:
-      - postgresql-{{ pg_version }}-sslutils
-    state: present
-    update_cache: yes
-  become: true
-  when: pg_ssl
+#- name: Install Postgres deb_list
+#  ansible.builtin.apt:
+#    deb: "{{ item.name }}"
+#    state: present
+#  become: true
+#  loop: "{{ deb_list }}"
+#  when: deb_install
+
+#ubunut에서는 해당 pacakge를 찾을 수 없음
+#- name: Install sslutils
+#  package:
+#    name:
+#      - postgresql-{{ pg_version }}-sslutils
+#    state: present
+#    update_cache: yes
+#  become: true
+#  when: pg_ssl
 
 - name: Install python-psycopg2
   package:
@@ -31,17 +41,6 @@
     update_cache: yes
   when: os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
-
-- name: "Install BDR packages for PG >= 14"
-  package:
-    name:
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}-debuginfo
-    state: present
-  become: true
-  when: >-
-    pg_version|int >= 14
-    and install_bdr_packages|bool
 
 - name: Stop the service {{ pg_service }}
   systemd:

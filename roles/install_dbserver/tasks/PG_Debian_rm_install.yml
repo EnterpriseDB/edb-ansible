@@ -11,21 +11,46 @@
       - ca-certificates
       - python3-pycurl
       - python3-psycopg2
-      - postgresql-{{ pg_version }}
+      - postgresql-client-{{ pg_version }}
       - postgresql-{{ pg_version }}
       - postgresql-server-dev-{{ pg_version }}
     state: absent
     update_cache: yes
   become: true
+  debugger: always
 
-- name: Remove sslutils
+- name: Dpkg search postgreSQL pg_version
+  command: ls -al
+  register: postgresqlpackage
+  become: true
+
+- name: print
+  debug:
+    msg: postgresqlpackage.stdout_lines
+  when: postgresqlpackage.stdout_lines != ""
+
+
+- name: Remove postgreSQL-common
   package:
     name:
-      - postgresql-{{ pg_version }}-sslutils
+      - postgresql-common
+      - postgresql-client-common
     state: absent
     update_cache: yes
   become: true
-  when: pg_ssl
+  when: false #postgresql-common과 postgresql-client-common이 사용하는 버전이 없을때만
+
+
+#sslutils SSL 인증서 생성, EDB Enterprise server에서 사용하는 것으로 보임
+#ubunut에서는 해당 pacakge를 찾을 수 없음
+#- name: Remove sslutils
+#  package:
+#    name:
+#      - postgresql-{{ pg_version }}-sslutils
+#    state: absent
+#    update_cache: yes
+#  become: true
+#  when: pg_ssl
 
 - name: Remove python-psycopg2
   package:

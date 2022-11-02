@@ -16,7 +16,6 @@
     name:
       - python-pycurl
       - libselinux-python
-      - python2-psycopg2
       - python-ipaddress
     state: present
   when: ansible_distribution_major_version == '7'
@@ -27,37 +26,64 @@
     name:
       - python3-pycurl
       - python3-libselinux
-      - python3-psycopg2
     state: present
   become: true
   when: ansible_distribution_major_version == '8'
 
+- name: Install require python package up to PG v14
+  package:
+    name:
+      - python3
+      - python3-libs
+    state: present
+  become: true
+  when: pg_version|int >= 14
+
+
 - name: Install Postgres
   package:
     name:
+      - libxslt
+      - libicu
       - glibc-common
       - ca-certificates
+      - postgresql{{ pg_version }}-libs
       - postgresql{{ pg_version }}
       - postgresql{{ pg_version }}-server
       - postgresql{{ pg_version }}-contrib
     state: present
   become: true
+  when: rpm_install==false
 
-- name: "Install BDR packages for PG >= 14"
-  package:
-    name:
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}
-      - edb-bdr{{ bdr_version }}-{{ pg_type|lower }}{{ pg_version }}-debuginfo
+- name: Install Postgres rpm list
+  ansible.builtin.yum:
+    name: "{{ item.name }}"
     state: present
   become: true
-  when: >-
-    pg_version|int >= 14
-    and install_bdr_packages|bool
+  loop: "{{ rpm_list }}"
+  when: rpm_install
 
-- name: Install sslutils
+- name: Install psycopg2 on EL7
   package:
     name:
-      - sslutils_{{ pg_version }}
+      - python-psycopg2
     state: present
+  when: ansible_distribution_major_version == '7'
   become: true
-  when: pg_ssl
+
+- name: Install psycopg2 on EL8
+  package:
+    name:
+      - python3-psycopg2
+    state: present
+  when: ansible_distribution_major_version == '7'
+  become: true
+
+#EDB전용
+#- name: Install sslutils
+#  package:
+#    name:
+#      - sslutils_{{ pg_version }}
+#    state: present
+#  become: true
+#  when: pg_ssl

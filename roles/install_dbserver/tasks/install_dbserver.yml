@@ -14,16 +14,16 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
-- name: Check if Database Engine is supported
-  fail:
-    msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-          is not supported on {{ os }}."
-  when: >
-    pg_type == 'EPAS' and
-    ((pg_version|int < 12 and os in ['RedHat8','CentOS8','Rocky8']) or
-     (pg_version|int < 11 and os in ['Ubuntu18', 'Debian9']) or
-     (pg_version|int < 13 and os in ['Ubuntu20'])  or
-     (pg_version|int < 12 and os in ['Debian10']))
+#- name: Check if Database Engine is supported
+#  fail:
+#    msg: "Database Engine = {{ pg_type }} {{ pg_version }}
+#          is not supported on {{ os }}."
+#  when: >
+#    pg_type == 'EPAS' and
+#    ((pg_version|int < 12 and os in ['RedHat8','CentOS8','Rocky8']) or
+#     (pg_version|int < 11 and os in ['Ubuntu18', 'Debian9']) or
+#     (pg_version|int < 13 and os in ['Ubuntu20'])  or
+#     (pg_version|int < 12 and os in ['Debian10']))
 
 - name: Remove Postgres packages
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_install.yml"
@@ -31,8 +31,10 @@
     - force_install is defined
     - force_install
 
-- name: Install and Configure Postgres on RedHat
+
+- name: Install and Configure Postgres
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_install.yml"
+  tags: install
 
 - name: Enable coredump based on enable_core_dump
   include_tasks: linux_coredump.yml

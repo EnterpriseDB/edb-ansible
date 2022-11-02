@@ -9,16 +9,27 @@ enable_core_dump: false
 core_dump_directory: "/var/coredumps"
 
 install_bdr_packages: false
-epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
-epas_service: "edb-as@{{ pg_version }}-main"
+#epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
+#epas_service: "edb-as@{{ pg_version }}-main"
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 deb_cluster_name: "main"
 pg_service: "postgresql@{{ pg_version }}-main"
 pg_ssl: true
+rpm_install: false
+deb_install: false
 
 sysctl_params:
   - { "name": "kernel.core_pattern", "value": "/var/coredumps/core-%e-%p", "state": "present"}
   - { "name": "fs.suid_dumpable", "value": "2", "state": "present"}
+
+rpm_list: 
+  - { "name": "https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7-x86_64/postgresql14-libs-14.4-1PGDG.rhel7.x86_64.rpm" }
+  - { "name": "https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7-x86_64/postgresql14-14.4-1PGDG.rhel7.x86_64.rpm" }
+  - { "name": "https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7-x86_64/postgresql14-server-14.4-1PGDG.rhel7.x86_64.rpm" }
+  - { "name": "https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-7-x86_64/postgresql14-contrib-14.4-1PGDG.rhel7.x86_64.rpm" }
+
+deb_list:
+  - {}
 
 supported_os:
   - CentOS7
@@ -32,12 +43,14 @@ supported_os:
   - OracleLinux7
 
 supported_pg_type:
-  - EPAS
+  - HyperSQL
   - PG
 
 supported_pg_version:
-  - 10
   - 11
   - 12
   - 13
   - 14
+
+testvars:
+  - {}

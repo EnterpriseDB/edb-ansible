@@ -14,40 +14,11 @@
          Supported Database Engines are {{ supported_pg_type }}"
   when: pg_type not in supported_pg_type
 
-- name: Check if Database Engine is supported
-  fail:
-    msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-          is not supported on RHEL8/CentOS8/Rocky8."
-  when: >
-    pg_type == 'EPAS' and
-    ( pg_version|int < 12 and os in ['RedHat8','CentOS8', 'Rocky8'] or
-      pg_version|int < 11 and os in ['Ubuntu18', 'Debian9'] or
-      pg_version|int < 13 and os in ['Ubuntu20']  or
-      pg_version|int < 12 and os in ['Debian10'] )
-
-- name: Validate Credentials
-  fail:
-      msg: "repo_username = {{ repo_username }} or repo_password = {{ repo_password }} or repo_token = {{ repo_token }} are not valid!."
-  when:
-    - enable_edb_repo|bool
-    - repo_token | length < 1 and (repo_username | length < 1 or repo_password | length < 1)
-
-- name: Capture if bdr_nodes_ips if defined
-  set_fact:
-      bdr_nodes_ips: "{{ lookup('edb_devops.edb_postgres.bdr_nodes')|flatten|map(attribute='ansible_host')|flatten }}"
-
-- name: Validate tpa_subscription_token
-  fail:
-      msg: "tpa_subscription_token  is not defined correctly."
-  when: >
-      tpa_subscription_token | length < 1
-      and bdr_nodes_ip is defined and bdr_nodes_ips | length > 0
-
 - name: Cleanup the repos based on force_repo
-  include_tasks: "PG_{{ ansible_os_family }}_rm_repos.yml"
+  include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_repos.yml"
   when:
     - force_repo is defined
     - force_repo
 
 - name: Install Postgres repositories
-  include_tasks: "PG_{{ ansible_os_family }}_setuprepos.yml"
+  include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_setuprepos.yml"
