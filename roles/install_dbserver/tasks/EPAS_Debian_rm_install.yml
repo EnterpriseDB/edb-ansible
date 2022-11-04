@@ -1,21 +1,21 @@
 ---
 - name: Stop the service {{ epas_service }}
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ epas_service }}"
     state: stopped
   become: true
 
 - name: Remove sslutils
-  package:
+  ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server-sslutils
     state: absent
-    update_cache: yes
+    update_cache: true
   become: true
   when: pg_ssl
 
 - name: Remove EPAS Packages
-  package:
+  ansible.builtin.package:
     name:
       - python3-pip
       - python3-psycopg2
@@ -27,15 +27,15 @@
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
     state: absent
-    update_cache: yes
+    update_cache: true
   become: true
 
 - name: Remove python-psycopg2
-  package:
+  ansible.builtin.package:
     name:
       - python-psycopg2
       - python-ipaddress
     state: absent
-    update_cache: yes
+    update_cache: true
   when: os in ['Ubuntu18', 'Debian9']
   become: true

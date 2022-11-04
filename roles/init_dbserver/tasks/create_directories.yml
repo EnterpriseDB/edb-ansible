@@ -1,12 +1,12 @@
 ---
 - name: Ensure postgres data directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_data }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
 
 - name: Ensure postgres default data directory exists
   ansible.builtin.file:
@@ -15,40 +15,40 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
 
 - name: Ensure postgres log directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_log }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
   when: pg_log|length > 0 and pg_data not in pg_log
 
 - name: Ensure postgres wal directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_wal }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
   when: pg_wal|length > 0 and pg_data not in pg_wal
 
 - name: Ensure postgres local wal archive directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_local_wal_archive_dir }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
   when: pg_local_wal_archive_dir|length > 0
 
 - name: Create unix socket domain directories
-  file:
+  ansible.builtin.file:
     path: "{{ line_item }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
@@ -57,49 +57,49 @@
   with_items: "{{ pg_unix_socket_directories }}"
   loop_control:
     loop_var: line_item
-  become: yes
+  become: true
   when: pg_unix_socket_directories|length > 0
 
 - name: Create edb_audit_directory if defined
-  file:
+  ansible.builtin.file:
     path: "{{ edb_audit_directory }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
   when: >
     edb_audit_directory|length > 0 and pg_data not in edb_audit_directory
     and edb_audit_directory.startswith('/')
 
 - name: Create hidden edb directory if not exists
-  file:
+  ansible.builtin.file:
     path: "{{ pass_dir }}"
     mode: 0700
     state: directory
-  become: no
+  become: false
   delegate_to: localhost
 
 - name: Check if we have symlink for default data directory location
-  stat:
+  ansible.builtin.stat:
     path: "{{ pg_default_data }}"
   register: sym
 
 - name: Ensure default data directory is deleted if pg_data is not default
-  file:
+  ansible.builtin.file:
     path: "{{ pg_default_data }}"
     state: absent
   when:
     - pg_default_data != pg_data
     - not sym.stat.islnk
-  become: yes
+  become: true
 
 - name: Ensure pg_data has symlink to default if pg_data is not default
-  file:
+  ansible.builtin.file:
     src: "{{ pg_data }}"
     dest: "{{ pg_default_data }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     state: link
   when: pg_default_data != pg_data
-  become: yes
+  become: true

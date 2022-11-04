@@ -1,27 +1,27 @@
 ---
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Stop the efm_service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ efm_service }}"
     state: stopped
   when:
     - ansible_facts.services[efm_service] is defined
     - ansible_facts.services[efm_service].state == 'running'
-  become: yes
+  become: true
 
-- name: stop pg service if running
-  systemd:
+- name: Stop Postgres service if running
+  ansible.builtin.systemd:
     name: "{{ pg_service }}"
     state: stopped
   when:
     - ansible_facts.services[pg_service] is defined
     - ansible_facts.services[pg_service].state == 'running'
-  become: yes
+  become: true
 
 - name: Drop the default debian database
-  shell: >
+  ansible.builtin.shell: >
     {{ pg_deb_drop_cluster }} {{ pg_version }} {{ pg_instance_name }}
   args:
     executable: /bin/bash
@@ -30,29 +30,29 @@
   when: ansible_os_family == 'Debian'
   become: true
 
-- name: remove postgres data directory if exists
-  file:
+- name: Remove Postgres data directory if exists
+  ansible.builtin.file:
     path: "{{ pg_data }}"
     state: absent
-  become: yes
+  become: true
 
-- name: remove postgres log directory if exists
-  file:
+- name: Remove Postgres log directory if exists
+  ansible.builtin.file:
     path: "{{ pg_log }}"
     state: absent
-  become: yes
+  become: true
   when: pg_log|length > 0
 
-- name: remove postgres wal directory if exists
-  file:
+- name: Remove Postgres wal directory if exists
+  ansible.builtin.file:
     path: "{{ pg_wal }}"
     state: absent
-  become: yes
+  become: true
   when: pg_wal|length > 0
 
-- name: remove postgres local wal archive directory if exists
-  file:
+- name: Remove Postgres local wal archive directory if exists
+  ansible.builtin.file:
     path: "{{ pg_local_wal_archive_dir }}"
     state: absent
-  become: yes
+  become: true
   when: pg_local_wal_archive_dir|length > 0

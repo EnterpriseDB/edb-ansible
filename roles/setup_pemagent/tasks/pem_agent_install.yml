@@ -12,4 +12,5 @@
     state: present
   become: yes
   no_log: "{{ disable_logging }}"
-  when: pem_server_version_int|int >= 840
+  when: >
+      pem_server_version_int|int >= 840 or enable_pemagent_monitor_barman
