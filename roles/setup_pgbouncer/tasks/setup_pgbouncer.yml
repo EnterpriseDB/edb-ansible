@@ -1,31 +1,31 @@
 ---
 
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Include OS and pg_type dependent variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Check PgBouncer pool_mode configuration value
-  fail:
+  ansible.builtin.fail:
     msg: "PgBouncer pooling mode = {{ pgbouncer_pool_mode }} not valid.
          Available pooling modes are {{ available_pool_mode }}"
   when: pgbouncer_pool_mode not in available_pool_mode
 
 - name: Check PgBouncer auth_type configuration value
-  fail:
+  ansible.builtin.fail:
     msg: "PgBouncer authentication type = {{ pgbouncer_auth_type }} not valid.
          Available authentication types are {{ available_auth_type }}"
   when: pgbouncer_auth_type not in available_auth_type
 
 - name: Include the pgbouncer_install
-  include_tasks: pgbouncer_install.yml
+  ansible.builtin.include_tasks: pgbouncer_install.yml
 
 - name: Include the pgbouncer_setup
-  include_tasks: pgbouncer_setup.yml
+  ansible.builtin.include_tasks: pgbouncer_setup.yml
