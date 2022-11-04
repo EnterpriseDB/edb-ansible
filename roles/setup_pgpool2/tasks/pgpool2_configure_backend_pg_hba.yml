@@ -1,7 +1,7 @@
 ---
 # Add HBA entries allowing connections from pgpoolII server to Postgres node
 - name: Initialize the hba_entries variable
-  set_fact:
+  ansible.builtin.set_fact:
    hba_entries: >-
     {{ hba_entries | default([]) + [
         {
@@ -15,7 +15,7 @@
   when: pgpool2_ssl
 
 - name: Initialize the hba_entries variable
-  set_fact:
+  ansible.builtin.set_fact:
    hba_entries: >-
     {{ hba_entries | default([]) + [
         {
@@ -29,12 +29,12 @@
   when: not pgpool2_ssl
 
 - name: Allow access to pgpoolII servers
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ hba_entries }}"
 
 - name: Reset hba_entries
-  set_fact:
+  ansible.builtin.set_fact:
     hba_entries: []

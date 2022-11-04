@@ -1,6 +1,6 @@
 ---
 - name: Generate the pg_pgpool_user_password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: generate_password
   vars:
@@ -11,13 +11,13 @@
   when: pg_pgpool_user_password|length < 1
 
 - name: Set pg_pgpool_user_password
-  set_fact:
+  ansible.builtin.set_fact:
      pg_pgpool_user_password: "{{ input_password }}"
   when: pg_pgpool_user_password|length < 1
   run_once: true
 
 - name: Set postgres pgpool users's database cluster password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_users
     apply:
@@ -32,7 +32,7 @@
   when: pg_pgpool_user_password|length > 1
 
 - name: Grant execute privileges on system functions to pgpool user
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_privileges
     apply:
@@ -49,7 +49,7 @@
   when: pg_pgpool_user_password|length > 1
 
 - name: Add pgpool2 database user in pgpool
-  include_role:
+  ansible.builtin.include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_users
   vars:

@@ -3,19 +3,19 @@
 
 # Fetch pgpool2_user home path
 - name: Fetch user {{ pgpool2_user }} home path
-  shell: "echo $HOME"
+  ansible.builtin.shell: "echo $HOME"
   register: res_echo_home
   become: true
   become_user: "{{ pgpool2_user }}"
   changed_when: false
 
 - name: Set the pgpool2_user_home_dir
-  set_fact:
+  ansible.builtin.set_fact:
     pgpool2_user_home_dir: "{{ res_echo_home.stdout }}"
 
 # Ensure home dir exists
 - name: Ensure {{ pgpool2_user_home_dir }} exists
-  file:
+  ansible.builtin.file:
     path: "{{ pgpool2_user_home_dir }}"
     state: directory
     owner: "{{ pgpool2_user }}"
@@ -25,14 +25,14 @@
 
 # Test if the .pgpoolkey file exist in the home directory
 - name: Test if {{ pgpool2_user_home_dir }}/.pgpoolkey exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ pgpool2_user_home_dir }}/.pgpoolkey"
   register: stat_result
   become: true
 
 # Build random AES key if .pgpoolkey does not exist or is empty
 - name: Build new random AES key
-  copy:
+  ansible.builtin.copy:
     dest: "{{ pgpool2_user_home_dir }}/.pgpoolkey"
     content: >
       {{ lookup('password', '/dev/null chars=ascii_letters,digit length=128') }}
@@ -41,4 +41,14 @@
     mode: 0600
   when:
     - not stat_result.stat.exists or stat_result.stat.size == 0
+  become: true
+
+- name: Ensure pgpool2_user owns pool_passwd file
+  ansible.builtin.file:
+    path: "{{ pgpool2_pool_passwd_file }}"
+    owner: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
   become: true

@@ -21,7 +21,4 @@ pgpool2_service_name: "pgpool-II"
 # pgpool environment file
 pgpool2_environment_file: "/etc/sysconfig/pgpool-II"
 
-pcp_socket_dir: "/tmp"
-pgpool2_socket_dir: "/tmp"
-
 pgpool2_node_id_file: "/etc/pgpool-II/pgpool_node_id"

@@ -1,6 +1,6 @@
 ---
 - name: Generate the pcp_admin_user_password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: generate_password
   vars:
@@ -11,13 +11,13 @@
   when: pcp_admin_user_password|length < 1
 
 - name: Set pcp_admin_user_password
-  set_fact:
+  ansible.builtin.set_fact:
      pcp_admin_user_password: "{{ input_password }}"
   when: pcp_admin_user_password|length < 1
   run_once: true
 
 - name: Add pcp_admin_user
-  include_role:
+  ansible.builtin.include_role:
     name: manage_pgpool2
     tasks_from: pcp_manage_users
   vars:

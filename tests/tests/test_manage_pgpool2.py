@@ -9,6 +9,7 @@ from conftest import (
     os_family
 )
 
+
 def test_manage_pgpool_pcp_user():
     ansible_vars = load_ansible_vars()
     pcp_user = ansible_vars['pcp_users'][0]['name']
@@ -32,6 +33,7 @@ def test_manage_pgpool_pcp_user():
     assert len(result) > 0, \
         "pcp command succesfully works"
 
+
 def test_manage_pgpool_pcp_node_count():
     ansible_vars = load_ansible_vars()
     pcp_user = ansible_vars['pcp_users'][0]['name']
@@ -51,6 +53,7 @@ def test_manage_pgpool_pcp_node_count():
 
     assert result == '1', \
         "Database node count is not equal to 1"
+
 
 def test_manage_pgpool_test_user():
     ansible_vars = load_ansible_vars()
@@ -77,8 +80,9 @@ def test_manage_pgpool_test_user():
         )
         result = cmd.stdout.strip().split('\n')
 
-    assert len(result) == 1, \
+    assert pgpool2_user in result, \
         "test user was not created sucessfully."
+
 
 def test_manage_pgpool_pcp_socket():
     ansible_vars = load_ansible_vars()
@@ -93,7 +97,7 @@ def test_manage_pgpool_pcp_socket():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgpool2_address= get_pgpool2()[0]
+    pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
 

@@ -1,6 +1,6 @@
 ---
 - name: Disable builtin postgresql module on EL8
-  shell: >
+  ansible.builtin.shell: >
     dnf -qy module disable postgresql
   args:
     executable: /bin/bash
@@ -36,9 +36,11 @@
     - pg_type == 'PG'
   become: true
 
-- name: Install libpgpool2 package on Debian
+- name: Install dependent packages on Debian
   ansible.builtin.package:
-    name: "libpgpool2"
+    name:
+      - libpgpool2
+      - postgresql-client-common
     state: present
   when:
     - ansible_os_family == 'Debian'

@@ -1,7 +1,7 @@
 ---
 # Tasks for setting up pgpool2 load balancing
 - name: Enable load balance mode
-  set_fact:
+  ansible.builtin.set_fact:
     pgpool2_lb_configuration: >-
       [
         {
@@ -14,7 +14,7 @@
 
 # Apply configuration changes
 - name: Include pgpool2_manage_configuration
-  include_role:
+  ansible.builtin.include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   vars:

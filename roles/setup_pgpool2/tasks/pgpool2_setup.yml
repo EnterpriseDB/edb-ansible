@@ -1,7 +1,7 @@
 ---
 
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Open listening TCP port {{ pgpool2_port | default('') }}
   ansible.posix.firewalld:
@@ -14,7 +14,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_port is defined
-  become: yes
+  become: true
 
 - name: Open PCP TCP port {{ pgpool2_pcp_port | default('') }}
   ansible.posix.firewalld:
@@ -27,7 +27,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_pcp_port is defined
-  become: yes
+  become: true
 
 - name: Open PCP UDP port {{ pgpool2_pcp_port | default('') }}
   ansible.posix.firewalld:
@@ -40,7 +40,7 @@
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_pcp_port is defined
-  become: yes
+  become: true
 
 - name: Open Watchdog TCP port {{ pgpool2_wd_port | default('') }}
   ansible.posix.firewalld:
@@ -54,7 +54,7 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
     - pgpool2_watchdog
-  become: yes
+  become: true
 
 - name: Open Watchdog UDP port {{ pgpool2_wd_port | default('') }}
   ansible.posix.firewalld:
@@ -68,7 +68,7 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_port is defined
     - pgpool2_watchdog
-  become: yes
+  become: true
 
 - name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port | default('') }}
   ansible.posix.firewalld:
@@ -82,7 +82,7 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
     - pgpool2_watchdog
-  become: yes
+  become: true
 
 - name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
   ansible.posix.firewalld:
@@ -96,56 +96,56 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
     - pgpool2_wd_heartbeat_port is defined
     - pgpool2_watchdog
-  become: yes
+  become: true
 
 # Tasks for setting up pgpoolII
 - name: Create pgpoolII system group {{ pgpool2_group }}
-  group:
+  ansible.builtin.group:
     name: "{{ pgpool2_group }}"
     state: present
-  become: yes
+  become: true
 
 - name: Create pgpoolII system user {{ pgpool2_user }}
-  user:
+  ansible.builtin.user:
     name: "{{ pgpool2_user }}"
     system: true
     group: "{{ pgpool2_group }}"
     state: present
     create_home: false
-  become: yes
+  become: true
 
 - name: Create configuration directory {{ pgpool2_configuration_file | dirname }}
-  file:
+  ansible.builtin.file:
     path: "{{ pgpool2_configuration_file | dirname }}"
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
-  become: yes
+  become: true
 
 - name: Create pgpoolII logging directory {{ pgpool2_logdir }}
-  file:
+  ansible.builtin.file:
     path: "{{ pgpool2_logdir }}"
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
   when: pgpool2_logdir is defined
-  become: yes
+  become: true
 
 - name: Create running directory {{ pgpool2_pid_file_name | default('') | dirname }}
-  file:
+  ansible.builtin.file:
     path: "{{ pgpool2_pid_file_name | dirname }}"
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0700
   when: pgpool2_pid_file_name is defined
-  become: yes
+  become: true
 
 # Build the configuration file
 - name: Build configuration file {{ pgpool2_configuration_file }}
-  template:
+  ansible.builtin.template:
     src: "./templates/pgpool.conf.template"
     dest: "{{ pgpool2_configuration_file }}"
     owner: "{{ pgpool2_user }}"
@@ -153,8 +153,8 @@
     mode: 0600
   become: true
 
-- name: Create pgpoolII systemd directory
-  file:
+- name: Create pgpoolII systemd directory for PG
+  ansible.builtin.file:
     path: "{{ pgpool2_systemd_config_file | dirname }}"
     state: directory
     owner: "root"
@@ -162,34 +162,100 @@
     mode: 0700
   when:
     - pg_type == 'PG'
-  become: yes
+  become: true
+
+- name: Create pgpoolII systemd directory for EPAS Debian
+  ansible.builtin.file:
+    path: "{{ pgpool2_systemd_config_file | dirname }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: 0700
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'Debian'
+  become: true
 
 - name: Generate pgpoolII systemd unit file
-  template:
+  ansible.builtin.template:
     backup: yes
     dest: "{{ pgpool2_systemd_config_file }}"
     src: ./templates/pgpool-II.unit.conf.template
     mode: 0644
   when:
     - pg_type == 'PG'
-  become: yes
+  become: true
 
-- name: Insert PID location
+# add systemd config file to ensure environment file is referenced correctly
+- name: Generate pgpoolII systemd unit file for EPAS Debian
+  ansible.builtin.template:
+    backup: yes
+    dest: "{{ pgpool2_systemd_config_file }}"
+    src: ./templates/pgpool.unit.debian.conf.template
+    mode: 0644
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'Debian'
+  become: true
+
+# ensure system can find PID file
+- name: Insert PID location for Debian
   ansible.builtin.lineinfile:
     path: "{{ pgpool2_environment_file }}"
     line: PIDFILE={{ pgpool2_pid_file_name }}
+  when:
+    - ansible_os_family == 'Debian'
+  become: true
+
+# original pgpool2_start_script is not accurate for EPAS Debian
+- name: Generate pgpoolII start bash script for EPAS Debian
+  ansible.builtin.template:
+    backup: yes
+    dest: "{{ pgpool2_start_script }}"
+    src: ./templates/edb-pgpool.sh.template
+    mode: 0755
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'Debian'
+  become: true
+
+# make sure items in pgpool2_bin_path are executable without directly referencing pgpool2_bin_path in command
+- name: Add pgpool executables to {{ pgpool2_user }} $PATH from {{ pgpool2_bin_path }}
+  ansible.builtin.shell:
+    cmd: >-
+      cp -r {{ pgpool2_bin_path }}/. /bin/
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'Debian'
+  become: true
+
+- name: Check symlink was created correctly
+  ansible.builtin.stat:
+    path: "/bin/pcp_node_info"
+  register: pgpool_pcp_sym
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'Debian'
+  become: true
+
+# check if path to symlink exists and is correctly linked
+- name: Fail if symlink not created correctly
+  ansible.builtin.fail:
+    msg: "Symlink not created correctly, check {{ pgpool2_bin_path }}"
+  when:
+    - pgpool_pcp_sym.islnk is defined and pgpool_pcp_sym.islnk == 'False'
   become: true
 
 - name: Stop pgpoolII service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pgpool2_service_name }}"
     state: stopped
-  become: yes
+  become: true
 
 - name: Enable and start pgpoolII service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pgpool2_service_name }}"
     enabled: true
     daemon_reload: yes
     state: started
-  become: yes
+  become: true

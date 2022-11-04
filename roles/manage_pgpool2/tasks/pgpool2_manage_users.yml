@@ -1,6 +1,6 @@
 ---
 - name: Remove users from pool_passwd
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pgpool2_pool_passwd_file }}"
     line: >-
       {{ user_item.name }}:
@@ -13,15 +13,15 @@
     - pgpool2_users|length > 0
     - user_item.state is defined
     - user_item.state == 'absent'
-  become: yes
+  become: true
 
 - name: Add users with SCRAM authentication
-  command:
+  ansible.builtin.command:
     cmd: >-
       script -q -c '{{ pgpool2_bin_path }}/pg_enc -k ~/.pgpoolkey -f {{ pgpool2_configuration_file }} -u {{ user_item.name }} -p -m'
     stdin: "{{ user_item.pass }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
+  become: true
+  become_user: "{{ pgpool2_user }}"
   loop: "{{ pgpool2_users }}"
   loop_control:
     loop_var: user_item
@@ -31,12 +31,12 @@
     - user_item.auth == 'scram'
 
 - name: Add users with MD5 authentication
-  command:
+  ansible.builtin.command:
     cmd: >-
       script -q -c '{{ pgpool2_bin_path }}/pg_md5 -f {{ pgpool2_configuration_file }} -u {{ user_item.name }} -p -m'
     stdin: "{{ user_item.pass }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
+  become: true
+  become_user: "{{ pgpool2_user }}"
   loop: "{{ pgpool2_users }}"
   loop_control:
     loop_var: user_item

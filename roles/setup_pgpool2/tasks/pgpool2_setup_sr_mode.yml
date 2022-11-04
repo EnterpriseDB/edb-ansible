@@ -3,7 +3,7 @@
 
 # Build random password for pgpool2_sr_user if needed
 - name: Build random password for pgpool2_sr_user
-  set_fact:
+  ansible.builtin.set_fact:
     pgpool2_sr_check_password: >-
       {{ lookup('password', '/dev/null chars=ascii_letters,digits length=12') }}
   run_once: true
@@ -12,7 +12,7 @@
 
 # Create pgpool2_sr_user Postgres user on the primary node
 - name: Create pgpoolII SR check role on Postgres primary node
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_users
     apply:
@@ -29,7 +29,7 @@
 
 # grant monitoring privilege to pgpool2 user for replication status
 - name: Grant execute privileges on system functions to pgpoolII sr user
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_privileges
     apply:
@@ -44,7 +44,7 @@
     - pgpool2_primary_inventory_hostname|length > 0
 
 - name: Build pgpoolII SR configuration
-  set_fact:
+  ansible.builtin.set_fact:
     pgpool2_sr_configuration: >-
       [
         {
@@ -75,7 +75,7 @@
 
 # Apply configuration changes
 - name: Include pgpool2_manage_configuration
-  include_role:
+  ansible.builtin.include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   vars:

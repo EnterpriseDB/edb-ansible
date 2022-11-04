@@ -1,21 +1,21 @@
 ---
 - name: Generate pcp users md5 password
-  command:
+  ansible.builtin.command:
     cmd: >-
       script -q -c '{{ pgpool2_bin_path }}/pg_md5 {{ pcp_user.pass }}'
-  become: yes
-  become_user: "{{ pg_owner }}"
+  become: true
+  become_user: "{{ pgpool2_user }}"
   when:
     - pcp_user|length > 0
     - pcp_user.state is not defined or user_item.state == 'present'
   register: pcp_password_out
 
 - name: Update pcp.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pcp_configuration_file }}"
     line: "{{ pcp_user.name }}:{{ pcp_password_out.stdout }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
+  become: true
+  become_user: "{{ pgpool2_user }}"
   when:
     - pcp_user|length > 0
     - pcp_user.state is not defined or user_item.state == 'present'

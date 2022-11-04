@@ -10,6 +10,7 @@ pgpool2_group: "postgres"
 pgpool2_systemd_config_file: "/etc/systemd/system/pgpool2.service.d/pgpool2.conf"
 pcp_configuration_file: "/etc/pgpool2/pcp.conf"
 pgpool2_pid_file_name: "/var/run/pgpool2/pgpool.pid"
+pgpool2_pool_passwd_file: "/etc/pgpool2/pool_passwd"
 pgpool2_logdir: "/var/log/pgpool2"
 # Directory containing SSL keys and certs
 pgpool2_ssl_dir: "/etc/pgpool2/ssl"
@@ -21,7 +22,5 @@ pgpool2_service_name: "pgpool2"
 # pgpool environment file
 pgpool2_environment_file: "/etc/default/pgpool2"
 
-pcp_socket_dir: "/tmp"
-pgpool2_socket_dir: "/tmp"
-
+# pgpool node id file
 pgpool2_node_id_file: "/etc/pgpool2/pgpool_node_id"

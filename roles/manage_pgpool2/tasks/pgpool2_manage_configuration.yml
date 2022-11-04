@@ -1,6 +1,6 @@
 ---
 - name: Manage pgpool2 configuration file content in {{ pgpool2_configuration_file }}
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pgpool2_configuration_file }}"
     line: >-
       {{ conf_item.key }} = {% if conf_item.quoted | default(false) %}'{% endif %}{{ conf_item.value }}{% if conf_item.quoted | default(false) %}'{% endif %}
@@ -13,4 +13,4 @@
   with_items: "{{ pgpool2_configuration_lines }}"
   loop_control:
     loop_var: conf_item
-  become: yes
+  become: true

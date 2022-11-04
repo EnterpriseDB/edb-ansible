@@ -1,28 +1,28 @@
 ---
 
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Reference pg_type variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Reference pg_type variables
-  include_vars: "../../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "../../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Check supported versions for pgpoolII
-  fail:
+  ansible.builtin.fail:
     msg: "pgpoolII Version = {{ pgpool2_version }} not supported.
           Supported versions are {{ supported_pgpool2_version }}"
   when:
@@ -30,7 +30,7 @@
     - pgpool2_version not in supported_pgpool2_version
 
 - name: Check watchdog settings
-  fail:
+  ansible.builtin.fail:
     msg: "Watchdog settings not valid: pgpool2_vip = '{{ pgpool2_vip }}',
           pgpool2_vip_dev = '{{ pgpool2_vip_dev }}'"
   when:
@@ -39,7 +39,7 @@
       (pgpool2_vip_dev is not defined or pgpool2_vip_dev|length == 0)
 
 - name: Initialize local variables
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_backends: []
     _pgpool2_node_list: []
     _pgpool2_ip_list: []
@@ -48,19 +48,19 @@
     _pgpool2_nodes: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
 
 - name: Set _pgpool2_current_node when not use_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_current_node: "{{ hostvars[inventory_hostname].private_ip }}"
   when:
     - not use_hostname|bool
 
 - name: Set _pgpool2_current_node when use_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_current_node: "{{ ansible_hostname }}"
   when:
     - use_hostname|bool
 
 - name: Build the list of Postgres backends when not use_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_backends: >-
       {{ _pgpool2_backends | default([]) + [
           {
@@ -75,7 +75,7 @@
     - not use_hostname|bool
 
 - name: Build the list of Postgres backends when use_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_backends: >-
       {{ _pgpool2_backends | default([]) + [
           {
@@ -90,7 +90,7 @@
     - use_hostname|bool
 
 - name: Set the _pgpool2_primary_inventory_hostname variable
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_primary_inventory_hostname: "{{ server.inventory_hostname }}"
   when:
     - server.node_type == 'primary'
@@ -99,14 +99,14 @@
     loop_var: server
 
 - name: Build the list of pgpool2 IPs
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_ip_list: "{{ _pgpool2_ip_list }} + [ '{{ server.private_ip }}' ]"
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
     loop_var: server
 
 - name: Build the list of pgpool2 nodes when not use_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_node_list: "{{ _pgpool2_node_list }} + [ '{{ server.private_ip }}' ]"
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
@@ -115,7 +115,7 @@
     - not use_hostname|bool
 
 - name: Build the list of pgpool2 nodes when use_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgpool2_node_list: "{{ _pgpool2_node_list }} + [ '{{ server.hostname }}' ]"
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
@@ -124,24 +124,24 @@
     - use_hostname|bool
 
 - name: Include the pgpool2_install
-  include_tasks: pgpool2_install.yml
+  ansible.builtin.include_tasks: pgpool2_install.yml
 
 - name: Include the pgpool2_setup
-  include_tasks: pgpool2_setup.yml
+  ansible.builtin.include_tasks: pgpool2_setup.yml
 
 - name: Include the pgpool2_setup_user_auth
-  include_tasks: pgpool2_setup_user_auth.yml
+  ansible.builtin.include_tasks: pgpool2_setup_user_auth.yml
 
 - name: Update /etc/hosts based on use_hostname
   block:
     - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
 
 - name: Include the pgpool2_configure_backends
-  include_tasks: pgpool2_configure_backends.yml
+  ansible.builtin.include_tasks: pgpool2_configure_backends.yml
   when:
     - _pgpool2_backends|length > 0
     - _pgpool2_primary_inventory_hostname|length > 0
@@ -149,7 +149,7 @@
     pgpool2_backends: "{{ _pgpool2_backends }}"
 
 - name: Include the pgpool2_setup_sr_mode
-  include_tasks: pgpool2_setup_sr_mode.yml
+  ansible.builtin.include_tasks: pgpool2_setup_sr_mode.yml
   when:
     - _pgpool2_backends|length > 0
     - _pgpool2_primary_inventory_hostname|length > 0
@@ -157,17 +157,17 @@
     pgpool2_primary_inventory_hostname: "{{ _pgpool2_primary_inventory_hostname }}"
 
 - name: Include the pgpool2_setup_ssl
-  include_tasks: pgpool2_setup_ssl.yml
+  ansible.builtin.include_tasks: pgpool2_setup_ssl.yml
   when:
     - pgpool2_ssl
 
 - name: Include the pgpool2_configure_loadbalancing
-  include_tasks: pgpool2_configure_loadbalancing.yml
+  ansible.builtin.include_tasks: pgpool2_configure_loadbalancing.yml
   when:
     - pgpool2_load_balancing
 
 - name: Include the pgpool2_configure_backend_pg_hba
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: pgpool2_configure_backend_pg_hba.yml
     apply:
       delegate_to: "{{ server.inventory_hostname }}"
@@ -180,7 +180,7 @@
     pgpool2_ip_list: "{{ _pgpool2_ip_list }}"
 
 - name: Include the pgpool2_setup_watchdog
-  include_tasks: pgpool2_setup_watchdog.yml
+  ansible.builtin.include_tasks: pgpool2_setup_watchdog.yml
   when:
     - pgpool2_watchdog
   vars:
@@ -188,21 +188,17 @@
     pgpool2_current_node: "{{ _pgpool2_current_node }}"
 
 - name: Include the pgpool2_set_node_id
-  include_tasks: pgpool2_set_node_id.yml
+  ansible.builtin.include_tasks: pgpool2_set_node_id.yml
   vars:
     pgpool2_nodes: "{{ _pgpool2_nodes }}"
 
 - name: Include the pgpool2_restart_service
-  include_tasks: pgpool2_restart_service.yml
+  ansible.builtin.include_tasks: pgpool2_restart_service.yml
 
 - name: Create and update pgpool2 database user
-  include_tasks: pgpool2_create_db_user.yml
+  ansible.builtin.include_tasks: pgpool2_create_db_user.yml
   vars:
     pgpool2_primary_inventory_hostname: "{{ _pgpool2_primary_inventory_hostname }}"
 
 - name: Create pcp user for pgpool2
-  include_tasks: pgpool2_create_pcp_user.yml
-
-#- name: fail to keep around
-#  fail:
-#    msg: "Failed at end"
+  ansible.builtin.include_tasks: pgpool2_create_pcp_user.yml
