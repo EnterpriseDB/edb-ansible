@@ -1,4 +1,4 @@
 ---
 # Entry point of the setup_pgbouncer role
 - name: Include the setup_pgbouncer.yml
-  include_tasks: setup_pgbouncer.yml
+  ansible.builtin.include_tasks: setup_pgbouncer.yml
