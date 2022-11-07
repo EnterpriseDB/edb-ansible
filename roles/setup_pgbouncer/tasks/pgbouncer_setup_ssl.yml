@@ -77,4 +77,4 @@
   become: true
   become_user: "{{ pgbouncer_user }}"
   when:
-  - not pgbouncer_ssl_server_crt.stat.exists
+    - not pgbouncer_ssl_server_crt.stat.exists

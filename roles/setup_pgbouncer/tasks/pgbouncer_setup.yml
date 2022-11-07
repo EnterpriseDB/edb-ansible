@@ -1,37 +1,37 @@
 ---
 
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Open TCP port {{ pgbouncer_listen_port }}
   ansible.posix.firewalld:
     port: "{{ pgbouncer_listen_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Create PgBouncer system group {{ pgbouncer_group }}
-  group:
+  ansible.builtin.group:
     name: "{{ pgbouncer_group }}"
     state: present
-  become: yes
+  become: true
 
 - name: Create PgBouncer system user {{ pgbouncer_user }}
-  user:
+  ansible.builtin.user:
     name: "{{ pgbouncer_user }}"
     system: true
     group: "{{ pgbouncer_group }}"
     state: present
     create_home: false
-  become: yes
+  become: true
 
 - name: Create configuration directories
-  file:
+  ansible.builtin.file:
     path: "{{ dir_item }}"
     state: directory
     owner: root
@@ -43,79 +43,79 @@
     - "{{ pgbouncer_systemd_unit_file | dirname }}"
   loop_control:
     loop_var: dir_item
-  become: yes
+  become: true
 
 - name: Create logging directory {{ pgbouncer_log_file | dirname }}
-  file:
+  ansible.builtin.file:
     path: "{{ pgbouncer_log_file | dirname }}"
     state: directory
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
     mode: 0755
-  become: yes
+  become: true
 
 - name: Create running directory {{ pgbouncer_pid_file | dirname }}
-  file:
+  ansible.builtin.file:
     path: "{{ pgbouncer_pid_file | dirname }}"
     state: directory
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
     mode: 0700
-  become: yes
+  become: true
 
 - name: Generate PgBouncer configuration file {{ pgbouncer_config_file }}
-  template:
-    backup: yes
+  ansible.builtin.template:
+    backup: true
     dest: "{{ pgbouncer_config_file }}"
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
     src: ./templates/pgbouncer.ini.template
     mode: 0600
-  become: yes
+  become: true
 
 - name: Create empty databases file {{ pgbouncer_databases_file }}
-  copy:
+  ansible.builtin.copy:
     content: "[databases]\n"
     dest: "{{ pgbouncer_databases_file }}"
-    force: no
+    force: false
     group: "{{ pgbouncer_group }}"
     owner: "{{ pgbouncer_user }}"
     mode: 0600
-  become: yes
+  become: true
 
 - name: Create empty authentication file {{ pgbouncer_auth_file }}
-  copy:
+  ansible.builtin.copy:
     content: ""
     dest: "{{ pgbouncer_auth_file }}"
-    force: no
+    force: false
     group: "{{ pgbouncer_group }}"
     owner: "{{ pgbouncer_user }}"
     mode: 0600
-  become: yes
+  become: true
 
 - name: Configure SSL
-  include_tasks: pgbouncer_setup_ssl.yml
+  ansible.builtin.include_tasks: pgbouncer_setup_ssl.yml
   when: pgbouncer_ssl
 
 - name: Generate PgBouncer systemd unit file {{ pgbouncer_systemd_unit_file }}
-  template:
-    backup: yes
+  ansible.builtin.template:
+    backup: true
     dest: "{{ pgbouncer_systemd_unit_file }}"
     src: ./templates/pgbouncer.unit.conf.template
     mode: 0644
   when: pg_type == 'PG'
-  become: yes
+  become: true
 
 - name: Stop PgBouncer service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pgbouncer_service_name }}"
     state: stopped
-  become: yes
+  become: true
 
 - name: Enable and start PgBouncer service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pgbouncer_service_name }}"
     enabled: true
-    daemon_reload: yes
+    daemon_reload: true
     state: started
-  become: yes
+  become: true
