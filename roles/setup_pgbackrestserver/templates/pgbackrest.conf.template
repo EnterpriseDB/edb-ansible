@@ -21,8 +21,8 @@ pg1-path={{ pg_data }}
 pg1-host-user={{ primary_host_user }}
 {% if pg_type == 'EPAS' %}
 pg1-database={{ pg_database_name }}
-pg1-port={{ pg_port_EPAS }}
-pg1-socket-path={{ pg_unix_socket_EPAS }}
+pg1-port={{ pg_port_epas }}
+pg1-socket-path={{ pg_unix_socket_epas }}
 {% endif %}
 {% if standby_present is defined %}
 pg2-host={{ standby_node_hostname[0] }}
@@ -30,8 +30,8 @@ pg2-path={{ pg_data }}
 {% if pg_type == 'EPAS' %}
 pg2-host-user={{ standby_host_user }}
 pg2-database={{ pg_database_name }}
-pg2-port={{ pg_port_EPAS }}
-pg2-socket-path={{ pg_unix_socket_EPAS }}
+pg2-port={{ pg_port_epas }}
+pg2-socket-path={{ pg_unix_socket_epas }}
 {% endif %}
 {% if two_standby is defined %}
 pg3-host={{ standby_node_hostname[1] }}
@@ -39,8 +39,8 @@ pg3-path={{ pg_data }}
 {% if pg_type == 'EPAS' %}
 pg3-host-user={{ standby_host_user }}
 pg3-database={{ pg_database_name }}
-pg3-port={{ pg_port_EPAS }}
-pg3-socket-path={{ pg_unix_socket_EPAS }}
+pg3-port={{ pg_port_epas }}
+pg3-socket-path={{ pg_unix_socket_epas }}
 {% endif %}
 {% if three_standby is defined %}
 pg4-host={{ standby_node_hostname[2] }}
@@ -48,8 +48,8 @@ pg4-path={{ pg_data }}
 {% if pg_type == 'EPAS' %}
 pg4-host-user={{ standby_host_user }}
 pg4-database={{ pg_database_name }}
-pg4-port={{ pg_port_EPAS }}
-pg4-socket-path={{ pg_unix_socket_EPAS }}
+pg4-port={{ pg_port_epas }}
+pg4-socket-path={{ pg_unix_socket_epas }}
 {% endif %}
 {% endif %}
 {% endif %}

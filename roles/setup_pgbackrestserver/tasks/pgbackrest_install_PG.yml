@@ -1,26 +1,25 @@
 ---
-
 - name: Install pgBackRest package
-  package:
+  ansible.builtin.package:
     name: "{{ pgbackrest_package_name }}"
     state: present
-  become: yes
+  become: true
 
 - name: Disable builtin postgresql module
-  shell: >
+  ansible.builtin.shell: >
     dnf -qy module disable postgresql
   args:
     executable: /bin/bash
   register: disable_builtin_postgres
   changed_when: disable_builtin_postgres.rc == 0
   failed_when: disable_builtin_postgres.rc != 0
-  ignore_errors: yes
+  ignore_errors: true
   become: true
   when: ansible_os_family == 'RedHat'
 
 # service gets shut down during installation of pgBackRest, cannot ssh into other nodes without turning on
-- name: start systemd-user-sessions.service
-  systemd:
+- name: Start systemd-user-sessions.service
+  ansible.builtin.systemd:
     name: "systemd-user-sessions.service"
     state: started
-  become: yes
+  become: true

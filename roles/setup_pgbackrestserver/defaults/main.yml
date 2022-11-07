@@ -58,13 +58,13 @@ supported_os:
   - Ubuntu20
 
 supported_log_level:
-  - off
-  - error
-  - warn
-  - info
-  - detail
-  - debug
-  - trace
+  - 'off'
+  - 'error'
+  - 'warn'
+  - 'info'
+  - 'detail'
+  - 'debug'
+  - 'trace'
 
 supported_repo_cipher_type:
   - aes-256-cbc

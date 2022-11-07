@@ -1,7 +1,7 @@
 ---
 
-- name: Ensure the directory {{ pgbackrest_home }}/.ssh exists
-  file:
+- name: Ensure the directory pgbackrest_home/.ssh exists
+  ansible.builtin.file:
     state: directory
     path: "{{ pgbackrest_home }}/.ssh"
     owner: "{{ pgbackrest_user }}"
@@ -9,8 +9,8 @@
     mode: 0700
   become: true
 
-- name: Ensure the directory {{ pgbackrest_home }} exists
-  file:
+- name: Ensure the directory pgbackrest_home exists
+  ansible.builtin.file:
     state: directory
     path: "{{ pgbackrest_home }}"
     owner: "{{ pgbackrest_user }}"
@@ -19,8 +19,8 @@
   become: true
 
 # exchange of keys will not occur without creation of this directory
-- name: Ensure the directory {{ pgbackrest_home }}/.ansible/tmp exists
-  file:
+- name: Ensure the directory pgbackrest_home/.ansible/tmp exists
+  ansible.builtin.file:
     state: directory
     path: "{{ pgbackrest_home }}/.ansible/tmp"
     owner: "{{ pgbackrest_user }}"
@@ -29,7 +29,7 @@
   become: true
 
 - name: Check if the SSH private key exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ pgbackrest_home }}/.ssh/id_rsa"
   register: pgbackrest_ssh_private_key
   become: true
@@ -41,4 +41,3 @@
     group: "{{ pgbackrest_group }}"
   when: not pgbackrest_ssh_private_key.stat.exists
   become: true
-
