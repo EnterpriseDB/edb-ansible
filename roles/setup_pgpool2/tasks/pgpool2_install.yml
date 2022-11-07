@@ -7,7 +7,7 @@
   register: disable_builtin_postgres
   changed_when: disable_builtin_postgres.rc == 0
   failed_when: disable_builtin_postgres.rc != 0
-  ignore_errors: yes
+  ignore_errors: true
   become: true
   when:
     - ansible_distribution_major_version == '8'

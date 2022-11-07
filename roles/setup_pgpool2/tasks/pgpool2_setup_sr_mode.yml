@@ -36,8 +36,8 @@
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_grant_roles:
-       - user: "{{ pgpool2_sr_check_user }}"
-         role: "pg_monitor"
+      - user: "{{ pgpool2_sr_check_user }}"
+        role: "pg_monitor"
   run_once: true
   when:
     - pgpool2_primary_inventory_hostname is defined

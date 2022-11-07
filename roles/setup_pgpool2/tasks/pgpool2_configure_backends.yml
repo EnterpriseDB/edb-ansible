@@ -43,7 +43,7 @@
       ] }}
   loop: "{{ pgpool2_backends }}"
   loop_control:
-    extended: yes
+    extended: true
     loop_var:
       backend_item
 

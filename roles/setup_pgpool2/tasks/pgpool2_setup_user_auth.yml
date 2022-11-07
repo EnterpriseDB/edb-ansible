@@ -2,7 +2,7 @@
 # Setup pgpoolII user authentication
 
 # Fetch pgpool2_user home path
-- name: Fetch user {{ pgpool2_user }} home path
+- name: Fetch user pgpool2_user home path
   ansible.builtin.shell: "echo $HOME"
   register: res_echo_home
   become: true
@@ -14,7 +14,7 @@
     pgpool2_user_home_dir: "{{ res_echo_home.stdout }}"
 
 # Ensure home dir exists
-- name: Ensure {{ pgpool2_user_home_dir }} exists
+- name: Ensure pgpool2_user_home_dir exists
   ansible.builtin.file:
     path: "{{ pgpool2_user_home_dir }}"
     state: directory
@@ -24,7 +24,7 @@
   become: true
 
 # Test if the .pgpoolkey file exist in the home directory
-- name: Test if {{ pgpool2_user_home_dir }}/.pgpoolkey exists
+- name: Test if pgpool2_user_home_dir/.pgpoolkey exists
   ansible.builtin.stat:
     path: "{{ pgpool2_user_home_dir }}/.pgpoolkey"
   register: stat_result

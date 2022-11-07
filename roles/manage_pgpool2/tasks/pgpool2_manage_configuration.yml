@@ -6,7 +6,7 @@
       {{ conf_item.key }} = {% if conf_item.quoted | default(false) %}'{% endif %}{{ conf_item.value }}{% if conf_item.quoted | default(false) %}'{% endif %}
     regexp: "^{{ conf_item.key | regex_escape() }}\\s*="
     state: "{{ conf_item.state | default('present') }}"
-    create: yes
+    create: true
     mode: 0600
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"

@@ -133,12 +133,13 @@
   ansible.builtin.include_tasks: pgpool2_setup_user_auth.yml
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
   become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  block:
+    - name: Update /etc/hosts
+      ansible.builtin.import_tasks: linux_update_etc_hosts.yml
 
 - name: Include the pgpool2_configure_backends
   ansible.builtin.include_tasks: pgpool2_configure_backends.yml

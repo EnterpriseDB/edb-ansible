@@ -6,7 +6,7 @@
 - name: Open listening TCP port {{ pgpool2_port | default('') }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -19,7 +19,7 @@
 - name: Open PCP TCP port {{ pgpool2_pcp_port | default('') }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_pcp_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -32,7 +32,7 @@
 - name: Open PCP UDP port {{ pgpool2_pcp_port | default('') }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_pcp_port }}/udp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -45,7 +45,7 @@
 - name: Open Watchdog TCP port {{ pgpool2_wd_port | default('') }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -59,7 +59,7 @@
 - name: Open Watchdog UDP port {{ pgpool2_wd_port | default('') }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_port }}/udp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -73,7 +73,7 @@
 - name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port | default('') }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_heartbeat_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -87,7 +87,7 @@
 - name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_heartbeat_port }}/udp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -178,7 +178,7 @@
 
 - name: Generate pgpoolII systemd unit file
   ansible.builtin.template:
-    backup: yes
+    backup: true
     dest: "{{ pgpool2_systemd_config_file }}"
     src: ./templates/pgpool-II.unit.conf.template
     mode: 0644
@@ -189,7 +189,7 @@
 # add systemd config file to ensure environment file is referenced correctly
 - name: Generate pgpoolII systemd unit file for EPAS Debian
   ansible.builtin.template:
-    backup: yes
+    backup: true
     dest: "{{ pgpool2_systemd_config_file }}"
     src: ./templates/pgpool.unit.debian.conf.template
     mode: 0644
@@ -210,7 +210,7 @@
 # original pgpool2_start_script is not accurate for EPAS Debian
 - name: Generate pgpoolII start bash script for EPAS Debian
   ansible.builtin.template:
-    backup: yes
+    backup: true
     dest: "{{ pgpool2_start_script }}"
     src: ./templates/edb-pgpool.sh.template
     mode: 0755
@@ -220,8 +220,8 @@
   become: true
 
 # make sure items in pgpool2_bin_path are executable without directly referencing pgpool2_bin_path in command
-- name: Add pgpool executables to {{ pgpool2_user }} $PATH from {{ pgpool2_bin_path }}
-  ansible.builtin.shell:
+- name: Add pgpool executables to pgpool2_user $PATH from pgpool2_bin_path
+  ansible.builtin.command:
     cmd: >-
       cp -r {{ pgpool2_bin_path }}/. /bin/
   when:
@@ -256,6 +256,6 @@
   ansible.builtin.systemd:
     name: "{{ pgpool2_service_name }}"
     enabled: true
-    daemon_reload: yes
+    daemon_reload: true
     state: started
   become: true

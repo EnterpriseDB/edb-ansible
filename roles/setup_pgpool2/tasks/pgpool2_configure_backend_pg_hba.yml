@@ -11,7 +11,7 @@
       ] }}
   loop: "{{ pgpool2_ip_list }}"
   loop_control:
-    loop_var: pgpool2_node_ip
+   loop_var: pgpool2_node_ip
   when: pgpool2_ssl
 
 - name: Initialize the hba_entries variable
@@ -25,16 +25,16 @@
       ] }}
   loop: "{{ pgpool2_ip_list }}"
   loop_control:
-    loop_var: pgpool2_node_ip
+   loop_var: pgpool2_node_ip
   when: not pgpool2_ssl
 
 - name: Allow access to pgpoolII servers
   ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: manage_hba_conf
+   name: manage_dbserver
+   tasks_from: manage_hba_conf
   vars:
-    pg_hba_ip_addresses: "{{ hba_entries }}"
+   pg_hba_ip_addresses: "{{ hba_entries }}"
 
 - name: Reset hba_entries
   ansible.builtin.set_fact:
-    hba_entries: []
+   hba_entries: []
