@@ -7,9 +7,6 @@
 - name: Reference pg_type variables
   ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
-#- name: Reference pg_type variables
-#  ansible.builtin.include_vars: "../../setup_pgpool2/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
-
 - name: Reference pg_type variables
   ansible.builtin.include_vars: "../../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
