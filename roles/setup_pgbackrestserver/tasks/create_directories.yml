@@ -1,31 +1,31 @@
 ---
 
-- name: Ensure logging directory {{ pgbackrest_log_file }} exists
-  file:
+- name: Ensure logging directory pgbackrest_log_file exists
+  ansible.builtin.file:
     path: "{{ pgbackrest_log_file | dirname }}"
     state: directory
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
     mode: 0755
-    recurse: yes
-  become: yes
+    recurse: true
+  become: true
 
-- name: Ensure archive directory {{ archive_repo_directory }} exists
-  file:
+- name: Ensure archive directory archive_repo_directory exists
+  ansible.builtin.file:
     path: "{{ archive_repo_directory }}"
     state: directory
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
     mode: 0750
-    recurse: yes
-  become: yes
+    recurse: true
+  become: true
 
-- name: Ensure lock directory {{ pgbackrest_lock_path }} exists
-  file:
+- name: Ensure lock directory pgbackrest_lock_path exists
+  ansible.builtin.file:
     path: "{{ pgbackrest_lock_path }}"
     state: directory
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
     mode: 0750
-    recurse: yes
-  become: yes
+    recurse: true
+  become: true

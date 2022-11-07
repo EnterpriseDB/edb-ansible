@@ -1,10 +1,10 @@
 ---
 
 - name: Build configuration file {{ pgbackrest_configuration_file }}
-  template:
+  ansible.builtin.template:
     src: "./templates/pgbackrest.conf.template"
     dest: "{{ pgbackrest_configuration_file }}"
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
     mode: 0600
-  become: yes
+  become: true
