@@ -1,5 +1,4 @@
 ---
-
 barman_package: "barman-2.19-1"
 barman_cli_package: "barman-cli-2.19-1"
 

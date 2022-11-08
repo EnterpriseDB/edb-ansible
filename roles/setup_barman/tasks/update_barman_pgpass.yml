@@ -1,52 +1,51 @@
 ---
-
 - name: Get Barman server informations
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
 
 - name: Fail if barman server informations are not found
-  fail:
+  ansible.builtin.fail:
     msg: "Unable to find barman server informations"
   when:
     - _barman_server_info|length == 0
 
 - name: Set _barman_server_inventory_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_inventory_hostname: "{{ _barman_server_info[0].inventory_hostname }}"
 
 - name: Set _pg_host when use_hostname is false
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
   when:
     - not use_hostname|bool
     - hostvars[inventory_hostname].barman_primary_vip is not defined
 
 - name: Set _pg_host when use_hostname is true
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ inventory_hostname }}"
   when:
     - use_hostname|bool
     - hostvars[inventory_hostname].barman_primary_vip is not defined
 
 - name: Set _pg_host using virtual ip address
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].barman_primary_vip }}"
   when:
     - hostvars[inventory_hostname].barman_primary_vip is defined
 
 - name: Ensure barman .pgpass file contains one entry for {{ ansible_host }}
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ barman_home + '/.pgpass' }}"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0600
     line: "{{ _pg_host }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
     regexp: "^{{ _pg_host | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
-    create: yes
+    create: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   throttle: 1
-  become: yes
+  become: true
 
 - name: Reset _barman_server_info
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: ""

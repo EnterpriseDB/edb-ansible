@@ -1,16 +1,15 @@
 ---
-
 - name: Get Barman server informations
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
 
 - name: Set _barman_host when not using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_host: "{{ _barman_server_info[0].private_ip }}"
   when: "not use_hostname|bool"
 
 - name: Set _barman_host when using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
   when: use_hostname|bool
 
@@ -29,7 +28,7 @@
   register: wal_level_result
 
 - name: Ensure wal_level is configured to replica if needed
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_postgres_params
   vars:
@@ -38,10 +37,10 @@
         value: "replica"
   no_log: "{{ disable_logging }}"
   when:
-  - wal_level_result.query_result[0].setting not in ['replica', 'logical']
+    - wal_level_result.query_result[0].setting not in ['replica', 'logical']
 
 - name: Ensure the replication slot barman exists
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_slots
   vars:
@@ -51,8 +50,14 @@
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'postgres'
 
+# need this in order to fit entire archive_command on one line
+- name: Define archive command for WAL archiving
+  ansible.builtin.set_fact:
+    _archive_command_partial: "{{ barman_user }}@{{ _barman_host }}:{{ barman_home }}/{{ inventory_hostname }}-{{ pg_instance_name }}/incoming/%f"
+  when: barman_backup_method == 'rsync'
+
 - name: Ensure WAL archiving is configured
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_postgres_params
   vars:
@@ -62,11 +67,12 @@
       # Note: barman-wal-archive does not allow using a different SSH port than
       # the default one.
       - name: archive_command
-        value: "rsync -a -e \"ssh -p {{ ssh_port }}\" %p {{ barman_user }}@{{ _barman_host }}:{{ barman_home }}/{{ inventory_hostname }}-{{ pg_instance_name }}/incoming/%f"
+        value: "rsync -a -e \"ssh -p {{ ssh_port }}\" %p {{ _archive_command_partial }}"
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'rsync'
 
 - name: Reset local variables
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: null
     _barman_host: null
+    _archive_command_partial: null

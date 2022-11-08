@@ -1,88 +1,88 @@
 ---
-
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Reference pg_type variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Set barman_backup_method
-  set_fact:
+  ansible.builtin.set_fact:
     barman_backup_method: "{{ hostvars[inventory_hostname].barman_backup_method | default('rsync') }}"
 
 - name: Check barman_backup_method value
-  fail:
+  ansible.builtin.fail:
     msg: "Barman backup method {{ barman_backup_method }} not supported."
   when: >
     barman_backup_method not in ['postgres', 'rsync']
 
 - name: Fail if barman_primary_vip is defined and barman_backup_method is not Postgres
-  fail:
+  ansible.builtin.fail:
     msg: "The hostvar barman_primary_vip is not compatible with rsync backups"
   when:
     - hostvars[inventory_hostname].barman_primary_vip is defined
     - barman_backup_method != 'postgres'
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Reference pg_type variables
-  include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Reference barman server variables
-  include_vars: "{{ role_path }}/../setup_barmanserver/defaults/main.yml"
+  ansible.builtin.include_vars: "{{ role_path }}/../setup_barmanserver/defaults/main.yml"
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  become: true
+  block:
+    - name: Update /etc/hosts
+      ansible.builtin.import_tasks: linux_update_etc_hosts.yml
 
 - name: Include the package installation tasks
-  include_role:
+  ansible.builtin.include_role:
     name: setup_barmanserver
     tasks_from: install_packages
 
 - name: Include the password generation tasks
-  include_tasks: generate_pg_password.yml
+  ansible.builtin.include_tasks: generate_pg_password.yml
   when: barman_pg_password is not defined
 
 - name: Include the barman .pgpass file tasks
-  include_tasks: update_barman_pgpass.yml
+  ansible.builtin.include_tasks: update_barman_pgpass.yml
 
 - name: Include the Postgres user creation tasks
-  include_tasks: create_pg_user.yml
+  ansible.builtin.include_tasks: create_pg_user.yml
   when: >
     'primary' in group_names
 
 - name: Include the HBA file update tasks
-  include_tasks: update_pg_hba.yml
+  ansible.builtin.include_tasks: update_pg_hba.yml
 
 - name: Include the SSH keys generation tasks
-  include_tasks: generate_ssh_keys.yml
+  ansible.builtin.include_tasks: generate_ssh_keys.yml
 
 - name: Include the SSH keys exchange tasks
-  include_tasks: exchange_ssh_keys.yml
+  ansible.builtin.include_tasks: exchange_ssh_keys.yml
 
 - name: Include the barman configuration tasks
-  include_tasks: configure_barman.yml
+  ansible.builtin.include_tasks: configure_barman.yml
   when: >
     hostvars[inventory_hostname].barman_no_configuration is not defined
-    or hostvars[inventory_hostname].barman_no_configuration|bool == False
+    or hostvars[inventory_hostname].barman_no_configuration|bool
 
 - name: Include the Postgres configuration tasks for backup
-  include_tasks: configure_pg_backup.yml
+  ansible.builtin.include_tasks: configure_pg_backup.yml
   when: >
     hostvars[inventory_hostname].barman_no_configuration is not defined
-    or hostvars[inventory_hostname].barman_no_configuration|bool == False
+    or hostvars[inventory_hostname].barman_no_configuration|bool
 
 - name: Include the barman post configuration tasks
-  include_tasks: post_configure_barman.yml
+  ansible.builtin.include_tasks: post_configure_barman.yml
   when: >
     hostvars[inventory_hostname].barman_no_configuration is not defined
-    or hostvars[inventory_hostname].barman_no_configuration|bool == False
+    or hostvars[inventory_hostname].barman_no_configuration|bool

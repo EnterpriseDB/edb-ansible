@@ -1,100 +1,99 @@
 ---
-
 - name: Get Barman server informations
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
 
 - name: Fail if barman server informations are not found
-  fail:
+  ansible.builtin.fail:
     msg: "Unable to find barman server informations"
   when:
     - _barman_server_info|length == 0
 
 - name: Set _barman_server_inventory_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_inventory_hostname: "{{ _barman_server_info[0].inventory_hostname }}"
 
 - name: Set _pg_host and _barman_host when not using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
     _barman_host: "{{ _barman_server_info[0].private_ip }}"
   when:
     - "not use_hostname|bool"
 
 - name: Set _pg_host and _barman_host when using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ inventory_hostname }}"
     _barman_host: "{{ _barman_server_info[0].inventory_hostname }}"
   when:
     - use_hostname|bool
 
 - name: Fetch barman server SSH public key
-  slurp:
+  ansible.builtin.slurp:
     src: "{{ barman_home + '/.ssh/id_rsa.pub' }}"
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   register: _barman_server_ssh_public_key_b64
-  become: yes
+  become: true
 
 - name: Set _barman_server_ssh_public_key
-  set_fact:
-      _barman_server_ssh_public_key: "{{ _barman_server_ssh_public_key_b64.content | b64decode | trim }}"
+  ansible.builtin.set_fact:
+    _barman_server_ssh_public_key: "{{ _barman_server_ssh_public_key_b64.content | b64decode | trim }}"
 
-- name: Fetch {{ pg_owner }} SSH public key
-  slurp:
+- name: Fetch pg_owner SSH public key
+  ansible.builtin.slurp:
     src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
   register: _pg_ssh_public_key_b64
-  become: yes
+  become: true
 
 - name: Set _pg_ssh_public_key
-  set_fact:
-      _pg_ssh_public_key: "{{ _pg_ssh_public_key_b64.content | b64decode | trim }}"
+  ansible.builtin.set_fact:
+    _pg_ssh_public_key: "{{ _pg_ssh_public_key_b64.content | b64decode | trim }}"
 
-- name: Ensure {{ pg_owner }} SSH public key is on the barman server
-  lineinfile:
+- name: Ensure pg_owner SSH public key is on the barman server
+  ansible.builtin.lineinfile:
     path: "{{ barman_home + '/.ssh/authorized_keys' }}"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0600
     line: "{{ _pg_ssh_public_key }}"
-    create: yes
+    create: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
 
-- name: Ensure {{ barman_user }} SSH public key is on the Postgres server
-  lineinfile:
+- name: Ensure barman_user SSH public key is on the Postgres server
+  ansible.builtin.lineinfile:
     path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0600
     line: "{{ _barman_server_ssh_public_key }}"
-    create: yes
+    create: true
 
 - name: Run ssh-keyscan from the Barman server
-  command: ssh-keyscan -p {{ ssh_port }} {{ _pg_host }}
+  ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _pg_host }}
   register: _barman_ssh_keyscan_output
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
   changed_when: false
 
 # The SSH key name format used by the known_hosts module differs if the SSH
 # port value is equal to the default value (22) or not.
 # When the SSH port value is not the default value, format is: [hostname]:port
 - name: Set _ssh_pg_keyname and _ssh_barman_keyname when SSH port is 22
-  set_fact:
+  ansible.builtin.set_fact:
     _ssh_pg_keyname: "{{ _pg_host }}"
     _ssh_barman_keyname: "{{ _barman_host }}"
   when:
     - ssh_port == 22
 
 - name: Set _ssh_pg_keyname and _ssh_barman_keyname when SSH port is different than 22
-  set_fact:
+  ansible.builtin.set_fact:
     _ssh_pg_keyname: "[{{ _pg_host }}]:{{ ssh_port }}"
     _ssh_barman_keyname: "[{{ _barman_host }}]:{{ ssh_port }}"
   when:
     - ssh_port != 22
 
-- name: Add {{ pg_owner }} SSH public key into barman server known hosts
-  known_hosts:
+- name: Add pg_owner SSH public key into barman server known hosts
+  ansible.builtin.known_hosts:
     path: "{{ barman_home + '/.ssh/known_hosts' }}"
     name: "{{ _ssh_pg_keyname }}"
     key: "{{ _item }}"
@@ -102,30 +101,30 @@
   loop_control:
     loop_var: _item
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
   become_user: "{{ barman_user }}"
   no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the Postgres server
-  command: ssh-keyscan -p {{ ssh_port }} {{ _barman_host }}
+  ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _barman_host }}
   register: _pg_ssh_keyscan_output
-  become: yes
+  become: true
   changed_when: false
 
-- name: Add {{ barman_user }} SSH public key into Postgres server known hosts
-  known_hosts:
+- name: Add barman_user SSH public key into Postgres server known hosts
+  ansible.builtin.known_hosts:
     path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
     name: "{{ _ssh_barman_keyname }}"
     key: "{{ _item }}"
   with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
   loop_control:
     loop_var: _item
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
 
 - name: Reset local variables
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: ""
     _pg_host: null
     _barman_host: null
