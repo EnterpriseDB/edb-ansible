@@ -1,5 +1,5 @@
 ---
-- name: Ensure user {{ pg_owner }} exists
+- name: Ensure user exists {{ pg_owner }}
   ansible.builtin.user:
     name: "{{ pg_owner }}"
     create_home: true
@@ -9,6 +9,6 @@
   become: true
 
 - name: Include DBT-2 environment setup
-  include_role:
+  ansible.builtin.include_role:
     name: setup_dbt2
     tasks_from: dbt2_setup_env

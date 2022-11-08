@@ -1,28 +1,28 @@
 ---
 - name: Reference variables
-  include_vars: "{{ pg_type }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}.yml"
 
 - name: Include DBT-2 kit driver installation
-  include_role:
+  ansible.builtin.include_role:
     name: setup_dbt2
     tasks_from: dbt2_install_packages_driver
 
 - name: Include DBT-2 user creation
-  include_tasks: dbt2_setup_user.yml
+  ansible.builtin.include_tasks: dbt2_setup_user.yml
 
 - name: Include DBT-2 .pgpass configuration
-  include_role:
+  ansible.builtin.include_role:
     name: setup_dbt2
     tasks_from: dbt2_configure_pgpass
 
 - name: Make a list of DBT-2 client system addresses
-  set_fact:
+  ansible.builtin.set_fact:
     ssh_targets: "{{ ssh_targets + [ hostvars[item]['private_ip'] ] }}"
   with_items: "{{ groups['dbt2_client'] }}"
   when: "'dbt2_client' in groups"
 
 - name: Make a list of database system addresses
-  set_fact:
+  ansible.builtin.set_fact:
     ssh_targets: "{{ ssh_targets + [ hostvars[item]['private_ip'] ] }}"
   with_items: "{{ groups['primary'] }}"
   when: "'primary' in groups"
