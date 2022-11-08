@@ -219,33 +219,6 @@
     - ansible_os_family == 'Debian'
   become: true
 
-# make sure items in pgpool2_bin_path are executable without directly referencing pgpool2_bin_path in command
-- name: Add pgpool executables to pgpool2_user $PATH from pgpool2_bin_path
-  ansible.builtin.command:
-    cmd: >-
-      cp -r {{ pgpool2_bin_path }}/. /bin/
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'Debian'
-  become: true
-
-- name: Check symlink was created correctly
-  ansible.builtin.stat:
-    path: "/bin/pcp_node_info"
-  register: pgpool_pcp_sym
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'Debian'
-  become: true
-
-# check if path to symlink exists and is correctly linked
-- name: Fail if symlink not created correctly
-  ansible.builtin.fail:
-    msg: "Symlink not created correctly, check {{ pgpool2_bin_path }}"
-  when:
-    - pgpool_pcp_sym.islnk is defined and pgpool_pcp_sym.islnk == 'False'
-  become: true
-
 - name: Stop pgpoolII service
   ansible.builtin.systemd:
     name: "{{ pgpool2_service_name }}"
