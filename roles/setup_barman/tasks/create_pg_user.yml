@@ -1,11 +1,10 @@
 ---
-
 - name: Initialize _role_attr_flags
-  set_fact:
+  ansible.builtin.set_fact:
     _role_attr_flags: "login,replication"
 
 - name: Create barman user on the Postgres instance
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_users
   vars:
@@ -15,7 +14,7 @@
         role_attr_flags: "{{ _role_attr_flags }}"
 
 - name: Ensure privileges for the barman user
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_privileges
   vars:

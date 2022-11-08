@@ -1,20 +1,19 @@
 ---
-
-- name: Ensure barman system group {{ barman_group }} exists
-  group:
+- name: Ensure barman system group barman_group exists
+  ansible.builtin.group:
     name: "{{ barman_group }}"
     state: present
-  become: yes
+  become: true
 
-- name: Ensure barman system user {{ barman_user }} exists
-  user:
+- name: Ensure barman system user barman_user exists
+  ansible.builtin.user:
     name: "{{ barman_user }}"
     system: true
     group: "{{ barman_group }}"
     state: present
     create_home: true
     home: "{{ barman_home }}"
-  become: yes
+  become: true
 
 - name: Check if getenforce is installed
   ansible.builtin.shell: command -v getenforce > /dev/null 2>&1
@@ -28,7 +27,7 @@
     selinux_enforcing: false
 
 - name: Test whether SELinux is enabled
-  command: getenforce
+  ansible.builtin.command: getenforce
   register: selinux_status
   changed_when: false
   when: getenforce_installed.rc == 0
@@ -61,7 +60,7 @@
     - barman_home != barman_default_home
 
 - name: Apply new SELinux context for custom located barman home directory
-  command: "restorecon -irv {{ barman_home }}"
+  ansible.builtin.command: "restorecon -irv {{ barman_home }}"
   when:
     - selinux_enforcing
     - barman_home_dir.changed or barman_ssh_home_dir.changed

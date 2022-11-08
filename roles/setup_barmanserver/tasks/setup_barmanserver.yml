@@ -1,33 +1,33 @@
 ---
-
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Include the package installation tasks
-  include_tasks: install_packages.yml
+  ansible.builtin.include_tasks: install_packages.yml
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  block:
+    - name: Update /etc/hosts
+      ansible.builtin.import_tasks: linux_update_etc_hosts.yml
 
 - name: Include the user ans group creation tasks
-  include_tasks: create_user.yml
+  ansible.builtin.include_tasks: create_user.yml
 
 - name: Include the directories creation tasks
-  include_tasks: create_directories.yml
+  ansible.builtin.include_tasks: create_directories.yml
 
 - name: Include the configuration file generation tasks
-  include_tasks: generate_configuration.yml
+  ansible.builtin.include_tasks: generate_configuration.yml
 
 - name: Include the SSH keys generation tasks
-  include_tasks: generate_ssh_keys.yml
+  ansible.builtin.include_tasks: generate_ssh_keys.yml

@@ -1,28 +1,27 @@
 ---
-
-- name: Ensure logging directory {{ barman_home }} exists
-  file:
+- name: Ensure logging directory barman_home exists
+  ansible.builtin.file:
     path: "{{ barman_log_file | dirname }}"
     state: directory
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0755
-  become: yes
+  become: true
 
-- name: Ensure running directory {{ barman_lock_directory }} exists
-  file:
+- name: Ensure running directory barman_lock_directory exists
+  ansible.builtin.file:
     path: "{{ barman_lock_directory }}"
     state: directory
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0750
-  become: yes
+  become: true
 
-- name: Ensure configuration files directory {{ barman_configuration_files_directory }} exists
-  file:
+- name: Ensure configuration files directory barman_configuration_files_directory exists
+  ansible.builtin.file:
     path: "{{ barman_configuration_files_directory }}"
     state: directory
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0750
-  become: yes
+  become: true

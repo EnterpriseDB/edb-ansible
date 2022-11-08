@@ -1,52 +1,51 @@
 ---
-
 - name: Get Barman server informations
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
 
 - name: Fail if barman server informations are not found
-  fail:
+  ansible.builtin.fail:
     msg: "Unable to find barman server informations"
   when:
     - _barman_server_info|length == 0
 
 - name: Set _barman_server_inventory_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_inventory_hostname: "{{ _barman_server_info[0].inventory_hostname }}"
 
 - name: Set _pg_host when not using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
   when:
     - "not use_hostname|bool"
     - hostvars[inventory_hostname].primay_vip is not defined
 
 - name: Set _pg_host when using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ inventory_hostname }}"
   when:
     - use_hostname|bool
     - hostvars[inventory_hostname].primay_vip is not defined
 
 - name: Set _pg_host when using virtual ip address
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_host: "{{ hostvars[inventory_hostname].barman_primary_vip }}"
   when:
     - hostvars[inventory_hostname].barman_primary_vip is defined
 
 - name: Ensure the barman configuration for the current host is present
-  template:
+  ansible.builtin.template:
     src: "./templates/barman.{{ barman_backup_method }}.template"
     dest: "{{ barman_configuration_files_directory }}/{{ inventory_hostname }}-{{ pg_instance_name }}.conf"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
     mode: 0700
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
   vars:
     pg_host: "{{ _pg_host }}"
 
 - name: Reset local variables
-  set_fact:
+  ansible.builtin.set_fact:
     _barman_server_info: ""
     _pg_host: null
