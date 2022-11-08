@@ -1,7 +1,7 @@
 ---
 - name: Manage entries in .pgpass
-  include_tasks: pgpass_line.yml
-  when: pg_pgpass_values|length > 0
+  ansible.builtin.include_tasks: pgpass_line.yml
+  when: pg_pgpass_values | length > 0
   no_log: "{{ disable_logging }}"
   with_items: "{{ pg_pgpass_values }}"
   loop_control:

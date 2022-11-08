@@ -1,6 +1,6 @@
 ---
-- name: Stop other "{{ service_name }}" defined service
-  systemd:
+- name: Start service {{ service_name }}
+  ansible.builtin.systemd:
     name: "{{ service_name }}"
     state: started
   when:

@@ -1,8 +1,8 @@
 ---
 - name: Update standby servers to latest package one at a time
+  when:
+    - pg_package_list | length > 0 or user_package_list | length > 0
+  delegate_to: "{{ node.inventory_hostname }}"
   block:
     - name: Include apply db patches tasks
       ansible.builtin.include_tasks: apply_db_patches.yml
-  when:
-  - pg_package_list|length > 0 or user_package_list|length > 0
-  delegate_to: "{{ node.inventory_hostname }}"

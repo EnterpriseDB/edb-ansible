@@ -1,27 +1,38 @@
 ---
 
 - name: Reference Postgres variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Include manage dbserver tasks
   block:
-    - import_tasks: manage_users.yml
-    - import_tasks: manage_db.yml
-    - import_tasks: manage_extensions.yml
-    - import_tasks: manage_privileges.yml
-    - import_tasks: copy_files.yml
-    - import_tasks: execute_sql_scripts.yml
-    - import_tasks: manage_tablespaces.yml
+    - name: Import manage_tablespaces
+      ansible.builtin.import_tasks: manage_tablespaces.yml
+    - name: Import manage_users
+      ansible.builtin.import_tasks: manage_users.yml
+    - name: Import manage_db
+      ansible.builtin.import_tasks: manage_db.yml
+    - name: Import manage_extensions
+      ansible.builtin.import_tasks: manage_extensions.yml
+    - name: Import manage_privileges
+      ansible.builtin.import_tasks: manage_privileges.yml
+    - name: Import copy_files
+      ansible.builtin.import_tasks: copy_files.yml
+    - name: Import execute_sql_scripts
+      ansible.builtin.import_tasks: execute_sql_scripts.yml
 
 - name: Include Postgres update configuration tasks
   block:
-    - import_tasks: manage_pgpass.yml
-    - import_tasks: manage_slots.yml
-    - import_tasks: manage_postgres_params.yml
-    - import_tasks: manage_hba_conf.yml
+    - name: Import manage_pgpass
+      ansible.builtin.import_tasks: manage_pgpass.yml
+    - name: Import manage_slots
+      ansible.builtin.import_tasks: manage_slots.yml
+    - name: Import manage_postgres_params
+      ansible.builtin.import_tasks: manage_postgres_params.yml
+    - name: Import manage_hba_conf
+      ansible.builtin.import_tasks: manage_hba_conf.yml
 
 - name: Include shell profile creation task
-  import_tasks: manage_profile.yml
+  ansible.builtin.import_tasks: manage_profile.yml
 
 - name: Include .psqlrc file creation task
-  import_tasks: manage_psqlrc.yml
+  ansible.builtin.import_tasks: manage_psqlrc.yml

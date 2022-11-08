@@ -5,12 +5,12 @@
     slot_type: "{{ line_item.slot_type | default('physical') }}"
     output_plugin: "{{ line_item.output_plugin | default(omit) }}"
     state: "{{ line_item.state | default('present') }}"
-    db: "{{ line_item.database|default(pg_database) }}"
+    db: "{{ line_item.database | default(pg_database) }}"
     login_host: "{{ pg_unix_socket_directories[0] }}"
     port: "{{ pg_port }}"
     login_user: "{{ pg_owner }}"
   when: pg_slots|length > 0
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   with_items: "{{ pg_slots }}"
   loop_control:

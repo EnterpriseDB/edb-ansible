@@ -1,13 +1,13 @@
 ---
 - name: Ensure tablespace directories exists
-  file:
+  ansible.builtin.file:
     path: "{{ line_item.location }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
     state: "{{ 'absent' if line_item.state is defined and line_item.state == 'absent' else 'directory' }}"
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
   with_items: "{{ pg_tablespaces }}"
   loop_control:
     loop_var: line_item
@@ -22,7 +22,7 @@
     login_user: "{{ pg_owner }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   register: db_status
 
@@ -41,11 +41,11 @@
     login_user: "{{ pg_owner }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   with_items: "{{ pg_tablespaces }}"
   loop_control:
     loop_var: line_item
   when:
     - not db_status.query_result[0].pg_is_in_recovery
-    - pg_tablespaces|length > 0
+    - pg_tablespaces | length > 0
