@@ -1,7 +1,7 @@
 ---
 
 - name: Gather hardware informations
-  set_fact:
+  ansible.builtin.set_fact:
     _sys_nvcpus: "{{ ansible_processor_vcpus }}"
     # Convert from megibyte to megabyte
     _sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
@@ -14,7 +14,7 @@
     login_user: "{{ pg_owner }}"
     filter:
       - "settings"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
   register: _pg_settings
@@ -22,69 +22,69 @@
 # Gather memory informations from /proc/meminfo for calculating the equivalent
 # of the column "buff/cache" from the "free" command.
 - name: Gather buffers memory size from /proc/meminfo
-  shell: >-
+  ansible.builtin.shell: >-
     set -o pipefail && grep -E '^Buffers:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
   args:
     executable: /bin/bash
   register: _shell_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Set the variable _sys_buffers_kb
-  set_fact:
+  ansible.builtin.set_fact:
     _sys_buffers_kb: "{{ _shell_output.stdout | int }}"
 
 - name: Gather cached memory size from /proc/meminfo
-  shell: >-
+  ansible.builtin.shell: >-
     set -o pipefail && grep -E '^Cached:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
   args:
     executable: /bin/bash
   register: _shell_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Set the variable _sys_cached_kb
-  set_fact:
+  ansible.builtin.set_fact:
     _sys_cached_kb: "{{ _shell_output.stdout | int }}"
 
 - name: Gather slab reclaimable size from /proc/meminfo
-  shell: >-
+  ansible.builtin.shell: >-
     set -o pipefail && grep -E '^SReclaimable:' /proc/meminfo | sed -E 's/^[A-Za-z]+:\s*([0-9]+).*/\1/'
   args:
     executable: /bin/bash
   register: _shell_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Set the variable _sys_slab_reclaimable_kb
-  set_fact:
+  ansible.builtin.set_fact:
     _sys_slab_reclaimable_kb: "{{ _shell_output.stdout | int }}"
 
 - name: Set the variable _sys_buffers_cached_mb
-  set_fact:
+  ansible.builtin.set_fact:
     _sys_buffers_cached_mb: >-
       {{ ((_sys_buffers_kb | int + _sys_cached_kb | int + _sys_slab_reclaimable_kb | int) / 1024) | round | int }}
 
 # Set the max_connections value to: GREATEST(4 x CPU cores, 100)
 - name: Set the variable _pg_max_connections
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_max_connections: >-
-      {{ [ _sys_nvcpus | int * 4, 100 ] | max }}
+      {{ [_sys_nvcpus | int * 4, 100] | max }}
 
 # Set the shared buffers value
 - name: Set the variable _pg_shared_buffers_mb
-  include_tasks: tune_pg_shared_buffers.yml
+  ansible.builtin.include_tasks: tune_pg_shared_buffers.yml
 
 # Set the work_mem value to: ((Total RAM - shared_buffers)/(16 x CPU cores))
 - name: Set the variable _pg_work_mem_mb
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_work_mem_mb: >-
       {{ ((_sys_memtotal_mb | int - _pg_shared_buffers_mb | int) / (16 * _sys_nvcpus | int)) | round | int }}
 
 # Set the maintenance_work_mem_mb value to:
 # MAX(15% x (Total RAM - shared_buffers) / autovacuum_max_workers, 1GB)
 - name: Set the variable _pg_maintenance_work_mem_mb
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_maintenance_work_mem_mb: >-
       {{
         [
@@ -97,7 +97,7 @@
       }}
 
 - name: Initialize the Postgres parameters list
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_postgres_conf_params:
       - name: max_connections
         value: "{{ _pg_max_connections }}"
@@ -129,7 +129,7 @@
         value: "10min"
 
 - name: Configure parameters for SSD based disk usage
-  set_fact:
+  ansible.builtin.set_fact:
     _pg_postgres_conf_params: >-
       {{ _pg_postgres_conf_params + [
         {'name': 'effective_io_concurrency', 'value': '200'},
@@ -138,7 +138,7 @@
   when: ssd_disk
 
 - name: Apply Postgres autotuning
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_postgres_params
   vars:

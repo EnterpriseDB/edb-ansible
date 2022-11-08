@@ -26,4 +26,3 @@ pg_service: "edb-as@{{ pg_version }}-{{ pg_instance_name }}"
 # pgpool2 binary dir
 pgpool2_bin_path: "/usr/edb/pgpool{{ pgpool2_version }}/bin"
 pgpool2_package_name: "edb-pgpool{{ pgpool2_version | string | replace('.', '') }}"
-

@@ -1,14 +1,14 @@
 ---
 
-- name: check if agent key was registered
-  stat:
+- name: Check if agent key was registered
+  ansible.builtin.stat:
     path: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered"
-  become: yes
+  become: true
   register: server_registered
   no_log: "{{ disable_logging }}"
 
 - name: Get the pg_pem_agent_password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: generate_password
   vars:
@@ -18,13 +18,13 @@
   when: pg_pem_agent_password|length < 1
 
 - name: Set pg_pem_agent_password
-  set_fact:
-     pg_pem_agent_password: "{{ input_password }}"
+  ansible.builtin.set_fact:
+    pg_pem_agent_password: "{{ input_password }}"
   when: pg_pem_agent_password|length < 1
   no_log: "{{ disable_logging }}"
 
 - name: Register dbserver with agent and efm
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     set -eu
     PEM_SERVER_PASSWORD={{ pg_pem_admin_password }} \
@@ -54,11 +54,11 @@
   when: >
     not server_registered.stat.exists and efm_enabled
     and (group_names| select('search','barmanserver') | list | count < 1)
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"
 
 - name: Register dbserver with agent
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     set -eu
     PEM_SERVER_PASSWORD={{ pg_pem_admin_password }} \
@@ -86,5 +86,5 @@
   when: >
       not server_registered.stat.exists and not efm_enabled
       and (group_names| select('search','barmanserver') | list | count < 1)
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"

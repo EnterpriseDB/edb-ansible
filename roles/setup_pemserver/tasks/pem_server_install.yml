@@ -1,6 +1,6 @@
 ---
 - name: Install require packages for PEM server
-  package:
+  ansible.builtin.package:
     name: "{{ pem_server_packages }}"
     state: present
-  become: yes
+  become: true

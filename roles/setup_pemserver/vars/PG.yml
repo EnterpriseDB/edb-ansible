@@ -12,7 +12,7 @@ pg_database: "postgres"
 
 # unix socket domain directories
 pg_unix_socket_directories:
-   - "/var/run/postgresql"
+  - "/var/run/postgresql"
 
 # postgres port
 pem_pg_port: 5432

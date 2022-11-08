@@ -1,16 +1,16 @@
 ---
 - name: Install require packages for PEM agent
-  package:
+  ansible.builtin.package:
     name: "{{ pem_agent_package }}"
     state: present
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
 
 - name: Install require packages for PEM agent
-  package:
+  ansible.builtin.package:
     name: "{{ pg_backup_api_package }}"
     state: present
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"
   when: >
       pem_server_version_int|int >= 840 or enable_pemagent_monitor_barman

@@ -16,42 +16,42 @@
 # We ensure a minimum value of 50. This is usefull for the case when the amount
 # of swap memory is ridiculous higher than the RAM size
 - name: Set vm_overcommit_ratio
-  set_fact:
+  ansible.builtin.set_fact:
     vm_overcommit_ratio: >-
       {{ [ ((ansible_memtotal_mb - ansible_swaptotal_mb) / ansible_memtotal_mb * 100) | int,
            50 ] | max }}
 
 - name: Set the variable tuned_disk_elevator on EL7
-  set_fact:
+  ansible.builtin.set_fact:
     tuned_disk_elevator: "deadline"
   when:
     - ansible_distribution_major_version == '7'
     - ansible_os_family == 'RedHat'
 
 - name: Set the variable tuned_disk_elevator on EL8
-  set_fact:
+  ansible.builtin.set_fact:
     tuned_disk_elevator: "mq-deadline"
   when:
     - ansible_distribution_major_version == '8'
     - ansible_os_family == 'RedHat'
 
 - name: Set the variable tuned_disk_elevator for Debian
-  set_fact:
+  ansible.builtin.set_fact:
     tuned_disk_elevator: "deadline"
   when:
     - ansible_os_family == 'Debian'
 
 - name: Ensure the tuned profile directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ tuned_configuration_dir }}/{{ tuned_profile }}"
     state: directory
     owner: "root"
     group: "root"
     mode: 0700
-  become: yes
+  become: true
 
 - name: Ensure tuned profile configuration exists
-  template:
+  ansible.builtin.template:
     src: "tuned.conf.template"
     dest: "{{ tuned_configuration_dir }}/{{ tuned_profile }}/tuned.conf"
     owner: "root"
@@ -60,6 +60,6 @@
   become: true
 
 - name: Ensure tuned profile is active
-  command: tuned-adm profile {{ tuned_profile }}
+  ansible.builtin.command: tuned-adm profile {{ tuned_profile }}
   become: true
   changed_when: false

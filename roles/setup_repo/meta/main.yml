@@ -1,19 +1,16 @@
 ---
 galaxy_info:
-  role_name: setup_repo
   author: EDB
   description: Installation of Postgres or EDB Postgres Advanced Server 10, 11 and 12 to CentOS or RHEL repos
   company: "EDB"
   license: BSD-3-Clause
-  min_ansible_version: 2.8
+  min_ansible_version: "2.8"
 
   platforms:
-    - name: CentOS
+    - name: EL
       versions:
-        - 7
-    - name: Red Hat
-      versions:
-        - 7
+        - "7"
+        - "8"
 
   galaxy_tags:
     - database

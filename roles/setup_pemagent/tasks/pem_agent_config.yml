@@ -1,13 +1,13 @@
 ---
-- name: check if agent was registered
-  stat:
+- name: Check if agent was registered
+  ansible.builtin.stat:
     path: "{{ pem_agent_bin_path }}/../etc/.agentregistered"
-  become: yes
+  become: true
   register: pemagent_configured
   no_log: "{{ disable_logging }}"
 
-- name: install pem agent
-  shell: |
+- name: Install pem agent
+  ansible.builtin.shell: |
     set -o pipefail
     set -eu
     PEM_SERVER_PASSWORD={{ pg_pem_admin_password }} \
@@ -28,15 +28,15 @@
   changed_when: "'Postgres Enterprise Manager Agent registered successfully!' in output.stdout"
   failed_when: "'Postgres Enterprise Manager Agent registered successfully!' not in output.stdout"
   when: not pemagent_configured.stat.exists
-  become: yes
+  become: true
   throttle: 1
   no_log: "{{ disable_logging }}"
 
 - name: Start the pem agent service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pem_agent_service }}"
-    daemon_reload: yes
-    enabled: yes
+    daemon_reload: true
+    enabled: true
     state: started
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"
