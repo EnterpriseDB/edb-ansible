@@ -1,23 +1,22 @@
 ---
-
 - name: Install packages for DBT-2 Database
-  dnf:
+  ansible.builtin.dnf:
     name:
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-c_{{ pg_version }}-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-plpgsql-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-db-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-scripts-{{ dbt2_version }}-1.el8.x86_64.rpm'
     state: present
-    disable_gpg_check: yes
+    disable_gpg_check: true
   when: ansible_os_family == "RedHat"
-  become: yes
+  become: true
 
 - name: Install additional supporting packages
-  package:
+  ansible.builtin.package:
     name:
       - perf
       - rsync
       - tmux
     state: present
   when: ansible_os_family == "RedHat"
-  become: yes
+  become: true

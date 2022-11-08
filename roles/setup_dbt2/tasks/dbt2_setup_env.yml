@@ -1,4 +1,3 @@
-
 ---
 - name: Configure DBT-2 environment variables for {{ pg_owner }}
   ansible.builtin.lineinfile:
