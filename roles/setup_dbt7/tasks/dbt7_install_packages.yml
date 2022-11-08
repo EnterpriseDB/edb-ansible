@@ -1,7 +1,7 @@
 ---
 
 - name: Install additional supporting packages
-  package:
+  ansible.builtin.package:
     name:
       - bison
       - gcc
@@ -15,13 +15,13 @@
       - tmux
     state: present
   when: ansible_os_family == "RedHat"
-  become: yes
+  become: true
 
 - name: Install packages for DBT-7 Database
-  dnf:
+  ansible.builtin.dnf:
     name:
       - 'https://github.com/osdldbt/dbt7-packaging/releases/download/v{{ dbt7_version }}/dbt7-{{ dbt7_version }}-1.el8.x86_64.rpm'
     state: present
-    disable_gpg_check: yes
+    disable_gpg_check: true
   when: ansible_os_family == "RedHat"
-  become: yes
+  become: true
