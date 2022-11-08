@@ -9,7 +9,7 @@
     - ansible_facts.services[pg_service + '.service'].status == 'enabled'
   become: true
 
-- name: Wait for pg port "{{ pg_port }}" to become open on the host, don't start checking for 2 seconds
+- name: Wait for Postgres port to become open on the host, don't start checking for 2 seconds
   ansible.builtin.wait_for:
     port: "{{ pg_port }}"
     state: started
@@ -17,7 +17,7 @@
     timeout: 10
   become: true
 
-- name: Update {{ pg_service }} to bind {{ efm_service }}
+- name: Update pg_service to bind efm_service
   ansible.builtin.lineinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
     line: "{{ item.line }}"
@@ -33,9 +33,9 @@
     - ansible_os_family == 'RedHat'
   register: pg_service_changed
 
-- name: Force systemd to reread configs of {{ pg_service }} after changes
+- name: Force systemd to reread configs of pg_service after changes
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   when:
     - pg_service_changed is defined
     - pg_service_changed.changed
@@ -50,7 +50,7 @@
     - ansible_facts.services[efm_service + '.service'].status == 'enabled'
   become: true
 
-- name: Wait for efm port "{{ efm_port }}" to become open on the host, don't start checking for 5 seconds
+- name: Wait for efm port efm_port to become open on the host, don't start checking for 5 seconds
   ansible.builtin.wait_for:
     host: "{{ efm_listen_host }}"
     port: "{{ efm_port }}"
@@ -59,7 +59,7 @@
     timeout: 10
   become: true
 
-- name: Wait for efm admin port "{{ efm_admin_port }}" to become open on the host, don't start checking for 5 seconds
+- name: Wait for efm admin port efm_admin_port to become open on the host, don't start checking for 5 seconds
   ansible.builtin.wait_for:
     host: "127.0.0.1"
     port: "{{ efm_admin_port }}"
