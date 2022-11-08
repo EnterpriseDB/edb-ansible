@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: manage_dbserver
   author: EDB
   description: Managing the database server
   company: "EnterpriseDB"

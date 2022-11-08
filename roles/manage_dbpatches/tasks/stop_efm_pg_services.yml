@@ -1,5 +1,5 @@
 ---
-- name: Update {{ pg_service }} to bind {{ efm_service }}
+- name: Update pg_service to bind efm_service
   ansible.builtin.lineinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
     line: "{{ item.line }}"
@@ -15,9 +15,9 @@
     - ansible_os_family == 'RedHat'
   register: pg_service_changed
 
-- name: Force systemd to reread configs of {{ pg_service }} after changes
+- name: Force systemd to reread configs of pg_service after changes
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   when:
     - pg_service_changed is defined
     - pg_service_changed.changed
@@ -33,7 +33,7 @@
   become: true
 
 - name: Cleanup the efm lock file if exists
-  file:
+  ansible.builtin.file:
     path: "{{ edb_efm_lock_file }}"
     state: absent
   become: true
