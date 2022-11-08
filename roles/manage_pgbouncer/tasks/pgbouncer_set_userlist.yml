@@ -1,11 +1,11 @@
 ---
 - name: Manage PgBouncer auth. file entries in {{ pgbouncer_auth_file }}
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pgbouncer_auth_file }}"
     line: "\"{{ user_item.username }}\" \"{{ user_item.password }}\""
     regexp: "^\\\"{{ user_item.username | regex_escape() }}\\\".*"
     state: "{{ user_item.state | default('present') }}"
-    create: yes
+    create: true
     mode: 0600
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
@@ -13,10 +13,10 @@
   with_items: "{{ pgbouncer_auth_user_list }}"
   loop_control:
     loop_var: user_item
-  become: yes
+  become: true
 
 - name: Reload PgBouncer configuration
-  shell:
+  ansible.builtin.shell:
     cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
   changed_when: false
-  become: yes
+  become: true

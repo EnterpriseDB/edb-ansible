@@ -1,6 +1,6 @@
 ---
 - name: Manage PgBouncer databases entries in {{ pgbouncer_databases_file }}
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pgbouncer_databases_file }}"
     line: >-
       {{ db_item.dbname }} = {% if db_item.host is defined %}host={{ db_item.host }}{% endif %}
@@ -14,10 +14,10 @@
   with_items: "{{ pgbouncer_databases_list }}"
   loop_control:
     loop_var: db_item
-  become: yes
+  become: true
 
 - name: Reload PgBouncer configuration
-  shell:
+  ansible.builtin.shell:
     cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
   changed_when: false
-  become: yes
+  become: true

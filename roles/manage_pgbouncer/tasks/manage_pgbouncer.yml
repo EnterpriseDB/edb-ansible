@@ -1,15 +1,14 @@
 ---
-
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Include OS and pg_type dependent variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Include the pgbouncer_set_databases
-  include_tasks: pgbouncer_set_databases.yml
+  ansible.builtin.include_tasks: pgbouncer_set_databases.yml
 
 - name: Include the pgbouncer_set_userlist
-  include_tasks: pgbouncer_set_userlist.yml
+  ansible.builtin.include_tasks: pgbouncer_set_userlist.yml
