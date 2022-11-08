@@ -20,7 +20,7 @@
 
 - name: Set pg_pem_agent_password
   ansible.builtin.set_fact:
-     pg_pem_agent_password: "{{ input_password }}"
+    pg_pem_agent_password: "{{ input_password }}"
   when: pg_pem_agent_password|length < 1
   no_log: "{{ disable_logging }}"
 
@@ -53,7 +53,7 @@
   changed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' in output.stdout"
   failed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' not in output.stdout"
   when: not server_registered.stat.exists and efm_enabled
-  become: yes
+  become: true
   delegate_to: "{{ pem_server_info[0].inventory_hostname }}"
   no_log: "{{ disable_logging }}"
 
@@ -84,6 +84,6 @@
   changed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' in output.stdout"
   failed_when: "'Database Server registered with Postgres Enterprise Manager Server successfully!' not in output.stdout"
   when: not server_registered.stat.exists and not efm_enabled
-  become: yes
+  become: true
   delegate_to: "{{ pem_server_info[0].inventory_hostname }}"
   no_log: "{{ disable_logging }}"

@@ -1,109 +1,106 @@
 ---
 
 - name: Set variables
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
     pem_server_exists: false
   no_log: "{{ disable_logging }}"
 
 - name: Reference variables
-  include_vars: "{{ pg_type }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}.yml"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
   no_log: "{{ disable_logging }}"
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
   no_log: "{{ disable_logging }}"
 
 - name: Set the node_hostvars variable
-  set_fact:
+  ansible.builtin.set_fact:
     node_hostvars: "{{ hostvars[inventory_hostname] }}"
   no_log: "{{ disable_logging }}"
 
 - name: Get PEM server informations
-  set_fact:
+  ansible.builtin.set_fact:
     pem_server_info: "{{ lookup('edb_devops.edb_postgres.pem_server', wantlist=True) }}"
   no_log: "{{ disable_logging }}"
 
 - name: Set pem_server_exists
-  set_fact:
+  ansible.builtin.set_fact:
     pem_server_exists: true
   when:
     - pem_server_info|length > 0
   no_log: "{{ disable_logging }}"
 
 - name: Set pem_agent_remote
-  set_fact:
+  ansible.builtin.set_fact:
     pem_agent_remote: "{{ node_hostvars.pem_agent_remote | default(False) }}"
   no_log: "{{ disable_logging }}"
 
 - name: Capture PEM server version number
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     set -eu
     {{ pem_agent_bin_path }}/pemagent --version|cut -d":" -f2|head -n2|tail -n1
   changed_when: false
   delegate_to: "{{ pem_server_info[0].inventory_hostname }}"
   register: pem_server_version_output
-  become: yes
+  become: true
   when: node_ssh_to_pemserver
   no_log: "{{ disable_logging }}"
 
 - name: Register PEM server version as integer
-  set_fact:
-      pem_server_version_int: "{{ pem_server_version_output.stdout |replace('.','')|int }}"
+  ansible.builtin.set_fact:
+    pem_server_version_int: "{{ pem_server_version_output.stdout |replace('.','')|int }}"
   when: node_ssh_to_pemserver
   no_log: "{{ disable_logging }}"
 
 - name: Debug message for Pemagent version
-  debug:
-      var: pem_server_version_int
+  ansible.builtin.debug:
+    var: pem_server_version_int
   when: node_ssh_to_pemserver
   no_log: "{{ disable_logging }}"
 
 - name: Remove pem agent based on force_pemserver/force_initdb/force_pemagent
-  block:
-    - import_tasks: rm_pemagent.yml
+  ansible.builtin.import_tasks: rm_pemagent.yml
   when: >
       ((force_pemserver is defined and force_pemserver)
        or (force_initdb is defined and force_initdb)
        or (force_pemagent is defined and force_pemagent))
        and not pem_agent_remote
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"
 
 - name: Fetch PEM admin user password
-  import_tasks: pem_agent_fetch_adm_password.yml
+  ansible.builtin.import_tasks: pem_agent_fetch_adm_password.yml
   when:
     - pem_server_exists
     - node_ssh_to_pemserver
   no_log: "{{ disable_logging }}"
 
 - name: Create pemagent user on primary
-  import_tasks: pem_agent_user.yml
+  ansible.builtin.import_tasks: pem_agent_user.yml
   when: group_names | select('search','primary') | list | count > 0
   no_log: "{{ disable_logging }}"
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
   no_log: "{{ disable_logging }}"
 
 - name: Configure pemagent and pemserver HBA
-  block:
-    - import_tasks: pem_agent_hba.yml
-  become: yes
+  ansible.builtin.import_tasks: pem_agent_hba.yml
+  become: true
   # We limit the number of worker for this task to avoid any concurrency issue
   # while updating PEM server HBA file.
   throttle: 2
@@ -111,29 +108,29 @@
   no_log: "{{ disable_logging }}"
 
 - name: Install and configure pemagent on nodes
-  block:
-    - import_tasks: pem_agent_install.yml
-    - import_tasks: pem_agent_config.yml
-  become: yes
   when:
     - not pem_agent_remote
+  become: true
   no_log: "{{ disable_logging }}"
+  block:
+    - name: Import pem_agent_install
+      ansible.builtin.import_tasks: pem_agent_install.yml
+    - name: Import pem_agent_config
+      ansible.builtin.import_tasks: pem_agent_config.yml
 
 - name: Register database on primary and standby
-  block:
-    - import_tasks: pem_agent_register_db.yml
+  ansible.builtin.import_tasks: pem_agent_register_db.yml
   when: >
     (group_names | select('search','primary') | list | count > 0
      or
      group_names | select('search','standby') | list | count > 0
      or
      force_register_db) and not pem_agent_remote
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"
 
 - name: Register remote database on primary and standby
-  block:
-    - import_tasks: pem_agent_register_db_remote.yml
+  ansible.builtin.import_tasks: pem_agent_register_db_remote.yml
   when: >
     (group_names | select('search','primary') | list | count > 0
      or
@@ -144,16 +141,15 @@
   no_log: "{{ disable_logging }}"
 
 - name: Register barman server with PEM Server
-  block:
-    - import_tasks: pem_agent_barman_config.yml
-  become: yes
+  ansible.builtin.import_tasks: pem_agent_barman_config.yml
+  become: true
   when:
     - (node_ssh_to_pemserver and pem_server_version_int|int >= 840) or enable_pemagent_monitor_barman
     - group_names | select('search', 'barmanserver') | list | count > 0
   no_log: "{{ disable_logging }}"
 
 - name: Reset the variables
-  set_fact:
+  ansible.builtin.set_fact:
     pem_server_info:
     node_hostvars:
     pem_server_exists: false

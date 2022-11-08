@@ -1,7 +1,7 @@
 ---
 
-- name: update pem server for unnecessary alerts/probes
-  include_role:
+- name: Update pem server for unnecessary alerts/probes
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: execute_sql_scripts
   vars:

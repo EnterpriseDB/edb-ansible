@@ -1,29 +1,29 @@
 ---
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Stop pem_server_service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pem_server_service }}"
-    daemon_reload: yes
+    daemon_reload: true
     state: stopped
   when:
     - ansible_facts.services[pem_server_service] is defined
     - ansible_facts.services[pem_server_service].state == 'running'
-  become: yes
+  become: true
 
 - name: Stop pemagent
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ pem_agent_service }}"
-    daemon_reload: yes
+    daemon_reload: true
     state: stopped
   when:
     - ansible_facts.services[pem_agent_service] is defined
     - ansible_facts.services[pem_agent_service].state == 'running'
-  become: yes
+  become: true
 
 - name: Remove pem database
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_db
   vars:
@@ -35,11 +35,11 @@
     - ansible_facts.services[pg_service].state == 'running'
 
 - name: Remove pem files and directory
-  file:
+  ansible.builtin.file:
     path: /root/.pem
     state: absent
   with_items:
-     - "/root/.pem"
-     - "{{ pem_agent_bin_path }}/../etc/agent.cfg"
-     - "/var/log/pem/worker.log"
-  become: yes
+    - "/root/.pem"
+    - "{{ pem_agent_bin_path }}/../etc/agent.cfg"
+    - "/var/log/pem/worker.log"
+  become: true

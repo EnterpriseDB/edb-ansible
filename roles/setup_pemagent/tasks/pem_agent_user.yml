@@ -1,7 +1,7 @@
 ---
 
 - name: Generate the pg_pem_agent_password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: generate_password
   vars:
@@ -11,17 +11,17 @@
   when: pg_pem_agent_password|length < 1
 
 - name: Set pg_pem_agent_password
-  set_fact:
-     pg_pem_agent_password: "{{ input_password }}"
+  ansible.builtin.set_fact:
+    pg_pem_agent_password: "{{ input_password }}"
   when: pg_pem_agent_password|length < 1
 
 - name: Set postgres pem admins's database cluster password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_users
   vars:
     pg_users:
-       - name: "{{ pg_pem_agent_user }}"
-         pass: "{{ pg_pem_agent_password }}"
-         groups: pg_monitor
+      - name: "{{ pg_pem_agent_user }}"
+        pass: "{{ pg_pem_agent_password }}"
+        groups: pg_monitor
   no_log: "{{ disable_logging }}"

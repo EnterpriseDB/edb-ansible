@@ -6,7 +6,7 @@ update_etc_file: true
 force_pem_install: false
 pem_agent: false
 pass_dir: "~/.edb"
-efm_enabled: True
+efm_enabled: true
 pg_pem_admin_user: "pemadmin"
 pg_pem_admin_password: ""
 pg_pem_agent_user: "pemagent"

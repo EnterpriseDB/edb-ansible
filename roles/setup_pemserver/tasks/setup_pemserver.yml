@@ -1,69 +1,71 @@
 ---
 
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Reference variables
-  include_vars: "{{ pg_type }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}.yml"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Open PEM TCP port 8443
   ansible.posix.firewalld:
     port: "8443/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Set the node_hostvars variable
-  set_fact:
+  ansible.builtin.set_fact:
     node_hostvars: "{{ hostvars[inventory_hostname] }}"
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  become: true
 
 - name: Remove pem server based on force_pemserver/force_initdb
-  block:
-    - import_tasks: rm_pem_server_install.yml
+  ansible.builtin.import_tasks: rm_pem_server_install.yml
   when: >
       ((force_pemserver is defined and force_pemserver)
        or (force_initdb is defined and force_initdb))
-  become: yes
+  become: true
 
 - name: Install and configure pemserver
+  become: true
   block:
-    - import_tasks: pem_server_user.yml
-    - import_tasks: pem_server_install.yml
-    - import_tasks: pem_server_config.yml
-    - import_tasks: pem_server_hba.yml
-  become: yes
+    - name: Import pem_server_user
+      ansible.builtin.import_tasks: pem_server_user.yml
+    - name: Import pem_server_install
+      ansible.builtin.import_tasks: pem_server_install.yml
+    - name: Import pem_server_config
+      ansible.builtin.import_tasks: pem_server_config.yml
+    - name: Import pem_server
+      ansible.builtin.import_tasks: pem_server_hba.yml
 
 - name: Update pem probes and alerts
-  import_tasks: pem_server_probe_alert.yml
+  ansible.builtin.import_tasks: pem_server_probe_alert.yml
 
 - name: Reset the variables
-  set_fact:
+  ansible.builtin.set_fact:
     node_hostvars:
