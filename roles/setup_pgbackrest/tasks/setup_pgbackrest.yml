@@ -1,67 +1,67 @@
 ---
-
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Reference pg_type variables
-  include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Reference pgbackrest server variables
-  include_vars: "{{ role_path }}/../setup_pgbackrestserver/defaults/main.yml"
+  ansible.builtin.include_vars: "{{ role_path }}/../setup_pgbackrestserver/defaults/main.yml"
 
 - name: Set pgbackrest_archive_method
-  set_fact:
+  ansible.builtin.set_fact:
     pgbackrest_archive_method: "{{ hostvars[inventory_hostname].pgbackrest_archive_method | default('async') }}"
 
 - name: Check pgbackrest_archive_method value
-  fail:
+  ansible.builtin.fail:
     msg: "pgBackRest archive method {{ pgbackrest_archive_method }} not supported."
   when: >
     pgbackrest_archive_method not in ['standard', 'async']
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  block:
+    - name: Update etc/hosts
+      ansible.builtin.import_tasks: linux_update_etc_hosts.yml
 
 - name: Incluse pgBackRest install
-  include_tasks: pgbackrest_install_PG.yml
+  ansible.builtin.include_tasks: pgbackrest_install_PG.yml
   when: pg_type == 'PG'
 
 - name: Include EPAS installation
-  include_role:
+  ansible.builtin.include_role:
     name: setup_pgbackrestserver
     tasks_from: pgbackrest_install_EPAS
   when: pg_type == 'EPAS'
 
 - name: Include the define_node_variables tasks
-  include_tasks: define_node_variables.yml
+  ansible.builtin.include_tasks: define_node_variables.yml
 
 - name: Include the SSH keys generation tasks
-  include_tasks: generate_ssh_keys.yml
+  ansible.builtin.include_tasks: generate_ssh_keys.yml
 
 - name: Include the SSH keys exchange tasks
-  include_tasks: exchange_ssh_keys.yml
+  ansible.builtin.include_tasks: exchange_ssh_keys.yml
 
 - name: Include the pgBackRest configuration tasks
-  include_tasks: configure_pgbackrest.yml
+  ansible.builtin.include_tasks: configure_pgbackrest.yml
 
 - name: Include the Postgres configuration tasks for primary
-  import_tasks: configure_pg_settings.yml
+  ansible.builtin.import_tasks: configure_pg_settings.yml
   delegate_to: "{{ primary_node_hostname[0] }}"
   run_once: true
 
 - name: Include the pgbackrest backup configuration tasks
-  include_tasks: configure_pg_backup.yml
+  ansible.builtin.include_tasks: configure_pg_backup.yml
 
 - name: Include the pgbackrest post configuration tasks
-  include_tasks: post_configure_pgbackrest.yml
+  ansible.builtin.include_tasks: post_configure_pgbackrest.yml

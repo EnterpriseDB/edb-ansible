@@ -1,14 +1,13 @@
 ---
-
 - name: Install pgBackRest package
-  package:
+  ansible.builtin.package:
     name: "{{ pgbackrest_package_name }}"
     state: present
-  become: yes
+  become: true
 
 # service gets shut down during installation of pgBackRest, cannot ssh into other nodes without turning on
-- name: start systemd-user-sessions.service
-  systemd:
+- name: Start systemd-user-sessions.service
+  ansible.builtin.systemd:
     name: "systemd-user-sessions.service"
     state: started
-  become: yes
+  become: true
