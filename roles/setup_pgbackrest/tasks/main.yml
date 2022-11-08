@@ -1,4 +1,4 @@
 ---
 # Entry point of the setup_pgbackrest role
 - name: Include the setup_pgbackrest.yml
-  include_tasks: setup_pgbackrest.yml
+  ansible.builtin.include_tasks: setup_pgbackrest.yml

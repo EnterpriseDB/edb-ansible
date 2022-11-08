@@ -1,76 +1,75 @@
 ---
-
 - name: Get pgBackRest node informations
-  set_fact:
+  ansible.builtin.set_fact:
     pgbackrest_node_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_nodes', wantlist=True) }}"
 
 - name: Determine if standby
-  set_fact:
+  ansible.builtin.set_fact:
     _standby_list: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | default([]) | list }}"
 
 - name: Determine if standby_present
-  set_fact:
+  ansible.builtin.set_fact:
     standby_present: 'y'
   when: _standby_list|length > 0
 
 - name: Get primary node informations
-  set_fact:
+  ansible.builtin.set_fact:
     primary_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='inventory_hostname') }}"
   when:
     - use_hostname|bool
 
 - name: Get primary node informations
-  set_fact:
+  ansible.builtin.set_fact:
     primary_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='ansible_host') }}"
   when:
     - "not use_hostname|bool"
 
 - name: Get standby node informations
-  set_fact:
+  ansible.builtin.set_fact:
     standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='inventory_hostname') | list | flatten }}"
   when:
     - use_hostname|bool
     - standby_present is defined
 
 - name: Get standby node informations
-  set_fact:
+  ansible.builtin.set_fact:
     standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='ansible_host') | list | flatten }}"
   when:
     - "not use_hostname|bool"
     - standby_present is defined
 
 - name: Get primary node inventory hostname informations
-  set_fact:
+  ansible.builtin.set_fact:
     primary_node_inventory_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='inventory_hostname') }}"
 
 - name: Define postgres user on primary node when pg_type = PG
-  set_fact:
+  ansible.builtin.set_fact:
     primary_host_user: "postgres"
   when: pg_type == 'PG'
 
 - name: Define postgres user on primary node when pg_type = EPAS
-  set_fact:
+  ansible.builtin.set_fact:
     primary_host_user: "enterprisedb"
   when: pg_type == 'EPAS'
 
 - name: Define EPAS DB information
-  set_fact:
-    pg_unix_socket_EPAS: "/var/run/edb/as{{ pg_version }}"
-    pg_port_EPAS: "5444"
+  ansible.builtin.set_fact:
+    pg_unix_socket_epas: "/var/run/edb/as{{ pg_version }}"
+    pg_port_epas: "5444"
     pg_database_name: "edb"
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'RedHat'
 
 - name: Define EPAS DB information
-  set_fact:
-    pg_unix_socket_EPAS: "/var/run/edb-as"
-    pg_port_EPAS: "5444"
+  ansible.builtin.set_fact:
+    pg_unix_socket_epas: "/var/run/edb-as"
+    pg_port_epas: "5444"
     pg_database_name: "postgres"
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'Debian'
 
 - name: Reset local variables
-  set_fact:
+  ansible.builtin.set_fact:
     _standby_list: null

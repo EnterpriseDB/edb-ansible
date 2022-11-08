@@ -1,7 +1,7 @@
 ---
 
-- name: Ensure the directory {{ pg_user_home }}/.ssh exists
-  file:
+- name: Ensure the directory pg_user_home/.ssh exists
+  ansible.builtin.file:
     state: directory
     path: "{{ pg_user_home }}/.ssh"
     owner: "{{ pg_owner }}"
@@ -10,7 +10,7 @@
   become: true
 
 - name: Check if the SSH private key exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ pg_user_home }}/.ssh/id_rsa"
   register: postgres_ssh_private_key
   become: true

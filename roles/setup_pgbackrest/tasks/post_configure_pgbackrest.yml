@@ -1,23 +1,22 @@
 ---
-
 - name: Get pgBackRest server informations
-  set_fact:
+  ansible.builtin.set_fact:
     _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
 
 - name: Fail if pgbackrest server informations are not found
-  fail:
+  ansible.builtin.fail:
     msg: "Unable to find pgBackRest server informations"
   when:
     - _pgbackrest_server_info|length == 0
 
 - name: Set  _pgbackrest_host when not using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgbackrest_host: "{{ _pgbackrest_server_info[0].ansible_host }}"
   when:
     - "not use_hostname|bool"
 
 - name: Set _pgbackrest_host when using hostname
-  set_fact:
+  ansible.builtin.set_fact:
     _pgbackrest_host: "{{ _pgbackrest_server_info[0].inventory_hostname }}"
   when:
     - use_hostname|bool
@@ -25,7 +24,7 @@
 # get a list of nodes to update backup-standby setting in pgbackrest.conf
 # only pgbackrest and standby nodes set backup-standby=y
 - name: Set _update_config list
-  set_fact:
+  ansible.builtin.set_fact:
     _update_config: "{{ (_update_config | default([]) | union([item]) | flatten) }}"
   when: backup_standby == 'y'
   loop:
@@ -35,7 +34,7 @@
 # Update backup-standby=y to pgbackrest.conf file in the [global] section
 # start-fast=y is last setting defined in pgbackrest.conf template files [global] section
 - name: Update backup_standby=y to pgbackrest.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pgbackrest_configuration_file }}"
     line: backup-standby=y
     insertafter: '^start-fast=y$'
@@ -47,7 +46,7 @@
 
 # change standby postgres settings
 - name: Include the Postgres configuration tasks for standby
-  include_tasks: configure_pg_settings.yml
+  ansible.builtin.include_tasks: configure_pg_settings.yml
   args:
     apply:
       delegate_to: "{{ item }}"
@@ -56,9 +55,8 @@
   when: backup_standby == 'y'
 
 - name: Reset local variables
-  set_fact:
+  ansible.builtin.set_fact:
     _pgbackrest_server_info: ""
     _pgbackrest_server_public_ip: null
     _pgbackrest_host: Null
     _update_config: Null
-

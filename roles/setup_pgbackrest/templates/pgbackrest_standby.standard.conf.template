@@ -16,5 +16,5 @@ pg2-path={{ pg_data }}
 recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} user={{ replication_user }}
 {% endif %}
 {% if pg_type == 'EPAS' %}
-recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} port={{ pg_port_EPAS }} user={{ replication_user }}
+recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} port={{ pg_port_epas }} user={{ replication_user }}
 {% endif %}
