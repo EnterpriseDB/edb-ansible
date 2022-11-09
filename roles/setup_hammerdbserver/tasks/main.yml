@@ -1,21 +1,21 @@
 ---
 
 - name: Gather the pg_cluster_nodes information
-  set_fact:
+  ansible.builtin.set_fact:
     pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
 
 - name: Get the primary private IP address
-  set_fact:
+  ansible.builtin.set_fact:
     primary_private_ip: "{{ node.private_ip }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
-  when:  node.node_type == 'primary'
+  when: node.node_type == 'primary'
   run_once: true
   no_log: "{{ disable_logging }}"
 
 - name: Install packages
-  yum:
+  ansible.builtin.yum:
     name:
       - curl
       - libpq
@@ -23,33 +23,33 @@
       - postgresql
       - tcl
       - tmux
-  become: yes
-  ignore_errors: yes
+  become: true
+  failed_when: false
 
 - name: Include Touchstone installation
-  include_role:
+  ansible.builtin.include_role:
     name: setup_touchstone
     tasks_from: main
 
 - name: Include HammerDB installation
-  include_tasks: install_hammerdb.yml
+  ansible.builtin.include_tasks: install_hammerdb.yml
 
 - name: Create TPROC-C run scripts
-  include_role:
+  ansible.builtin.include_role:
     name: setup_hammerdb
     tasks_from: install_tproc-c_run_scripts
 
 - name: Create TPROC-C load scripts
-  include_role:
+  ansible.builtin.include_role:
     name: setup_hammerdb
     tasks_from: install_tproc-c_load_scripts
 
 - name: Create .pgpass file
-  include_role:
+  ansible.builtin.include_role:
     name: setup_hammerdb
     tasks_from: install_pgpass
 
 - name: Reset the variables based on the user input
-  set_fact:
-      primary_private_ip: ""
+  ansible.builtin.set_fact:
+    primary_private_ip: ""
   register: output

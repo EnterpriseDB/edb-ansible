@@ -1,27 +1,29 @@
 ---
 
 - name: Download HammerDB
-  raw: curl -OL https://github.com/TPC-Council/HammerDB/releases/download/v{{ hammerdb_version }}/HammerDB-{{ hammerdb_version }}-Linux.tar.gz
-  become: no
+  ansible.builtin.raw: curl -OL https://github.com/TPC-Council/HammerDB/releases/download/v{{ hammerdb_version }}/HammerDB-{{ hammerdb_version }}-Linux.tar.gz
+  become: false
+  changed_when: true
 
 - name: Install HammerDB
-  raw: tar -xvf HammerDB-{{ hammerdb_version }}-Linux.tar.gz
-  become: no
+  ansible.builtin.raw: tar -xvf HammerDB-{{ hammerdb_version }}-Linux.tar.gz
+  become: false
+  changed_when: true
 
 # We need this Azure Database hack until this is resolved:
 # https://github.com/TPC-Council/HammerDB/issues/163
 
 - name: Create HammerDB patch for Azure Database
-  template:
+  ansible.builtin.template:
     dest: hammerdb-{{ hammerdb_version }}-azure-db.patch
     src: hammerdb-{{ hammerdb_version }}-azure-db.patch.template
     mode: 0644
-  become: no
+  become: false
   when: azure_db_hackery is defined and azure_db_hackery
 
 - name: Apply HammerDB patch
-  patch:
-    remote_src: yes
+  ansible.posix.patch:
+    remote_src: true
     src: hammerdb-{{ hammerdb_version }}-azure-db.patch
     basedir: HammerDB-{{ hammerdb_version }}
     strip: 1

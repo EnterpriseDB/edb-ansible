@@ -1,7 +1,7 @@
 ---
 
 - name: Initialize the hba_entries variable
-  set_fact:
+  ansible.builtin.set_fact:
     hba_entries: >-
       [
         {
@@ -21,12 +21,12 @@
       ]
 
 - name: Allow access from the HammerDB server and local primary private IP address
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ hba_entries }}"
 
 - name: Reset hba_entries
-  set_fact:
+  ansible.builtin.set_fact:
     hba_entries: []
