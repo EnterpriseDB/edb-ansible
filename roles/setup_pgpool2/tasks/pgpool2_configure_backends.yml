@@ -1,7 +1,7 @@
 ---
 # Configure pgpoolII backends
 - name: Build backends configuration
-  set_fact:
+  ansible.builtin.set_fact:
     pgpool2_backends_configuration: >-
       {{ pgpool2_backends_configuration | default([]) + [
         {
@@ -43,13 +43,13 @@
       ] }}
   loop: "{{ pgpool2_backends }}"
   loop_control:
-    extended: yes
+    extended: true
     loop_var:
       backend_item
 
 # Apply configuration changes
 - name: Include pgpool2_manage_configuration
-  include_role:
+  ansible.builtin.include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   vars:

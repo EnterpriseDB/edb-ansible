@@ -5,8 +5,10 @@ from conftest import (
     get_pg_type,
     get_pgpool2,
     get_pg_version,
-    get_primary
+    get_primary,
+    os_family
 )
+
 
 def test_manage_pgpool_pcp_user():
     ansible_vars = load_ansible_vars()
@@ -19,17 +21,24 @@ def test_manage_pgpool_pcp_user():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
+    pcp_command = 'pcp_node_info'
+
+    if get_pg_type() == 'EPAS':
+        if os_family() == 'Debian':
+            pcp_command = '/usr/edb/pgpool4.3/bin/pcp_node_info'
+
     host = get_pgpool2()[0]
 
     with host.sudo(pg_user):
         cmd = host.run("touch ~/.pcppass")
         cmd = host.run("echo 'localhost:9898:%s:%s' >> ~/.pcppass" % (pcp_user, pcp_pass))
         cmd = host.run("chmod 600 ~/.pcppass ")
-        cmd = host.run("pcp_node_info -U %s -h localhost -w" % pcp_user)
+        cmd = host.run("%s -U %s -h localhost -w" % (pcp_command, pcp_user))
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
         "pcp command succesfully works"
+
 
 def test_manage_pgpool_pcp_node_count():
     ansible_vars = load_ansible_vars()
@@ -42,14 +51,21 @@ def test_manage_pgpool_pcp_node_count():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
+    pcp_command = 'pcp_node_count'
+
+    if get_pg_type() == 'EPAS':
+        if os_family() == 'Debian':
+            pcp_command = '/usr/edb/pgpool4.3/bin/pcp_node_count'
+
     host = get_pgpool2()[0]
 
     with host.sudo(pg_user):
-        cmd = host.run("pcp_node_count -U %s -h localhost -w" % pcp_user)
+        cmd = host.run("%s -U %s -h localhost -w" % (pcp_command, pcp_user))
         result = cmd.stdout.strip()
 
     assert result == '1', \
         "Database node count is not equal to 1"
+
 
 def test_manage_pgpool_test_user():
     ansible_vars = load_ansible_vars()
@@ -64,7 +80,7 @@ def test_manage_pgpool_test_user():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgpool2_address= get_pgpool2()[0]
+    pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
 
@@ -76,8 +92,9 @@ def test_manage_pgpool_test_user():
         )
         result = cmd.stdout.strip().split('\n')
 
-    assert len(result) == 1, \
+    assert pgpool2_user in result, \
         "test user was not created sucessfully."
+
 
 def test_manage_pgpool_pcp_socket():
     ansible_vars = load_ansible_vars()
@@ -92,7 +109,7 @@ def test_manage_pgpool_pcp_socket():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgpool2_address= get_pgpool2()[0]
+    pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split('//')[1]
     host = get_primary()
 

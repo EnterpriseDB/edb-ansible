@@ -28,8 +28,10 @@ section: *How to include the `setup_pgpool2` role in your Playbook*
 The rest of the variables can be configured and are available in the:
 
   * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
-  * [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/setup_pgpool2/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_pgpool2/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/setup_pgpool2/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_pgpool2/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
 
 Below is the documentation of the rest of the main variables:
 
@@ -176,8 +178,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
+  * [roles/setup_pgpool2/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_pgpool2/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  * [roles/setup_pgpool2/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_pgpool2/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## License
 

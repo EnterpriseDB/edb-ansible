@@ -1,0 +1,9 @@
+---
+pgpool2_version: 4.3
+pgpool2_configuration_file: "/etc/edb/edb-pgpool{{ pgpool2_version | string | replace('.', '') }}/pgpool.conf"
+pgpool2_pool_passwd_file: "/etc/edb/edb-pgpool{{ pgpool2_version | string | replace('.', '') }}/pool_passwd"
+pgpool2_user: "enterprisedb"
+pgpool2_group: "enterprisedb"
+pgpool2_bin_path: "/usr/edb/pgpool{{ pgpool2_version | string }}/bin"
+pcp_configuration_file: "/etc/edb/edb-pgpool{{ pgpool2_version | string | replace('.', '') }}/pcp.conf"
+pgpool2_service_name: "edb-pgpool{{ pgpool2_version | string | replace('.', '') }}"

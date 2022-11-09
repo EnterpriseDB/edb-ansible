@@ -11,3 +11,11 @@ build-rocky8:
 build-oraclelinux7:
 	docker compose up primary1-oraclelinux7 -d
 	docker compose up pool1-oraclelinux7 -d
+
+build-ubuntu20:
+	docker compose up primary1-ubuntu20 -d
+	docker compose up pool1-ubuntu20 -d
+
+build-debian10:
+	docker compose up primary1-debian10 -d
+	docker compose up pool1-debian10 -d

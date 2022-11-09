@@ -14,4 +14,7 @@ pgpool2_bin_path: "/usr/edb/pgpool{{ pgpool2_version | string }}/bin"
 # Directory containing SSL keys and certs
 pgpool2_ssl_dir: "/etc/sysconfig/edb/pgpool-ssl"
 
+# pgpool service name
+pgpool2_service_name: "edb-pgpool-{{ pgpool2_version }}"
+
 pgpool2_node_id_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pgpool_node_id"

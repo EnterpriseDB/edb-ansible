@@ -1,9 +1,14 @@
 [Service]
 User={{ pgpool2_user }}
+{% if ansible_os_family == 'Debian' %}
+Type=forking
+{% endif %}
 
-EnvironmentFile=-/etc/sysconfig/pgpool-II
+EnvironmentFile=-{{ pgpool2_environment_file }}
 
 ExecStart=
 ExecStart={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} $OPTS
-ExecStop=
-ExecStop={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} -m fast stop
+{% if ansible_os_family == 'RedHat' %}
+Exec_Stop=
+Exec_Stop={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} -m fast stop
+{% endif %}

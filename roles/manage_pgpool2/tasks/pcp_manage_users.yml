@@ -1,26 +1,27 @@
 ---
 - name: Check if we have pcp.conf file
-  stat:
+  ansible.builtin.stat:
     path: "{{ pcp_configuration_file }}"
   register: pcp_conf
   when: pcp_users|length > 0
 
+# this file does not exist on PG Debian machines
 - name: Create pcp.conf if not exists
-  copy:
+  ansible.builtin.copy:
     src: "{{ pcp_configuration_file }}.sample"
     dest: "{{ pcp_configuration_file }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
     mode: 0600
-    remote_src: yes
+    remote_src: true
   when:
     - not pcp_conf.stat.exists
     - pcp_users|length > 0
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
 
 - name: Remove pcp users
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pcp_configuration_file }}"
     line: >-
       {{ user_item.name }}:
@@ -33,10 +34,10 @@
     - pcp_users|length > 0
     - user_item.state is defined
     - user_item.state == 'absent'
-  become: yes
+  become: true
 
 - name: Add pcp users
-  include_tasks: pcp_add_user.yml
+  ansible.builtin.include_tasks: pcp_add_user.yml
   loop: "{{ pcp_users }}"
   loop_control:
     loop_var: pcp_user

@@ -36,9 +36,6 @@ pgpool2_sr_check_password: ""
 
 # Enable SSL
 pgpool2_ssl: true
-# Directory containing SSL keys and certs
-pgpool2_ssl_dir: ""
-
 pgpool2_ssl_csr_dn:
   CN: "pgpool-server.fqdn"
   O: ""
@@ -55,6 +52,8 @@ supported_os:
   - RHEL8
   - Rocky8
   - OracleLinux7
+  - Ubuntu20
+  - Debian10
 
 supported_pg_version:
   - 10

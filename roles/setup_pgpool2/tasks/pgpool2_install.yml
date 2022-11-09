@@ -1,32 +1,29 @@
 ---
 - name: Disable builtin postgresql module on EL8
-  shell: >
+  ansible.builtin.shell: >
     dnf -qy module disable postgresql
   args:
     executable: /bin/bash
   register: disable_builtin_postgres
   changed_when: disable_builtin_postgres.rc == 0
   failed_when: disable_builtin_postgres.rc != 0
-  ignore_errors: yes
+  ignore_errors: true
   become: true
   when:
     - ansible_distribution_major_version == '8'
     - ansible_os_family == 'RedHat'
 
-- name: Install pgpoolII package on RedHat
+- name: Install pgpoolII package
   ansible.builtin.package:
     name: "{{ pgpool2_package_name }}"
     state: present
-  when:
-    - ansible_os_family == 'RedHat'
   become: true
 
-- name: Install openssl package on RedHat
+- name: Install openssl package
   ansible.builtin.package:
     name: "openssl"
     state: present
   when:
-    - ansible_os_family == 'RedHat'
     - pgpool2_ssl
   become: true
 
@@ -36,5 +33,16 @@
     state: present
   when:
     - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+  become: true
+
+- name: Install dependent packages on Debian
+  ansible.builtin.package:
+    name:
+      - libpgpool2
+      - postgresql-client-common
+    state: present
+  when:
+    - ansible_os_family == 'Debian'
     - pg_type == 'PG'
   become: true

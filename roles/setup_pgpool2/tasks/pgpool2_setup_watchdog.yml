@@ -2,14 +2,14 @@
 # Task for setting up pgpoolII watchdog feature
 
 - name: Create sudo rules for {{ pgpool2_user }}
-  template:
+  ansible.builtin.template:
     src: ./templates/pgpool.sudoers.d.conf.template
     dest: /etc/sudoers.d/pgpool
     mode: 0640
   become: true
 
 - name: Watchdog configuration
-  set_fact:
+  ansible.builtin.set_fact:
     pgpool2_watchdog_configuration: >-
       [
         {
@@ -39,7 +39,7 @@
       ]
 
 - name: Add pgpool2 nodes in watchdog configuration
-  set_fact:
+  ansible.builtin.set_fact:
     pgpool2_watchdog_configuration: >-
       {{ pgpool2_watchdog_configuration }} + [
         {
@@ -70,13 +70,13 @@
       ]
   loop: "{{ pgpool2_node_list }}"
   loop_control:
-    extended: yes
+    extended: true
     loop_var:
       node_item
 
 # Update the configuration file
 - name: Include pgpooL2_manage_configuration
-  include_role:
+  ansible.builtin.include_role:
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   vars:

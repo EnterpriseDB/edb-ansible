@@ -1,0 +1,33 @@
+export INSTALLDIR=/usr/edb/pgpool{{ pgpool2_version }}
+export SERVICE_NAME=edb-pgpool{{ pgpool2_version | string | replace('.', '') }}
+export USERNAME=enterprisedb
+export LD_LIBRARY_PATH=/usr/lib/edb-pgpool{{ pgpool2_version | string | replace('.', '') }}/lib:/usr/lib/edb-as/{{ pg_version }}/lib:$LD_LIBRARY_PATH
+export SYSCONFIG_PATH=/etc/edb/edb-pgpool{{ pgpool2_version | string | replace('.', '') }}
+
+export PGPOOL_OPTIONS=" -n"
+export PGPOOL_CONF="$SYSCONFIG_PATH/pgpool.conf"
+export PGPOOL_LOG="/var/log/edb/pgpool{{ pgpool2_version }}/$SERVICE_NAME.log"
+
+
+if [[ -f $SYSCONFIG_PATH/$SERVICE_NAME ]];
+then
+    . $SYSCONFIG_PATH/$SERVICE_NAME
+    PGPOOL_OPTIONS="$OPTS"
+else
+    if [ -f $SYSCONFIG_PATH/pcp.conf ];then
+        PGPOOL_OPTIONS="$PGPOOL_OPTIONS -F $SYSCONFIG_PATH/pcp.conf"
+    fi
+
+    if [ -f $SYSCONFIG_PATH/pool_hba.conf ];then
+        PGPOOL_OPTIONS="$PGPOOL_OPTIONS -a $SYSCONFIG_PATH/pool_hba.conf"
+    fi
+fi
+
+
+if [ ! -f $PGPOOL_LOG ]
+then
+        touch $PGPOOL_LOG
+        chown $USERNAME:$USERNAME $PGPOOL_LOG
+fi
+
+$INSTALLDIR/bin/pgpool -D -f $PGPOOL_CONF $PGPOOL_OPTIONS $* > $PGPOOL_LOG 2>&1 & sleep 2
