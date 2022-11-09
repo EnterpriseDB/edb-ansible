@@ -1,7 +1,10 @@
 ---
 - name: Check that 'tpcfile' is set to local TPC-H Tools location
-  fail:
-    msg: "The Ansible variable 'tpcfile' must be set to a locally downloaded copy of the TPC supplied TPC-H Tools from: https://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp"
+  ansible.builtin.fail:
+    msg: >-
+      The Ansible variable 'tpcfile' must be set to a locally downloaded copy
+      of the TPC supplied TPC-H Tools from:
+      https://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp
   when: tpcfile == ""
 
 - name: Copy and unarchive TPC-H Tools to remote host
@@ -12,7 +15,7 @@
 
 - name: Patch TPC-H Tools for PostgreSQL
   ansible.posix.patch:
-    remote_src: yes
+    remote_src: true
     src: "{{ item }}"
     basedir: "{{ pg_user_home }}"
     strip: 1

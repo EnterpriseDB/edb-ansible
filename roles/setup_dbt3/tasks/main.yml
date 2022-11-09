@@ -1,13 +1,13 @@
 ---
 - name: Reference variables
-  include_vars: "{{ pg_type }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}.yml"
 
 - name: Include DBT-3 installation
-  include_tasks: dbt3_install_packages.yml
+  ansible.builtin.include_tasks: dbt3_install_packages.yml
 
 - name: Include TPC installation
-  include_tasks: dbt3_tpc.yml
-  when: have_tpcfile == True
+  ansible.builtin.include_tasks: dbt3_tpc.yml
+  when: have_tpcfile
 
 - name: Include DBT-3 profile configuration
-  include_tasks: dbt3_configure_profile.yml
+  ansible.builtin.include_tasks: dbt3_configure_profile.yml

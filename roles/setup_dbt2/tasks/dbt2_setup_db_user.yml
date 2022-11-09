@@ -1,22 +1,22 @@
 ---
 - name: Fetch DBT-2 driver SSH public key
-  slurp:
+  ansible.builtin.slurp:
     src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
   register: driver_pub_key_b64
-  become: yes
+  become: true
   delegate_to: "{{ groups['dbt2_driver'][0] }}"
   when: "'dbt2_driver' in groups and groups['dbt2_driver'] | length > 0"
 
 - name: Set _dbt2_driver_ssh_public_key
-  set_fact:
-      driver_pub_key: "{{ driver_pub_key_b64.content | b64decode | trim }}"
+  ansible.builtin.set_fact:
+    driver_pub_key: "{{ driver_pub_key_b64.content | b64decode | trim }}"
 
-- name: Ensure {{ pg_owner }}'s SSH public key from all drivers are installed
-  lineinfile:
+- name: Ensure SSH public key from all drivers are installed for {{ pg_owner }}
+  ansible.builtin.lineinfile:
     path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0600
     line: "{{ driver_pub_key }}"
-    create: yes
+    create: true
   become_user: "{{ pg_owner }}"

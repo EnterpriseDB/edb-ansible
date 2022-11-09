@@ -1,7 +1,6 @@
 ---
-
 - name: Gather DBT-2 client addresses
-  set_fact:
+  ansible.builtin.set_fact:
     dbt2client_item: >-
       {
         'users': 'all',
@@ -15,7 +14,7 @@
   register: dbt2client_list
 
 - name: Gather DBT-2 driver addresses
-  set_fact:
+  ansible.builtin.set_fact:
     dbt2driver_item: >-
       {
         'users': 'all',
@@ -28,14 +27,16 @@
   register: dbt2driver_list
 
 - name: Make a list of DBT-2 client addresses
-  set_fact: hba_entries={{ dbt2client_list.results | map(attribute='ansible_facts.dbt2client_item') | list }}
+  ansible.builtin.set_fact:
+    hba_entries: "{{ dbt2client_list.results | map(attribute='ansible_facts.dbt2client_item') | list }}"
   when: "'dbt2_client' in groups"
 
 - name: Make a list of DBT-2 driver addresses
-  set_fact: hba_entries_driver={{ dbt2driver_list.results | map(attribute='ansible_facts.dbt2driver_item') | list }}
+  ansible.builtin.set_fact:
+    hba_entries_driver: "{{ dbt2driver_list.results | map(attribute='ansible_facts.dbt2driver_item') | list }}"
 
 - name: Update pg_hba.conf for access from the DBT-2 clients' private IP addresses
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf
   vars:
@@ -43,13 +44,13 @@
   when: "'dbt2_client' in groups"
 
 - name: Update pg_hba.conf for access from the DBT-2 drivers' private IP addresses
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ hba_entries_driver }}"
 
 - name: Reset hba_entries
-  set_fact:
+  ansible.builtin.set_fact:
     hba_entries: []
     hba_entries_driver: []

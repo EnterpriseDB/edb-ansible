@@ -1,5 +1,4 @@
 ---
-
 - name: Install packages for DBT-2 Driver
   ansible.builtin.dnf:
     name:
@@ -10,23 +9,23 @@
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-db-{{ dbt2_version }}-1.el8.x86_64.rpm'
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-plpgsql-{{ dbt2_version }}-1.el8.x86_64.rpm'
     state: present
-    disable_gpg_check: yes
+    disable_gpg_check: true
   when: ansible_os_family == "RedHat"
-  become: yes
+  become: true
 
 - name: Download stackcollapse-perf.pl
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/brendangregg/FlameGraph/master/stackcollapse-perf.pl
     dest: /usr/bin/stackcollapse-perf.pl
     mode: '0755'
-  become: yes
+  become: true
 
 - name: Download flamegraph.pl
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/brendangregg/FlameGraph/master/flamegraph.pl
     dest: /usr/bin/flamegraph.pl
     mode: '0755'
-  become: yes
+  become: true
 
 - name: Install additional supporting packages
   ansible.builtin.package:
@@ -38,4 +37,4 @@
       - tmux
     state: present
   when: ansible_os_family == "RedHat"
-  become: yes
+  become: true
