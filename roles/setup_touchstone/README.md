@@ -36,5 +36,4 @@ BSD
 Author:
 
   * Mark Wong
-  * EDB Postgres
   * edb-devops@enterprisedb.com www.enterprisedb.com

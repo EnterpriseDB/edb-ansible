@@ -1,7 +1,6 @@
 ---
-
 - name: Install packages for Touchstone
-  package:
+  ansible.builtin.package:
     name:
       - cmake
       - gcc
@@ -9,24 +8,26 @@
       - redhat-rpm-config
       - sysstat
     state: present
-  become: yes
+  become: true
 
 - name: Download Touchstone
-  raw: curl -OL https://gitlab.com/touchstone/touchstone/-/archive/v{{ touchstone_version }}/touchstone-v{{ touchstone_version }}.tar.gz
-  become: no
+  ansible.builtin.get_url:
+    url: https://gitlab.com/touchstone/touchstone/-/archive/v{{ touchstone_version }}/touchstone-v{{ touchstone_version }}.tar.gz
+    dest: "{{ ansible_env.HOME }}"
+    mode: '0644'
 
 - name: Unpack Touchstone
-  raw: tar -xvf touchstone-v{{ touchstone_version }}.tar.gz
-  become: no
+  ansible.builtin.unarchive:
+    src: "{{ ansible_env.HOME }}/touchstone-v{{ touchstone_version }}.tar.gz"
+    dest: "{{ ansible_env.HOME }}"
 
 - name: Build Touchstone
-  shell:
-    cmd: make release
-    chdir: touchstone-v{{ touchstone_version }}
-  become: no
+  community.general.make:
+    chdir: "{{ ansible_env.HOME }}/touchstone-v{{ touchstone_version }}"
+    target: release
 
 - name: Install Touchstone
-  shell:
-    cmd: make install
-    chdir: touchstone-v{{ touchstone_version }}/build/release
-  become: yes
+  community.general.make:
+    chdir: "{{ ansible_env.HOME }}/touchstone-v{{ touchstone_version }}/build/release"
+    target: install
+  become: true
