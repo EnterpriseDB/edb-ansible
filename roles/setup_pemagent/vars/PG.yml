@@ -12,7 +12,7 @@ pg_database: "postgres"
 
 # unix socket domain directories
 pg_unix_socket_directories:
-   - "/var/run/postgresql"
+  - "/var/run/postgresql"
 
 # postgres port
 pem_pg_port: 5432
@@ -22,6 +22,6 @@ pg_port: 5432
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 # pem server packages
 pem_server_packages:
-      - postgresql{{ pg_version }}-contrib
-      - sslutils_{{ pg_version }}
-      - edb-pem-server
+  - postgresql{{ pg_version }}-contrib
+  - sslutils_{{ pg_version }}
+  - edb-pem-server

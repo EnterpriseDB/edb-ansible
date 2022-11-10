@@ -1,10 +1,10 @@
 ---
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Install efm-api-node-state package
   ansible.builtin.package:
-    name: "https://github.com/EnterpriseDB/efm-api-node-state/releases/download/v{{ efm_api_node_state_version }}/efm-api-node-state-{{ efm_api_node_state_version }}-1.el7.x86_64.rpm"
+    name: "{{ efm_api_download_url }}/{{ efm_api_node_state_rpm }}"
     state: present
   become: true
   when:
@@ -23,7 +23,7 @@
 - name: Open TCP port {{ efm_api_node_state_port }}
   ansible.posix.firewalld:
     port: "{{ efm_api_node_state_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
@@ -36,7 +36,7 @@
   ansible.builtin.lineinfile:
     path: "{{ efm_properties }}"
     regexp: "{{ item.name + '=' }}"
-    line: "{{ item.name + '=' + item.value|string }}"
+    line: "{{ item.name + '=' + item.value | string }}"
     state: present
   loop:
     - name: script.load.balancer.attach
@@ -71,6 +71,6 @@
   ansible.builtin.systemd:
     name: efm-api-node-state
     enabled: true
-    daemon_reload: yes
+    daemon_reload: true
     state: started
   become: true

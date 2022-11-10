@@ -1,7 +1,7 @@
 - hosts: all
   name: Update replication user and EFM passwords
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
   vars:
     pg_superuser: enterprisedb
     pg_superuser_password: "N3wPass0rd"
@@ -16,25 +16,25 @@
 
   pre_tasks:
     - name: Initialize the user defined variables
-      set_fact:
+      ansible.builtin.set_fact:
         pg_users:
-           - name: "{{ pg_superuser }}"
-             pass: "{{ pg_superuser_password }}"
-           - name: "{{ pg_replication_user }}"
-             pass: "{{ pg_replication_user_password }}"
-           - name: "{{ pg_efm_user }}"
-             pass: "{{ pg_efm_user_password }}"
+          - name: "{{ pg_superuser }}"
+            pass: "{{ pg_superuser_password }}"
+          - name: "{{ pg_replication_user }}"
+            pass: "{{ pg_replication_user_password }}"
+          - name: "{{ pg_efm_user }}"
+            pass: "{{ pg_efm_user_password }}"
         pg_pgpass_values:
-           - host: "*"
-             database: "*"
-             user: "{{ pg_replication_user }}"
-             password: "{{ pg_replication_user_password }}"
-             state: present
+          - host: "*"
+            database: "*"
+            user: "{{ pg_replication_user }}"
+            password: "{{ pg_replication_user_password }}"
+            state: present
         pg_efm_user_password: "{{ pg_efm_user_password }}"
         disable_logging: false
 
   roles:
-    -  role: manage_dbserver
-       when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
-    -  role: manage_efm
-       when: "'manage_efm' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_dbserver
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_efm
+      when: "'manage_efm' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

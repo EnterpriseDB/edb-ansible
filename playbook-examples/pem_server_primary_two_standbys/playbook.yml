@@ -1,15 +1,15 @@
 ---
 - hosts: all
   name: Postgres deployment playbook
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
-      set_fact:
+      ansible.builtin.set_fact:
         pg_version: 13
         pg_type: "PG"
         repo_username: ""

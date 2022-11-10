@@ -4,6 +4,7 @@
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     state: directory
+    mode: "0755"
   become: true
 
 - name: Register repmgr node

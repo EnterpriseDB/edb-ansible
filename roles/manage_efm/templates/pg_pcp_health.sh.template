@@ -1,0 +1,42 @@
+#!/bin/bash -u
+
+export PGPOOL_PATH="{{ pgpool2_bin_path }}"
+export PCP_USER="{{ pcp_admin_user }}"
+export PCP_PORT="{{ pgpool2_pcp_port }}"
+export PGPORT="{{ pg_port }}"
+export PGDATABASE="{{ pg_database }}"
+
+declare -a POOLERS=(
+{% for item in pgpool2_nodes %}
+  "{{ item }}"
+{% endfor %}
+)
+
+pcp_control={{ efm_bin_path }}/pcp_control.sh
+
+NODE_STATUS=$({{ efm_bin_path }}/efm node-status-json {{ efm_cluster_name }})
+
+NODE_TYPE=$(echo $NODE_STATUS | sed -E "s/.*type\":\"([^\"]+)\".*/\1/")
+NODE_ADDRESS=$(echo $NODE_STATUS | sed -E "s/.*address\":\"([^\"]+)\".*/\1/")
+
+$pcp_control is_running ${NODE_ADDRESS} ${PGPORT}
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+for POOLER in "${POOLERS[@]}"
+do
+  # check if pgpool is running and accordingly attach
+  $pcp_control is_running ${POOLER} ${PCP_PORT}
+  if [ $? -eq 0 ]; then
+    export PCP_HOST=${POOLER}
+    echo "Attaching node ${NODE_ADDRESS} on ${PCP_HOST}"
+    if [ "${NODE_TYPE}" == "Primary" ] || [ "${NODE_TYPE}" == "Standby" ]; then
+      $pcp_control attach ${NODE_ADDRESS}
+    fi
+    # This remote post promotion script must be executed only on standy nodes, but
+    # we double check node type here.
+    if [ "${NODE_TYPE}" == "Primary" ]; then
+      $pcp_control promote ${NODE_ADDRESS}
+    fi
+  fi
+done

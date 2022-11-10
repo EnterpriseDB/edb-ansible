@@ -1,0 +1,209 @@
+#!/bin/bash
+
+export PGBIN="{{ pg_bin_path }}"
+export PG_ISREADY="$PGBIN/pg_isready"
+export PGPOOL_PATH="{{ pgpool2_bin_path }}"
+export PCP_USER="{{ pcp_admin_user }}"
+export PCP_PORT="{{ pgpool2_pcp_port }}"
+
+# function to check the health of the server and port
+# if port is not available it returns 255
+# Arguments:
+# 1- Hostname
+# 2- Port
+function is_running {
+  if [ -z "$1"  -o -z "$2" ]; then
+    echo "ERROR: hostname or port not provided"
+    return 255
+  fi
+  #Use pg_isready and return the status
+  $PG_ISREADY -h $1 -p $2
+  if [ $? -ne 0 ]; then
+    return 255
+  fi
+  return 0
+}
+
+# function returns the Pgpool-II backend node-id for the given hostname
+# and port number, And if the node-id is not found 255 is returned
+# Arguments:
+# 1- Hostname
+# 2- Port (optional) if not provided, node-id of first matching
+# hostname will be returned
+function get_pgpool_nodeid_from_host {
+  if [ -z "$1" ]; then
+    echo "ERROR: hostname not provided"
+    return 255
+  fi
+  #Now get the total number of nodes configured in Pgpool-II
+  node_count=$($PGPOOL_PATH/pcp_node_count -U $PCP_USER -h $PCP_HOST -p $PCP_PORT -w)
+  echo "INFO: searching node-id for $1:$2 from $node_count configured backends"
+  i=0
+  while [ $i -lt $node_count ];
+  do
+    nodeinfo=$($PGPOOL_PATH/pcp_node_info -U $PCP_USER -h $PCP_HOST -p $PCP_PORT -w $i)
+    hostname=$(echo $nodeinfo | awk -v N=1 '{print $N}')
+    port=$(echo $nodeinfo | awk -v N=2 '{print $N}')
+    #if port number is <= 0 we just need to compare hostname
+    if [ "$hostname" == $1 ] && ( [ -z "$2" ] || [ $port -eq $2 ] );
+    then
+      echo "INFO: $1:$2 has backend node-id = $i in Pgpool-II"
+      return $i
+    fi
+    let i=i+1
+  done
+  return 255
+}
+# Function to find the node information
+function get_node_info {
+ if [ -z "$1" ]; then
+   echo "ERROR: node-id not provided"
+   return 255
+ fi
+ $PGPOOL_PATH/pcp_node_info -U $PCP_USER -h $PCP_HOST -p $PCP_PORT -w $1
+ return $?
+}
+# Function attach the node-id to the Pgpool-II
+# Arguments
+# 1- node-id: Pgpool-II backend node-id to be attached
+function attach_node_id {
+  if [ -z "$1" ]; then
+    echo "ERROR: node-id not provided"
+    return 255
+  fi
+  node_status=$(get_node_info $1 | awk '{print $5}')
+  if [ $node_status == "down" -o $node_status == "quarantine" ] && [ ! -z $node_status ]; then
+    $PGPOOL_PATH/pcp_attach_node -w -U $PCP_USER -h $PCP_HOST -p $PCP_PORT $1
+    return $?
+  else
+    return 0
+  fi
+  return 255
+}
+# Function detach the node-id to the Pgpool-II
+# Arguments
+# 1- node-id: Pgpool-II backend node-id to be attached
+function detach_node_id {
+  if [ -z "$1" ]; then
+    echo "ERROR: node-id not provided"
+    return 255
+  fi
+  node_status=$(get_node_info $1 | awk '{print $5}')
+  if [ $node_status != "down" -o $node_status != "quarantine" ] && [ ! -z $node_status ]; then
+    $PGPOOL_PATH/pcp_detach_node -w -U $PCP_USER -h $PCP_HOST -p $PCP_PORT $1
+    return $?
+  else
+    return 0
+  fi
+  return 255
+}
+# Function promotes the node-id to the new master node
+# Arguments:
+# 1- node-id: Pgpool-II backend node-id of node to be promoted to master
+function promote_node_id_to_master {
+  if [ -z "$1" ]; then
+    echo "ERROR: node-id not provided"
+    return 255
+  fi
+  node_status=$(get_node_info $1 | awk '{print $6}')
+  if [ $node_status != "primary" ]; then
+    $PGPOOL_PATH/pcp_promote_node -w -U $PCP_USER -h $PCP_HOST -p $PCP_PORT $1
+    return $?
+  else
+    return 0
+  fi
+  return 255
+}
+
+# function attaches the backend node identified by hostname:port
+# to Pgpool-II
+# Arguments:
+# 1- Hostname
+# 2- Port (optional) if not provided, node-id of first matching
+# hostname will be promoted
+#
+function attach_node {
+  get_pgpool_nodeid_from_host $1 $2
+  node_id=$?
+  if [ $node_id -eq 255 ]; then
+    echo "ERROR: unable to find Pgpool-II backend node id for $1:$2"
+    return 255
+  else
+    echo "INFO: attaching node-id: $node_id to Pgpool-II"
+    attach_node_id $node_id
+    return $?
+  fi
+}
+# function detaches the backend node identified by hostname:port
+# to Pgpool-II
+# Arguments:
+# 1- Hostname
+# 2- Port (optional) if not provided, node-id of first matching
+# hostname will be promoted
+#
+function detach_node {
+  get_pgpool_nodeid_from_host $1 $2
+  node_id=$?
+  if [ $node_id -eq 255 ]; then
+    echo "ERROR: unable to find Pgpool-II backend node id for $1:$2"
+    return 255
+  else
+    echo "INFO: detaching node-id: $node_id to Pgpool-II"
+    detach_node_id $node_id
+    return $?
+  fi
+}
+# function promotes the standby node identified by hostname:port
+# to the master node in Pgpool-II
+# Arguments:
+# 1- Hostname
+# 2- Port (optional) if not provided, node-id of first matching
+# hostname will be promoted
+#
+function promote_standby_to_master {
+  get_pgpool_nodeid_from_host $1 $2
+  node_id=$?
+  if [ $node_id -eq 255 ]; then
+    echo "ERROR: unable to find Pgpool-II backend node id for $1:$2"
+    return 255
+  else
+    echo "INFO: promoting node-id: $node_id to master"
+    promote_node_id_to_master $node_id
+  return $?
+  fi
+}
+
+function print_usage {
+  echo "usage:"
+  echo " $(basename $0) operation hostname [port]".
+  echo " operations:".
+  echo " attach: attach node".
+  echo " promote: promote node".
+  echo " is_running: check if server is runnign"
+}
+# script entry point
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "ERROR: operation not provided"
+  print_usage
+  exit 1
+fi
+shopt -s nocasematch
+case "$1" in
+  "attach" )
+    attach_node $2 $3
+  ;;
+  "detach" )
+    detach_node $2 $3
+  ;;
+  "promote" )
+    promote_standby_to_master $2 $3
+  ;;
+  "is_running" )
+    is_running $2 $3
+  ;;
+  *)
+    echo "ERROR: invalid operation $1"
+    print_usage
+  ;;
+esac
+exit $?

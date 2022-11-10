@@ -3,7 +3,7 @@
 # Installs Roles and Collections requirements
 # ansible-galaxy install --force -r requirements.yml
 #
-# pip install openshift pyyaml kubernetes 
+# pip install openshift pyyaml kubernetes
 # pip install pyhelm
 ---
 - name: Deploy CloudNativePostgres-Sandbox Playbook
@@ -11,8 +11,7 @@
   gather_facts: false
 
   vars:
-     cnp_helm_chart_url: "https://enterprisedb.github.io/cnp-sandbox/"
+    cnp_helm_chart_url: "https://enterprisedb.github.io/cnp-sandbox/"
 
   roles:
     - role: setup_cloudnativepostgres_sandbox
-

@@ -2,7 +2,7 @@
 pg_instance_name: "main"
 pg_user: "enterprisedb"
 # pem data dir
-pg_home: "/usr/edb/as{{ pg_version }}" 
+pg_home: "/usr/edb/as{{ pg_version }}"
 pg_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_bin_path: "{{ pg_home }}/bin"
 pg_ssl: true
@@ -12,7 +12,7 @@ pg_database: "edb"
 
 # unix socket domain directories
 pg_unix_socket_directories:
-   - "/var/run/edb/as{{ pg_version }}"
+  - "/var/run/edb/as{{ pg_version }}"
 
 # postgres port
 pem_pg_port: 5444
@@ -22,4 +22,4 @@ pg_port: 5444
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 # pem server packages
 pem_server_packages:
-      - edb-pem-server
+  - edb-pem-server

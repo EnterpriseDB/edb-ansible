@@ -1,6 +1,6 @@
 ---
 - name: Prepare hba non ssl list
-  set_fact:
+  ansible.builtin.set_fact:
     pg_allow_ip_addresses: >-
       {{ pg_allow_ip_addresses | default([]) + [
         {
@@ -24,7 +24,7 @@
   no_log: "{{ disable_logging }}"
 
 - name: Prepare hba ssl list
-  set_fact:
+  ansible.builtin.set_fact:
     pg_allow_ip_addresses: >-
       {{ pg_allow_ip_addresses | default([]) + [
         {

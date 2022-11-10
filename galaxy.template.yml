@@ -25,3 +25,4 @@ dependencies:
   "ansible.posix": "1.3.0"
   "community.general": "2.5.8"
   "community.crypto": "1.9.12"
+  "community.kubernetes": "2.0.1"

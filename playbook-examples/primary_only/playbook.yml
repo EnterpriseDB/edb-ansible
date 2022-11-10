@@ -1,15 +1,15 @@
 ---
 - hosts: all
   name: Postgres deployment playbook
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - edb_devops.edb_postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
-      set_fact:
+      ansible.builtin.set_fact:
         pg_version: 13            # Change the version of Postgres you want to install
         pg_type: "PG"             # Change the pg_type to EPAS if EDB Advanced Server is needed
         yum_username: ""          # EDB repository username

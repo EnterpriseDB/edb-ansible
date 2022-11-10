@@ -1,0 +1,35 @@
+#!/bin/bash -u
+
+export PGPOOL_PATH="{{ pgpool2_bin_path }}"
+export PCP_USER="{{ pcp_admin_user }}"
+export PCP_PORT="{{ pgpool2_pcp_port }}"
+export PGPORT="{{ pg_port }}"
+export PGDATABASE="{{ pg_database }}"
+
+declare -a POOLERS=(
+{% for item in pgpool2_nodes %}
+  "{{ item }}"
+{% endfor %}
+)
+
+pcp_control={{ efm_bin_path }}/pcp_control.sh
+node=$1
+role=$2
+# check if node is running if not then exit 1 
+$pcp_control is_running $node ${PGPORT}
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+for POOLER in "${POOLERS[@]}"
+do
+  # check if pgpool is running and accordingly attach
+  $pcp_control is_running ${POOLER} ${PCP_PORT}
+  if [ $? -eq 0 ]; then
+    export PCP_HOST=${POOLER}
+    echo "Attaching node $node on ${PCP_HOST}"
+    $pcp_control attach $node
+    if [ "$role" = "p" ]; then
+      $pcp_control promote $node
+    fi
+  fi
+done

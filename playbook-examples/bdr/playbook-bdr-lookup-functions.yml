@@ -4,11 +4,14 @@
     - edb_devops.edb_postgres
 
   tasks:
-  - ansible.builtin.debug:
-      msg: "{{ lookup('edb_devops.edb_postgres.bdr_nodes', 'BDRDC1', wantList=True) }}"
+    - name: Print nodes part of site BDRDC1
+      ansible.builtin.debug:
+        msg: "{{ lookup('edb_devops.edb_postgres.bdr_nodes', 'BDRDC1', wantList=True) }}"
 
-  - ansible.builtin.debug:
-      msg: "{{ lookup('edb_devops.edb_postgres.etcd_nodes', wantList=True) }}"
+    - name: Print nodes part of etcd
+      ansible.builtin.debug:
+        msg: "{{ lookup('edb_devops.edb_postgres.etcd_nodes', wantList=True) }}"
 
-  - ansible.builtin.debug:
-      msg: "{{ lookup('edb_devops.edb_postgres.bdr_lead_master', 'BDRDC3', wantList=True) }}"
+    - name: Print nodes part of site BDRDC3
+      ansible.builtin.debug:
+        msg: "{{ lookup('edb_devops.edb_postgres.bdr_lead_master', 'BDRDC3', wantList=True) }}"

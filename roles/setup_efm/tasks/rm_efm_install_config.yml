@@ -1,47 +1,47 @@
 ---
 - name: Stop EFM service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ efm_service }}"
     state: stopped
   when:
-      - ansible_facts.services[efm_service + '.service'] is defined
-      - ansible_facts.services[efm_service + '.service']['state'] != 'running'
-  become: yes
+    - ansible_facts.services[efm_service + '.service'] is defined
+    - ansible_facts.services[efm_service + '.service']['state'] != 'running'
+  become: true
 
 - name: Remove EFM properties File
-  file:
+  ansible.builtin.file:
     path: /etc/edb/efm-{{ efm_version }}/efm.properties
     state: absent
-  become: yes
+  become: true
 
 - name: Remove EFM nodes File
-  file:
+  ansible.builtin.file:
     path: /etc/edb/efm-{{ efm_version }}/efm.nodes
     state: absent
-  become: yes
+  become: true
 
 - name: Remove .efmpass
-  file:
+  ansible.builtin.file:
     path: /etc/edb/efm-{{ efm_version }}/.efmpass
     state: absent
-  become: yes
+  become: true
 
 - name: Remove .allowed
-  file:
+  ansible.builtin.file:
     path: /etc/edb/efm-{{ efm_version }}/.allowed
     state: absent
-  become: yes
+  become: true
 
 - name: Remove EFM and dependencies
-  package:
+  ansible.builtin.package:
     name: "{{ efm_packages_redhat }}"
     state: absent
   when: ansible_os_family == 'RedHat'
-  become: yes
+  become: true
 
 - name: Remove EFM and dependencies
-  package:
+  ansible.builtin.package:
     name: "{{ efm_packages_debian }}"
     state: absent
   when: ansible_os_family == 'Debian'
-  become: yes
+  become: true
