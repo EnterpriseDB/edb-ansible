@@ -10,16 +10,16 @@
   kubernetes.core.helm_repository:
     name: cnp-sandbox
     repo_url: "{{ cnp_helm_chart_url }}"
-    
+
 - name: Install CloudNative Postgres Helm chart
   community.kubernetes.helm:
     name: cnp-sandbox
     chart_ref: cnp-sandbox/cnp-sandbox
     release_namespace: default
 #    create_namespace: true
-  
+
 - name: Deploy 'cnp-sandbox-monitored-cluster' manifest to the k8s cluster
   kubernetes.core.k8s:
     state: present
-    src: ./cnp-sandbox-monitored-cluster.yml
+    src: ../files/cnp-sandbox-monitored-cluster.yml
     namespace: default
