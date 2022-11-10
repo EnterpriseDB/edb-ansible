@@ -1,6 +1,13 @@
 ---
+- name: Include pgpool2_install.yml
+  ansible.builtin.include_role:
+    name: setup_pgpool2
+    tasks_from: pgpool2_install.yml
+  vars:
+    pgpool2_ssl: false
+
 - name: Generate the pcp_admin_user_password
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: generate_password
   vars:
@@ -11,25 +18,25 @@
   when: pcp_admin_user_password|length < 1
 
 - name: Set pcp_admin_user_password
-  set_fact:
-     pcp_admin_user_password: "{{ input_password }}"
+  ansible.builtin.set_fact:
+    pcp_admin_user_password: "{{ input_password }}"
   when: pcp_admin_user_password|length < 1
   run_once: true
 
 - name: Save PCP credentials
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ pcp_passfile }}"
     owner: "{{ pcp_passfile_owner }}"
     group: "{{ pcp_passfile_group }}"
     mode: "{{ pcp_passfile_mode }}"
     line: "*:*:{{ pcp_admin_user }}:{{ pcp_admin_user_password }}"
-    create: yes
-  become: yes
+    create: true
+  become: true
 
 - name: Prepare pgpool2_nodes when not use_hostname
-  set_fact:
-    pgpool2_nodes: "{{ pgpool2_nodes | default([]) + [ node.private_ip ] }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip,  wantlist=True) }}"
+  ansible.builtin.set_fact:
+    pgpool2_nodes: "{{ pgpool2_nodes | default([]) + [node.private_ip] }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip, wantlist=True) }}"
   loop_control:
     loop_var: node
   run_once: true
@@ -38,9 +45,9 @@
     - not use_hostname|bool
 
 - name: Prepare pgpool2_nodes when use_hostname
-  set_fact:
-    pgpool2_nodes: "{{ pgpool2_nodes | default([]) + [ node.hostname ] }}"
-  loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip,  wantlist=True) }}"
+  ansible.builtin.set_fact:
+    pgpool2_nodes: "{{ pgpool2_nodes | default([]) + [node.hostname] }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pgpool2_nodes', primary_private_ip, wantlist=True) }}"
   loop_control:
     loop_var: node
   run_once: true
@@ -49,28 +56,28 @@
     - use_hostname|bool
 
 - name: Copy the pcp_control.sh to the server
-  template:
+  ansible.builtin.template:
     src: pcp_control.sh.template
     dest: "{{ efm_bin_path }}/pcp_control.sh"
     owner: "root"
     group: "root"
     mode: 0755
-  become: yes
+  become: true
 
 - name: Copy the pcp_attach_all.sh to the server
-  template:
+  ansible.builtin.template:
     src: pcp_attach_all.sh.template
     dest: "{{ efm_bin_path }}/pcp_attach_all.sh"
     owner: "root"
     group: "root"
     mode: 0755
-  become: yes
+  become: true
 
 - name: Copy the pg_pcp_health.sh to the server
-  template:
+  ansible.builtin.template:
     src: pg_pcp_health.sh.template
     dest: "{{ efm_bin_path }}/pg_pcp_health.sh"
     owner: "root"
     group: "root"
     mode: 0755
-  become: yes
+  become: true

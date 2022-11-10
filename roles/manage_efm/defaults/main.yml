@@ -4,7 +4,7 @@ os: ""
 pg_version: 14
 efm_version: 4.5
 efm_eager_failover: false
-efm_install_version: "{{ efm_version | replace('.','') }}"
+efm_install_version: "{{ efm_version | replace('.', '') }}"
 pg_instance_name: main
 disable_logging: true
 force_efm_install: false

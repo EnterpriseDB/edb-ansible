@@ -4,7 +4,7 @@ os: ""
 pg_version: 14
 efm_version: 4.5
 efm_eager_failover: false
-efm_install_version: "{{ efm_version | replace('.','') }}"
+efm_install_version: "{{ efm_version | replace('.', '') }}"
 pg_instance_name: main
 disable_logging: true
 force_efm_install: false
@@ -89,7 +89,8 @@ efm_api_node_state_supported_os:
   - CentOS7
   - RedHat7
   - OracleLinux7
-
+efm_api_download_url: "https://github.com/EnterpriseDB/efm-api-node-state/releases/download/v{{ efm_api_node_state_version }}"
+efm_api_node_state_rpm: "efm-api-node-state-{{ efm_api_node_state_version }}-1.el7.x86_64.rpm"
 # Integration with pgpoolII
 pgpool2_version: 4.1
 efm_pgpool2_integration: false

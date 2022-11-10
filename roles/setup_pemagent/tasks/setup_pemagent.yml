@@ -58,7 +58,7 @@
 
 - name: Register PEM server version as integer
   ansible.builtin.set_fact:
-    pem_server_version_int: "{{ pem_server_version_output.stdout |replace('.','')|int }}"
+    pem_server_version_int: "{{ pem_server_version_output.stdout | replace('.', '') | int }}"
   when: node_ssh_to_pemserver
   no_log: "{{ disable_logging }}"
 

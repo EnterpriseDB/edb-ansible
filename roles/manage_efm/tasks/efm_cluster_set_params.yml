@@ -1,30 +1,30 @@
 ---
 
 - name: Add encrypted EFM password to efm parameters list
-  set_fact:
+  ansible.builtin.set_fact:
     efm_parameters: "{{ efm_parameters + efm_password_parameters }}"
   when:
     - efm_password_parameters is defined
     - efm_password_parameters|length > 0
 
 - name: Set efm_listen_host
-  set_fact:
+  ansible.builtin.set_fact:
     efm_listen_host: "{{ hostvars[inventory_hostname].private_ip }}"
 
 - name: Update efm efm.properties file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ efm_properties }}"
     regexp: "{{ line_item.name + '=' }}"
-    line: "{{ line_item.name + '=' + line_item.value|string }}"
+    line: "{{ line_item.name + '=' + line_item.value | string }}"
     state: present
   with_items: "{{ efm_parameters }}"
   loop_control:
-   loop_var: line_item
+    loop_var: line_item
   when: efm_parameters|length > 0
-  become: yes
+  become: true
   register: properties_changes
 
-- name: Update "{{ pg_service }}" to bind "{{ efm_service }}"
+- name: Update pg_service to bind efm_service
   ansible.builtin.lineinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
     line: "{{ item.line }}"
@@ -40,9 +40,9 @@
     - ansible_os_family == 'RedHat'
   register: pg_service_changed
 
-- name: Force systemd to reread configs of "{{ pg_service }}" after changes
+- name: Force systemd to reread configs of pg_service after changes
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   when:
     - pg_service_changed is defined
     - pg_service_changed.changed
@@ -58,12 +58,12 @@
   become: true
 
 - name: Cleanup the efm lock file if exists
-  file:
+  ansible.builtin.file:
     path: "{{ edb_efm_lock_file }}"
     state: absent
   become: true
 
-- name: Update "{{ pg_service }}" to bind "{{ efm_service }}"
+- name: Update pg_service to bind efm_service
   ansible.builtin.lineinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
     line: "{{ item.line }}"
@@ -79,9 +79,9 @@
     - ansible_os_family == 'RedHat'
   register: pg_service_changed
 
-- name: Force systemd to reread configs of "{{ pg_service }}" after changes
+- name: Force systemd to reread configs of pg_service after changes
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   when:
     - pg_service_changed is defined
     - pg_service_changed.changed
@@ -96,7 +96,7 @@
     - properties_changes.changed
   become: true
 
-- name: Wait for efm port "{{ efm_port }}" to become open on the host, don't start checking for 5 seconds
+- name: Wait for efm port efm_port to become open on the host, don't start checking for 5 seconds
   ansible.builtin.wait_for:
     host: "{{ efm_listen_host }}"
     port: "{{ efm_port }}"
@@ -105,7 +105,7 @@
     timeout: 10
   become: true
 
-- name: Wait for efm admin port "{{ efm_admin_port }}" to become open on the host, don't start checking for 5 seconds
+- name: Wait for efm admin port efm_admin_port to become open on the host, don't start checking for 5 seconds
   ansible.builtin.wait_for:
     host: "127.0.0.1"
     port: "{{ efm_admin_port }}"

@@ -1,37 +1,37 @@
 ---
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Check EFM API node state support
-  fail:
+  ansible.builtin.fail:
     msg: "EFM API node state not supported on {{ os }}"
   when:
     - efm_api_node_state
     - os not in efm_api_node_state_supported_os
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Check support for efm
-  fail:
+  ansible.builtin.fail:
     msg: "efm version = {{ efm_version }} not supported.
          Supported versions are {{ supported_efm_version }}"
   when: efm_version | string not in supported_efm_version
 
 - name: Reference variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Find the WAL dir source location
-  stat:
+  ansible.builtin.stat:
     path: "{{ pg_data }}/pg_wal"
   register: waldir
   when:
@@ -39,8 +39,8 @@
   become: true
 
 - name: Ensure parent WAL dir has correct permissions
-  file:
-    path: "{{ waldir.stat.lnk_source|dirname }}"
+  ansible.builtin.file:
+    path: "{{ waldir.stat.lnk_source | dirname }}"
     owner: "{{ pg_owner }}"
   when:
     - "'witness' not in group_names"
@@ -49,48 +49,46 @@
   become: true
 
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Open EFM TCP port {{ efm_port }}
   ansible.posix.firewalld:
     port: "{{ efm_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Open EFM TCP admin. port {{ efm_admin_port }}
   ansible.posix.firewalld:
     port: "{{ efm_admin_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Gather the EFM cluster informations
-  set_fact:
+  ansible.builtin.set_fact:
     efm_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.efm_nodes', wantlist=True) }}"
   run_once: true
 
 - name: Remove before we start as per force_install
-  block:
-    - include_tasks: rm_efm_install_config.yml
-  become: yes
+  ansible.builtin.include_tasks: rm_efm_install_config.yml
   when: >
     (force_efm is defined and force_efm)
     or (force_initdb is defined and force_initdb)
     or (force_replication is defined and force_replication)
 
 - name: Prepare efm_nodes_list based on use_hostname
-  set_fact:
+  ansible.builtin.set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.inventory_hostname + ':' + efm_port | string + ' ' }}"
   loop: "{{ efm_cluster_nodes }}"
   loop_control:
@@ -100,7 +98,7 @@
   no_log: "{{ disable_logging }}"
 
 - name: Prepare efm node list
-  set_fact:
+  ansible.builtin.set_fact:
     efm_nodes_list: "{{ efm_nodes_list + node.private_ip + ':' + efm_port | string + ' ' }}"
   when:
     - not use_hostname|bool
@@ -111,10 +109,10 @@
   no_log: "{{ disable_logging }}"
 
 - name: Prepare host ip lists based on allow_node_ips
-  include_tasks: prepare_hba_value_list.yml
+  ansible.builtin.include_tasks: prepare_hba_value_list.yml
 
 - name: Get the primary information
-  set_fact:
+  ansible.builtin.set_fact:
     primary_inventory_hostname: "{{ node.inventory_hostname }}"
     primary_private_ip: "{{ node.private_ip }}"
   when: node.node_type == 'primary'
@@ -125,57 +123,52 @@
   no_log: "{{ disable_logging }}"
 
 - name: Ensure we have efm user in primary database
-  import_tasks: create_efm_user.yml
+  ansible.builtin.import_tasks: create_efm_user.yml
   run_once: true
   no_log: "{{ disable_logging }}"
   delegate_to: "{{ primary_inventory_hostname }}"
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
 
 - name: EFM installation
-  block:
-    - import_tasks: efm_hba.yml
-    - import_tasks: efm_install.yml
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
+  block:
+    - name: Import efm_hba
+      ansible.builtin.import_tasks: efm_hba.yml
+    - name: Import efm_install
+      ansible.builtin.import_tasks: efm_install.yml
 
 - name: PgPoolII integration
-  block:
-    - name: Include pgpool2_install.yml
-      include_role:
-        name: setup_pgpool2
-        tasks_from: pgpool2_install.yml
-      vars:
-        pgpool2_ssl: false
-    - include_tasks: efm_pgpool2_integration.yml
-  no_log: "{{ disable_logging }}"
-  become: yes
+  ansible.builtin.include_tasks: efm_pgpool2_integration.yml
   when:
     - efm_pgpool2_integration
     - "'witness' not in group_names"
+  no_log: "{{ disable_logging }}"
 
 - name: EFM configuration
-  block:
-    - import_tasks: efm_create_properties.yml
-    - import_tasks: efm_configure.yml
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
+  block:
+    - name: Import efm_create_properties
+      ansible.builtin.import_tasks: efm_create_properties.yml
+    - name: Import efm_configure
+      ansible.builtin.import_tasks: efm_configure.yml
 
 - name: EFM API node state setup
-  include_tasks: efm_api_node_state_setup.yml
+  ansible.builtin.include_tasks: efm_api_node_state_setup.yml
   no_log: "{{ disable_logging }}"
   when:
     - efm_api_node_state
 
 - name: Reset the variables used in this role
-  set_fact:
-     efm_nodes_list: ""
-     primary_inventory_hostname: ""
-     input_password: ""
-     pg_allow_ip_addresses: []
+  ansible.builtin.set_fact:
+    efm_nodes_list: ""
+    primary_inventory_hostname: ""
+    input_password: ""
+    pg_allow_ip_addresses: []

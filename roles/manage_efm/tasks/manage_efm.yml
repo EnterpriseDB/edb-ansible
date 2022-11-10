@@ -1,30 +1,30 @@
 ---
 - name: Set the os variable
-  set_fact:
+  ansible.builtin.set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
 
 - name: Check support for Operating System
-  fail:
+  ansible.builtin.fail:
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
 - name: Check supported versions for Database engine
-  fail:
+  ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Check support for efm
-  fail:
+  ansible.builtin.fail:
     msg: "efm version = {{ efm_version }} not supported.
          Supported versions are {{ supported_efm_version }}"
   when: efm_version | string not in supported_efm_version
 
 - name: Reference variables
-  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Find the WAL dir source location
-  stat:
+  ansible.builtin.stat:
     path: "{{ pg_data }}/pg_wal"
   register: waldir
   when:
@@ -32,8 +32,8 @@
   become: true
 
 - name: Ensure parent WAL dir has correct permissions
-  file:
-    path: "{{ waldir.stat.lnk_source|dirname }}"
+  ansible.builtin.file:
+    path: "{{ waldir.stat.lnk_source | dirname }}"
     owner: "{{ pg_owner }}"
   when:
     - "'witness' not in group_names"
@@ -42,39 +42,39 @@
   become: true
 
 - name: Gather service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Open EFM TCP port {{ efm_port }}
   ansible.posix.firewalld:
     port: "{{ efm_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Open EFM TCP admin. port {{ efm_admin_port }}
   ansible.posix.firewalld:
     port: "{{ efm_admin_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Gather the EFM cluster informations
-  set_fact:
+  ansible.builtin.set_fact:
     efm_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.efm_nodes', wantlist=True) }}"
   run_once: true
 
 - name: Get the primary information
-  set_fact:
+  ansible.builtin.set_fact:
     primary_inventory_hostname: "{{ node.inventory_hostname }}"
     primary_private_ip: "{{ node.private_ip }}"
   when: node.node_type == 'primary'
@@ -85,14 +85,14 @@
   no_log: "{{ disable_logging }}"
 
 - name: Include the efm_db_password.yml
-  include_tasks: efm_db_password.yml
+  ansible.builtin.include_tasks: efm_db_password.yml
 
 - name: EFM parameters settings
-  include_tasks: efm_cluster_set_params.yml
+  ansible.builtin.include_tasks: efm_cluster_set_params.yml
   no_log: "{{ disable_logging }}"
 
 - name: Reset the variables used in this role
-  set_fact:
-     efm_nodes_list: ""
-     primary_inventory_hostname: ""
-     input_password: ""
+  ansible.builtin.set_fact:
+    efm_nodes_list: ""
+    primary_inventory_hostname: ""
+    input_password: ""

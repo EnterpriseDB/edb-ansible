@@ -1,8 +1,8 @@
 ---
 # Postgres EDB Postgres Advanced Server CentOS 7 and RHEL 7
-#PG_RPMREPO: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+# PG_RPMREPO: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 # Prior to 06/23/2020 - Redesign of EDB Portal
-#PG_RPMREPO: "https://yum.enterprisedb.com/edb-repo-rpms/edb-repo-latest.noarch.rpm"
+# PG_RPMREPO: "https://yum.enterprisedb.com/edb-repo-rpms/edb-repo-latest.noarch.rpm"
 # After 06/23/2020 - Redesigned EDB Portal
 
 # EDB repository username, password and subscription token
@@ -24,7 +24,8 @@ edb_repo_script_link: "https://downloads.enterprisedb.com/{{ repo_token }}/enter
 
 # debian/ubuntu Repo
 edb_deb_repo_url: "deb [arch=amd64] https://apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"
-edb_deb_9_repo_url: "deb https://{{ repo_username }}:{{ repo_password }}@apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"
+edb_deb_9_base_repo_url: "https://{{ repo_username }}:{{ repo_password }}@apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/"
+edb_deb_9_repo_url: "deb {{ edb_deb_9_base_repo_url }} {{ ansible_distribution_release }} main"
 edb_deb_keys: "https://apt.enterprisedb.com/edb-deb.gpg.key"
 edb_auth_conf: "/etc/apt/auth.conf.d/edb.conf"
 edb_auth_conf_url: "machine apt.enterprisedb.com"
