@@ -5,11 +5,11 @@
   kubernetes.core.k8s:
     state: absent
     namespace: default
-    src: ./cnpg-sandbox-monitored-cluster.yml
- 
+    src: ./files/cnpg-sandbox-monitored-cluster.yml
+
 - name: Remove cnpg sandbox
-  community.kubernetes.helm:      
-    state: absent    
+  community.kubernetes.helm:
+    state: absent
     chart_ref: cnpg/cnpg-sandbox
     name: cnpg-sandbox
-    namespace: default  
+    namespace: default
