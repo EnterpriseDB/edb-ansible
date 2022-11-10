@@ -3,8 +3,8 @@
 # port constants
 
 pg_version: 14
-disable_logging: yes
-pg_remote_ssl_src: no
+disable_logging: true
+pg_remote_ssl_src: false
 
 force_replication: false
 use_replication_slots: true

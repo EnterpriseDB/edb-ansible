@@ -1,6 +1,6 @@
 ---
 - name: Generate efm encrypted password
-  shell: |
+  ansible.builtin.shell: |
     {{ efm_bin_path }}/efm encrypt {{ efm_cluster_name }} --from-env
   args:
     executable: /bin/bash
@@ -8,37 +8,37 @@
     EFMPASS: "{{ pg_efm_user_password }}"
   register: pass_opt
   changed_when: pass_opt.rc == 0
-  become: yes
+  become: true
   failed_when: "'EFMPASS password not found.' in pass_opt.stdout"
 
 - name: Check if we have efm_witness or not
-  set_fact:
+  ansible.builtin.set_fact:
     efm_witness: "{{ 'true' if ('witness' in group_names) else 'false' }}"
 
 - name: Prepare the necessary parameters
-  set_fact:
+  ansible.builtin.set_fact:
     efm_node_parameters:
-        - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:{{ efm_port }}"}
-        - { name: application.name, value: "{{ inventory_hostname }}" }
-        - { name: is.witness, value: "{{ efm_witness }}" }
+      - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+      - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:{{ efm_port }}"}
+      - { name: application.name, value: "{{ inventory_hostname }}" }
+      - { name: is.witness, value: "{{ efm_witness }}" }
   when: not use_hostname|bool
 
 - name: Prepare the necessary parameters
-  set_fact:
+  ansible.builtin.set_fact:
     efm_node_parameters:
-        - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-        - { name: bind.address, value: "{{ inventory_hostname }}:{{ efm_port }}"}
-        - { name: application.name, value: "{{ inventory_hostname }}" }
-        - { name: is.witness, value: "{{ efm_witness }}" }
+      - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+      - { name: bind.address, value: "{{ inventory_hostname }}:{{ efm_port }}"}
+      - { name: application.name, value: "{{ inventory_hostname }}" }
+      - { name: is.witness, value: "{{ efm_witness }}" }
   when: use_hostname|bool
 
 - name: Initialize efm_lb_parameters
-  set_fact:
+  ansible.builtin.set_fact:
     efm_lb_parameters: []
 
 - name: Prepare parameters for PgPoolII integration
-  set_fact:
+  ansible.builtin.set_fact:
     efm_lb_parameters:
       - {name: script.load.balancer.attach, value: "{{ efm_bin_path }}/pcp_attach_all.sh %h %t"}
       - {name: auto.resume.period, value: "5"}
@@ -50,52 +50,52 @@
     - efm_pgpool2_integration
 
 - name: Prepare final parameters list
-  set_fact:
+  ansible.builtin.set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters }}"
   when: hostvars[inventory_hostname].upstream_node_private_ip is not defined
         or hostvars[inventory_hostname].upstream_node_private_ip == primary_private_ip
 
 - name: Prepare final parameters list
-  set_fact:
+  ansible.builtin.set_fact:
     efm_node_parameters: "{{ efm_default_parameters + efm_node_parameters + efm_cascaded_replica_param }}"
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
     - hostvars[inventory_hostname].upstream_node_private_ip != primary_private_ip
 
 - name: Prepare final parameters list
-  set_fact:
+  ansible.builtin.set_fact:
     efm_node_parameters: "{{ efm_node_parameters + efm_physical_slot_param }}"
   when:
     - (pg_version|int > 11 and pg_type == "EPAS") or (pg_version|int > 12 and pg_type == "PG")
     - efm_version|int > 3.10
 
 - name: Add LB configuration to final parameters list
-  set_fact:
+  ansible.builtin.set_fact:
     efm_node_parameters: "{{ efm_node_parameters + efm_lb_parameters }}"
   when:
     - efm_pgpool2_integration
 
 - name: Add eager efm configuration to efm parameters list
-  set_fact:
+  ansible.builtin.set_fact:
     efm_node_parameters: "{{ efm_node_parameters + efm_eager_failover_params }}"
   when:
     - efm_eager_failover|bool
     - efm_install_version|int >= 40
 
 - name: Update efm efm.properties file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ efm_properties }}"
     regexp: "{{ line_item.name + '=' }}"
-    line: "{{ line_item.name + '=' + line_item.value|string }}"
+    line: "{{ line_item.name + '=' + line_item.value | string }}"
     state: present
   with_items: "{{ efm_node_parameters }}"
   loop_control:
-   loop_var: line_item
-  become: yes
+    loop_var: line_item
+  become: true
   no_log: "{{ disable_logging }}"
   register: properties_changes
 
-- name: Update {{ pg_service }} to bind {{ efm_service }}
+- name: Update pg_service to bind efm_service
   ansible.builtin.lineinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
     line: "{{ item.line }}"
@@ -112,35 +112,35 @@
   register: pg_service_changed
 
 - name: Populate service facts
-  service_facts:
+  ansible.builtin.service_facts:
 
 - name: Cleanup the efm lock file if exists
-  file:
+  ansible.builtin.file:
     path: "{{ edb_efm_lock_file }}"
     state: absent
   when: ansible_facts.services[efm_service + '.service']['state'] != 'running'
-  become: yes
+  become: true
 
 - name: Start efm service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ efm_service }}"
-    enabled: yes
+    enabled: true
     state: started
-  become: yes
+  become: true
 
 - name: Restart efm service
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ efm_service }}"
-    enabled: yes
+    enabled: true
     state: restarted
-  become: yes
+  become: true
   when:
     - ( efm_nodes_update.changed or properties_changes.changed )
     - efm_service_file.stat.exists
 
-- name: Force systemd to reread configs of {{ pg_service }} after changes
+- name: Force systemd to reread configs of pg_service after changes
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   when:
     - pg_service_changed is defined
     - pg_service_changed.changed

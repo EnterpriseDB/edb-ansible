@@ -1,6 +1,6 @@
 ---
 - name: Update hba config
-  include_role:
+  ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_hba_conf
   vars:
