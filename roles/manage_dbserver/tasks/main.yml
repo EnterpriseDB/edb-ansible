@@ -3,7 +3,7 @@
 - name: Check required variables for this role
   include_role:
     name: common
-    task_from: check_required_variables
+    tasks_from: check_required_variables
   vars:
     required_variables:
       - pg_type

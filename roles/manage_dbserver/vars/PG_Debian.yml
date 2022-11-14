@@ -2,11 +2,13 @@
 pg_port: "5432"
 pg_owner: "postgres"
 pg_group: "postgres"
-pg_user_home: "/var/lib/postgresql"
+pg_user_home: "/usr/lib/postgresql"
+pg_instance_name: "main"
 pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}"
 pg_database: "postgres"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
+pg_data: "{{ pg_user_home }}/{{ pg_version }}/{{ pg_instance_name }}"
 
 shell_profile_path: "{{ pg_user_home }}/.pgsql_profile"
 shell_profile_owner: "postgres"
@@ -27,5 +29,3 @@ psqlrc_group: "postgres"
 psqlrc_mode: "0600"
 psqlrc_content: |
   -- psql configuration
-
-pg_data: "{{ pg_user_home }}/{{ pg_version }}/{{ pg_instance_name }}"

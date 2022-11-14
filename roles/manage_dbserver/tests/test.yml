@@ -1,5 +1,14 @@
 ---
-- hosts: localhost
-  remote_user: root
+- hosts: all 
+  name: Manage DB Server Playbook
+  become: yes
+  gather_facts: yes
+
+  pre_tasks:
+    - name: User defined variables
+      set_fact:
+        pg_type: "PG"
+        pg_version: 14
+
   roles:
     - manage_dbserver
