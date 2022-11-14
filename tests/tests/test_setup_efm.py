@@ -9,7 +9,8 @@ from conftest import (
     get_primary,
     get_standbys,
     get_pg_unix_socket_dir,
-    get_pg_cluster_nodes
+    get_pg_cluster_nodes,
+    os_family
 )
 
 def test_setup_efm_user():
@@ -18,7 +19,7 @@ def test_setup_efm_user():
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
@@ -35,7 +36,7 @@ def test_setup_efm_service():
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     nodes = [node for node in get_pg_cluster_nodes()]
     
     with host.sudo(pg_user):
@@ -51,7 +52,7 @@ def test_setup_efm_pg_read_all_settings():
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
@@ -63,31 +64,21 @@ def test_setup_efm_pg_read_all_settings():
     assert 'pg_read_all_settings' in result[efm_index], \
         "EFM role is not a pg_read_all_settings"
 
-def test_setup_efm_redhat():
-    if not get_os().startswith('centos') and not get_os().startswith('rocky'):
-        pytest.skip()
-
+def test_setup_efm_packages():
     host = get_primary()
-    packages = [
-        'java-1.8.0-openjdk',
-        'mailx',
-        'edb-efm45'
-    ]
 
-    for package in packages:
-        assert host.package(package).is_installed, \
-            "Package %s not installed" % packages
-
-def test_setup_efm_debian():
-    if not (get_os().startswith('debian') or get_os().startswith('ubuntu')):
-        pytest.skip()
-
-    host = get_primary()
-    packages = [
-        'openjdk-8-jdk',
-        'bsd-mailx',
-        'edb-efm45'
-    ]
+    if os_family() == 'RedHat':
+        packages = [
+            'java-1.8.0-openjdk',
+            'mailx',
+            'edb-efm45'
+        ]
+    elif os_family() == 'Debian':
+        packages = [
+            'openjdk-8-jdk',
+            'bsd-mailx',
+            'edb-efm45'
+        ]
 
     for package in packages:
         assert host.package(package).is_installed, \
