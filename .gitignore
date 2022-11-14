@@ -1,2 +1,2 @@
-test*.yaml
-test*.yml
+playbook.yml
+inventory.yml

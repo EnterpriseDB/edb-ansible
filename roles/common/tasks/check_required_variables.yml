@@ -1,0 +1,7 @@
+---
+# Check if the required variables are defined by user
+- name: Check if the required variables are defined
+  ansible.builtin.fail:
+    msg: "Required variable {{ item }} is not defined. Required variables are: {{ required_variables }}"
+  when: lookup('ansible.builtin.vars', item, default='') is falsy 
+  loop: "{{ required_variables }}"

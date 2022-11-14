@@ -1,53 +1,47 @@
 ---
-- name: Check database is in read/write mode
-  community.postgresql.postgresql_query:
-    query: "SELECT pg_catalog.pg_is_in_recovery()"
-    port: "{{ pg_port }}"
-    db: "{{ pg_database }}"
-    login_user: "{{ pg_owner }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-  no_log: "{{ disable_logging }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
-  register: db_status
+- name: Check if the host is a standby node
+  import_tasks: check_database_is_standby.yml
 
-- name: Grant object privilege to users
-  community.postgresql.postgresql_privs:
-    type: "{{ line_item.type }}"
-    state: "{{ line_item.grant | default('present') }}"
-    privs: "{{ line_item.privileges }}"
-    schema: "{{ line_item.schema | default(omit) }}"
-    objs: "{{ line_item.objects }}"
-    roles: "{{ line_item.roles }}"
-    db: "{{ line_item.database }}"
-    login_user: "{{ pg_owner }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
-  with_items: "{{ pg_grant_privileges }}"
-  loop_control:
-    loop_var: line_item
-  no_log: "{{ disable_logging }}"
-  when:
-    - not db_status.query_result[0].pg_is_in_recovery
-    - pg_grant_privileges|length > 0
+# current_host_is_standby is set in check_database_is_standby.yml task
+# task is for master node only
+- name: Manage privileges
+  block: 
+  - name: Grant object privilege to users
+    community.postgresql.postgresql_privs:
+      type: "{{ line_item.type }}"
+      state: "{{ line_item.grant | default('present') }}"
+      privs: "{{ line_item.privileges }}"
+      schema: "{{ line_item.schema | default(omit) }}"
+      objs: "{{ line_item.objects }}"
+      roles: "{{ line_item.roles }}"
+      db: "{{ line_item.database }}"
+      login_user: "{{ pg_owner }}"
+      login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+      port: "{{ pg_port }}"
+    become: yes
+    become_user: "{{ pg_owner }}"
+    with_items: "{{ pg_grant_privileges }}"
+    loop_control:
+      loop_var: line_item
+    no_log: "{{ disable_logging }}"
+    when:
+      - pg_grant_privileges|length > 0
 
-- name: Grant role to users
-  community.postgresql.postgresql_membership:
-    group: "{{ line_item.role }}"
-    target_role: "{{ line_item.user }}"
-    state: "{{ line_item.grant|default('present') }}"
-    db: "{{ pg_database }}"
-    login_user: "{{ pg_owner }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
-  with_items: "{{ pg_grant_roles }}"
-  loop_control:
-    loop_var: line_item
-  no_log: "{{ disable_logging }}"
-  when:
-    - not db_status.query_result[0].pg_is_in_recovery
-    - pg_grant_roles|length > 0
+  - name: Grant role to users
+    community.postgresql.postgresql_membership:
+      group: "{{ line_item.role }}"
+      target_role: "{{ line_item.user }}"
+      state: "{{ line_item.grant|default('present') }}"
+      db: "{{ pg_database }}"
+      login_user: "{{ pg_owner }}"
+      login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+      port: "{{ pg_port }}"
+    become: yes
+    become_user: "{{ pg_owner }}"
+    with_items: "{{ pg_grant_roles }}"
+    loop_control:
+      loop_var: line_item
+    no_log: "{{ disable_logging }}"
+    when:
+      - pg_grant_roles|length > 0
+  when: not current_host_is_standby

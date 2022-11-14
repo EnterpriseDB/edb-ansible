@@ -1,0 +1,8 @@
+---
+# defaults file for common
+
+# defaults for generate_password task
+pass_dir: "~/.pgpassfile"
+passfile: ".pgpass"
+input_user: ""
+input_password: ""

@@ -1,5 +1,4 @@
 ---
-
 - name: Check if pgpass exists or not
   stat:
     path: "{{ pgpass_file| default('~/.pgpass') }}"

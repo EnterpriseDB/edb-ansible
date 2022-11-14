@@ -1,16 +1,9 @@
 ---
-- name: Check database is in read/write mode
-  community.postgresql.postgresql_query:
-    query: "SELECT pg_catalog.pg_is_in_recovery()"
-    port: "{{ pg_port }}"
-    db: "{{ pg_database }}"
-    login_user: "{{ pg_owner }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-  no_log: "{{ disable_logging }}"
-  become: yes
-  become_user: "{{ pg_owner }}"
-  register: db_status
+- name: Check if the host is a standby node
+  import_tasks: check_database_is_standby.yml
 
+# current_host_is_standby is set in check_database_is_standby.yml task
+# task is for master node only
 - name: Create databases
   community.postgresql.postgresql_db:
     name: "{{ line_item.name }}"
@@ -30,6 +23,6 @@
   loop_control:
     loop_var: line_item
   when:
-    - not db_status.query_result[0].pg_is_in_recovery
+    - not current_host_is_standby
     - pg_databases|length > 0
   no_log: "{{ disable_logging }}"

@@ -36,24 +36,8 @@
   when:
     - pg_postgres_conf_params|length > 0
     - params.changed
-    - not params_restart_required
-
-- name: Gather services facts
-  service_facts:
-
-- name: Stop failover manager service if exists
-  systemd:
-    name: "{{ efm_service }}"
-    state: stopped
-  when:
-    - ansible_facts.services[efm_service + '.service'] is defined
-    - ansible_facts.services[efm_service + '.service'].state == 'running'
-    - ansible_facts.services[efm_service + '.service'].status == 'enabled'
-    - pg_postgres_conf_params|length > 0
-    - params.changed
     - params_restart_required is defined
-    - params_restart_required
-  become: yes
+    - not params_restart_required
 
 - name: Restart the pg service
   systemd:
@@ -67,20 +51,8 @@
     - params_restart_required is defined
     - params_restart_required
 
-- name: Start failover manager service if exists
-  systemd:
-    name: "{{ efm_service }}"
-    state: started
-  when:
-    - ansible_facts.services[efm_service + '.service'] is defined
-    - ansible_facts.services[efm_service + '.service'].state == 'running'
-    - ansible_facts.services[efm_service + '.service'].status == 'enabled'
-    - pg_postgres_conf_params|length > 0
-    - params.changed
-    - params_restart_required is defined
-    - params_restart_required
-  become: yes
-
 - name: Reset the restart_required
   set_fact:
     params_restart_required: false
+  when:
+    - params_restart_required is defined

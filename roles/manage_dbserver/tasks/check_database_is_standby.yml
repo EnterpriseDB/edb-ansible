@@ -1,0 +1,16 @@
+---
+- name: Get pg_is_in_recovery() value from postgres instance 
+  community.postgresql.postgresql_query:
+    query: "SELECT pg_catalog.pg_is_in_recovery()"
+    port: "{{ pg_port }}"
+    db: "{{ pg_database }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+  no_log: "{{ disable_logging }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  register: pg_is_in_recovery
+
+- name: Set fact to the host about whether it is a master or standby
+  ansible.builtin.set_fact:
+    current_host_is_standby: pg_is_in_recovery.query_result[0].pg_is_in_recovery

@@ -1,0 +1,7 @@
+---
+# tasks file for common
+
+- name: Prevent from executing the role itself
+  ansible.builtin.fail:
+    msg: "Do not execute the role 'common' itself"
+  when: true

@@ -1,4 +1,14 @@
 ---
+# Check required variables
+- name: Check required variables for this role
+  include_role:
+    name: common
+    task_from: check_required_variables
+  vars:
+    required_variables:
+      - pg_type
+      - pg_version
+
 # Entry point of the manage_dbserver role
 - name: Include the manage_dbserver.yml
   include_tasks: manage_dbserver.yml

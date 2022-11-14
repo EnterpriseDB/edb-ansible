@@ -1,0 +1,9 @@
+---
+- name: Check required variables
+  include_role:
+    name: common
+    tasks_from: check_required_variables
+  vars:
+    required_variables:
+      - test_var1
+      - test_var2

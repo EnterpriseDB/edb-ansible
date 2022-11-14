@@ -56,7 +56,7 @@ pg_slots:
     slot_type: "logical"
     output_plugin: "test_decoding"
     state: present
-    database: "edb"
+    database: "postgres"
 ```
 
 ### `pg_extensions`
@@ -66,7 +66,7 @@ Postgres extensions management.
 ```yaml
 pg_extensions:
     - name: "postgis"
-      database: "edb"
+      database: "postgres"
       state: present
 ```
 
@@ -76,8 +76,8 @@ Grant privileges management.
 
 ```yaml
 pg_grant_privileges:
-    - roles: "efm_user"
-      database: "edb"
+    - roles: "postgres_role"
+      database: "postgres"
       privileges: execute
       schema: pg_catalog
       objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
@@ -91,7 +91,7 @@ Grant roles management.
 ```yaml
 pg_grant_roles:
     - role: pg_monitor
-      user: enterprisedb
+      user: postgres_user
 ```
 
 ### `pg_sql_scripts`
@@ -100,8 +100,8 @@ SQL script execution.
 
 ```yaml
 pg_sql_scripts:
-    - file_path: "/usr/edb/as12/share/edb-sample.sql"
-      db: edb
+    - file_path: "/usr/postgres/sample.sql"
+      db: postgres
 ```
 
 ### `pg_copy_files`
@@ -111,9 +111,9 @@ Copy file on remote host.
 ```yaml
 pg_copy_files:
     - file: "./test.sh"
-      remote_file: "/var/lib/edb/test.sh"
-      owner: efm
-      group: efm
+      remote_file: "/var/lib/postgres/test.sh"
+      owner: postgres
+      group: postgres
       mode: 0700
 ```
 
@@ -124,7 +124,7 @@ Execute a query on a database.
 ```yaml
 pg_query:
     - query: "Update test set a=b"
-      db: edb
+      db: postgres
 ```
 
 ### `pg_pgpass_values`
@@ -134,8 +134,8 @@ pg_query:
 ```yaml
 pg_pgpass_values:
     - host: "127.0.0.1"
-      database: edb
-      user: enterprisedb
+      database: postgres
+      user: postgres_user
       password: <password>
       state: present
 ```
@@ -146,8 +146,8 @@ Databases management.
 
 ```yaml
 pg_databases:
-    - name: edb_gis
-      owner: edb
+    - name: another_postgres 
+      owner: postgres
       encoding: UTF-8
 ```
 
@@ -156,7 +156,7 @@ Tablesapces management.
 ```yaml
 pg_tablespaces:
     - name: index_tablespace
-      owner: edb
+      owner: postgres
       location: "/data/index_tablespace"
       state: present
 ```
@@ -207,9 +207,6 @@ Below is an example of how to include the `manage_dbserver` role:
   become: yes
   gather_facts: yes
 
-  collections:
-    - edb_devops.edb_postgres
-
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
@@ -236,7 +233,7 @@ Below is an example of how to include the `manage_dbserver` role:
             slot_type: "logical"
             output_plugin: "test_decoding"
             state: present
-            database: "edb"
+            database: "postgres"
 
   roles:
     - manage_dbserver
@@ -247,9 +244,7 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/manage_dbserver/defaults/main.yml](./defaults/main.yml)
-  * [roles/manage_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
   * [roles/manage_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
-  * [roles/manage_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
   * [roles/manage_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## License
@@ -257,8 +252,10 @@ All the variables are available at:
 BSD
 
 ## Author information
-
 Author:
+  * Sung Woo Chang
+
+Original Author:
 
   * Doug Ortiz
   * Julien Tachoires

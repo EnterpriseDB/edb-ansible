@@ -1,5 +1,4 @@
 ---
-# Variables for EPAS
 pg_port: "5432"
 pg_owner: "postgres"
 pg_group: "postgres"
