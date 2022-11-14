@@ -4,7 +4,7 @@
 
 # current_host_is_standby is set in check_database_is_standby.yml task
 # task is for master node only
-- name: Create databases
+- name: Create or drop databases
   community.postgresql.postgresql_db:
     name: "{{ line_item.name }}"
     owner: "{{ line_item.owner | default(pg_owner) }}"

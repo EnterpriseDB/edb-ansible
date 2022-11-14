@@ -10,10 +10,11 @@
     - import_tasks: manage_privileges.yml
     - import_tasks: manage_tablespaces.yml
 
-- name: Execute SQL scripts
+- name: Execute SQL scripts and query
   block:
     - import_tasks: copy_files.yml
     - import_tasks: execute_sql_scripts.yml
+    - import_tasks: execute_query.yml
 
 - name: Include Postgres update configuration tasks
   block:
