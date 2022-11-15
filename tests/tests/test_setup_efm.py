@@ -66,19 +66,15 @@ def test_setup_efm_pg_read_all_settings():
 
 def test_setup_efm_packages():
     host = get_primary()
+    packages = ['edb-efm45']
 
+    # add distribution-dependent packages to packages list
     if os_family() == 'RedHat':
-        packages = [
-            'java-1.8.0-openjdk',
-            'mailx',
-            'edb-efm45'
-        ]
+        packages.append('java-1.8.0-openjdk')
+        packages.append('mailx')
     elif os_family() == 'Debian':
-        packages = [
-            'openjdk-8-jdk',
-            'bsd-mailx',
-            'edb-efm45'
-        ]
+        packages.append('openjdk-8-jdk')
+        packages.append('bsd-mailx')
 
     for package in packages:
         assert host.package(package).is_installed, \
