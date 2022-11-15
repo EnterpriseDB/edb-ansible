@@ -1,9 +1,10 @@
 ---
 - name: Check if the host is a standby node
   import_tasks: check_database_is_standby.yml
+  vars:
+    host_is_standby:
+      result: False 
 
-# current_host_is_standby is set in check_database_is_standby.yml task
-# task is for master node only
 - name: Create or drop databases
   community.postgresql.postgresql_db:
     name: "{{ line_item.name }}"
@@ -23,6 +24,6 @@
   loop_control:
     loop_var: line_item
   when:
-    - not current_host_is_standby
+    - not host_is_standby
     - pg_databases|length > 0
   no_log: "{{ disable_logging }}"

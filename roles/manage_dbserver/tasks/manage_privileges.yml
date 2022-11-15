@@ -1,9 +1,9 @@
 ---
 - name: Check if the host is a standby node
   import_tasks: check_database_is_standby.yml
+  vars:
+    host_is_standby: False
 
-# current_host_is_standby is set in check_database_is_standby.yml task
-# task is for master node only
 - name: Manage privileges
   block: 
   - name: Grant object privilege to users
@@ -44,4 +44,4 @@
     no_log: "{{ disable_logging }}"
     when:
       - pg_grant_roles|length > 0
-  when: not current_host_is_standby
+  when: not host_is_standby

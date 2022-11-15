@@ -2,6 +2,7 @@
 pg_port: 5432
 pg_database: "postgres"
 pg_owner: "postgres"
-pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
+pg_service: "{{ lookup('pg_service') }}"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
+

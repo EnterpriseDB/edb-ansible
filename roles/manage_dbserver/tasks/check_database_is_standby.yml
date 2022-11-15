@@ -1,4 +1,13 @@
 ---
+# Check required variables
+- name: Check required variables for this role
+  include_role:
+    name: common
+    tasks_from: check_required_variables
+  vars:
+    required_variables:
+      - host_is_standby 
+
 - name: Get pg_is_in_recovery() value from postgres instance 
   community.postgresql.postgresql_query:
     query: "SELECT pg_catalog.pg_is_in_recovery()"
@@ -13,4 +22,4 @@
 
 - name: Set fact to the host about whether it is a master or standby
   ansible.builtin.set_fact:
-    current_host_is_standby: pg_is_in_recovery.query_result[0].pg_is_in_recovery
+    host_is_standby: "{{ pg_is_in_recovery.query_result[0].pg_is_in_recovery }}"

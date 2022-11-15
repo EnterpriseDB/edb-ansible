@@ -1,4 +1,14 @@
 ---
+# Check required variables
+- name: Check required variables for this role
+  include_role:
+    name: common
+    tasks_from: check_required_variables
+  vars:
+    required_variables:
+      - pg_type
+      - pg_version
+
 # Entry point of the autotuning role
 - name: Include the autotuning.yml
   include_tasks: autotuning.yml

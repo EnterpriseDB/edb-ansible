@@ -4,7 +4,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: pg_service
     author: Julien Tachoires
-    short_description: Returns systemd service name for PostgreSQL/EPAS on RHEL
+    short_description: Returns systemd service name for PostgreSQL
 """
 
 EXAMPLES = """
@@ -14,17 +14,38 @@ RETURN = """
 """
 
 from ansible.plugins.lookup import LookupBase
-
-
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
+        self.pg_version = variables.get('pg_version')
+        self.pg_instance_name = variables.get('pg_instance_name', 'main')
+        self.os_family = variables.get('ansible_os_family')
 
-        pg_type = variables.get('pg_type', '13')
-        pg_version = variables.get('pg_version', 'PG')
-        pg_instance_name = variables.get('pg_instance_name', 'main')
-        p = 'postgresql-%s'
+        pg_service_name = self.get_pg_service_name()
         
-        if pg_instance_name != 'main':
-            return [(p + '-%s') % (pg_version, pg_instance_name)]
+        return [pg_service_name]
+
+    def get_pg_service_name(self):
+        pg_service_name = ''
+
+        if self.os_family == 'RedHat':
+            pg_service_name = self.get_pg_service_name_for_redhat()
+        elif self.os_family == 'Debian':
+            pg_service_name = self.get_pg_service_name_for_debian()
         else:
-            return [p % pg_version]
+            raise Exception('Unsupported OS Type')
+
+        return pg_service_name
+
+    def get_pg_service_name_for_redhat(self):
+        pg_service_name = 'postgresql-%s'
+        
+        if self.pg_instance_name != 'main':
+            pg_service_name = (pg_service_name + '-%s') % (self.pg_version, self.pg_instance_name)
+        else:
+            pg_service_name = pg_service_name % self.pg_version
+        
+        return pg_service_name
+
+    def get_pg_service_name_for_debian(self):
+        return 'postgresql@%s-%s' % (self.pg_version, self.pg_instance_name)
+

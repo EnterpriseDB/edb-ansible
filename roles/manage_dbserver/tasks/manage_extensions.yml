@@ -1,9 +1,9 @@
 ---
 - name: Check if the host is a standby node
   import_tasks: check_database_is_standby.yml
+  vars:
+    host_is_standby: False
 
-# current_host_is_standby is set in check_database_is_standby.yml task
-# task is for master node only
 - name: Manage postgres extensions
   community.postgresql.postgresql_ext:
     name: "{{ line_item.name }}"
@@ -20,5 +20,5 @@
     loop_var: line_item
   no_log: "{{ disable_logging }}"
   when:
-    - not current_host_is_standby
+    - not host_is_standby
     - pg_extensions|length > 0

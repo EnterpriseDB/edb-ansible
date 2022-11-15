@@ -21,25 +21,9 @@
       {{ [ ((ansible_memtotal_mb - ansible_swaptotal_mb) / ansible_memtotal_mb * 100) | int,
            50 ] | max }}
 
-- name: Set the variable tuned_disk_elevator on EL7
+- name: Set the variable tuned_disk_elevator
   set_fact:
-    tuned_disk_elevator: "deadline"
-  when:
-    - ansible_distribution_major_version == '7'
-    - ansible_os_family == 'RedHat'
-
-- name: Set the variable tuned_disk_elevator on EL8
-  set_fact:
-    tuned_disk_elevator: "mq-deadline"
-  when:
-    - ansible_distribution_major_version == '8'
-    - ansible_os_family == 'RedHat'
-
-- name: Set the variable tuned_disk_elevator for Debian
-  set_fact:
-    tuned_disk_elevator: "deadline"
-  when:
-    - ansible_os_family == 'Debian'
+    tuned_disk_elevator: "{{ lookup('tuned_disk_elevator') }}"
 
 - name: Ensure the tuned profile directory exists
   file:

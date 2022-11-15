@@ -9,6 +9,6 @@
       set_fact:
         pg_type: "PG"
         pg_version: 14
-
+        disable_logging: false
   roles:
     - manage_dbserver

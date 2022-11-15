@@ -1,5 +1,5 @@
 [main]
-summary=Tuned profile for EPAS / PostgreSQL
+summary=Tuned profile for PostgreSQL
 [cpu]
 governor=performance
 energy_perf_bias=performance
