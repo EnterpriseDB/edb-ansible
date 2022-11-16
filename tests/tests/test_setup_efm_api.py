@@ -2,7 +2,8 @@ import pytest
 import json
 
 from conftest import (
-    get_pg_cluster_nodes
+    get_pg_cluster_nodes,
+    get_os
 )
 
 def test_setup_efm_api_package():
