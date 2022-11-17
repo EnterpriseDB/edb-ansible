@@ -1,0 +1,20 @@
+---
+pg_port: "5432"
+pg_owner: "postgres"
+pg_group: "postgres"
+
+pg_database: "postgres"
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+shell_profile_path: "{{ pg_user_home }}/.pgsql_profile"
+shell_profile_owner: "postgres"
+shell_profile_group: "postgres"
+shell_profile_mode: "0600"
+
+psqlrc_path: "{{ pg_user_home }}/.psqlrc"
+psqlrc_owner: "postgres"
+psqlrc_group: "postgres"
+psqlrc_mode: "0600"
+psqlrc_content: |
+  -- psql configuration

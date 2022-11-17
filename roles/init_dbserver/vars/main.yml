@@ -1,0 +1,29 @@
+---
+pg_wal: ""
+pg_encoding: ""
+
+# log directory and filename
+pg_log: "/var/log/postgres"
+pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
+
+# postgres service
+pg_service: "{{ lookup('hypersql_devops.postgres.pg_service') }}"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+# postgres port
+pg_port: 5432
+
+# postgres database
+pg_database: "postgres"
+
+# postgres user
+pg_owner: "postgres"
+pg_group: "postgres"
+
+# postgres superuser
+pg_superuser: "postgres"
+pg_shared_libraries_list:
+  - "$libdir/pg_stat_statements"

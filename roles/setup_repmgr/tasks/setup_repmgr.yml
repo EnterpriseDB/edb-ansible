@@ -19,7 +19,7 @@
 
 - name: Set repmgr_cluster_nodes
   ansible.builtin.set_fact:
-    repmgr_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.repmgr_nodes', wantlist=True) }}"
+    repmgr_cluster_nodes: "{{ lookup('hypersql_devops.postgres.repmgr_nodes', wantlist=True) }}"
 
 - name: Set repmgr_node_info
   ansible.builtin.set_fact:

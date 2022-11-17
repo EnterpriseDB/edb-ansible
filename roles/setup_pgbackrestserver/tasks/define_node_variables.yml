@@ -2,7 +2,7 @@
 
 - name: Get pgBackRest node informations
   set_fact:
-    pgbackrest_node_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_nodes', wantlist=True) }}"
+    pgbackrest_node_info: "{{ lookup('hypersql_devops.postgres.pgbackrest_nodes', wantlist=True) }}"
 
 - name: Determine if standby
   set_fact:

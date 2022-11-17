@@ -16,13 +16,13 @@ The requirements for this Ansible Role are:
 
   1. Ansible >= 2.9
   2. `community.general`
-  3. `edb_devops.edb_postgres` -> `setup_repo` - for installing the EPAS/PG
+  3. `hypersql_devops.postgres` -> `setup_repo` - for installing the EPAS/PG
      repository
-  4. `edb_devops.edb_postgres` -> `install_dbserver` - for installing the EPAS/PG
+  4. `hypersql_devops.postgres` -> `install_dbserver` - for installing the EPAS/PG
      binaries
-  5. `edb_devops.edb_postgres` -> `init_dbserver` - for initializing the EPAS/PG
+  5. `hypersql_devops.postgres` -> `init_dbserver` - for initializing the EPAS/PG
      data directory and configuring a primary node.
-  6. `edb_devops.edb_postgres` -> `setup_replication` - for creating the standby.
+  6. `hypersql_devops.postgres` -> `setup_replication` - for creating the standby.
 
 ## Role variables
 
@@ -119,7 +119,7 @@ Below is an example of how to include the `setup_repmgr` role:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

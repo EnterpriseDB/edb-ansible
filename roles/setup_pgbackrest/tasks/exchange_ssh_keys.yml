@@ -2,7 +2,7 @@
 
 - name: Get pgBackRest server informations
   set_fact:
-    _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+    _pgbackrest_server_info: "{{ lookup('hypersql_devops.postgres.pgbackrest_server', wantlist=True) }}"
 
 - name: Fail if pgBackRest server informations are not found
   fail:

@@ -7,7 +7,7 @@ lightweight connection pooler for PostgreSQL.
 
 Following are the requirements of this role.
   1. Ansible
-  2. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository on
+  2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
      the systems.
 
 ## Role Variables
@@ -269,7 +269,7 @@ Below is an example of how to include the `setup_pgbouncer` role:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres 
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -282,7 +282,7 @@ Below is an example of how to include the `setup_pgbouncer` role:
       # Ensure to execute this role only on hosts from the pgbouncer group, or,
       # from the primary and standby groups having the 'pgbouncer' inventory
       # host var is set to true.
-      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbouncer' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.

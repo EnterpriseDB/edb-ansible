@@ -135,7 +135,7 @@ repositories access to EDB Postgres Advanced Server packages in version 14:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -161,7 +161,7 @@ setting up repositories access to PostgreSQL packages in version 14:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

@@ -96,7 +96,7 @@ Below is an example of how to include the `autotuning` role:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

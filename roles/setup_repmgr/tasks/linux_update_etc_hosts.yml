@@ -9,7 +9,7 @@
      path: "/etc/hosts"
      line: "{{ item.private_ip }} {{ item.inventory_hostname }}"
      regexp: ".*\\s{{ item.inventory_hostname | regex_escape() }}$"
-  loop: "{{ lookup('edb_devops.edb_postgres.all_nodes', wantlist=True) }}"
+  loop: "{{ lookup('hypersql_devops.postgres.all_nodes', wantlist=True) }}"
 
 - name: Update system hostname
   ansible.builtin.hostname:

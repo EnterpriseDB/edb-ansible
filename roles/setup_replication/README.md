@@ -11,10 +11,10 @@ The requirements for this ansible galaxy role are:
   1. Ansible
   2. `community.general` - utilized when creating aditional users during a
      Postgres Install. Only on primary nodes.
-  3. `edb_devops.edb_postgres` -> `setup_repo` - for repository installation
-  4. `edb_devops.edb_postgres` -> `install_dbserver` - for installation of
+  3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
+  4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
      PostgreSQL/EPAS binaries.
-  5. `edb_devops.edb_postgres` -> `init_dbserver` - for the initialization of
+  5. `hypersql_devops.postgres` -> `init_dbserver` - for the initialization of
      primary server
 
 ## Role variables
@@ -84,7 +84,7 @@ Below is an example of how to include the `setup_replication` role:
   gather_facts: true
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

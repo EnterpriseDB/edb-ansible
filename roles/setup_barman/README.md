@@ -6,7 +6,7 @@ This role is for configuring Barman backups on Postgres nodes.
 
 Following are the requirements of this role.
   1. Ansible
-  2. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository on
+  2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
      the systems.
 
 ## Role Variables
@@ -188,7 +188,7 @@ Below is an example of how to include the `setup_barman` role:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -198,7 +198,7 @@ Below is an example of how to include the `setup_barman` role:
 
   roles:
     - setup_barman
-      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_barman' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.

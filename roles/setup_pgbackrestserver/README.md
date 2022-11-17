@@ -6,7 +6,7 @@ This role is for setting up pgBackRest server. pgBackRest is a backup and recove
 
 Following are the requirements of this role.
   1. Ansible
-  2. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository on
+  2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
      the systems.
 
 ## Role Variables
@@ -207,7 +207,7 @@ Below is an example of how to include the `setup_pgbackrestserver` role:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
   
   pre_tasks:
     - name: Initialize the user defined variables
