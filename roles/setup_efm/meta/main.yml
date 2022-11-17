@@ -13,6 +13,12 @@ galaxy_info:
       versions:
         - "7"
         - "8"
+    - name: Debian
+      versions:
+        - 'buster'
+    - name: Ubuntu
+      versions:
+        - 'focal'
 
   galaxy_tags:
     - database

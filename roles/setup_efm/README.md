@@ -41,7 +41,7 @@ When executing the role via ansible there are three required variables:
 
   * ***os***
 
-  Operating Systems supported are: CentOS7, RHEL7, CentOS8 and RHEL8
+  Operating Systems supported are: CentOS7, RHEL7, CentOS8, RHEL8, Debian10 and Ubuntu20
 
   * ***pg_version***
 
@@ -57,8 +57,10 @@ section: *How to include the `setup_efm` role in your Playbook*
 The rest of the variables can be configured and are available in the:
 
   * [roles/setup_efm/defaults/main.yml](./defaults/main.yml) 
-  * [roles/setup_efm/vars/EPAS.yml](./vars/EPAS.yml) 
-  * [roles/setup_efm/vars/PG.yml](./vars/PG.yml) 
+  * [roles/setup_efm/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  * [roles/setup_efm/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_efm/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/setup_efm/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 
 ## Dependencies
 
@@ -126,8 +128,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   - [roles/setup_efm/defaults/main.yml](./defaults/main.yml) 
-  - [roles/setup_efm/vars/EPAS.yml](./vars/EPAS.yml) 
-  - [roles/setup_efm/vars/PG.yml](./vars/PG.yml) 
+  - [roles/setup_efm/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  - [roles/setup_efm/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  - [roles/setup_efm/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  - [roles/setup_efm/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 
 ## Database engines supported
 
