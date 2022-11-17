@@ -6,3 +6,6 @@ pass_dir: "~/.pgpassfile"
 passfile: ".pgpass"
 input_user: ""
 input_password: ""
+
+# defaults Operating System
+os: ""

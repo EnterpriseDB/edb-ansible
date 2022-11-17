@@ -1,5 +1,5 @@
 ---
-# vars file for common
+# Supported list for check
 supported_os:
   - CentOS7
   - CentOS8

@@ -1,0 +1,31 @@
+---
+- name: Check required variables
+  include_tasks: check_required_variables.yml
+  vars:
+    required_variables:
+      - pg_type
+      - pg_version
+
+- name: Include supported os, PostgreSQL Type, PostgreSQL Version
+  include_vars: "support_list.yml"
+
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported type for PostgreSQL type
+  fail:
+    msg: "PostgreSQL Type = {{ pg_type }} not suppoprted
+          Supported type are {{ supported_pg_type }}"
+  when: pg_type not in supported_pg_type
+
+- name: Check supported versions for Database engine
+  fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
