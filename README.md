@@ -80,7 +80,7 @@ below:
   * Open the command line
   * Type:
     ```bash
-    $ ansible-galaxy collection install edb_devops.edb_postgres --force
+    $ ansible-galaxy collection install hypersql_devops.postgres --force
     ```
   * Press *Enter*
 
@@ -214,7 +214,7 @@ playbook:
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -228,39 +228,39 @@ playbook:
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_repo' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: install_dbserver
-      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'install_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
-      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'init_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_replication
-      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_replication' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_efm
-      when: "'setup_efm' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_efm' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pgpool2
-      when: "'setup_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: manage_pgpool2
-      when: "'manage_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'manage_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: manage_dbserver
-      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'manage_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pemserver
-      when: "'setup_pemserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_pemserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pemagent
-      when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_pemagent' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pgbackrest
-      when: "'setup_pgbackrest' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbackrest' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pgbackrestserver
-      when: "'setup_pgbackrestserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbackrestserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pgbouncer
-      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbouncer' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: manage_pgbouncer
-      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'manage_pgbouncer' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_barmanserver
-      when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_barmanserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_barman
-      when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_barman' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: autotuning
-      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'autotuning' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
 ```
 
 You can customize the above example to install PostgreSQL, EPAS, EFM or PEM or

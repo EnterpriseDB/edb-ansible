@@ -5,7 +5,7 @@
   gather_facts: yes
 
   collections:
-    - edb_devops.edb_postgres
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -17,10 +17,10 @@
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'setup_repo' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: install_dbserver
-      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'install_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
-      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'init_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: autotuning
-      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+      when: "'autotuning' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
