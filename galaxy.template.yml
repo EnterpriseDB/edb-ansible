@@ -1,0 +1,26 @@
+namespace: "hypersql_devops"
+name: "postgres"
+version: "x.y.z"
+readme: "README.md"
+authors:
+  - "Sung Woo Chang"
+  - "Sang Myeung Lee"
+description: This Ansible Galaxy Role sets up and configures the repositories from which packages will be retrieved for HyperSQL installations.
+license:
+- "BSD-3-Clause"
+license_file: ''
+tags:
+- database
+- postgresql
+- postgres
+- repo
+- hypersql
+repository: "https://github.com/hypersql/pg-ansible"
+documentation: "https://github.com/hypersql/pg-ansible/blob/master/README.md"
+homepage: "https://github.com/hypersql/pg-ansible"
+issues: "https://github.com/hypersql/pg-ansible/issues"
+dependencies:
+  "community.postgresql": "1.6.0"
+  "ansible.posix": "1.3.0"
+  "community.general": "2.5.8"
+  "community.crypto": "1.9.12"
