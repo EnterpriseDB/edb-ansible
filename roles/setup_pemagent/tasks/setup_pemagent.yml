@@ -7,7 +7,7 @@
   no_log: "{{ disable_logging }}"
 
 - name: Reference variables
-  ansible.builtin.include_vars: "{{ pg_type }}.yml"
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Check support for Operating System
   ansible.builtin.fail:
