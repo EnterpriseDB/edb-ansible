@@ -18,6 +18,9 @@ pg_unix_socket_directories:
 pem_pg_port: 5444
 pg_port: 5444
 
+pem_server_service: "httpd"
+pem_server_configuration_file: "/etc/httpd/conf.d/edb-ssl-pem.conf"
+
 # postgres service
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 # pem server packages
