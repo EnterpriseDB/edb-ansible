@@ -2,7 +2,7 @@
 
 - name: Check if we PEM server is already configured
   ansible.builtin.stat:
-    path: "/etc/httpd/conf.d/edb-ssl-pem.conf"
+    path: "{{ pem_server_configuration_file }}"
   become: true
   register: pem_configured
 

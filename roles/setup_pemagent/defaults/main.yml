@@ -52,6 +52,7 @@ supported_os:
   - RHEL8
   - Rocky8
   - OracleLinux7
+  - Debian10
 
 supported_pg_type:
   - EPAS
