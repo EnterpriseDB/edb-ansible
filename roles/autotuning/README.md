@@ -13,13 +13,8 @@ Following are the dependencies and requirement of this role.
 
 When executing the role via ansible these are the required variables:
 
-  * ***pg_version***
-
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
-
-  * ***pg_type***
-
-  Database Engine supported are: PG and EPAS
+  * pg_version (available: 11, 12, 13, 14)
+  * pg_type (available: PG, HyperSQL)
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: *How to include the `autotuning` role in your Playbook*
@@ -27,17 +22,15 @@ section: *How to include the `autotuning` role in your Playbook*
 The rest of the variables can be configured and are available in the:
 
   * [roles/autotuning/defaults/main.yml](./defaults/main.yml)
-  * [roles/autotuning/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/autotuning/vars/PG.yml](./vars/PG.yml)
-
+  * [roles/autotuning/vars/main.yml](./vars/main.yml)
 
 ### `tuned_profile`
 
-This is the `tuned` profile name used for configuring the system. Default: `edb`
+This is the `tuned` profile name used for configuring the system. Default: `postgres`
 
 Example:
 ```yaml
-tuned_profile: "edb"
+tuned_profile: "postgres"
 ```
 
 ### `tuned_configuration_dir`
@@ -90,7 +83,7 @@ all:
 Below is an example of how to include the `autotuning` role:
 ```yaml
 ---
-- hosts: pemserver,primary,standby
+- hosts: primary,standby
   name: Apply system and Postgres recommanded performance tuning
   become: true
   gather_facts: yes
@@ -103,30 +96,20 @@ Below is an example of how to include the `autotuning` role:
       set_fact:
         pg_type: "PG"
         pg_version: 14
-
         ssd_disk: yes
 
   roles:
     - role: autotuning
 ```
-
-Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
-
-All the variables are available at:
-
-  * [roles/autotuning/defaults/main.yml](./defaults/main.yml)
-  * [roles/autotuning/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/autotuning/vars/PG.yml](./vars/PG.yml)
-
 ## License
 
 BSD
 
 ## Author information
-
 Author:
+  * [Sung Woo Chang](https://github.com/dbxpert)
 
+Original Author:
   * Julien Tachoires
   * Vibhor Kumar (Reviewer)
   * EDB Postgres
-  * edb-devops@enterprisedb.com www.enterprisedb.com

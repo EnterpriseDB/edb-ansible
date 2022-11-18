@@ -15,6 +15,10 @@ Following are the dependencies and requirement of this role.
 
 ## Role variables
 
+This role requires the following variables to be defined:
+  * pg_type (available: PG, HyperSQL)
+  * pg_version (available: 11, 12, 13, 14)
+
 This role allows users to pass following variables which helps managing day to
 day tasks:
 
@@ -244,6 +248,7 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/manage_dbserver/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_dbserver/vars/main.yml](./vars/main.yml)
   * [roles/manage_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
   * [roles/manage_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
@@ -253,13 +258,11 @@ BSD
 
 ## Author information
 Author:
-  * Sung Woo Chang
+  * [Sung Woo Chang](https://github.com/dbxpert)
 
 Original Author:
-
   * Doug Ortiz
   * Julien Tachoires
   * Vibhor Kumar
   * EDB Postgres
   * DevOps
-  * edb-devops@enterprisedb.com www.enterprisedb.com

@@ -1,31 +1,40 @@
-Role Name
+Common
 =========
 
-A brief description of the role goes here.
+This is a role that contains common utility tasks shared by roles in **hypersql_devops.postgres**. Some tasks are collection independent, but most of them are very much dependent. Also, if the role is activated by "roles" option in playbook, it will fail (deliberately) because this role is meant to be just a group of individual tasks. 
 
 Requirements
 ------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Just Ansible
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+All the variables are available at:
+
+  * [roles/common/defaults/main.yml](./defaults/main.yml)
+  * [roles/common/vars/main.yml](./vars/main.yml)
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+No Dependencies
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+As it was mentioned earlier, this role should be used by importing individual tasks in it. For example, *check_required_variables* task is used in *manage_dbserver* role as below:
+```yml
+# Check required variables
+- name: Check required variables for this role
+  include_role:
+    name: common
+    tasks_from: check_required_variables
+  vars:
+    required_variables:
+      - pg_type
+      - pg_version
+```
 
 License
 -------
@@ -35,4 +44,5 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+* [Sung Woo Chang](https://github.com/dbxpert)
+* [Sang Myeung Lee](https://github.com/sungmu1)
