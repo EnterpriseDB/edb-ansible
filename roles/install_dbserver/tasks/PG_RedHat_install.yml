@@ -46,7 +46,6 @@
       - libxslt
       - libicu
       - glibc-common
-      - ca-certificates
       - postgresql{{ pg_version }}-libs
       - postgresql{{ pg_version }}
       - postgresql{{ pg_version }}-server
@@ -61,7 +60,10 @@
     state: present
   become: true
   loop: "{{ rpm_list }}"
-  when: rpm_install
+  when:
+    - rpm_install
+    - pg_minor_version is defined
+    - rpm_list|length > 0
 
 - name: Install psycopg2 on EL7
   package:
@@ -76,14 +78,5 @@
     name:
       - python3-psycopg2
     state: present
-  when: ansible_distribution_major_version == '7'
+  when: ansible_distribution_major_version == '8'
   become: true
-
-#EDB전용
-#- name: Install sslutils
-#  package:
-#    name:
-#      - sslutils_{{ pg_version }}
-#    state: present
-#  become: true
-#  when: pg_ssl

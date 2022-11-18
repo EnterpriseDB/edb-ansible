@@ -1,34 +1,14 @@
 ---
-- name: Stop the service {{ pg_service }}
-  systemd:
-    name: "{{ pg_service }}"
-    state: stopped
-  become: true
-
 - name: Remove postgreSQL
   package:
     name:
-      - ca-certificates
-      - python3-pycurl
       - python3-psycopg2
-      - postgresql-client-{{ pg_version }}
       - postgresql-{{ pg_version }}
+      - postgresql-client-{{ pg_version }}
       - postgresql-server-dev-{{ pg_version }}
     state: absent
     update_cache: yes
   become: true
-  debugger: always
-
-- name: Dpkg search postgreSQL pg_version
-  command: ls -al
-  register: postgresqlpackage
-  become: true
-
-- name: print
-  debug:
-    msg: postgresqlpackage.stdout_lines
-  when: postgresqlpackage.stdout_lines != ""
-
 
 - name: Remove postgreSQL-common
   package:
@@ -38,26 +18,13 @@
     state: absent
     update_cache: yes
   become: true
-  when: false #postgresql-common과 postgresql-client-common이 사용하는 버전이 없을때만
-
-
-#sslutils SSL 인증서 생성, EDB Enterprise server에서 사용하는 것으로 보임
-#ubunut에서는 해당 pacakge를 찾을 수 없음
-#- name: Remove sslutils
-#  package:
-#    name:
-#      - postgresql-{{ pg_version }}-sslutils
-#    state: absent
-#    update_cache: yes
-#  become: true
-#  when: pg_ssl
 
 - name: Remove python-psycopg2
   package:
     name:
       - python-psycopg2
-      - python-ipaddress
     state: absent
     update_cache: yes
-  when: os in ['Ubuntu18','Debian9', 'Debian10']
+  when:
+    - os in ['Ubuntu18','Debian9', 'Debian10']
   become: true

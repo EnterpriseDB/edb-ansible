@@ -1,40 +1,41 @@
 ---
-- name: Set the os variable
+- name : Check Operating System,  PostgreSQL type, PostgreSQL version
+  include_role:
+    name: common
+    tasks_from: check_version.yml
+
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Set fact pg_service for RedHat
   set_fact:
-    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+    pg_service: "postgresql-{{ pg_version }}"
+  when: ansible_os_family == 'RedHat'
 
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
+- name: Set fact pg_service for Debian
+  set_fact:
+    pg_service: "postgresql@{{ pg_version }}-main"
+  when: ansible_os_family == 'Debian'
 
-- name: Check supported versions for Database engine
-  fail:
-    msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
-
-#- name: Check if Database Engine is supported
-#  fail:
-#    msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-#          is not supported on {{ os }}."
-#  when: >
-#    pg_type == 'EPAS' and
-#    ((pg_version|int < 12 and os in ['RedHat8','CentOS8','Rocky8']) or
-#     (pg_version|int < 11 and os in ['Ubuntu18', 'Debian9']) or
-#     (pg_version|int < 13 and os in ['Ubuntu20'])  or
-#     (pg_version|int < 12 and os in ['Debian10']))
+- name: Stop pg service if running
+  systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[pg_service] is defined
+    - ansible_facts.services[pg_service].state == 'running'
+  become: yes
 
 - name: Remove Postgres packages
+#  debugger: always
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_install.yml"
   when:
     - force_install is defined
     - force_install
 
-
 - name: Install and Configure Postgres
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_install.yml"
-  tags: install
 
 - name: Enable coredump based on enable_core_dump
   include_tasks: linux_coredump.yml

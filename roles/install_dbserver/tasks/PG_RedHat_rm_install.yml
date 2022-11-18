@@ -1,24 +1,8 @@
 ---
-- name: System file exists
-  stat:
-    path: /usr/lib/systemd/system/postgresql-{{ pg_version }}.service
-  register: service_file_check
-
-- name: Stop the PG service if it's running
-  systemd:
-    name: postgresql-{{ pg_version }}
-    state: stopped
-  become: true
-  when: service_file_check.stat.exists
-
-#TO-DO Modify
 - name: Remove require python package on EL7
   package:
     name:
-      - python-pycurl
-      - libselinux-python
       - python2-psycopg2
-      - python-ipaddress
     state: absent
   when: ansible_distribution_major_version == '7'
   become: true
@@ -26,8 +10,6 @@
 - name: Remove require python package on EL8
   package:
     name:
-      - python3-pycurl
-      - python3-libselinux
       - python3-psycopg2
     state: absent
   become: true

@@ -1,18 +1,7 @@
----
-- name: Set the os variable
-  set_fact:
-    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
-
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
-
-- name: Check support for Database engine
-  fail:
-    msg: "Database Engine = {{ pg_type }} is not supported.
-         Supported Database Engines are {{ supported_pg_type }}"
-  when: pg_type not in supported_pg_type
+- name : Check Operating System,  PostgreSQL Type, PostgreSQL Version
+  include_role:
+    name: common
+    tasks_from: check_version.yml
 
 - name: Cleanup the repos based on force_repo
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_repos.yml"

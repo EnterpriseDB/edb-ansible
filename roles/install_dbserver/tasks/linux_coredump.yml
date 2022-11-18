@@ -28,12 +28,3 @@
     value: unlimited
   become: yes
   no_log: "{{ disable_logging }}"
-
-- name: Install debug packages
-  package:
-    name: edb-as{{ pg_version }}-*-debuginfo
-    state: present
-  become: yes
-  no_log: "{{ disable_logging }}"
-  when: >-
-    pg_type == 'EPAS'

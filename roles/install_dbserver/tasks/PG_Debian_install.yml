@@ -2,7 +2,6 @@
 - name: Install Postgres
   package:
     name:
-      - ca-certificates
       - python3-pycurl
       - python3-psycopg2
       - postgresql-client-{{ pg_version }}
@@ -12,25 +11,6 @@
     update_cache: yes
   register: install_package
   become: true
-  when: deb_install==false
-
-#- name: Install Postgres deb_list
-#  ansible.builtin.apt:
-#    deb: "{{ item.name }}"
-#    state: present
-#  become: true
-#  loop: "{{ deb_list }}"
-#  when: deb_install
-
-#ubunut에서는 해당 pacakge를 찾을 수 없음
-#- name: Install sslutils
-#  package:
-#    name:
-#      - postgresql-{{ pg_version }}-sslutils
-#    state: present
-#    update_cache: yes
-#  become: true
-#  when: pg_ssl
 
 - name: Install python-psycopg2
   package:
@@ -40,13 +20,6 @@
     state: present
     update_cache: yes
   when: os in ['Ubuntu18','Debian9', 'Debian10']
-  become: true
-
-- name: Stop the service {{ pg_service }}
-  systemd:
-    name: "{{ pg_service }}"
-    state: stopped
-  when: install_package.changed
   become: true
 
 - name: Drop the default debian database

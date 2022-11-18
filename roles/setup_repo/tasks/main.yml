@@ -1,4 +1,11 @@
 ---
+- name: Check required variables
+  include_tasks: check_required_variables.yml
+  vars:
+    required_variables:
+      - pg_type
+      - pg_version
+
 # Entry point of the setup_repo role
 - name: Include the setup_repo.yml
   include_tasks: setup_repo.yml

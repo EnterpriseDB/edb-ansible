@@ -1,10 +1,4 @@
 ---
-- name: Update the ca-certificates package
-  ansible.builtin.yum:
-    name: ca-certificates
-    state: latest
-  become: true
-
 - name: Download PGDG GPG key for EL8
   rpm_key:
     key: "{{ pg_gpg_key_8 }}"
@@ -48,22 +42,6 @@
     dnf config-manager --set-enabled powertools
   become: true
   when: ansible_distribution_major_version == '8'
-
-#- name: Install EPEL repo for EL8
-#  package:
-#    name: "{{ epel_repo_8 }}"
-#    state: present
-#  when: ansible_distribution_major_version == '8'
-#  become: yes
-#
-#- name: Install PG repo for EL8
-#  package:
-#    name: "{{ pg_rpm_repo_8 }}"
-#    state: present
-#  become: yes
-#  when:
-#    - ansible_distribution_major_version == '8'
-#    - pg_type == 'PG'
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:

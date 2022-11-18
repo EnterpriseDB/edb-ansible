@@ -1,10 +1,9 @@
 ---
-- name: Remove PG/EDB repos and epel-release packages
+- name: Remove PG repos and epel-release packages
   package:
     name:
       - pgdg-redhat-repo
       - epel-release
-      - edb-repo
     state: removed
   become: yes
 
