@@ -115,6 +115,7 @@ cases:
     - centos7
     - rocky8
     - oraclelinux7
+    - debian10
   setup_pemagent:
     pg_version:
     - 10
@@ -129,6 +130,7 @@ cases:
     - centos7
     - rocky8
     - oraclelinux7
+    - debian10
   setup_pgpool2:
     pg_version:
     - 10
