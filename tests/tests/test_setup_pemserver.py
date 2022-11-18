@@ -4,7 +4,8 @@ from conftest import (
     get_pg_type,
     get_pemserver,
     get_pg_version,
-    get_pg_unix_socket_dir
+    get_pg_unix_socket_dir,
+    os_family
 )
 
 def test_setup_pemserver_pemagent():
@@ -15,7 +16,7 @@ def test_setup_pemserver_pemagent():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_pemserver()
+    host = get_pemserver()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
@@ -34,7 +35,7 @@ def test_setup_pemserver_pemadmin():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_pemserver()
+    host = get_pemserver()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
@@ -56,30 +57,18 @@ def test_setup_pemserver_service():
     assert host.service(service).is_enabled, \
         "Pemagent service not enabled"
 
-def test_setup_pemserver_pg():
-    if get_pg_type() != 'PG':
-        pytest.skip()
-
+def test_setup_pemserver():
     host = get_pemserver()
     pg_version = get_pg_version()
-    packages = [
-        'edb-pem-server',
-        'sslutils_%s' % pg_version,
-        'postgresql%s-contrib' % pg_version,
-    ]
+    packages = ['edb-pem-server']
 
-    for package in packages:
-        assert host.package(package).is_installed, \
-            "Package %s not installed" % packages
-
-def test_setup_pemserver_epas():
-    if get_pg_type() != 'EPAS':
-        pytest.skip()
-
-    host = get_pemserver()
-    packages = [
-        'edb-pem-server'
-    ]
+    if get_pg_type() == 'PG':
+        if os_family() == 'RedHat':
+            packages.append('sslutils_%s' % pg_version)
+            packages.append('postgresql%s-contrib' % pg_version)
+        elif os_family() == 'Debian':
+            packages.append('postgresql-%s-sslutils' % pg_version)
+            packages.append('apache2')
 
     for package in packages:
         assert host.package(package).is_installed, \
@@ -93,7 +82,7 @@ def test_setup_pemserver_creation():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_pemserver()
+    host = get_pemserver()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
