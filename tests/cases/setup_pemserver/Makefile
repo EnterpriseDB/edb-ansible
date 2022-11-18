@@ -8,3 +8,6 @@ build-rocky8:
 
 build-oraclelinux7:
 	docker compose up pem1-oraclelinux7 -d
+
+build-debian10:
+	docker compose up pem1-debian10 -d
