@@ -117,8 +117,8 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   - [roles/setup_pemserver/defaults/main.yml](./defaults/main.yml) 
-  - [roles/setup_pemserver/vars/EPAS.yml](./vars/EPAS.yml) 
-  - [roles/setup_pemserver/vars/PG.yml](./vars/PG.yml) 
+  - [roles/setup_pemserver/vars/EPAS.yml](./vars/EPAS_RedHat.yml) 
+  - [roles/setup_pemserver/vars/PG.yml](./vars/PG_RedHat.yml) 
 
 ## Database engines supported
 

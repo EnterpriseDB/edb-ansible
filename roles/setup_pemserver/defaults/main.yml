@@ -17,7 +17,6 @@ efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "efm"
 
 pem_agent_service: "pemagent"
-pem_server_service: "httpd"
 
 pem_server_bin_path: "/usr/edb/pem/bin"
 pem_agent_bin_path: "/usr/edb/pem/agent/bin"
@@ -65,6 +64,7 @@ supported_os:
   - RHEL8
   - Rocky8
   - OracleLinux7
+  - Debian10
 
 supported_pg_type:
   - EPAS
