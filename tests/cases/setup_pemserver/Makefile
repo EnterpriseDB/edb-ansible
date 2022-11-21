@@ -11,3 +11,6 @@ build-oraclelinux7:
 
 build-debian10:
 	docker compose up pem1-debian10 -d
+
+build-ubuntu20:
+	docker compose up pem1-ubuntu20 -d

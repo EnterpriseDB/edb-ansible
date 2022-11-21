@@ -116,6 +116,7 @@ cases:
     - rocky8
     - oraclelinux7
     - debian10
+    - ubuntu20
   setup_pemagent:
     pg_version:
     - 10
@@ -131,6 +132,7 @@ cases:
     - rocky8
     - oraclelinux7
     - debian10
+    - ubuntu20
   setup_pgpool2:
     pg_version:
     - 10
