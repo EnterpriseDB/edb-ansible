@@ -19,3 +19,8 @@ build-debian10:
 	docker compose up primary1-debian10 -d
 	docker compose up pem1-debian10 -d
 	docker compose up barman1-debian10 -d
+
+build-ubuntu20:
+	docker compose up primary1-ubuntu20 -d
+	docker compose up pem1-ubuntu20 -d
+	docker compose up barman1-ubuntu20 -d
