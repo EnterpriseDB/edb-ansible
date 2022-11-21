@@ -33,43 +33,6 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: true
 
-- name: Install ufw package on Debian
-  ansible.builtin.package:
-    name: ufw
-    state: present
-  when: ansible_os_family == 'Debian'
-  become: true
-
-- name: Allow OpenSSH connections through ufw on Debian
-  community.general.ufw:
-    rule: allow
-    name: OpenSSH
-  when: ansible_os_family == 'Debian'
-  become: true
-
-- name: Open PEM TCP port 8443 on Debian
-  community.general.ufw:
-    rule: allow
-    port: '8443'
-    proto: tcp
-  when: ansible_os_family == 'Debian'
-  become: true
-
-#- name: Allow Apache Full connections through ufw on Debian
-#  community.general.ufw:
-#    rule: allow
-#    name: 'WWW'
-#  when: ansible_os_family == 'Debian'
-#  become: true
-
-- name: Enable and start ufw on Debian
-  ansible.builtin.systemd:
-    name: ufw
-    state: started
-    enabled: true
-  when: ansible_os_family == 'Debian'
-  become: true
-
 - name: Set the node_hostvars variable
   ansible.builtin.set_fact:
     node_hostvars: "{{ hostvars[inventory_hostname] }}"
