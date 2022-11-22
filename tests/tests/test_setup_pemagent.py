@@ -12,17 +12,19 @@ from conftest import (
 def test_setup_pemagent_pemagent():
     pg_user = 'postgres'
     pg_group = 'postgres'
+    port = '5432'
 
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
+        port = '5444'
 
-    host= get_primary()
+    host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
         query = "Select * from pg_user where usename = 'pemagent'"
-        cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
+        cmd = host.run('psql -At -p %s -h %s -c "%s" postgres' % (port, socket_dir, query))
         result = cmd.stdout.strip()
 
     assert len(result) > 0, \
@@ -36,7 +38,7 @@ def test_setup_pemagent_agents():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_pemserver()
+    host = get_pemserver()
     socket_dir = get_pg_unix_socket_dir()
 
     with host.sudo(pg_user):
@@ -49,7 +51,7 @@ def test_setup_pemagent_agents():
         "Pem agents were created sucessfuly."
 
 def test_setup_pemagent_service():
-    host= get_primary()
+    host = get_primary()
     pg_version = get_pg_version()
     service = 'pemagent'
 
@@ -60,7 +62,7 @@ def test_setup_pemagent_service():
         "Pemagent service not enabled"
 
 def test_setup_pemagent_packages():
-    host= get_pemserver()
+    host = get_pemserver()
     pg_version = get_pg_version()
     packages = [
         'edb-pem-agent',
