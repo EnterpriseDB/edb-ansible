@@ -13,3 +13,7 @@ clean:
 	rm -f $(DIR)/galaxy.yml
 	rm -f $(DIST)/hypersql_devops-postgres-$(VERSION).tar.gz 
 
+install-build:
+	ansible-galaxy collection install $(DIST)/hypersql_devops-postgres-$(VERSION).tar.gz --force
+
+install: clean build install-build
