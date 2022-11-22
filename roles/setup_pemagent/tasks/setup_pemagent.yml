@@ -49,6 +49,8 @@
     set -o pipefail
     set -eu
     {{ pem_agent_bin_path }}/pemagent --version|cut -d":" -f2|head -n2|tail -n1
+  args:
+    executable: /bin/bash
   changed_when: false
   delegate_to: "{{ pem_server_info[0].inventory_hostname }}"
   register: pem_server_version_output
