@@ -1,0 +1,13 @@
+---
+- name: Set postgres primary_slot_name
+  include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params:
+        - name: primary_slot_name
+          value: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+  when:
+    - pg_version|int > 11
+    - use_replication_slots
+  no_log: "{{ disable_logging }}"

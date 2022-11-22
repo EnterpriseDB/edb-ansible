@@ -39,7 +39,6 @@
   become: true
   when: pg_version|int >= 14
 
-
 - name: Install Postgres
   package:
     name:
@@ -56,8 +55,8 @@
 
 - name: Install Postgres rpm list
   ansible.builtin.yum:
-    name: "{{ item.name }}"
-    state: present
+    name: "{{ item }}"
+    state: "present"
   become: true
   loop: "{{ rpm_list }}"
   when:

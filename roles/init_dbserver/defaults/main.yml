@@ -1,29 +1,18 @@
 ---
-# postgres settings
-os: ""
-pg_type: PG
-pg_version: 14
-pg_ssl: true
 pg_instance_name: main
-pg_remote_ssl_src: no
-# EFM service information
-efm_version: 4.5
-efm_cluster_name: "{{ pg_instance_name }}"
-efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
 
 disable_logging: yes
 use_replication_slots: true
-use_hostname: true
+use_hostname: false
 update_etc_file: true
 enable_core_dump: false
 
-pass_dir: "~/.edb"
+pass_dir: "~/.pg"
 
 pg_wal: ""
 pg_local_wal_archive_dir: ""
 pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
 pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
-edb_audit_directory: ""
 pg_encoding: ""
 
 # log directory and filename
@@ -46,8 +35,8 @@ pg_unix_socket_directories:
 # initial configuration for starting postgres
 # example:
 # pg_init_conf_params:
-# - name: "edb_filter_log.redact_password_commands"
-#   value: "true"
+# - name: "port"
+#   value: "5432"
 pg_init_conf_params: []
 # postgres port
 pg_port: 5432
@@ -55,7 +44,7 @@ pg_port: 5432
 # postgres database
 pg_database: "postgres"
 
-# postgres user
+# postgres user(os)
 pg_owner: "postgres"
 pg_group: "postgres"
 
@@ -64,37 +53,8 @@ pg_superuser: "postgres"
 pg_superuser_password: ""
 pg_random_password: true
 
-# Local path to SSL server key and certificate to be sent to the server
-# if empty, they are generated
-pg_ssl_key_file: ""
-pg_ssl_cert_file: ""
-pg_ssl_ca_file: ""
-pg_ssl_crl_file: ""
-
 # Input variables
 input_user: ""
 input_password: ""
 
 etc_hosts_lists: []
-
-supported_os:
-  - CentOS7
-  - CentOS8
-  - RedHat7
-  - RedHat8
-  - Ubuntu20
-  - Debian9
-  - Debian10
-  - Rocky8
-  - OracleLinux7
-
-supported_pg_type:
-  - EPAS
-  - PG
-
-supported_pg_version:
-  - 10
-  - 11
-  - 12
-  - 13
-  - 14

@@ -1,4 +1,16 @@
 ---
+- name: Gather service facts
+  service_facts:
+  
+- name: Stop pg service if running
+  systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[pg_service] is defined
+    - ansible_facts.services[pg_service].state == 'running'
+  become: yes
 
 - name: Copy global systemd unit file to /etc/systemd/system
   ansible.builtin.copy:
@@ -12,7 +24,7 @@
   when:
     - ansible_os_family == 'RedHat'
 
-- name: Update systemd unit file
+- name: Update systemd unit file in Redhat
   ansible.builtin.lineinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
     line: "{{ item.line }}"
@@ -20,7 +32,7 @@
     insertafter: "{{ item.insertafter | default('EOF') }}"
   become: true
   loop:
-    - line: "Description=Database server {{ pg_type }} {{ pg_version }} - Instance: {{ pg_instance_name }}"
+    - line: "Description=Database server {{ pg_type }} {{ pg_version }}"
       regexp: "^Description=.*"
     - line: "Environment=PGDATA={{ pg_default_data }}"
       regexp: "^Environment=PGDATA.*"
@@ -30,10 +42,48 @@
     - line: "ExecStopPost=+/usr/bin/systemctl daemon-reload"
       regexp: "^ExecStopPost=.*"
       insertafter: "^\\[Service\\]$"
+    - line: "User={{ pg_owner }}"
+      regexp: "^User=.*"
+      insertafter: "^\\[Service\\]$"
+    - line: "Group={{ pg_group }}"
+      regexp: "^Group=.*"
+      insertafter: "^\\[Service\\]$"
   when:
     - ansible_os_family == 'RedHat'
 
-- name: Add LimitCORE in systemd file
+- name: Update systemd unit file in Debian
+  ansible.builtin.lineinfile:
+    path: "/lib/systemd/system/postgresql@.service"
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+    insertafter: "{{ item.insertafter | default('EOF') }}"
+  become: true
+  loop:
+    - line: "Description=Database server {{ pg_type }} {{ pg_version }} {{ pg_instance_name }}"
+      regexp: "^Description=.*"
+    - line: "AssertPathExists={{ pg_default_data }}"
+      regexp: "^AssertPathExists=.*"
+    - line: "#RequiresMountsFor="
+      regexp: "^RequiresMountsFor=.*"
+    - line: "PIDFile={{ pg_default_data }}/postmaster.pid"
+      regexp: "^PIDFile=.*"
+      insertafter: "^\\[Service\\]$"
+    - line: "ExecStart=-{{ pg_bin_path }}/pg_ctl start -D {{ pg_default_data }}"
+      regexp: "^ExecStart=.*"
+      insertafter: "^\\[Service\\]$"
+    - line: "ExecStopPost=+/usr/bin/systemctl daemon-reload"
+      regexp: "^ExecStopPost=.*"
+      insertafter: "^\\[Service\\]$"
+    - line: "User={{ pg_owner }}"
+      regexp: "^User=.*"
+      insertafter: "^\\[Service\\]$"
+    - line: "Group={{ pg_group }}"
+      regexp: "^Group=.*"
+      insertafter: "^\\[Service\\]$"
+  when:
+    - ansible_os_family == 'Debian'
+
+- name: Unlimited core file size when core_dump enable in systemd file
   ansible.builtin.lineinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
     line: "{{ item.line }}"

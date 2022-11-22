@@ -1,0 +1,11 @@
+---
+- name: Create {{ pg_group }} Group
+  ansible.builtin.group:
+    name: "{{ pg_group }}"
+    state: present
+
+- name: Create {{ pg_owner }} User
+  ansible.builtin.user:
+    name: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    home: "{{ pg_user_home }}"

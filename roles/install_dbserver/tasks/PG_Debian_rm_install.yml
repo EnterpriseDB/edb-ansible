@@ -1,4 +1,22 @@
 ---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Set fact pg_service for Debian
+  set_fact:
+    pg_service: "postgresql@{{ pg_version }}-{{ deb_cluster_name }}.service"
+  when: ansible_os_family == 'Debian'
+
+- name: Stop pg service if running
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[pg_service] is defined
+    - ansible_facts.services[pg_service].state == 'running'
+  become: yes
+
 - name: Remove postgreSQL
   package:
     name:
@@ -10,6 +28,18 @@
     update_cache: yes
   become: true
 
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Check PostgreSQL other versions
+  command: echo {{ version }}
+  loop: "{{ supported_pg_version }}"
+  loop_control:
+    loop_var: version
+  when: ansible_facts.packages[ 'postgresql-' ~ version ] is defined
+  register: other_version_exist
+
 - name: Remove postgreSQL-common
   package:
     name:
@@ -18,6 +48,7 @@
     state: absent
     update_cache: yes
   become: true
+  when: not other_version_exist.changed
 
 - name: Remove python-psycopg2
   package:

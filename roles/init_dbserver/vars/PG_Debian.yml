@@ -5,5 +5,27 @@ pg_default_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
 # required & optional directories
 pg_user_home: "/var/lib/postgresql"
 pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
-pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
-pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+# postgres port
+pg_port: 5432
+
+pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer --user={{ pg_owner }}"
+pg_initdb: "{{ pg_bin_path}}/initdb"
+#pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
+
+# postgres database
+pg_database: "postgres"
+
+# postgres user
+pg_owner: "postgres"
+pg_group: "postgres"
+
+# postgres superuser
+pg_superuser: "postgres"
+
+pg_shared_libraries_list:
+  - "$libdir/pg_stat_statements"

@@ -10,9 +10,6 @@ max_replication_slots = 10
 wal_compression = on
 wal_log_hints = on
 {{ 'wal_keep_segments = 10' if pg_version is version('13','<') else 'wal_keep_size = 160' }}
-{% if edb_audit_directory|length > 0 and pg_data not in edb_audit_directory and edb_audit_directory.startswith('/') %}
-edb_audit_directory = '{{ edb_audit_directory }}'
-{% endif %}
 checkpoint_timeout = 15min
 password_encryption = 'scram-sha-256'
 checkpoint_completion_target = 0.9

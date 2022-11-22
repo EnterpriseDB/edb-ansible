@@ -10,35 +10,29 @@
     pg_initdb_options: "{{ pg_initdb_options + ' --waldir=' + pg_wal }}"
   when: pg_wal|length > 0  and not pg_data in pg_wal
 
-- name: Initialize database postgres service
-  shell: >
-    {{ pg_initdb }} {{ pg_service }}
-  args:
-    executable: /bin/bash
-    creates: "{{ pg_data }}/PG_VERSION"
-  environment:
-    PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
-  when: ansible_os_family == 'RedHat'
-  become: yes
+- name: Initialize database service
+  block:
+  - name: Initialize database postgres service in RedHat
+    ansible.builtin.command: >
+      {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
+    when: ansible_os_family == 'RedHat'
+    become_method: su
+    become_user: "{{ pg_owner }}"
 
-- name: Initialize database postgres service
-  shell: >
-    {{ pg_initdb }}
-  args:
-    executable: /bin/bash
-    creates: "{{ pg_data }}/PG_VERSION"
-  environment:
-    PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
-  when: ansible_os_family == 'Debian'
-  become: yes
+  - name: Initialize database postgres service in Debian
+    ansible.builtin.command: >
+      {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
+    when: ansible_os_family == 'Debian'
+    become_method: su
+    become_user: "{{ pg_owner }}"
 
-- name: Copy the postgresql.conf.template to the server
-  template:
-    src: postgresql.conf.template
-    dest: "{{ pg_data }}/postgresql.auto.conf"
-    owner: "{{ pg_owner }}"
-    group: "{{ pg_group }}"
-    mode: 0600
+  - name: Copy the postgresql.conf.template to the server
+    template:
+      src: postgresql.conf.template
+      dest: "{{ pg_data }}/postgresql.auto.conf"
+      owner: "{{ pg_owner }}"
+      group: "{{ pg_group }}"
+      mode: 0600
   when:  not pg_version_stat.stat.exists
   become: yes
 
@@ -48,4 +42,5 @@
     daemon_reload: true
     state: started
     enabled: true
+    no_block: no
   become: true

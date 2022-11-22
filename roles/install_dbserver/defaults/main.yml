@@ -7,8 +7,7 @@ core_dump_directory: "/var/coredumps"
 # only ubuntu
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 deb_cluster_name: "main"
-pg_service: "postgresql@{{ pg_version }}-main"
-deb_install: false
+pg_service: "postgresql@{{ pg_version }}-{{ deb_cluster_name }}.service"
 
 sysctl_params:
   - { "name": "kernel.core_pattern", "value": "/var/coredumps/core-%e-%p", "state": "present"}
@@ -17,7 +16,7 @@ sysctl_params:
 rpm_install: false
 rpm_install_path: "https://download.postgresql.org/pub/repos/yum/{{ pg_version }}/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/postgresql{{ pg_version }}"
 rpm_list: 
-  - { "name": "{{ rpm_install_path }}-libs-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm" }
-  - { "name": "{{ rpm_install_path }}-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm" }
-  - { "name": "{{ rpm_install_path }}-server-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm" }
-  - { "name": "{{ rpm_install_path }}-contrib-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm" }
+  - { "{{ rpm_install_path }}-libs-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm"}
+  - { "{{ rpm_install_path }}-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm"}
+  - { "{{ rpm_install_path }}-server-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm"}
+  - { "{{ rpm_install_path }}-contrib-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm"}

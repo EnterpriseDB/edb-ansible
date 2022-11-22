@@ -60,25 +60,14 @@
   become: yes
   when: pg_unix_socket_directories|length > 0
 
-- name: Create edb_audit_directory if defined
+- name: Ensure postgres user home directory exists
   file:
-    path: "{{ edb_audit_directory }}"
+    path: "{{ pg_user_home }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
-    state: directory
+    mode: 0755
+    recurse: yes
   become: yes
-  when: >
-    edb_audit_directory|length > 0 and pg_data not in edb_audit_directory
-    and edb_audit_directory.startswith('/')
-
-- name: Create hidden edb directory if not exists
-  file:
-    path: "{{ pass_dir }}"
-    mode: 0700
-    state: directory
-  become: no
-  delegate_to: localhost
 
 - name: Check if we have symlink for default data directory location
   stat:

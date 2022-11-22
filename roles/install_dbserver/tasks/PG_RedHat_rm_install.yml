@@ -1,4 +1,22 @@
 ---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Set fact pg_service for RedHat
+  set_fact:
+    pg_service: "postgresql-{{ pg_version }}.service"
+  when: ansible_os_family == 'RedHat'
+
+- name: Stop pg service if running
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[pg_service] is defined
+    - ansible_facts.services[pg_service].state == 'running'
+  become: yes
+
 - name: Remove require python package on EL7
   package:
     name:

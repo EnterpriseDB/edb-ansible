@@ -1,25 +1,11 @@
 ---
-- name: Set the os variable
-  set_fact:
-    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
-
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
-
-- name: Check supported versions for Database engine
-  fail:
-    msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
+- name : Check Operating System,  PostgreSQL type, PostgreSQL version
+  include_role:
+    name: common
+    tasks_from: check_version.yml
 
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
-
-- name: Reference ssl variables
-  include_vars: edb-ssl.yml
-  when: pg_ssl
 
 - name: Gather service facts
   service_facts:
@@ -54,17 +40,10 @@
 
 - name: Check and configure the node as primary or pemserver
   block:
+    - import_tasks: create_os_user.yml
     - import_tasks: create_directories.yml
     - import_tasks: pg_setup_systemd.yml
     - import_tasks: pg_initdb.yml
     - import_tasks: pg_set_superuser_password.yml
+    - import_tasks: set_primary_slot.yml
   become: yes
-
-- name: Configure ssl based on pg_ssl parameter
-  block:
-    - import_tasks: pg_ssl_send_files.yml
-    - import_tasks: pg_ssl_check.yml
-    - import_tasks: pg_ssl_config.yml
-  become: yes
-  when:
-     - pg_ssl

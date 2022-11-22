@@ -1,6 +1,8 @@
 ---
-- name: Check required variables
-  include_tasks: check_required_variables.yml
+- name: Check required variables for this role
+  include_role:
+    name: common
+    tasks_from: check_required_variables
   vars:
     required_variables:
       - pg_type
