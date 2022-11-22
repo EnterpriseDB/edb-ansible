@@ -110,7 +110,7 @@ def test_setup_pemserver_web_interface():
     host = get_pemserver()
     
     with host.sudo(pg_user):
-        cmd = host.run(" curl --insecure -L -I https://%s/pem | grep HTTP" % address)
+        cmd = host.run(" curl --insecure -L -I https://%s:8443/pem | grep HTTP" % address)
         result = cmd.stdout.strip()
 
     # Getting status code after filtering out redirection
