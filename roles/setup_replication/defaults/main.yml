@@ -2,13 +2,12 @@
 # default empty rpm repo
 # port constants
 
-pg_version: 14
 disable_logging: yes
 pg_remote_ssl_src: no
 
 force_replication: false
 use_replication_slots: true
-use_hostname: true
+use_hostname: false
 update_etc_file: true
 enable_core_dump: false
 
@@ -16,15 +15,10 @@ pg_instance_name: main
 
 pg_local_wal_archive_dir: ""
 
-# EFM service information
-efm_version: 4.5
-efm_cluster_name: "{{ pg_instance_name }}"
-efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
-
 synchronous_standby_names: ""
 standby_quorum_type: "any"
 
-pass_dir: "~/.edb"
+pass_dir: "~/.pgpassfile"
 
 primary_private_ip: ""
 primary_public_ip: ""
@@ -35,33 +29,10 @@ standby_physical_slots: []
 etc_hosts_lists: []
 upstream_public_ip: ""
 upstream_hostname: ""
-edb_audit_directory: ""
 
 # Local path to SSL server key and certificate to be sent to the server
 # if empty, they are generated
-pg_ssl_key_file: ""
-pg_ssl_cert_file: ""
-pg_ssl_ca_file: ""
-pg_ssl_crl_file: ""
-
-supported_os:
-  - CentOS7
-  - CentOS8
-  - RedHat7
-  - RedHat8
-  - Ubuntu20
-  - Debian9
-  - Debian10
-  - Rocky8
-  - OracleLinux7
-
-supported_pg_type:
-  - EPAS
-  - PG
-
-supported_pg_version:
-  - 10
-  - 11
-  - 12
-  - 13
-  - 14
+# pg_ssl_key_file: ""
+# pg_ssl_cert_file: ""
+# pg_ssl_ca_file: ""
+# pg_ssl_crl_file: ""

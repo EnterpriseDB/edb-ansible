@@ -9,7 +9,7 @@ primary_host_name: ""
 
 pg_owner: "postgres"
 pg_group: "postgres"
-pg_ssl: true
+pg_ssl: false
 pg_port: "5432"
 pg_replication_user: "repuser"
 pg_replication_user_password: ""
@@ -18,7 +18,7 @@ synchronous_standby_names: ""
 random_string: ""
 
 pg_database: "postgres"
-pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}"
+pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}.service"
 
 pg_user_home: "/var/lib/postgresql"
 pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"

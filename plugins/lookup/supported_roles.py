@@ -29,6 +29,7 @@ _value:
 
 
 GROUP_ROLES = {
+<<<<<<< HEAD
     "primary": [
         "setup_repo",
         "install_dbserver",
@@ -39,6 +40,38 @@ GROUP_ROLES = {
         "setup_repmgr",
         "manage_dbpatches",
         "manage_efm",
+=======
+    'primary': [
+        'setup_repo',
+        'install_dbserver',
+        'init_dbserver',
+        'manage_dbserver'
+        'autotuning',
+        'setup_repmgr',
+        'manage_dbpatches',
+    ],
+    'standby': [
+        'setup_repo',
+        'install_dbserver',
+        'setup_replication',
+        'manage_dbserver',
+        'autotuning',
+        'setup_repmgr',
+        'manage_dbpatches',
+    ],
+    'pemserver': [
+        'setup_repo',
+        'install_dbserver',
+        'init_dbserver',
+        'manage_dbserver',
+        'setup_pemserver',
+        'autotuning'
+    ],
+    'pgbouncer': [
+        'setup_repo',
+        'setup_pgbouncer',
+        'manage_pgbouncer'
+>>>>>>> Refactoring Replication Role
     ],
     "standby": [
         "setup_repo",
@@ -78,9 +111,17 @@ GROUP_ROLES = {
         "manage_dbpatches",
         "manage_efm",
     ],
+<<<<<<< HEAD
     "proxy": [
         "setup_repo",
         "setup_harp_proxy",
+=======
+    'witness': [
+        'setup_repo',
+        'install_dbserver',
+        'setup_repmgr',
+        'manage_dbpatches',
+>>>>>>> Refactoring Replication Role
     ],
     "pgbackrestserver": [
         "setup_repo",

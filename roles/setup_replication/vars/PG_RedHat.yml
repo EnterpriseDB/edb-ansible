@@ -1,6 +1,6 @@
 ---
-pg_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
-pg_default_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
 pg_log: "/var/log/postgres"
 pg_wal: ""
 pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
@@ -10,7 +10,7 @@ primary_host_name: ""
 
 pg_owner: "postgres"
 pg_group: "postgres"
-pg_ssl: true
+pg_ssl: false
 pg_port: "5432"
 pg_replication_user: "repuser"
 pg_replication_user_password: ""
@@ -19,7 +19,7 @@ synchronous_standby_names: ""
 random_string: ""
 
 pg_database: "postgres"
-pg_service: "{{ lookup('hypersql_devops.postgres.pg_service') }}"
+pg_service: "{{ lookup('hypersql_devops.postgres.pg_service') }}.service"
 
 pg_user_home: "/var/lib/pgsql"
 pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"

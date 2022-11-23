@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 - name: Set the os variable
   set_fact:
     os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
@@ -13,8 +14,14 @@
     msg: "Database Engine Version = {{ pg_version }} not supported.
       Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
+=======
+- name : Check Operating System, PostgreSQL Type, PostgreSQL Version
+  include_role:
+    name: common
+    tasks_from: check_version.yml
+>>>>>>> Refactoring Replication Role
 
-- name: Reference EPAS or PG variables
+- name: Reference pg_type variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Gather service facts
@@ -76,9 +83,9 @@
   delegate_to: "{{ primary_inventory_hostname }}"
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  include_role:
+    name: common
+    tasks_from: linux_update_etc_hosts.yml
   no_log: "{{ disable_logging }}"
   when:
     - use_hostname|bool
@@ -96,7 +103,6 @@
     - import_tasks: create_directories.yml
     - import_tasks: pg_basebackup.yml
     - import_tasks: pg_setup_systemd.yml
-    - import_tasks: pg_ssl_send_files.yml
     - import_tasks: configure_node.yml
   become: yes
 

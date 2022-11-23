@@ -31,9 +31,9 @@
   become: yes
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  include_role:
+    name: common
+    tasks_from: linux_update_etc_hosts.yml
   when:
     - use_hostname|bool
     - update_etc_file|bool

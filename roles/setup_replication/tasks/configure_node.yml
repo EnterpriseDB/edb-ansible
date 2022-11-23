@@ -10,6 +10,17 @@
         create: yes
   no_log: "{{ disable_logging }}"
 
+- name: Check ping primary
+  community.postgresql.postgresql_ping:
+    db: "{{ pg_database }}"
+    login_host: "{{ hostvars[inventory_hostname].upstream_node_private_ip }}"
+    login_user: "{{ pg_replication_user }}"
+    login_password: "{{ pg_replication_user_password }}"
+    port: "{{ pg_port }}"
+  become: yes
+  become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
+
 - name: Create standby
   shell: >
     PGAPPNAME={{ inventory_hostname }} {{ pg_basebackup }}

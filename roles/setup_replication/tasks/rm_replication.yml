@@ -2,16 +2,7 @@
 - name: Gather service facts
   service_facts:
 
-- name: Stop the efm_service
-  systemd:
-    name: "{{ efm_service }}"
-    state: stopped
-  when:
-    - ansible_facts.services[efm_service] is defined
-    - ansible_facts.services[efm_service].state == 'running'
-  become: yes
-
-- name: stop pg service if running
+- name: Stop pg service if running
   systemd:
     name: "{{ pg_service }}"
     state: stopped

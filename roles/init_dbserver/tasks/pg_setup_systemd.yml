@@ -16,7 +16,7 @@
   ansible.builtin.copy:
     remote_src: true
     src: "{{ pg_systemd_global_unit_file }}"
-    dest: "/etc/systemd/system/{{ pg_service }}.service"
+    dest: "/etc/systemd/system/{{ pg_service }}"
     mode: 0600
     owner: root
     group: root
@@ -26,7 +26,7 @@
 
 - name: Update systemd unit file in Redhat
   ansible.builtin.lineinfile:
-    path: "/etc/systemd/system/{{ pg_service }}.service"
+    path: "/etc/systemd/system/{{ pg_service }}"
     line: "{{ item.line }}"
     regexp: "{{ item.regexp }}"
     insertafter: "{{ item.insertafter | default('EOF') }}"
@@ -85,7 +85,7 @@
 
 - name: Unlimited core file size when core_dump enable in systemd file
   ansible.builtin.lineinfile:
-    path: "/etc/systemd/system/{{ pg_service }}.service"
+    path: "/etc/systemd/system/{{ pg_service }}"
     line: "{{ item.line }}"
     regexp: "{{ item.regexp }}"
     insertafter: "{{ item.insertafter | default('EOF') }}"
