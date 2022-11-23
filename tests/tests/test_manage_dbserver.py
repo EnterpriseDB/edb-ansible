@@ -1,11 +1,7 @@
-import pytest
 from conftest import (
-    get_hosts,
-    get_os,
     get_pg_profile_dir,
     get_pg_type,
     get_pg_unix_socket_dir,
-    get_pg_version,
     get_primary,
     load_ansible_vars,
 )
@@ -77,12 +73,10 @@ def test_manage_dbserver_files():
 def test_manage_dbserver_create_user():
     ansible_vars = load_ansible_vars()
     pg_user = "postgres"
-    pg_group = "postgres"
     pg_created_user = ansible_vars["pg_users"][0]["name"]
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -97,13 +91,11 @@ def test_manage_dbserver_create_user():
 def test_manage_dbserver_sql_script():
     ansible_vars = load_ansible_vars()
     pg_user = "postgres"
-    pg_group = "postgres"
     pg_sql_script = ansible_vars["pg_sql_scripts"][0]["file_path"]
     pg_script_table = ansible_vars["pg_script_table"]
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -121,11 +113,9 @@ def test_manage_dbserver_sql_script():
 
 def test_manage_dbserver_hba_file():
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -145,11 +135,9 @@ def test_manage_dbserver_conf_params():
     ansible_vars = load_ansible_vars()
     pg_conf_param = ansible_vars["pg_postgres_conf_params"][0]["name"]
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -167,11 +155,9 @@ def test_manage_dbserver_pg_slots():
     pg_slot = ansible_vars["pg_slots"][0]["name"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -189,11 +175,9 @@ def test_manage_dbserver_pg_extension():
     pg_extension = ansible_vars["pg_extensions"][0]["name"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -211,11 +195,9 @@ def test_manage_dbserver_pg_grant_roles():
     pg_role = ansible_vars["pg_grant_roles"][0]["role"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -239,11 +221,9 @@ def test_manage_dbserver_query():
     pg_query_table = ansible_vars["pg_query_table"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -261,11 +241,9 @@ def test_manage_dbserver_database():
     pg_database = ansible_vars["pg_databases"][0]["name"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()

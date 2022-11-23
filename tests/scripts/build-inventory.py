@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import argparse
-import re
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader

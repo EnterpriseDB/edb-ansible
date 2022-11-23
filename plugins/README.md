@@ -6,7 +6,7 @@ would contain module utils and modules respectively.
 
 Here is an example directory of the majority of plugins currently supported by Ansible:
 
-```
+```text
 └── plugins
     ├── action
     ├── become

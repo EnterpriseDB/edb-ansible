@@ -1,12 +1,4 @@
-import pytest
-from conftest import (
-    get_barmanserver,
-    get_pg_type,
-    get_pg_unix_socket_dir,
-    get_pg_version,
-    get_primary,
-    load_ansible_vars,
-)
+from conftest import get_barmanserver, load_ansible_vars
 
 
 def test_setup_barmanserver_packages():

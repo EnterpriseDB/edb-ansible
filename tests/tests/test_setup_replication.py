@@ -1,22 +1,11 @@
-import pytest
-from conftest import (
-    get_hosts,
-    get_os,
-    get_pg_type,
-    get_pg_unix_socket_dir,
-    get_primary,
-    get_standbys,
-    load_ansible_vars,
-)
+from conftest import get_pg_type, get_pg_unix_socket_dir, get_primary, get_standbys
 
 
 def test_setup_replication_user():
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -31,11 +20,9 @@ def test_setup_replication_user():
 
 def test_setup_replication_slots():
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()

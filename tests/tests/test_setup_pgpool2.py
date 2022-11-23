@@ -1,12 +1,5 @@
 import pytest
-from conftest import (
-    get_pg_type,
-    get_pg_unix_socket_dir,
-    get_pg_version,
-    get_pgpool2,
-    get_primary,
-    load_ansible_vars,
-)
+from conftest import get_pg_type, get_pgpool2, get_primary, load_ansible_vars
 
 
 def test_setup_pgpool2_EPAS():
@@ -58,11 +51,9 @@ def test_setup_pgpool_test_user():
     pgpool2_port = ansible_vars["pgpool2_port"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]
@@ -86,11 +77,9 @@ def test_setup_pgpool_users():
     pgpool2_port = ansible_vars["pgpool2_port"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]
@@ -117,11 +106,9 @@ def test_setup_pgpool_loadbalance():
     pgpool2_port = ansible_vars["pgpool2_port"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]

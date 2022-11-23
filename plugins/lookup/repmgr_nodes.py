@@ -1,5 +1,8 @@
 from __future__ import absolute_import, division, print_function
 
+from ansible.errors import AnsibleError
+from ansible.plugins.lookup import LookupBase
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -31,9 +34,6 @@ _value:
   type: list
   elements: dict
 """
-
-from ansible.errors import AnsibleError
-from ansible.plugins.lookup import LookupBase
 
 
 class LookupModule(LookupBase):

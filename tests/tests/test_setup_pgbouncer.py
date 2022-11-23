@@ -1,9 +1,5 @@
-import pytest
 from conftest import (
-    get_os,
     get_pg_type,
-    get_pg_unix_socket_dir,
-    get_pg_version,
     get_pgbouncer,
     get_primary,
     load_ansible_vars,
@@ -45,11 +41,9 @@ def test_setup_pgbouncer_test_user():
     pgbouncer_port = ansible_vars["pgbouncer_listen_port"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split("//")[1]
@@ -81,11 +75,9 @@ def test_setup_pgbouncer_config():
     pgbouncer_admin_user = ansible_vars["pgbouncer_admin_users"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split("//")[1]
@@ -116,14 +108,11 @@ def test_setup_pgbouncer_port():
     pgbouncer_user = ansible_vars["pgbouncer_auth_user_list"][0]["username"]
     pgbouncer_password = ansible_vars["pgbouncer_auth_user_list"][0]["password"]
     pgbouncer_port = ansible_vars["pgbouncer_listen_port"]
-    pgbouncer_admin_user = ansible_vars["pgbouncer_admin_users"]
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     if get_pg_type() == "EPAS":
         pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
 
     pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split("//")[1]

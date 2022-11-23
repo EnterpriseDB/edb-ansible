@@ -1,7 +1,4 @@
-import pytest
 from conftest import (
-    get_hosts,
-    get_os,
     get_pg_type,
     get_pg_unix_socket_dir,
     get_pg_version,

@@ -1,8 +1,0 @@
----
-all:
-  children:
-    pemserver:
-      hosts:
-        pem1:
-          ansible_host: {{ inventory_vars['pem1_ip'] }}
-          private_ip: {{ inventory_vars['pem1_ip'] }}

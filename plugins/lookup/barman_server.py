@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from ansible.plugins.lookup import LookupBase
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -29,8 +31,6 @@ _value:
   elements:
     - dict: node_type, hostname, ansible_host (public IP address), private_ip
 """
-
-from ansible.plugins.lookup import LookupBase
 
 
 class LookupModule(LookupBase):

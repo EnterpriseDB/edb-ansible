@@ -1,12 +1,4 @@
-import pytest
-from conftest import (
-    get_pg_type,
-    get_pg_unix_socket_dir,
-    get_pg_version,
-    get_pgbackrestserver,
-    get_primary,
-    load_ansible_vars,
-)
+from conftest import get_pgbackrestserver, load_ansible_vars
 
 
 def test_setup_pgbackrestserver_packages():

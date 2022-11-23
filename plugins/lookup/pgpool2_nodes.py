@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from ansible.plugins.lookup import LookupBase
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -31,8 +33,6 @@ _value:
             primary_private_ip
 """
 
-from ansible.plugins.lookup import LookupBase
-
 
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
@@ -42,8 +42,6 @@ class LookupModule(LookupBase):
             return []
 
         myvars = getattr(self._templar, "_available_variables", {})
-        # Inventory hostname
-        inventory_hostname = variables["inventory_hostname"]
 
         primary_private_ip = terms[0] if len(terms) > 0 else None
 

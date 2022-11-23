@@ -1,13 +1,11 @@
 import pytest
 from conftest import (
     get_os,
-    get_pg_type,
     get_pg_unix_socket_dir,
     get_pg_version,
     get_primary,
     get_standbys,
     get_witness,
-    load_ansible_vars,
     os_family,
 )
 
@@ -59,7 +57,6 @@ def test_setup_repmgr_packages_debian():
 
 def test_setup_repmgr_user():
     pg_user = "postgres"
-    pg_group = "postgres"
 
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
     socket_dir = get_pg_unix_socket_dir()
@@ -78,7 +75,6 @@ def test_setup_repmgr_node_status_redhat():
         pytest.skip()
 
     pg_user = "postgres"
-    pg_group = "postgres"
     pg_version = get_pg_version()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
 
@@ -98,7 +94,6 @@ def test_setup_repmgr_node_status_debian():
         pytest.skip()
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
 
@@ -115,7 +110,6 @@ def test_setup_repmgr_node_check_redhat():
         pytest.skip()
 
     pg_user = "postgres"
-    pg_group = "postgres"
     pg_version = get_pg_version()
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
 
@@ -140,7 +134,6 @@ def test_setup_repmgr_node_check_debian():
         pytest.skip()
 
     pg_user = "postgres"
-    pg_group = "postgres"
 
     hosts = [get_primary(), get_witness()[0], get_standbys()[0]]
 

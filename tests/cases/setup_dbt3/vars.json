@@ -1,8 +1,0 @@
-{
-  "use_hostname": false,
-  "pg_data": "/opt/pgdata",
-  "pg_wal": "/opt/pgwal",
-  "limit_file_path": "/etc/security/limits.conf",
-  "postgres_user": "postgres",
-  "have_tpcfile": false
-}

@@ -1,13 +1,5 @@
 import pytest
-from conftest import (
-    EDB_ENABLE_REPO,
-    get_hosts,
-    get_os,
-    get_pg_type,
-    get_primary,
-    load_ansible_vars,
-    os_family,
-)
+from conftest import EDB_ENABLE_REPO, get_pg_type, get_primary, os_family
 
 
 def test_setup_repo_edb_centos():

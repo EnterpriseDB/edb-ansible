@@ -1,13 +1,5 @@
 import pytest
-from conftest import (
-    get_hosts,
-    get_os,
-    get_pg_type,
-    get_pg_version,
-    get_primary,
-    load_ansible_vars,
-    os_family,
-)
+from conftest import get_os, get_pg_type, get_pg_version, get_primary, os_family
 
 
 def test_install_dbserver_pg_centos():

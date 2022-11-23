@@ -1,26 +1,10 @@
-import pytest
 from conftest import (
     get_barmanserver,
     get_pg_type,
     get_pg_unix_socket_dir,
-    get_pg_version,
     get_primary,
     load_ansible_vars,
 )
-
-
-def test_setup_barman_backup():
-    ansible_vars = load_ansible_vars()
-    barman_user = ansible_vars["barman_user"]
-    host = get_barmanserver()
-
-    with host.sudo(barman_user):
-        cmd = host.run("barman list-server")
-        result = cmd.stdout.strip()
-
-    assert "primary1" in result, (
-        "%s backup server was not configured correctly" % "primary1"
-    )
 
 
 def test_setup_barman_home_dir():
@@ -41,7 +25,6 @@ def test_setup_barman_home_dir():
 def test_setup_barman_status():
     ansible_vars = load_ansible_vars()
     barman_user = ansible_vars["barman_user"]
-    barman_home = ansible_vars["barman_home"]
     host = get_barmanserver()
 
     with host.sudo(barman_user):
@@ -77,8 +60,6 @@ def test_setup_barman_user():
 def test_setup_barman_logical_wal_level():
     # Make sure setup_barman does not override wal_level if it has been
     # previously configured to 'logical'.
-    ansible_vars = load_ansible_vars()
-    barman_user = ansible_vars["barman_user"]
     port = "5432"
     pg_user = "postgres"
 
@@ -102,7 +83,6 @@ def test_setup_barman_logical_wal_level():
 def test_setup_barman_backup():
     ansible_vars = load_ansible_vars()
     barman_user = ansible_vars["barman_user"]
-    barman_home = ansible_vars["barman_home"]
     host = get_barmanserver()
 
     with host.sudo(barman_user):
