@@ -20,8 +20,8 @@
       set_fact:
         disable_logging: false
         pg_postgres_conf_params:
-        - name: wal_level
-          value: logical
+          - name: wal_level
+            value: logical
 
   roles:
     - role: setup_repo

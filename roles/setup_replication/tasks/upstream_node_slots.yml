@@ -5,9 +5,9 @@
     tasks_from: manage_pgpass
   vars:
     pg_pgpass_values:
-        - user: "{{ pg_replication_user }}"
-          password: "{{ pg_replication_user_password }}"
-          create: yes
+      - user: "{{ pg_replication_user }}"
+        password: "{{ pg_replication_user_password }}"
+        create: yes
   no_log: "{{ disable_logging }}"
   run_once: true
 
@@ -26,7 +26,7 @@
     tasks_from: manage_slots
   vars:
     pg_slots:
-       - name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
-         slot_type: physical
+      - name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+        slot_type: physical
   no_log: "{{ disable_logging }}"
   when: use_replication_slots

@@ -1,5 +1,4 @@
 ---
-
 pg_version: 14
 pg_instance_name: main
 barman_cli_package: "barman-cli-2.19-1"

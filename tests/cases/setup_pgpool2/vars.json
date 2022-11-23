@@ -4,12 +4,11 @@
   "pg_wal": "/opt/pgwal",
   "pgpool2_load_balancing": true,
   "pgpool2_port": 5433,
-  "pgpool2_users":
-  [
+  "pgpool2_users": [
     {
-    "name": "test",
-    "pass": "password",
-    "auth": "scram"
+      "name": "test",
+      "pass": "password",
+      "auth": "scram"
     }
   ]
 }

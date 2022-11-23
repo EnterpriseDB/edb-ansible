@@ -1,132 +1,147 @@
 import pytest
-
 from conftest import (
-    load_ansible_vars,
-    get_pg_type,
-    get_pgbouncer,
-    get_pg_version,
-    get_primary,
-    get_pg_unix_socket_dir,
     get_os,
-    os_family
+    get_pg_type,
+    get_pg_unix_socket_dir,
+    get_pg_version,
+    get_pgbouncer,
+    get_primary,
+    load_ansible_vars,
+    os_family,
 )
+
 
 def test_setup_pgbouncer_service():
     host = get_pgbouncer()[0]
-    service = 'pgbouncer'
+    service = "pgbouncer"
 
-    if get_pg_type() == 'EPAS':
-        if os_family() == 'Debian':
-            service = 'edb-pgbouncer117'
-        elif os_family() == 'RedHat':
-            service = 'edb-pgbouncer-1.17'
+    if get_pg_type() == "EPAS":
+        if os_family() == "Debian":
+            service = "edb-pgbouncer117"
+        elif os_family() == "RedHat":
+            service = "edb-pgbouncer-1.17"
 
-    assert host.service(service).is_running, \
-        "pgbouncer service not running"
+    assert host.service(service).is_running, "pgbouncer service not running"
 
-    assert host.service(service).is_enabled, \
-        "pgbouncer service not enabled"
+    assert host.service(service).is_enabled, "pgbouncer service not enabled"
+
 
 def test_setup_pgbouncer_packages():
     host = get_pgbouncer()[0]
 
-    packages = [
-        'pgbouncer'
-    ]
+    packages = ["pgbouncer"]
 
-    if get_pg_type() == 'EPAS':
-        packages = [
-            'edb-pgbouncer117'
-        ]
+    if get_pg_type() == "EPAS":
+        packages = ["edb-pgbouncer117"]
 
     for package in packages:
-        assert host.package(package).is_installed, \
-            "Package %s not installed" % packages
+        assert host.package(package).is_installed, "Package %s not installed" % packages
+
 
 def test_setup_pgbouncer_test_user():
     ansible_vars = load_ansible_vars()
-    pgbouncer_user = ansible_vars['pgbouncer_auth_user_list'][0]['username']
-    pgbouncer_password = ansible_vars['pgbouncer_auth_user_list'][0]['password']
-    pgbouncer_port = ansible_vars['pgbouncer_listen_port']
+    pgbouncer_user = ansible_vars["pgbouncer_auth_user_list"][0]["username"]
+    pgbouncer_password = ansible_vars["pgbouncer_auth_user_list"][0]["password"]
+    pgbouncer_port = ansible_vars["pgbouncer_listen_port"]
 
-    pg_user = 'postgres'
-    pg_group = 'postgres'
+    pg_user = "postgres"
+    pg_group = "postgres"
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
+    if get_pg_type() == "EPAS":
+        pg_user = "enterprisedb"
+        pg_group = "enterprisedb"
 
-    pgbouncer_address= get_pgbouncer()[0]
-    address = str(pgbouncer_address).strip("<>").split('//')[1]
+    pgbouncer_address = get_pgbouncer()[0]
+    address = str(pgbouncer_address).strip("<>").split("//")[1]
     host = get_primary()
 
     with host.sudo(pg_user):
         query = "SHOW users"
         cmd = host.run(
             'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
-            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
-               query, pgbouncer_user)
+            % (
+                pgbouncer_password,
+                pgbouncer_user,
+                address,
+                pgbouncer_port,
+                query,
+                pgbouncer_user,
+            )
         )
         result = cmd.stdout.strip()
 
-    assert len(result) > 0, \
-        "pgbouncer test user was not created sucessfully."
+    assert len(result) > 0, "pgbouncer test user was not created sucessfully."
+
 
 def test_setup_pgbouncer_config():
     ansible_vars = load_ansible_vars()
-    pgbouncer_user = ansible_vars['pgbouncer_auth_user_list'][0]['username']
-    pgbouncer_password = ansible_vars['pgbouncer_auth_user_list'][0]['password']
-    pgbouncer_port = ansible_vars['pgbouncer_listen_port']
-    pgbouncer_admin_user = ansible_vars['pgbouncer_admin_users']
+    pgbouncer_user = ansible_vars["pgbouncer_auth_user_list"][0]["username"]
+    pgbouncer_password = ansible_vars["pgbouncer_auth_user_list"][0]["password"]
+    pgbouncer_port = ansible_vars["pgbouncer_listen_port"]
+    pgbouncer_admin_user = ansible_vars["pgbouncer_admin_users"]
 
-    pg_user = 'postgres'
-    pg_group = 'postgres'
+    pg_user = "postgres"
+    pg_group = "postgres"
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
+    if get_pg_type() == "EPAS":
+        pg_user = "enterprisedb"
+        pg_group = "enterprisedb"
 
-    pgbouncer_address= get_pgbouncer()[0]
-    address = str(pgbouncer_address).strip("<>").split('//')[1]
+    pgbouncer_address = get_pgbouncer()[0]
+    address = str(pgbouncer_address).strip("<>").split("//")[1]
     host = get_primary()
 
     with host.sudo(pg_user):
         query = "SHOW config"
         cmd = host.run(
             'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
-            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
-               query, 'admin_users')
+            % (
+                pgbouncer_password,
+                pgbouncer_user,
+                address,
+                pgbouncer_port,
+                query,
+                "admin_users",
+            )
         )
         result = cmd.stdout.strip()
 
-    assert pgbouncer_admin_user in result, \
-        "pgbouncer admin user was not configured properly."
+    assert (
+        pgbouncer_admin_user in result
+    ), "pgbouncer admin user was not configured properly."
+
 
 def test_setup_pgbouncer_port():
     ansible_vars = load_ansible_vars()
-    pgbouncer_user = ansible_vars['pgbouncer_auth_user_list'][0]['username']
-    pgbouncer_password = ansible_vars['pgbouncer_auth_user_list'][0]['password']
-    pgbouncer_port = ansible_vars['pgbouncer_listen_port']
-    pgbouncer_admin_user = ansible_vars['pgbouncer_admin_users']
+    pgbouncer_user = ansible_vars["pgbouncer_auth_user_list"][0]["username"]
+    pgbouncer_password = ansible_vars["pgbouncer_auth_user_list"][0]["password"]
+    pgbouncer_port = ansible_vars["pgbouncer_listen_port"]
+    pgbouncer_admin_user = ansible_vars["pgbouncer_admin_users"]
 
-    pg_user = 'postgres'
-    pg_group = 'postgres'
+    pg_user = "postgres"
+    pg_group = "postgres"
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
+    if get_pg_type() == "EPAS":
+        pg_user = "enterprisedb"
+        pg_group = "enterprisedb"
 
-    pgbouncer_address= get_pgbouncer()[0]
-    address = str(pgbouncer_address).strip("<>").split('//')[1]
+    pgbouncer_address = get_pgbouncer()[0]
+    address = str(pgbouncer_address).strip("<>").split("//")[1]
     host = get_primary()
 
     with host.sudo(pg_user):
         query = "SHOW active_sockets"
         cmd = host.run(
             'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
-            % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
-               query, pgbouncer_port))
+            % (
+                pgbouncer_password,
+                pgbouncer_user,
+                address,
+                pgbouncer_port,
+                query,
+                pgbouncer_port,
+            )
+        )
         result = cmd.stdout.strip()
 
-    assert len(result) > 0, \
-        "pgbouncer port was not configured properly."
+    assert len(result) > 0, "pgbouncer port was not configured properly."

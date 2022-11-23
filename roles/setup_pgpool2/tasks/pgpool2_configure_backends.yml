@@ -44,8 +44,7 @@
   loop: "{{ pgpool2_backends }}"
   loop_control:
     extended: yes
-    loop_var:
-      backend_item
+    loop_var: backend_item
 
 # Apply configuration changes
 - name: Include pgpool2_manage_configuration

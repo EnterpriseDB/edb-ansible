@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -35,37 +36,39 @@ from ansible.plugins.lookup import LookupBase
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 
-        myvars = getattr(self._templar, '_available_variables', {})
-        inventory_hostname = variables['inventory_hostname']
+        myvars = getattr(self._templar, "_available_variables", {})
+        inventory_hostname = variables["inventory_hostname"]
 
         # If no terms, we'll used the current Barman server private IP
         if len(terms) == 0:
-            if 'barman_server_private_ip' not in myvars['hostvars'][inventory_hostname]:
+            if "barman_server_private_ip" not in myvars["hostvars"][inventory_hostname]:
                 # barman_server_private_ip not set, return None
                 return []
-            barman_server_private_ip = myvars['hostvars'][inventory_hostname]['barman_server_private_ip']
+            barman_server_private_ip = myvars["hostvars"][inventory_hostname][
+                "barman_server_private_ip"
+            ]
         else:
             barman_server_private_ip = terms[0]
 
         # If no barmanserver found in the inventory file, just return None
-        if 'barmanserver' not in variables['groups']:
+        if "barmanserver" not in variables["groups"]:
             return []
-        if len(variables['groups']['barmanserver']) == 0:
+        if len(variables["groups"]["barmanserver"]) == 0:
             return []
 
         # Lookup for barman servers with a matching private_ip
-        for host in variables['groups']['barmanserver']:
-            hostvars = myvars['hostvars'][host]
+        for host in variables["groups"]["barmanserver"]:
+            hostvars = myvars["hostvars"][host]
 
-            if hostvars['private_ip'] != barman_server_private_ip:
+            if hostvars["private_ip"] != barman_server_private_ip:
                 continue
 
             return [
                 dict(
-                    node_type='barmanserver',
-                    ansible_host=hostvars['ansible_host'],
-                    hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
-                    private_ip=hostvars['private_ip'],
-                    inventory_hostname=hostvars['inventory_hostname']
+                    node_type="barmanserver",
+                    ansible_host=hostvars["ansible_host"],
+                    hostname=hostvars.get("hostname", hostvars["ansible_hostname"]),
+                    private_ip=hostvars["private_ip"],
+                    inventory_hostname=hostvars["inventory_hostname"],
                 )
             ]

@@ -1,5 +1,4 @@
 ---
-
 - name: Copy global systemd unit file to /etc/systemd/system
   ansible.builtin.copy:
     remote_src: true

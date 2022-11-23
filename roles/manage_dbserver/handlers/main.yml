@@ -1,0 +1,8 @@
+---
+- name: Reload the pg service
+  systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: yes
+    state: reloaded
+  become: yes
+  no_log: "{{ disable_logging }}"

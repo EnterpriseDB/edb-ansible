@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -33,14 +34,23 @@ class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
         all_nodes = []
         added_nodes = {}
-        myvars = getattr(self._templar, '_available_variables', {})
+        myvars = getattr(self._templar, "_available_variables", {})
 
         allowed_groups = [
-            'primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
-            'barmanserver', 'dbt2_driver', 'dbt2_client', 'hammerdbserver',
-            'witness', 'proxy', 'pgbackrestserver',
+            "primary",
+            "standby",
+            "pemserver",
+            "pgbouncer",
+            "pgpool2",
+            "barmanserver",
+            "dbt2_driver",
+            "dbt2_client",
+            "hammerdbserver",
+            "witness",
+            "proxy",
+            "pgbackrestserver",
         ]
-        for group, nodes in variables['groups'].items():
+        for group, nodes in variables["groups"].items():
             # Ignore hosts that are not part of any group used in this
             # collection.
             if group not in allowed_groups:
@@ -50,10 +60,12 @@ class LookupModule(LookupBase):
                 if inventory_hostname in added_nodes:
                     continue
                 added_nodes[inventory_hostname] = True
-                hostvars = myvars['hostvars'][inventory_hostname]
-                all_nodes.append(dict(
-                    inventory_hostname=inventory_hostname,
-                    private_ip=hostvars.get('private_ip', None),
-                    ansible_host=hostvars.get('ansible_host', None),
-                ))
+                hostvars = myvars["hostvars"][inventory_hostname]
+                all_nodes.append(
+                    dict(
+                        inventory_hostname=inventory_hostname,
+                        private_ip=hostvars.get("private_ip", None),
+                        ansible_host=hostvars.get("ansible_host", None),
+                    )
+                )
         return all_nodes

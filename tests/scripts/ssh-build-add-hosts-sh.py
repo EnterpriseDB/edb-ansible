@@ -8,32 +8,32 @@ from lib import docker
 
 
 def build_ssh_keyscan_script(containers, ssh_dir, name="add_hosts.sh"):
-    with open(ssh_dir / name, 'w') as f:
+    with open(ssh_dir / name, "w") as f:
         f.write("#!/bin/bash\n")
         for container in containers:
-            os = container['Service'].split('-')[1]
-            c = docker.DockerOSContainer(container['ID'], os)
+            os = container["Service"].split("-")[1]
+            c = docker.DockerOSContainer(container["ID"], os)
             ip = c.ip()
             f.write("ssh-keyscan -H %s >> ~/.ssh/known_hosts\n" % ip)
 
     chmod(ssh_dir / name, 0o755)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--compose-dir',
-        dest='compose_dir',
+        "--compose-dir",
+        dest="compose_dir",
         type=Path,
         help="Docker Compose directory. Default: %(default)s",
-        default='.',
+        default=".",
     )
     parser.add_argument(
-        '--ssh-dir',
-        dest='ssh_dir',
+        "--ssh-dir",
+        dest="ssh_dir",
         type=Path,
         help="SSH keys directory. Default: %(default)s",
-        default='.ssh',
+        default=".ssh",
     )
     env = parser.parse_args()
 

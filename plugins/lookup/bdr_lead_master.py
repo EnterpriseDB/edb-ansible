@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -36,10 +37,10 @@ class LookupModule(LookupBase):
         bdr_nodes = []
         filter_ha_location = None
 
-        myvars = getattr(self._templar, '_available_variables', {})
+        myvars = getattr(self._templar, "_available_variables", {})
 
         # If no primary found in the inventory we return an empty list
-        if 'primary' not in variables['groups']:
+        if "primary" not in variables["groups"]:
             return []
 
         if len(terms) > 0:
@@ -47,37 +48,35 @@ class LookupModule(LookupBase):
         else:
             return []
 
-        for host in variables['groups']['primary']:
-            hostvars = myvars['hostvars'][host]
+        for host in variables["groups"]["primary"]:
+            hostvars = myvars["hostvars"][host]
 
-            if 'bdr' not in hostvars:
+            if "bdr" not in hostvars:
                 # Not a BDR node
                 continue
 
-            if 'roles' not in hostvars['bdr']:
+            if "roles" not in hostvars["bdr"]:
                 # No BDR role defined
                 continue
 
-            if 'lead_master' not in hostvars['bdr']['roles']:
+            if "lead_master" not in hostvars["bdr"]["roles"]:
                 # Not a lead_master node
                 continue
 
             bdr_node = dict(
-                node_type='primary',
-                ansible_host=hostvars['ansible_host'],
-                hostname=hostvars.get(
-                    'hostname', hostvars.get('ansible_hostname')
-                ),
-                private_ip=hostvars['private_ip'],
-                inventory_hostname=hostvars['inventory_hostname'],
-                ha_location=hostvars['bdr'].get('ha_location', None),
-                roles=hostvars['bdr'].get('roles', ['primary']),
-                upstream_node_private_ip=hostvars['bdr'].get(
-                    'upstream_node_private_ip', None
+                node_type="primary",
+                ansible_host=hostvars["ansible_host"],
+                hostname=hostvars.get("hostname", hostvars.get("ansible_hostname")),
+                private_ip=hostvars["private_ip"],
+                inventory_hostname=hostvars["inventory_hostname"],
+                ha_location=hostvars["bdr"].get("ha_location", None),
+                roles=hostvars["bdr"].get("roles", ["primary"]),
+                upstream_node_private_ip=hostvars["bdr"].get(
+                    "upstream_node_private_ip", None
                 ),
             )
 
-            if filter_ha_location == bdr_node['ha_location']:
+            if filter_ha_location == bdr_node["ha_location"]:
                 bdr_nodes.append(bdr_node)
 
         return bdr_nodes

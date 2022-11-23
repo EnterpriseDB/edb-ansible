@@ -1,5 +1,4 @@
 ---
-
 - name: Get Barman server informations
   ansible.builtin.set_fact:
     _barman_server_info: "{{ lookup('hypersql_devops.postgres.barman_server', wantlist=True) }}"

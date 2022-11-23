@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure barman system group {{ barman_group }} exists
   group:
     name: "{{ barman_group }}"

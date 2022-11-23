@@ -1,11 +1,11 @@
-# edb-ansible tests
+# pg-ansible tests
 
 ## Introduction
 
 This folder contains the necessary software infrastructure required to execute
-the non-regression test cases of the `edb-ansible` Ansible Collection.
+the non-regression test cases of the **hypersql_devops.postgres** Ansible Collection.
 
-The tests are grouped by a common subject into multiple *test cases*. This
+The tests are grouped by a common subject into multiple _test cases_. This
 common subject could be related to a specific Role we want to test, or a
 combination of several Roles with particular parameters for example.
 
@@ -25,7 +25,6 @@ Executing a test case consists basically in:
 The tests are written in Python and rely on `pytest` and its `testinfra`
 module. Tests related to the same test case must be located in the same file
 named: `tests/test_<test_case_name>.py`.
-
 
 ## Directory structure
 
@@ -47,56 +46,64 @@ the components related to the test case.
 ### Prerequisites
 
 This testing framework requires the following commands/tools:
+
 - `python3`
 - `pip3`
 - `docker` and `docker compose`
 - `make`
 
 To install the dependencies:
+
 ```shell
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Docker CE and compose plugin installation on Debian11
 
 #### cgroup configuration
 
-  1. In order to use systemd based docker images, make sure the following grub
-     configuration is being used in `/etc/default/grub`:
+In order to use systemd based docker images, make sure the following grub configuration is being used in `/etc/default/grub`:
+
 ```shell
 GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1"
 GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=false"
 ```
 
-  2. Apply grub configuration changes:
+Apply grub configuration changes:
+
 ```shell
-$ sudo update-grub
+sudo update-grub
 ```
 
-  3. Reboot the host.
+Reboot the host.
 
 #### Docker CE installation
 
 Packages installation:
+
 ```shell
-$ sudo apt -y install \
+sudo apt -y install \
   apt-transport-https ca-certificates curl gnupg2 software-properties-common
-$ curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
-$ sudo add-apt-repository \
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
+sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/debian \
    $(lsb_release -cs) \
    stable"
-$ sudo apt -y install \
+sudo apt -y install \
   docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
+
 Starting docker:
+
 ```shell
-$ sudo systemctl enable --now docker
+sudo systemctl enable --now docker
 ```
+
 Adding the current user to the `docker` system group:
+
 ```shell
-$ sudo usermod -aG docker $USER
-$ newgrp docker
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
 ### Test execution
@@ -132,13 +139,14 @@ optional arguments:
 ### Usage examples
 
 The example below shows how to run the tests for:
+
 - the `install_dbserver` test case
 - on `centos7` and `rocky8` operating systems
 - PostgreSQL engine only
 - for versions `13` and `14`
 
 ```shell
-$ test-runner.py \
+test-runner.py \
   --edb-repo-username <edb-repo-username> \
   --edb-repo-password <edb-repo-password> \
   --pg-version 14 13 \
@@ -156,8 +164,9 @@ Tests passed: 4/4 100.00%
 
 Running the tests for all the test cases, for every OS, for PostgreSQL and
 EPAS, in version `14`:
+
 ```shell
-$ test-runner.py \
+test-runner.py \
   --edb-repo-username <edb-repo-username> \
   --edb-repo-password <edb-repo-password> \
   --pg-version 14
@@ -170,22 +179,22 @@ without using the `test-runner.py` script. This can be done with the following
 command lines:
 
 ```shell
-$ export EDB_PG_TYPE=<pg-type>
-$ export EDB_PG_VERSION=<pg-version>
-$ export EDB_REPO_USERNAME=<edb-repo-username>
-$ export EDB_REPO_PASSWORD=<edb-repo-password>
-$ make -C cases/<test-case> <os>
+export EDB_PG_TYPE=<pg-type>
+export EDB_PG_VERSION=<pg-version>
+export EDB_REPO_USERNAME=<edb-repo-username>
+export EDB_REPO_PASSWORD=<edb-repo-password>
+make -C cases/<test-case> <os>
 ```
 
 Below is an example of running the tests for test case `init_dbserver`, in
 version 14 of PostgreSQL, on RockyLinux8:
 
 ```shell
-$ export EDB_PG_TYPE=PG
-$ export EDB_PG_VERSION=14
-$ export EDB_REPO_USERNAME=<edb-repo-username>
-$ export EDB_REPO_PASSWORD=<edb-repo-password>
-$ make -C cases/init_dbserver rocky8
+export EDB_PG_TYPE=PG
+export EDB_PG_VERSION=14
+export EDB_REPO_USERNAME=<edb-repo-username>
+export EDB_REPO_PASSWORD=<edb-repo-password>
+make -C cases/init_dbserver rocky8
 ```
 
 Containers hosting Postgres and the components we had tested with the help of
@@ -193,7 +202,7 @@ the previous command are not automatically destroyed. For cleaning up those,
 the following command should be executed:
 
 ```shell
-$ make -C cases/<test-case> clean
+make -C cases/<test-case> clean
 ```
 
 Because the container are not automatically destroyed, this method is useful
@@ -202,9 +211,9 @@ on the running container.
 
 ```shell
 # Fetch the container id from the output of the following command
-$ docker ps
+docker ps
 # Start a new bash session on the container
-$ docker exec -it <container-id> /bin/bash
+docker exec -it <container-id> /bin/bash
 ```
 
 ### Logs

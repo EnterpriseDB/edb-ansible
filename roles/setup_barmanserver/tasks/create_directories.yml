@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure logging directory {{ barman_home }} exists
   file:
     path: "{{ barman_log_file | dirname }}"

@@ -1,7 +1,7 @@
 ---
 - name: Gather service facts
   service_facts:
-  
+
 - name: Stop pg service if running
   systemd:
     name: "{{ pg_service }}"

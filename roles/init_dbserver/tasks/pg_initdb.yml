@@ -12,28 +12,30 @@
 
 - name: Initialize database service
   block:
-  - name: Initialize database postgres service in RedHat
-    ansible.builtin.command: >
-      {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
-    when: ansible_os_family == 'RedHat'
-    become_method: su
-    become_user: "{{ pg_owner }}"
+    - name: Initialize database postgres service in RedHat
+      ansible.builtin.command: >
+        {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
+      when: ansible_os_family == 'RedHat'
+      become: true
+      become_method: su
+      become_user: "{{ pg_owner }}"
 
-  - name: Initialize database postgres service in Debian
-    ansible.builtin.command: >
-      {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
-    when: ansible_os_family == 'Debian'
-    become_method: su
-    become_user: "{{ pg_owner }}"
+    - name: Initialize database postgres service in Debian
+      ansible.builtin.command: >
+        {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
+      when: ansible_os_family == 'Debian'
+      become: true
+      become_method: su
+      become_user: "{{ pg_owner }}"
 
-  - name: Copy the postgresql.conf.template to the server
-    template:
-      src: postgresql.conf.template
-      dest: "{{ pg_data }}/postgresql.auto.conf"
-      owner: "{{ pg_owner }}"
-      group: "{{ pg_group }}"
-      mode: 0600
-  when:  not pg_version_stat.stat.exists
+    - name: Copy the postgresql.conf.template to the server
+      template:
+        src: postgresql.conf.template
+        dest: "{{ pg_data }}/postgresql.auto.conf"
+        owner: "{{ pg_owner }}"
+        group: "{{ pg_group }}"
+        mode: 0600
+  when: not pg_version_stat.stat.exists
   become: yes
 
 - name: Enable and start systemd service

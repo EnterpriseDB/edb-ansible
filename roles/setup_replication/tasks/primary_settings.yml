@@ -11,7 +11,7 @@
 
 - name: Set pg_replication_user_password
   set_fact:
-     pg_replication_user_password: "{{ input_password }}"
+    pg_replication_user_password: "{{ input_password }}"
   when: pg_replication_user_password|length < 1
 
 - name: Set postgres replication users's database cluster password
@@ -20,9 +20,9 @@
     tasks_from: manage_users
   vars:
     pg_users:
-       - name: "{{ pg_replication_user }}"
-         pass: "{{ pg_replication_user_password }}"
-         role_attr_flags: replication
+      - name: "{{ pg_replication_user }}"
+        pass: "{{ pg_replication_user_password }}"
+        role_attr_flags: replication
   no_log: "{{ disable_logging }}"
 
 - name: Grant minimum privileges to replication user for rewind

@@ -1,5 +1,4 @@
 ---
-
 - name: Get pgBackRest node informations
   set_fact:
     pgbackrest_node_info: "{{ lookup('hypersql_devops.postgres.pgbackrest_nodes', wantlist=True) }}"
@@ -10,7 +9,7 @@
 
 - name: Determine if standby_present
   set_fact:
-    standby_present: 'y'
+    standby_present: "y"
   when: _standby_list|length > 0
 
 - name: Get primary node informations

@@ -21,11 +21,11 @@
 - name: Check supported type for PostgreSQL type
   fail:
     msg: "PostgreSQL Type = {{ pg_type }} not suppoprted
-          Supported type are {{ supported_pg_type }}"
+      Supported type are {{ supported_pg_type }}"
   when: pg_type not in supported_pg_type
 
 - name: Check supported versions for Database engine
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
+      Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version

@@ -6,21 +6,22 @@ PgBouncer is a lightweight connection pooler for PostgreSQL.
 ## Requirements
 
 Following are the dependencies and requirement of this role.
-  1. Ansible
-  2. `hypersql_devops.postgres` -> `setup_pgbouncer` - role for setting up PgBouncer
-     on the systems.
+
+1. Ansible
+2. `hypersql_devops.postgres` -> `setup_pgbouncer` - role for setting up PgBouncer
+   on the systems.
 
 ## Role Variables
 
 When executing the role via ansible these are the required variables:
 
-  * ***os***
+- **_os_**
 
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, Rocky8, and Ubuntu20
+  Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, Rocky8, and Ubuntu20
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
+- [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
 Below is the documentation of the rest of the variables:
 
@@ -30,6 +31,7 @@ System user account that runs PgBouncer process and owns its configuration
 files. Default: `pgbouncer`
 
 Example:
+
 ```yaml
 pgbouncer_user: "pgbouncer"
 ```
@@ -39,6 +41,7 @@ pgbouncer_user: "pgbouncer"
 System group that PgBouncer system user is part of. Default: `pgbouncer`
 
 Example:
+
 ```yaml
 pgbouncer_group: "pgbouncer"
 ```
@@ -48,6 +51,7 @@ pgbouncer_group: "pgbouncer"
 PID file path. Default: `/run/pgbouncer/pgbouncer.pid`
 
 Example:
+
 ```yaml
 pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
 ```
@@ -59,6 +63,7 @@ configuration.
 Default: `/etc/pgbouncer/databases.ini`
 
 Example:
+
 ```yaml
 pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
 ```
@@ -69,6 +74,7 @@ List of databases (connection pools).
 Default: `[]`
 
 Example:
+
 ```yaml
 pgbouncer_databases_list:
   - dbname: "my_db"
@@ -87,6 +93,7 @@ The path of the file to load user names and passwords from.
 Default: `/etc/pgbouncer/userlist.txt`
 
 Example:
+
 ```yaml
 pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
 ```
@@ -97,6 +104,7 @@ List of user names and passwords residing in the authentication file.
 Default: `[]`
 
 Example:
+
 ```yaml
 pgbouncer_auth_user_list:
   - username: "my_user"
@@ -109,7 +117,6 @@ pgbouncer_auth_user_list:
     password: "xxxxxx"
     state: present
 ```
-
 
 ## Dependencies
 
@@ -125,6 +132,7 @@ To manage PgBouncer as a standalone application on a dedicated host,
 a Postgres instance, the host variable `pgbouncer` should be set up to `true`.
 
 Content of the `inventory.yml` file:
+
 ```yaml
 ---
 all:
@@ -147,6 +155,7 @@ all:
 ### How to include the `manage_pgbouncer` role in your Playbook
 
 Below is an example of how to include the `manage_pgbouncer` role:
+
 ```yaml
 ---
 - hosts: pgbouncer,primary,standby
@@ -161,7 +170,6 @@ Below is an example of how to include the `manage_pgbouncer` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-
         pgbouncer_databases_list:
           - dbname: "db1"
             host: "xxx.xxx.xxx.xxx"
@@ -203,7 +211,7 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
+- [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
 ## License
 
@@ -213,7 +221,7 @@ BSD
 
 Author:
 
-  * Julien Tachoires
-  * Vibhor Kumar (Reviewer)
-  * EDB Postgres
-  * edb-devops@enterprisedb.com www.enterprisedb.com
+- Julien Tachoires
+- Vibhor Kumar (Reviewer)
+- EDB Postgres
+- edb-devops@enterprisedb.com www.enterprisedb.com

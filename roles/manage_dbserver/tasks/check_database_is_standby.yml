@@ -6,9 +6,9 @@
     tasks_from: check_required_variables
   vars:
     required_variables:
-      - host_is_standby 
+      - host_is_standby
 
-- name: Get pg_is_in_recovery() value from postgres instance 
+- name: Get pg_is_in_recovery() value from postgres instance
   community.postgresql.postgresql_query:
     query: "SELECT pg_catalog.pg_is_in_recovery()"
     port: "{{ pg_port }}"

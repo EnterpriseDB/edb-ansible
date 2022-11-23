@@ -9,8 +9,8 @@
 
 - name: Prepare regex and entry line
   set_fact:
-      search_line: "{{ line_item.host|default('*') }}:{{ pg_port }}:{{ line_item.database|default('*') }}:{{ line_item.user }}"
-      pgpass_line: "{{ line_item.host|default('*') }}:{{ pg_port }}:{{ line_item.database|default('*') }}:{{ line_item.user }}:{{ line_item.password }}"
+    search_line: "{{ line_item.host|default('*') }}:{{ pg_port }}:{{ line_item.database|default('*') }}:{{ line_item.user }}"
+    pgpass_line: "{{ line_item.host|default('*') }}:{{ pg_port }}:{{ line_item.database|default('*') }}:{{ line_item.user }}:{{ line_item.password }}"
   when:
     - pg_pgpass_values|length > 0
 
@@ -37,11 +37,11 @@
     group: "{{ pg_owner }}"
     mode: "0600"
   when: >
-     pg_pgpass_values|length > 0 and
-     (( pgpass_file_exists is defined and pgpass_file_exists.stat.exists )
-       or (line_item.create is defined and
-       (line_item.create == 'yes' or line_item.create == 'true'
-        or line_item.create == 'True' or line_item.create )))
+    pg_pgpass_values|length > 0 and
+    (( pgpass_file_exists is defined and pgpass_file_exists.stat.exists )
+      or (line_item.create is defined and
+      (line_item.create == 'yes' or line_item.create == 'true'
+       or line_item.create == 'True' or line_item.create )))
   no_log: "{{ disable_logging }}"
   become: yes
   become_user: "{{ pg_owner }}"

@@ -1,5 +1,4 @@
 ---
-
 - name: Build configuration file {{ pgbackrest_configuration_file }}
   template:
     src: "./templates/pgbackrest.conf.template"

@@ -4,5 +4,5 @@
   "pg_wal": "/opt/pgwal",
   "repmgr_failover": "automatic",
   "repmgr_reconnect_attempts": 2,
-  "repmgr_reconnect_interval": 2  
+  "repmgr_reconnect_interval": 2
 }

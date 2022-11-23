@@ -2,7 +2,7 @@
 - hosts: localhost
   remote_user: root
   become: yes
-  
+
   tasks:
     - name: Test for checking required variables
       ansible.builtin.import_tasks: test_role.yml

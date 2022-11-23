@@ -6,7 +6,7 @@ Advanced Server versions: 10, 11, 12, 13 and 14 on instances previously configur
 **Not all Distribution or versions are supported on all the operating systems
 available.**
 
-For more details refer to the: *Database engines supported* section.
+For more details refer to the: _Database engines supported_ section.
 
 **Note:**
 The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server
@@ -23,34 +23,34 @@ privileges.**
 
 The only dependencies required for this ansible galaxy role are:
 
-  1. Ansible
-  2. `community.general` Ansible Module - Utilized when creating aditional
-     users during a Postgres Install. Only on primary nodes.
-  3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
-  4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
-     PostgreSQL/EPAS binaries.
+1. Ansible
+2. `community.general` Ansible Module - Utilized when creating aditional
+   users during a Postgres Install. Only on primary nodes.
+3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
+4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
+   PostgreSQL/EPAS binaries.
 
 ## Role variables
 
 When executing the role via ansible there are three required variables:
 
-  * ***pg_version***
+- **_pg_version_**
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+Postgres Versions supported are: 10, 11, 12, 13 and 14
 
-  * ***pg_type***
+- **_pg_type_**
 
-  Database Engine supported are: PG and EPAS
+Database Engine supported are: PG and EPAS
 
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `init_dbserver` role in your Playbook*
+section: _How to include the `init_dbserver` role in your Playbook_
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/init_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
-  * [roles/init_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
-  * [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
-  * [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+- [roles/init_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+- [roles/init_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+- [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+- [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 
 ## Dependencies
 
@@ -124,37 +124,38 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
-  * [roles/init_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
-  * [roles/init_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
-  * [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
-  * [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
-  * [roles/init_dbserver/vars/edb-ssl.yml](./vars/edb-ssl.yml)
+- [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
+- [roles/init_dbserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+- [roles/init_dbserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+- [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+- [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+- [roles/init_dbserver/vars/edb-ssl.yml](./vars/edb-ssl.yml)
 
 ## Database engines supported
 
 ### PostgreSQL
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+
 ### EnterpriseDB Postgres Advanced Server
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 |        :x:         |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 
@@ -168,6 +169,7 @@ $ ansible-playbook playbook.yml \
   --private-key <key.pem> \
   --extra-vars="pg_version=13 pg_type=PG"
 ```
+
 ```bash
 # To deploy EPAS version 12 with the user ec2-user
 $ ansible-playbook playbook.yml \
@@ -185,9 +187,9 @@ BSD
 
 Author:
 
-  * Doug Ortiz
-  * Julien Tachoires
-  * Vibhor Kumar
-  * EDB Postgres
-  * DevOps
-  * edb-devops@enterprisedb www.enterprisedb.com
+- Doug Ortiz
+- Julien Tachoires
+- Vibhor Kumar
+- EDB Postgres
+- DevOps
+- edb-devops@enterprisedb www.enterprisedb.com

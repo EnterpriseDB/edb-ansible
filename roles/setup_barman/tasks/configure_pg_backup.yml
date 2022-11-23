@@ -1,5 +1,4 @@
 ---
-
 - name: Get Barman server informations
   set_fact:
     _barman_server_info: "{{ lookup('hypersql_devops.postgres.barman_server', wantlist=True) }}"
@@ -38,7 +37,7 @@
         value: "replica"
   no_log: "{{ disable_logging }}"
   when:
-  - wal_level_result.query_result[0].setting not in ['replica', 'logical']
+    - wal_level_result.query_result[0].setting not in ['replica', 'logical']
 
 - name: Ensure the replication slot barman exists
   include_role:
@@ -62,7 +61,10 @@
       # Note: barman-wal-archive does not allow using a different SSH port than
       # the default one.
       - name: archive_command
-        value: "rsync -a -e \"ssh -p {{ ssh_port }}\" %p {{ barman_user }}@{{ _barman_host }}:{{ barman_home }}/{{ inventory_hostname }}-{{ pg_instance_name }}/incoming/%f"
+        value: >-
+          rsync -a -e
+          "ssh -p {{ ssh_port }}"
+          %p {{ barman_user }}@{{ _barman_host }}:{{ barman_home }}/{{ inventory_hostname }}-{{ pg_instance_name }}/incoming/%f'
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'rsync'
 

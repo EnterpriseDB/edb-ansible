@@ -7,28 +7,30 @@ from available resources found on the system.
 ## Requirements
 
 Following are the dependencies and requirement of this role.
-  1. Ansible
+
+1. Ansible
 
 ## Role Variables
 
 When executing the role via ansible these are the required variables:
 
-  * pg_version (available: 11, 12, 13, 14)
-  * pg_type (available: PG, HyperSQL)
+- pg_version (available: 11, 12, 13, 14)
+- pg_type (available: PG, HyperSQL)
 
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `autotuning` role in your Playbook*
+section: _How to include the `autotuning` role in your Playbook_
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/autotuning/defaults/main.yml](./defaults/main.yml)
-  * [roles/autotuning/vars/main.yml](./vars/main.yml)
+- [roles/autotuning/defaults/main.yml](./defaults/main.yml)
+- [roles/autotuning/vars/main.yml](./vars/main.yml)
 
 ### `tuned_profile`
 
 This is the `tuned` profile name used for configuring the system. Default: `postgres`
 
 Example:
+
 ```yaml
 tuned_profile: "postgres"
 ```
@@ -38,6 +40,7 @@ tuned_profile: "postgres"
 `tuned` configuration directory path. Default: `/etc/tuned`
 
 Example:
+
 ```yaml
 tuned_configuration_dir: "/etc/tuned"
 ```
@@ -47,6 +50,7 @@ tuned_configuration_dir: "/etc/tuned"
 Let the role knows if the system uses SSD disk based storage. Default: `no`
 
 Example:
+
 ```yaml
 ssd_disk: yes
 ```
@@ -61,6 +65,7 @@ been deployed beforehand with the `init_dbserver` or `setup_replication` roles.
 ### Inventory file content
 
 Content of the `inventory.yml` file:
+
 ```yaml
 ---
 all:
@@ -81,6 +86,7 @@ all:
 ### How to include the `autotuning` role in your Playbook
 
 Below is an example of how to include the `autotuning` role:
+
 ```yaml
 ---
 - hosts: primary,standby
@@ -101,15 +107,19 @@ Below is an example of how to include the `autotuning` role:
   roles:
     - role: autotuning
 ```
+
 ## License
 
 BSD
 
 ## Author information
+
 Author:
-  * [Sung Woo Chang](https://github.com/dbxpert)
+
+- [Sung Woo Chang](https://github.com/dbxpert)
 
 Original Author:
-  * Julien Tachoires
-  * Vibhor Kumar (Reviewer)
-  * EDB Postgres
+
+- Julien Tachoires
+- Vibhor Kumar (Reviewer)
+- EDB Postgres

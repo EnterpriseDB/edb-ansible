@@ -8,36 +8,36 @@ configured.
 
 The requirements for this ansible galaxy role are:
 
-  1. Ansible
-  2. `community.general` - utilized when creating aditional users during a
-     Postgres Install. Only on primary nodes.
-  3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
-  4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
-     PostgreSQL/EPAS binaries.
-  5. `hypersql_devops.postgres` -> `init_dbserver` - for the initialization of
-     primary server
+1. Ansible
+2. `community.general` - utilized when creating aditional users during a
+   Postgres Install. Only on primary nodes.
+3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
+4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
+   PostgreSQL/EPAS binaries.
+5. `hypersql_devops.postgres` -> `init_dbserver` - for the initialization of
+   primary server
 
 ## Role variables
 
 When executing the role via ansible there are three required variables:
 
-  * ***os***
+- **_os_**
 
-  Operating Systems supported are: CentOS7 and RHEL7
+Operating Systems supported are: CentOS7 and RHEL7
 
-  * ***pg_version***
+- **_pg_version_**
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+Postgres Versions supported are: 10, 11, 12, 13 and 14
 
-  * ***pg_type***
+- **_pg_type_**
 
-  Database Engine supported are: PG and EPAS
+Database Engine supported are: PG and EPAS
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_replication/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/setup_replication/vars/PG.yml](./vars/PG.yml)
+- [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_replication/vars/EPAS.yml](./vars/EPAS.yml)
+- [roles/setup_replication/vars/PG.yml](./vars/PG.yml)
 
 ## Dependencies
 
@@ -100,38 +100,37 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_replication/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
-  * [roles/setup_replication/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
-  * [roles/setup_replication/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
-  * [roles/setup_replication/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+- [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_replication/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+- [roles/setup_replication/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+- [roles/setup_replication/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+- [roles/setup_replication/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## Database engines supported
 
-
 ### Community PostgreSQL
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 ### EnterpriseDB Postgres Advanced Server and PEM
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 |        :x:         |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 ## Playbook execution examples
 
@@ -144,6 +143,7 @@ $ ansible-playbook playbook.yml \
   --private-key <key.pem> \
   --extra-vars="pg_version=13 pg_type=PG efm_version=4.0"
 ```
+
 ```bash
 # To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user EFM version
 # 3.10
@@ -162,4 +162,4 @@ BSD
 
 Author:
 
-  * EDB Postgres - www.enterprisedb.com
+- EDB Postgres - www.enterprisedb.com

@@ -6,30 +6,31 @@ connection pooler for PostgreSQL.
 ## Requirements
 
 Following are the requirements of this role.
-  1. Ansible
-  2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
-     the systems.
+
+1. Ansible
+2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
+   the systems.
 
 ## Role Variables
 
 When executing the role via ansible these are the required variables:
 
-  * ***pg_version***
+- **_pg_version_**
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+Postgres Versions supported are: 10, 11, 12, 13 and 14
 
-  * ***pg_type***
+- **_pg_type_**
 
-  Database Engine supported are: PG and EPAS
+Database Engine supported are: PG and EPAS
 
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `setup_pgpool2` role in your Playbook*
+section: _How to include the `setup_pgpool2` role in your Playbook_
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
-  * [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+- [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
+- [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
 
 Below is the documentation of the rest of the main variables:
 
@@ -39,6 +40,7 @@ Enable PgpoolII High Availability capability when deploying a PgpoolII multi
 nodes cluster (3, 5 etc..). Default: `false`
 
 Example:
+
 ```yaml
 pgpool2_watchdog: true
 ```
@@ -50,6 +52,7 @@ deploying a PgpoolII multi node cluster. Watchdog feature must be enabled.
 Default: empty.
 
 Example:
+
 ```yaml
 pgpool2_vip: "10.0.0.123"
 ```
@@ -59,6 +62,7 @@ pgpool2_vip: "10.0.0.123"
 System's network device to attach the virtual IP address. Default: empty.
 
 Example:
+
 ```yaml
 pgpool2_vip_dev: "eth0"
 ```
@@ -69,6 +73,7 @@ Enable read only queries load balancing across all the Postgres nodes.
 Default: `true`.
 
 Example:
+
 ```yaml
 pgpool_load_balancing: true
 ```
@@ -78,6 +83,7 @@ pgpool_load_balancing: true
 Enable SSL support. Default: `true`.
 
 Example:
+
 ```yaml
 pgpool2_ssl: true
 ```
@@ -87,6 +93,7 @@ pgpool2_ssl: true
 Pgpool2 listening TCP port. Default: `9999`.
 
 Example:
+
 ```yaml
 pgpool2_port: 5433
 ```
@@ -145,6 +152,7 @@ all:
 ### How to include the `setup_pgpool2` role in your Playbook
 
 Below is an example of how to include the `setup_pgpool2` role:
+
 ```yaml
 ---
 - hosts: pgpool2
@@ -175,9 +183,9 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
+- [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+- [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
 
 ## License
 
@@ -187,7 +195,7 @@ BSD
 
 Author:
 
-  * Julien Tachoires
-  * Vibhor Kumar (Reviewer)
-  * EDB Postgres
-  * edb-devops@enterprisedb.com www.enterprisedb.com
+- Julien Tachoires
+- Vibhor Kumar (Reviewer)
+- EDB Postgres
+- edb-devops@enterprisedb.com www.enterprisedb.com

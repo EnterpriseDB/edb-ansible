@@ -10,7 +10,7 @@
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        disable_logging: false     
+        disable_logging: false
 
   roles:
     - role: setup_repo

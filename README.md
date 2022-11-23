@@ -1,42 +1,42 @@
-[![Version on Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=ansible-galalxy&prefix=v&url=https://galaxy.ansible.com/api/v2/collections/hypersql_devops/postgres/&query=latest_version.version)](https://galaxy.ansible.com/hypersql_devops/postgres)
+# PG Ansible
 
-#  PG Ansible
+[![Version on Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=ansible-galalxy&prefix=v&url=https://galaxy.ansible.com/api/v2/collections/hypersql_devops/postgres/&query=latest_version.version)](https://galaxy.ansible.com/hypersql_devops/postgres)
 
 This repository is for hosting an Ansible Galaxy Collection **hypersql_devops.postgres** which helps users easily deploy HyperSQL package for PostgreSQL.
 
-*The ansible playbook must be executed under an account that has full
-privileges.*
+_The ansible playbook must be executed under an account that has full
+privileges._
 
 The following table describes the roles included in **hypersql_devops.postgres** collection.
 
-| Role name                                                                                | Description                                                                                                                                                                                            |
-|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [autotuning](roles/autotuning/README.md)                                                 | The autotuning role configures the system and Postgres instances for optimal performances. Most of the configuration values are calculated automatically from available resources found on the system. |
-| [init_dbserver](roles/init_dbserver/README.md)                                           | Initialize the PostgreSQL cluster (data) directory.                                                                                                                                               |
-| [install_dbserver](roles/install_dbserver/README.md)                                     | Install PostgreSQL database server packages.                                                                                                                                                      |
-| [manage_dbserver](roles/manage_dbserver/README.md)                                       | Manage PostgreSQL clusters and covers common tasks.                                                                                                                                               |
-| [manage_pgbouncer](roles/manage_pgbouncer/README.md)                                     | Manage PgBouncer pools list and users.                                                                                                                                                                 |
-| [manage_pgpool2](roles/manage_pgpool2/README.md)                                         | Manage Pgpool-II settings and users.                                                                                                                                                                   |
-| [setup_barman](roles/setup_barman/README.md)                                             | Set up PostgreSQL backups with Barman.                                                                                                                                                            |
-| [setup_barmanserver](roles/setup_barmanserver/README.md)                                 | Set up Barman (Postgres backup) server.                                                                                                                                                                |
-| [setup_pgbackrest](roles/setup_pgbackrest/README.md)                                     | Set up PostgreSQL backups with pgBackRest.                                                                                                                                                        |
-| [setup_pgbackrestserver](roles/setup_pgbackrestserver/README.md)                         | Set up pgBackRest server for Postgres backups and recovery.                                                                                                                                            |
-| [setup_pgbouncer](roles/setup_pgbouncer/README.md)                                       | Set up PgBouncer connection pooler.                                                                                                                                                                    |
-| [setup_pgpool2](roles/setup_pgpool2/README.md)                                           | Set up Pgpool-II connection pooler/load balancer.                                                                                                                                                      |
-| [setup_replication](roles/setup_replication/README.md)                                   | Set up the data replication (synchronous/asynchronous).                                                                                                                                                |
-| [setup_repmgr](roles/setup_repmgr/README.md)                                             | Set up Repmgr for PostgreSQL HA cluster.                                                                                                                                                          |
-| [setup_repo](roles/setup_repo/README.md)                                                 | Set up the PostgreSQL Community and EPEL repositories.                                                                                                                                            |
+| Role name                                                        | Description                                                                                                                                                                                            |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [autotuning](roles/autotuning/README.md)                         | The autotuning role configures the system and Postgres instances for optimal performances. Most of the configuration values are calculated automatically from available resources found on the system. |
+| [init_dbserver](roles/init_dbserver/README.md)                   | Initialize the PostgreSQL cluster (data) directory.                                                                                                                                                    |
+| [install_dbserver](roles/install_dbserver/README.md)             | Install PostgreSQL database server packages.                                                                                                                                                           |
+| [manage_dbserver](roles/manage_dbserver/README.md)               | Manage PostgreSQL clusters and covers common tasks.                                                                                                                                                    |
+| [manage_pgbouncer](roles/manage_pgbouncer/README.md)             | Manage PgBouncer pools list and users.                                                                                                                                                                 |
+| [manage_pgpool2](roles/manage_pgpool2/README.md)                 | Manage Pgpool-II settings and users.                                                                                                                                                                   |
+| [setup_barman](roles/setup_barman/README.md)                     | Set up PostgreSQL backups with Barman.                                                                                                                                                                 |
+| [setup_barmanserver](roles/setup_barmanserver/README.md)         | Set up Barman (Postgres backup) server.                                                                                                                                                                |
+| [setup_pgbackrest](roles/setup_pgbackrest/README.md)             | Set up PostgreSQL backups with pgBackRest.                                                                                                                                                             |
+| [setup_pgbackrestserver](roles/setup_pgbackrestserver/README.md) | Set up pgBackRest server for Postgres backups and recovery.                                                                                                                                            |
+| [setup_pgbouncer](roles/setup_pgbouncer/README.md)               | Set up PgBouncer connection pooler.                                                                                                                                                                    |
+| [setup_pgpool2](roles/setup_pgpool2/README.md)                   | Set up Pgpool-II connection pooler/load balancer.                                                                                                                                                      |
+| [setup_replication](roles/setup_replication/README.md)           | Set up the data replication (synchronous/asynchronous).                                                                                                                                                |
+| [setup_repmgr](roles/setup_repmgr/README.md)                     | Set up Repmgr for PostgreSQL HA cluster.                                                                                                                                                               |
+| [setup_repo](roles/setup_repo/README.md)                         | Set up the PostgreSQL Community and EPEL repositories.                                                                                                                                                 |
 
 ## Pre-Requisites
 
 For correctly installed and configuration of the cluster following are requirements:
 
-  1. Ansible (on the machine on which playbook will be executed).
-  2. Operating system privileged user (user with sudo privilege) on all the
-     servers/virtual machines.
-  3. Machines for the Postgres cluster should have at least 2 CPUs and
-     4 GB of RAM
-  4. The machine utilized for deploying with ansible can be a minimal instance
+1. Ansible (on the machine on which playbook will be executed).
+2. Operating system privileged user (user with sudo privilege) on all the
+   servers/virtual machines.
+3. Machines for the Postgres cluster should have at least 2 CPUs and
+   4 GB of RAM
+4. The machine utilized for deploying with ansible can be a minimal instance
 
 ## Installation
 
@@ -45,9 +45,11 @@ To install Ansible: **[Installing Ansible](https://docs.ansible.com/ansible/late
 **hypersql_devops.postgres** can be installed in the following approaches:
 
 ### Installing from Ansible Galaxy
+
 Use the command below to install **hypersql_devops.postgres**:
+
 ```bash
-$ ansible-galaxy collection install hypersql_devops.postgres --force
+ansible-galaxy collection install hypersql_devops.postgres --force
 ```
 
 This approach automatically makes the **hypersql_devops.postgres** collection available to
@@ -61,12 +63,13 @@ By default the location of your installed collection is:
 `~/.ansible/collections/ansible_collections`
 
 ### Cloning the source code from the repository GitHub
+
 Use the command below to install **hypersql_devops.postgres**:
 
 ```bash
-$ git clone https://github.com/hypersql/pg-ansible.git 
-$ cd pg-ansible
-$ make install
+git clone https://github.com/hypersql/pg-ansible.git
+cd pg-ansible
+make install
 ```
 
 This approach automatically makes the **hypersql_devops.postgres** collection available to
@@ -168,16 +171,16 @@ You can customize the above example to install HyperSQL Package by selecting whi
 The following will occur should a password not be provided for the following
 accounts:
 
-  * `pg_superuser`
-  * `pg_replication_user`
+- `pg_superuser`
+- `pg_replication_user`
 
 **Note:**
 
-  * The `~/.pgpassfile` folder and contained files are secured by assigning the
-    permissions to `user` executing the playbook.
-  * A password of 20 characters will be automatically created under: `~/.edb`
-    folder.
-  * The naming convention for the password file is: `<username>_pass`
+- The `~/.pgpassfile` folder and contained files are secured by assigning the
+  permissions to `user` executing the playbook.
+- A password of 20 characters will be automatically created under: `~/.edb`
+  folder.
+- The naming convention for the password file is: `<username>_pass`
 
 ## Playbook examples
 
@@ -187,6 +190,7 @@ Examples of utilizing the playbooks for installing HyperSQL Package are provided
 
 When using non standard SSH port (different from 22), the port value must be
 set in two places:
+
 - in the inventory file, for each host, with the host var. `ansible_port`
 - in the playbook or variable file with the variable `ssh_port`
 
@@ -194,7 +198,7 @@ set in two places:
 
 ```bash
 # To deploy community Postgres version 13
-$ ansible-playbook playbook.yml \
+ansible-playbook playbook.yml \
   -i inventory.yml \
   -u <ssh-user> \
   --private-key <ssh-private-key> \
@@ -205,16 +209,16 @@ $ ansible-playbook playbook.yml \
 
 ### PostgreSQL
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Oracle Linux 7                    |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Oracle Linux 7                    | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 - :x: - Not tested and not supported
@@ -226,5 +230,6 @@ BSD
 ## Author information
 
 Authors:
-  * [Sung Woo Chang](https://github.com/dbxpert)
-  * [Sang Myeung Lee](https://github.com/sungmu1)
+
+- [Sung Woo Chang](https://github.com/dbxpert)
+- [Sang Myeung Lee](https://github.com/sungmu1)

@@ -23,4 +23,3 @@
       when: "'setup_replication' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_repmgr
       when: "'setup_repmgr' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
-

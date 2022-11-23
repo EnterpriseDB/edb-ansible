@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -43,53 +44,52 @@ class LookupModule(LookupBase):
         pg_standbys = {}
         pg_primary_map = {}
 
-        myvars = getattr(self._templar, '_available_variables', {})
+        myvars = getattr(self._templar, "_available_variables", {})
 
         # If no terms, we'll used the current private IP
         if len(terms) == 0:
-            node_private_ip = myvars['hostvars'][variables['inventory_hostname']]['private_ip']
+            node_private_ip = myvars["hostvars"][variables["inventory_hostname"]][
+                "private_ip"
+            ]
         else:
             node_private_ip = terms[0]
 
         # If no primary found in the inventory we return an empty list
-        if 'primary' not in variables['groups']:
+        if "primary" not in variables["groups"]:
             return []
 
         # Initiate pg_clusters and pg_primary_map for each primary node we have
         # in the inventory.
-        for host in variables['groups']['primary']:
-            hostvars = myvars['hostvars'][host]
-            private_ip = hostvars['private_ip']
+        for host in variables["groups"]["primary"]:
+            hostvars = myvars["hostvars"][host]
+            private_ip = hostvars["private_ip"]
 
             pg_clusters[private_ip] = []
             pg_clusters[private_ip].append(
                 dict(
-                    node_type='primary',
-                    ansible_host=hostvars['ansible_host'],
-                    hostname=hostvars.get('hostname',
-                                          hostvars.get('ansible_hostname')),
-                    private_ip=hostvars['private_ip'],
+                    node_type="primary",
+                    ansible_host=hostvars["ansible_host"],
+                    hostname=hostvars.get("hostname", hostvars.get("ansible_hostname")),
+                    private_ip=hostvars["private_ip"],
                     upstream_node_private_ip=None,
                     replication_type=None,
-                    inventory_hostname=hostvars['inventory_hostname']
+                    inventory_hostname=hostvars["inventory_hostname"],
                 )
             )
             pg_primary_map[private_ip] = private_ip
 
         # Populate pg_standbys dict if we have standby nodes in the inventory
-        if 'standby' in variables['groups']:
-            for host in variables['groups']['standby']:
-                hostvars = myvars['hostvars'][host]
+        if "standby" in variables["groups"]:
+            for host in variables["groups"]["standby"]:
+                hostvars = myvars["hostvars"][host]
                 pg_standbys[host] = dict(
-                    node_type='standby',
-                    ansible_host=hostvars['ansible_host'],
-                    hostname=hostvars.get('hostname',
-                                          hostvars.get('ansible_hostname')),
-                    private_ip=hostvars['private_ip'],
-                    upstream_node_private_ip=hostvars['upstream_node_private_ip'],
-                    replication_type=hostvars.get('replication_type',
-                                                  'asynchronous'),
-                    inventory_hostname=hostvars['inventory_hostname']
+                    node_type="standby",
+                    ansible_host=hostvars["ansible_host"],
+                    hostname=hostvars.get("hostname", hostvars.get("ansible_hostname")),
+                    private_ip=hostvars["private_ip"],
+                    upstream_node_private_ip=hostvars["upstream_node_private_ip"],
+                    replication_type=hostvars.get("replication_type", "asynchronous"),
+                    inventory_hostname=hostvars["inventory_hostname"],
                 )
 
         pg_standbys_len = len(pg_standbys.keys())
@@ -101,12 +101,12 @@ class LookupModule(LookupBase):
             for k in list(pg_standbys.keys()):
                 sby = pg_standbys[k]
 
-                if sby['upstream_node_private_ip'] in pg_primary_map:
-                    upstream_private_ip = sby['upstream_node_private_ip']
+                if sby["upstream_node_private_ip"] in pg_primary_map:
+                    upstream_private_ip = sby["upstream_node_private_ip"]
                     primary_private_ip = pg_primary_map[upstream_private_ip]
-                    pg_primary_map[sby['private_ip']] = primary_private_ip
+                    pg_primary_map[sby["private_ip"]] = primary_private_ip
                     pg_clusters[primary_private_ip].append(sby)
-                    del(pg_standbys[k])
+                    del pg_standbys[k]
 
             # Case when at least one host has not been handled in this loop
             # iteration.
@@ -118,7 +118,6 @@ class LookupModule(LookupBase):
                 )
 
             pg_standbys_len = len(pg_standbys.keys())
-
 
         if node_private_ip in pg_primary_map:
             # Current node is part of one of the SR clusters found

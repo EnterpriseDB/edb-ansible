@@ -1,5 +1,4 @@
 ---
-
 - name: Initialize the hba_entries variable
   set_fact:
     hba_entries: >-

@@ -10,10 +10,10 @@
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 13            # Change the version of Postgres you want to install
-        pg_type: "PG"             # Change the pg_type to EPAS if EDB Advanced Server is needed
-        yum_username: ""          # EDB repository username
-        yum_password: ""          # EDB repository password
+        pg_version: 13 # Change the version of Postgres you want to install
+        pg_type: "PG" # Change the pg_type to EPAS if EDB Advanced Server is needed
+        yum_username: "" # EDB repository username
+        yum_password: "" # EDB repository password
 
   roles:
     - role: setup_repo

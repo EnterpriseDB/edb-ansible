@@ -9,7 +9,7 @@
 
 - name: Set pg_repmgr_user_password
   ansible.builtin.set_fact:
-     pg_repmgr_user_password: "{{ input_password }}"
+    pg_repmgr_user_password: "{{ input_password }}"
   when: pg_repmgr_user_password|length < 1
 
 - name: Create repmgr database user

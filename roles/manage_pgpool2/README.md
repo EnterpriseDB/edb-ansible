@@ -5,27 +5,27 @@ This role is for managing PgpoolII configuration parameters and user list.
 ## Requirements
 
 Following are the dependencies and requirement of this role.
-  1. Ansible
-  2. `hypersql_devops.postgres` -> `setup_pgpool2` - role for setting up PgpoolII
-     on the systems.
+
+1. Ansible
+2. `hypersql_devops.postgres` -> `setup_pgpool2` - role for setting up PgpoolII
+   on the systems.
 
 ## Role Variables
 
 When executing the role via ansible these are the required variables:
 
-  * ***pg_version***
+- **_pg_version_**
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+Postgres Versions supported are: 10, 11, 12, 13 and 14
 
-  * ***pg_type***
+- **_pg_type_**
 
-  Database Engine supported are: PG and EPAS
-
+Database Engine supported are: PG and EPAS
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/manage_pgpool2/vars/PG.yml](./vars/PG.yml)
-  * [roles/manage_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+- [roles/manage_pgpool2/vars/PG.yml](./vars/PG.yml)
+- [roles/manage_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
 
 Below is the documentation of the rest of the variables:
 
@@ -35,6 +35,7 @@ This is the list of the configuration parameters to be changed in PgpoolII
 configuration file.
 
 Example:
+
 ```yaml
 pgpool2_configuration:
   - key: "port"
@@ -61,6 +62,7 @@ configuration file. Default value is `present`.
 This is the list of PgpoolII user account to managed.
 
 Example:
+
 ```yaml
 pgpool2_users:
   - name: "my_user1"
@@ -83,6 +85,7 @@ authentication file. Default value is `present`.
 This is the list of PgpoolII pcp user account to managed.
 
 Example:
+
 ```yaml
 pcp_users:
   - name: "my_user1"
@@ -128,6 +131,7 @@ all:
 ### How to include the `manage_pgpool2` role in your Playbook
 
 Below is an example of how to include the `manage_pgpool2` role:
+
 ```yaml
 ---
 - hosts: pgpool2
@@ -174,9 +178,9 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/manage_pgpool2/defaults/main.yml](./defaults/main.yml)
-  * [roles/manage_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/manage_pgpool2/vars/PG.yml](./vars/PG.yml)
+- [roles/manage_pgpool2/defaults/main.yml](./defaults/main.yml)
+- [roles/manage_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+- [roles/manage_pgpool2/vars/PG.yml](./vars/PG.yml)
 
 ## License
 
@@ -186,7 +190,7 @@ BSD
 
 Author:
 
-  * Julien Tachoires
-  * Vibhor Kumar (Reviewer)
-  * EDB Postgres
-  * edb-devops@enterprisedb.com www.enterprisedb.com
+- Julien Tachoires
+- Vibhor Kumar (Reviewer)
+- EDB Postgres
+- edb-devops@enterprisedb.com www.enterprisedb.com

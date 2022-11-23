@@ -1,5 +1,4 @@
 ---
-
 - name: Initialize the Postgres parameters list
   set_fact:
     _pg_postgres_conf_params:

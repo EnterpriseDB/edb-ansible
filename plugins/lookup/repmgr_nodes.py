@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -44,76 +45,74 @@ class LookupModule(LookupBase):
         repmgr_primary_map = {}
         node_id = {}
 
-        myvars = getattr(self._templar, '_available_variables', {})
+        myvars = getattr(self._templar, "_available_variables", {})
 
         # If no terms, we'll used the current private IP
         if len(terms) == 0:
-            node_private_ip = myvars['hostvars'][variables['inventory_hostname']]['private_ip']  # noqa
+            node_private_ip = myvars["hostvars"][variables["inventory_hostname"]][
+                "private_ip"
+            ]  # noqa
         else:
             node_private_ip = terms[0]
 
         # If no primary found in the inventory we return an empty list
-        if 'primary' not in variables['groups']:
+        if "primary" not in variables["groups"]:
             return []
 
         # Initiate repmgr_clusters and repmgr_primary_map for each primary node we have
         # in the inventory.
-        for host in variables['groups']['primary']:
-            hostvars = myvars['hostvars'][host]
-            private_ip = hostvars['private_ip']
+        for host in variables["groups"]["primary"]:
+            hostvars = myvars["hostvars"][host]
+            private_ip = hostvars["private_ip"]
 
             node_id[private_ip] = 1
             repmgr_clusters[private_ip] = []
             repmgr_clusters[private_ip].append(
                 dict(
-                    node_type='primary',
+                    node_type="primary",
                     id=node_id[private_ip],
-                    ansible_host=hostvars['ansible_host'],
-                    hostname=hostvars.get('hostname',
-                                          hostvars.get('ansible_hostname')),
-                    private_ip=hostvars['private_ip'],
+                    ansible_host=hostvars["ansible_host"],
+                    hostname=hostvars.get("hostname", hostvars.get("ansible_hostname")),
+                    private_ip=hostvars["private_ip"],
                     upstream_node_private_ip=None,
                     replication_type=None,
-                    inventory_hostname=hostvars['inventory_hostname']
+                    inventory_hostname=hostvars["inventory_hostname"],
                 )
             )
             repmgr_primary_map[private_ip] = private_ip
 
         # Populate repmgr_standbys dict if we have standby nodes in the inventory
-        if 'standby' in variables['groups']:
-            for host in variables['groups']['standby']:
-                hostvars = myvars['hostvars'][host]
-                node_id[hostvars['upstream_node_private_ip']] += 1
+        if "standby" in variables["groups"]:
+            for host in variables["groups"]["standby"]:
+                hostvars = myvars["hostvars"][host]
+                node_id[hostvars["upstream_node_private_ip"]] += 1
                 repmgr_standbys[host] = dict(
-                    node_type='standby',
-                    id=node_id[hostvars['upstream_node_private_ip']],
-                    ansible_host=hostvars['ansible_host'],
-                    hostname=hostvars.get('hostname',
-                                          hostvars.get('ansible_hostname')),
-                    private_ip=hostvars['private_ip'],
-                    upstream_node_private_ip=hostvars['upstream_node_private_ip'],
-                    replication_type=hostvars.get('replication_type',
-                                                  'asynchronous'),
-                    inventory_hostname=hostvars['inventory_hostname']
+                    node_type="standby",
+                    id=node_id[hostvars["upstream_node_private_ip"]],
+                    ansible_host=hostvars["ansible_host"],
+                    hostname=hostvars.get("hostname", hostvars.get("ansible_hostname")),
+                    private_ip=hostvars["private_ip"],
+                    upstream_node_private_ip=hostvars["upstream_node_private_ip"],
+                    replication_type=hostvars.get("replication_type", "asynchronous"),
+                    inventory_hostname=hostvars["inventory_hostname"],
                 )
 
         repmgr_standbys_len = len(repmgr_standbys.keys())
 
         # Populate repmgr_witnesses dict if we have witness nodes in the inventory
-        if 'witness' in variables['groups']:
-            for host in variables['groups']['witness']:
-                hostvars = myvars['hostvars'][host]
-                node_id[hostvars['upstream_node_private_ip']] += 1
+        if "witness" in variables["groups"]:
+            for host in variables["groups"]["witness"]:
+                hostvars = myvars["hostvars"][host]
+                node_id[hostvars["upstream_node_private_ip"]] += 1
                 repmgr_witnesses[host] = dict(
-                    node_type='witness',
-                    id=node_id[hostvars['upstream_node_private_ip']],
-                    ansible_host=hostvars['ansible_host'],
-                    hostname=hostvars.get('hostname',
-                                          hostvars.get('ansible_hostname')),
-                    private_ip=hostvars['private_ip'],
-                    upstream_node_private_ip=hostvars['upstream_node_private_ip'],
+                    node_type="witness",
+                    id=node_id[hostvars["upstream_node_private_ip"]],
+                    ansible_host=hostvars["ansible_host"],
+                    hostname=hostvars.get("hostname", hostvars.get("ansible_hostname")),
+                    private_ip=hostvars["private_ip"],
+                    upstream_node_private_ip=hostvars["upstream_node_private_ip"],
                     replication_type=None,
-                    inventory_hostname=hostvars['inventory_hostname']
+                    inventory_hostname=hostvars["inventory_hostname"],
                 )
 
         repmgr_witnesses_len = len(repmgr_witnesses.keys())
@@ -125,12 +124,12 @@ class LookupModule(LookupBase):
             for k in list(repmgr_standbys.keys()):
                 sby = repmgr_standbys[k]
 
-                if sby['upstream_node_private_ip'] in repmgr_primary_map:
-                    upstream_private_ip = sby['upstream_node_private_ip']
+                if sby["upstream_node_private_ip"] in repmgr_primary_map:
+                    upstream_private_ip = sby["upstream_node_private_ip"]
                     primary_private_ip = repmgr_primary_map[upstream_private_ip]
-                    repmgr_primary_map[sby['private_ip']] = primary_private_ip
+                    repmgr_primary_map[sby["private_ip"]] = primary_private_ip
                     repmgr_clusters[primary_private_ip].append(sby)
-                    del(repmgr_standbys[k])
+                    del repmgr_standbys[k]
 
             # Case when at least one host has not been handled in this loop
             # iteration.
@@ -150,12 +149,12 @@ class LookupModule(LookupBase):
             for k in list(repmgr_witnesses.keys()):
                 wit = repmgr_witnesses[k]
 
-                if wit['upstream_node_private_ip'] in repmgr_primary_map:
-                    upstream_private_ip = wit['upstream_node_private_ip']
+                if wit["upstream_node_private_ip"] in repmgr_primary_map:
+                    upstream_private_ip = wit["upstream_node_private_ip"]
                     primary_private_ip = repmgr_primary_map[upstream_private_ip]
-                    repmgr_primary_map[wit['private_ip']] = primary_private_ip
+                    repmgr_primary_map[wit["private_ip"]] = primary_private_ip
                     repmgr_clusters[primary_private_ip].append(wit)
-                    del(repmgr_witnesses[k])
+                    del repmgr_witnesses[k]
 
             # Case when at least one host has not been handled in this loop
             # iteration.
@@ -167,7 +166,6 @@ class LookupModule(LookupBase):
                 )
 
             repmgr_witnesses_len = len(repmgr_witnesses.keys())
-
 
         if node_private_ip in repmgr_primary_map:
             # Current node is part of one of the SR clusters found

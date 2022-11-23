@@ -27,16 +27,8 @@
   when: pg_hba_ip_addresses|length > 0
   with_items: "{{ pg_hba_ip_addresses }}"
   loop_control:
-      loop_var: line_item
+    loop_var: line_item
   no_log: "{{ disable_logging }}"
-  register: hba_update
   throttle: 1
-
-- name: Reload the pg service
-  systemd:
-    name: "{{ pg_service }}"
-    daemon_reload: yes
-    state: reloaded
-  become: yes
-  no_log: "{{ disable_logging }}"
-  when: hba_update.changed
+  notify:
+    - Reload the pg service

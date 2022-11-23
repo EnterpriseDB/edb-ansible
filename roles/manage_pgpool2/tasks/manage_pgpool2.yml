@@ -1,5 +1,4 @@
 ---
-
 - name: Set the os variable
   set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
@@ -18,13 +17,13 @@
 - name: Check supported versions for Database engine
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
+      Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Check supported versions for pgpoolII
   fail:
     msg: "pgpoolII Version = {{ pgpool2_version }} not supported.
-          Supported versions are {{ supported_pgpool2_version }}"
+      Supported versions are {{ supported_pgpool2_version }}"
   when:
     - pg_type == "EPAS"
     - pgpool2_version not in supported_pgpool2_version

@@ -1,5 +1,4 @@
 ---
-
 pg_instance_name: main
 tuned_profile: "postgres"
 tuned_configuration_dir: "/etc/tuned"

@@ -1,5 +1,4 @@
 ---
-
 # pgBackRest RPM package name
 pgbackrest_package_name: "pgbackrest"
 

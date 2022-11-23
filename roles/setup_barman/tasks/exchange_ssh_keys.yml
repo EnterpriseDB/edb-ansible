@@ -1,5 +1,4 @@
 ---
-
 - name: Get Barman server informations
   set_fact:
     _barman_server_info: "{{ lookup('hypersql_devops.postgres.barman_server', wantlist=True) }}"
@@ -37,7 +36,7 @@
 
 - name: Set _barman_server_ssh_public_key
   set_fact:
-      _barman_server_ssh_public_key: "{{ _barman_server_ssh_public_key_b64.content | b64decode | trim }}"
+    _barman_server_ssh_public_key: "{{ _barman_server_ssh_public_key_b64.content | b64decode | trim }}"
 
 - name: Fetch {{ pg_owner }} SSH public key
   slurp:
@@ -47,7 +46,7 @@
 
 - name: Set _pg_ssh_public_key
   set_fact:
-      _pg_ssh_public_key: "{{ _pg_ssh_public_key_b64.content | b64decode | trim }}"
+    _pg_ssh_public_key: "{{ _pg_ssh_public_key_b64.content | b64decode | trim }}"
 
 - name: Ensure {{ pg_owner }} SSH public key is on the barman server
   lineinfile:

@@ -11,18 +11,18 @@
       "quoted": true,
       "state": "present"
     }
-   ],
-   "pgpool2_users": [
+  ],
+  "pgpool2_users": [
     {
-     "name": "test",
-     "pass": "password",
-     "auth": "scram"
+      "name": "test",
+      "pass": "password",
+      "auth": "scram"
     }
-   ],
-   "pcp_users": [
+  ],
+  "pcp_users": [
     {
-     "name": "test",
-     "pass": "password"
+      "name": "test",
+      "pass": "password"
     }
   ]
 }

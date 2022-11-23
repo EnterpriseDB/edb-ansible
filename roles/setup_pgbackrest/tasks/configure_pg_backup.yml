@@ -1,5 +1,4 @@
 ---
-
 - name: Get pgBackRest server informations
   set_fact:
     _pgbackrest_server_info: "{{ lookup('hypersql_devops.postgres.pgbackrest_server', wantlist=True) }}"

@@ -1,5 +1,4 @@
 ---
-
 - name: Check support for Operating System
   fail:
     msg: "Operating System = {{ os }} not supported."

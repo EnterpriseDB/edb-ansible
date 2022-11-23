@@ -1,5 +1,4 @@
 ---
-
 - name: Gather hardware informations
   set_fact:
     sys_nvcpus: "{{ ansible_processor_vcpus }}"

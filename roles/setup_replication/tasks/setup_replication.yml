@@ -11,7 +11,7 @@
 - name: Check supported versions for Database engine
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
+      Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Reference EPAS or PG variables
@@ -36,7 +36,7 @@
   block:
     - include_tasks: rm_replication.yml
   when: (force_initdb is defined and force_initdb)
-      or (force_replication is defined and force_replication)
+    or (force_replication is defined and force_replication)
   become: yes
 
 - name: Gather the cluste_nodes information
@@ -49,7 +49,7 @@
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
-  when:  node.node_type == 'primary'
+  when: node.node_type == 'primary'
   run_once: true
   no_log: "{{ disable_logging }}"
 
@@ -103,20 +103,20 @@
 - name: Update primary for synchronous replication
   import_tasks: primary_synchronous_param.yml
   when: >-
-      _synchronous_standbys is defined and (
-      _synchronous_standbys|length > 0
-      or synchronous_standby_names|length > 0 )
+    _synchronous_standbys is defined and (
+    _synchronous_standbys|length > 0
+    or synchronous_standby_names|length > 0 )
   run_once: true
   delegate_to: "{{ primary_inventory_hostname }}"
   no_log: "{{ disable_logging }}"
 
 - name: Reset the variables based on the user input
   set_fact:
-      primary_private_ip: ""
-      primary_inventory_hostname: ""
-      primary_host_name: ""
-      standby_names: []
-      pg_allow_ip_addresses: []
-      standby_physical_slots: []
-      force_replication: false
+    primary_private_ip: ""
+    primary_inventory_hostname: ""
+    primary_host_name: ""
+    standby_names: []
+    pg_allow_ip_addresses: []
+    standby_physical_slots: []
+    force_replication: false
   register: output

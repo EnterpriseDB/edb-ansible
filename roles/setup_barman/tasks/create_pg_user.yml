@@ -1,5 +1,4 @@
 ---
-
 - name: Initialize _role_attr_flags
   set_fact:
     _role_attr_flags: "login,replication"

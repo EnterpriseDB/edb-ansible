@@ -1,5 +1,4 @@
 ---
-
 - name: Set the os variable
   set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
@@ -73,16 +72,16 @@
   include_tasks: configure_barman.yml
   when: >
     hostvars[inventory_hostname].barman_no_configuration is not defined
-    or hostvars[inventory_hostname].barman_no_configuration|bool == False
+    or not hostvars[inventory_hostname].barman_no_configuration|bool
 
 - name: Include the Postgres configuration tasks for backup
   include_tasks: configure_pg_backup.yml
   when: >
     hostvars[inventory_hostname].barman_no_configuration is not defined
-    or hostvars[inventory_hostname].barman_no_configuration|bool == False
+    or not hostvars[inventory_hostname].barman_no_configuration|bool
 
 - name: Include the barman post configuration tasks
   include_tasks: post_configure_barman.yml
   when: >
     hostvars[inventory_hostname].barman_no_configuration is not defined
-    or hostvars[inventory_hostname].barman_no_configuration|bool == False
+    or not hostvars[inventory_hostname].barman_no_configuration|bool

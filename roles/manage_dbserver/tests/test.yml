@@ -1,5 +1,5 @@
 ---
-- hosts: all 
+- hosts: all
   name: Manage DB Server Playbook
   become: yes
   gather_facts: yes

@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -35,37 +36,42 @@ from ansible.plugins.lookup import LookupBase
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 
-        myvars = getattr(self._templar, '_available_variables', {})
-        inventory_hostname = variables['inventory_hostname']
+        myvars = getattr(self._templar, "_available_variables", {})
+        inventory_hostname = variables["inventory_hostname"]
 
         # If no terms, we'll used the current pgBackRest server private IP
         if len(terms) == 0:
-            if 'pgbackrest_server_private_ip' not in myvars['hostvars'][inventory_hostname]:
+            if (
+                "pgbackrest_server_private_ip"
+                not in myvars["hostvars"][inventory_hostname]
+            ):
                 # pgbackrest_server_private_ip not set, return None
                 return []
-            pgbackrest_server_private_ip = myvars['hostvars'][inventory_hostname]['pgbackrest_server_private_ip']
+            pgbackrest_server_private_ip = myvars["hostvars"][inventory_hostname][
+                "pgbackrest_server_private_ip"
+            ]
         else:
             pgbackrest_server_private_ip = terms[0]
 
         # If no pgbackrestserver found in the inventory file, just return None
-        if 'pgbackrestserver' not in variables['groups']:
+        if "pgbackrestserver" not in variables["groups"]:
             return []
-        if len(variables['groups']['pgbackrestserver']) == 0:
+        if len(variables["groups"]["pgbackrestserver"]) == 0:
             return []
 
         # Lookup for pgbackrest servers with a matching private_ip
-        for host in variables['groups']['pgbackrestserver']:
-            hostvars = myvars['hostvars'][host]
+        for host in variables["groups"]["pgbackrestserver"]:
+            hostvars = myvars["hostvars"][host]
 
-            if hostvars['private_ip'] != pgbackrest_server_private_ip:
+            if hostvars["private_ip"] != pgbackrest_server_private_ip:
                 continue
 
             return [
                 dict(
-                    node_type='pgbackrestserver',
-                    ansible_host=hostvars['ansible_host'],
-                    hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
-                    private_ip=hostvars['private_ip'],
-                    inventory_hostname=hostvars['inventory_hostname']
+                    node_type="pgbackrestserver",
+                    ansible_host=hostvars["ansible_host"],
+                    hostname=hostvars.get("hostname", hostvars["ansible_hostname"]),
+                    private_ip=hostvars["private_ip"],
+                    inventory_hostname=hostvars["inventory_hostname"],
                 )
             ]

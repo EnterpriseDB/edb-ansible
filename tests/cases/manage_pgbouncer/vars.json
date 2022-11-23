@@ -15,12 +15,11 @@
       "state": "present"
     }
   ],
-  "pgbouncer_auth_user_list":
-  [
+  "pgbouncer_auth_user_list": [
     {
-    "username": "pgbouncer_admin",
-    "password": "password",
-    "state": "present"
+      "username": "pgbouncer_admin",
+      "password": "password",
+      "state": "present"
     }
   ]
 }

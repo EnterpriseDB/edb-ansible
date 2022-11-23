@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure pgBackRest system group {{ pgbackrest_group }} exists
   group:
     name: "{{ pgbackrest_group }}"

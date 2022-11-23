@@ -6,18 +6,17 @@
   "pgbouncer_listen_addr": "*",
   "pgbouncer_users": [
     {
-     "name": "test",
-     "pass": "password",
-     "auth": "scram"
+      "name": "test",
+      "pass": "password",
+      "auth": "scram"
     }
-   ],
+  ],
   "pgbouncer_admin_users": "pgbouncer_admin",
-  "pgbouncer_auth_user_list":
-  [
+  "pgbouncer_auth_user_list": [
     {
-    "username": "pgbouncer_admin",
-    "password": "password",
-    "state": "present"
+      "username": "pgbouncer_admin",
+      "password": "password",
+      "state": "present"
     }
   ]
 }

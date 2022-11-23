@@ -1,5 +1,4 @@
 ---
-
 - name: Set the os variable
   set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
@@ -18,13 +17,13 @@
 - name: Check supported versions for Database engine
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
-          Supported versions are {{ supported_pg_version }}"
+      Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
 - name: Check supported versions for pgpoolII
   fail:
     msg: "pgpoolII Version = {{ pgpool2_version }} not supported.
-          Supported versions are {{ supported_pgpool2_version }}"
+      Supported versions are {{ supported_pgpool2_version }}"
   when:
     - pg_type == "EPAS"
     - pgpool2_version not in supported_pgpool2_version
@@ -32,7 +31,7 @@
 - name: Check watchdog settings
   fail:
     msg: "Watchdog settings not valid: pgpool2_vip = '{{ pgpool2_vip }}',
-          pgpool2_vip_dev = '{{ pgpool2_vip_dev }}'"
+      pgpool2_vip_dev = '{{ pgpool2_vip_dev }}'"
   when:
     - pgpool2_watchdog
     - (pgpool2_vip is not defined or pgpool2_vip|length == 0) or
@@ -138,9 +137,8 @@
   include_tasks: pgpool2_setup_user_auth.yml
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  import_tasks: linux_update_etc_hosts.yml
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
@@ -171,14 +169,14 @@
   when:
     - pgpool2_load_balancing
 
+# This task gives ansible-lint warning but it's just a bug in ansible-lint
+# https://github.com/ansible/ansible-lint/issues/507
 - name: Include the pgpool2_configure_backend_pg_hba
   include_tasks:
     file: pgpool2_configure_backend_pg_hba.yml
     apply:
-      delegate_to: "{{ server.inventory_hostname }}"
+      delegate_to: "{{ item.inventory_hostname }}"
   loop: "{{ _pg_cluster_nodes }}"
-  loop_control:
-    loop_var: server
   when:
     - _pgpool2_ip_list|length > 0
   vars:

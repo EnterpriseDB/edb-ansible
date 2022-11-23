@@ -1,5 +1,4 @@
 ---
-
 - name: Get upstream node info
   set_fact:
     upstream_inventory_hostname: "{{ node.inventory_hostname }}"

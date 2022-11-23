@@ -4,5 +4,5 @@ all:
     primary:
       hosts:
         primary1:
-          ansible_host: localhost 
+          ansible_host: localhost
           ansible_user: postgres

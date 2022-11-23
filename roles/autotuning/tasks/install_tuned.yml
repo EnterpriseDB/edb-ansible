@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure the tuned package is present
   ansible.builtin.package:
     name: tuned

@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -36,36 +37,36 @@ class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 
         nodes = []
-        if len(variables['groups']['pemserver']) == 0:
+        if len(variables["groups"]["pemserver"]) == 0:
             return nodes
 
-        myvars = getattr(self._templar, '_available_variables', {})
+        myvars = getattr(self._templar, "_available_variables", {})
         # Inventory hostname
-        ihn = variables['inventory_hostname']
+        ihn = variables["inventory_hostname"]
 
         # If no terms, we'll used the current private IP
         if len(terms) == 0:
-            pemsrv_private_ip = myvars['hostvars'][ihn]['private_ip']
+            pemsrv_private_ip = myvars["hostvars"][ihn]["private_ip"]
         else:
             pemsrv_private_ip = terms[0]
 
         # Lookup for pem servers with a matching private_ip
-        for node_type in ['primary', 'standby', 'barmanserver']:
-            if node_type not in variables['groups']:
+        for node_type in ["primary", "standby", "barmanserver"]:
+            if node_type not in variables["groups"]:
                 continue
-            for host in variables['groups'][node_type]:
-                hv = myvars['hostvars'][host]
+            for host in variables["groups"][node_type]:
+                hv = myvars["hostvars"][host]
 
-                if hv['pem_server_private_ip'] != pemsrv_private_ip:
+                if hv["pem_server_private_ip"] != pemsrv_private_ip:
                     continue
 
                 nodes.append(
                     dict(
                         node_type=node_type,
-                        ansible_host=hv['ansible_host'],
-                        hostname=hv.get('hostname', hv['ansible_hostname']),
-                        private_ip=hv['private_ip'],
-                        inventory_hostname=hv['inventory_hostname']
+                        ansible_host=hv["ansible_host"],
+                        hostname=hv.get("hostname", hv["ansible_hostname"]),
+                        private_ip=hv["private_ip"],
+                        inventory_hostname=hv["inventory_hostname"],
                     )
                 )
         return nodes

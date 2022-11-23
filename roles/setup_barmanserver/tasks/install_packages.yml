@@ -1,5 +1,4 @@
 ---
-
 - name: Set package names for RedHat distribution
   set_fact:
     _barman_package: >-

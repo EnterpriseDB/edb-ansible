@@ -7,5 +7,4 @@
   "barman_configuration_file": "/etc/barman.conf",
   "barman_home": "/var/lib/barman",
   "barman_compression": "gzip"
-
 }

@@ -5,7 +5,7 @@ replication Postgres cluster, based on `repmgr`.
 
 **Note:**
 Only PostgreSQL is supported by this role, EPAS will be supported in the future.
-For more details refer to the: *Database engines supported* section.
+For more details refer to the: _Database engines supported_ section.
 
 **The ansible playbook must be executed under an account that has full
 privileges.**
@@ -14,37 +14,36 @@ privileges.**
 
 The requirements for this Ansible Role are:
 
-  1. Ansible >= 2.9
-  2. `community.general`
-  3. `hypersql_devops.postgres` -> `setup_repo` - for installing the EPAS/PG
-     repository
-  4. `hypersql_devops.postgres` -> `install_dbserver` - for installing the EPAS/PG
-     binaries
-  5. `hypersql_devops.postgres` -> `init_dbserver` - for initializing the EPAS/PG
-     data directory and configuring a primary node.
-  6. `hypersql_devops.postgres` -> `setup_replication` - for creating the standby.
+1. Ansible >= 2.9
+2. `community.general`
+3. `hypersql_devops.postgres` -> `setup_repo` - for installing the EPAS/PG
+   repository
+4. `hypersql_devops.postgres` -> `install_dbserver` - for installing the EPAS/PG
+   binaries
+5. `hypersql_devops.postgres` -> `init_dbserver` - for initializing the EPAS/PG
+   data directory and configuring a primary node.
+6. `hypersql_devops.postgres` -> `setup_replication` - for creating the standby.
 
 ## Role variables
 
 When executing the role via ansible there are three required variables:
 
-  * ***pg_version***
+- **_pg_version_**
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+Postgres Versions supported are: 10, 11, 12, 13 and 14
 
-  * ***pg_type***
+- **_pg_type_**
 
-  Database Engine supported is PG
-
+Database Engine supported is PG
 
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `setup_repmgr` role in your Playbook*
+section: _How to include the `setup_repmgr` role in your Playbook_
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_repmgr/defaults/main.yml](./defaults/main.yml) 
-  * [roles/setup_repmgr/vars/PG_RedHat.yml](./vars/PG_RedHat.yml) 
-  * [roles/setup_repmgr/vars/PG_Debian.yml](./vars/PG_Debian.yml) 
+- [roles/setup_repmgr/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_repmgr/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+- [roles/setup_repmgr/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## Dependencies
 
@@ -106,7 +105,6 @@ all:
           upstream_node_private_ip: 10.0.0.1
 ```
 
-
 ### How to include the `setup_repmgr` role in your Playbook
 
 Below is an example of how to include the `setup_repmgr` role:
@@ -139,15 +137,15 @@ Below is an example of how to include the `setup_repmgr` role:
 
 ### Community PostgreSQL
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 - :x: - Not supported
@@ -171,4 +169,4 @@ BSD
 
 Author:
 
-  * Julien Tachoires (@jt-edb)
+- Julien Tachoires (@jt-edb)

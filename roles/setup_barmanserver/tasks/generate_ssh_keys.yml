@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure the directory {{ barman_home }}/.ssh exists
   file:
     state: directory

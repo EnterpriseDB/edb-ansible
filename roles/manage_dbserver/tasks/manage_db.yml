@@ -3,7 +3,7 @@
   import_tasks: check_database_is_standby.yml
   vars:
     host_is_standby:
-      result: False 
+      result: False
 
 - name: Create or drop databases
   community.postgresql.postgresql_db:

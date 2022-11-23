@@ -1,5 +1,4 @@
 ---
-
 - name: Remove PG Debian keys
   apt_key:
     url: "{{ pg_deb_keys }}"

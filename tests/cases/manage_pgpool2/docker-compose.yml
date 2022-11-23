@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   ansible-tester:
@@ -6,15 +6,15 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.ansible-tester
     environment:
-    - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
-    - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
-    - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
-    - EDB_PG_TYPE
-    - EDB_PG_VERSION
-    - CASE_NAME=manage_pgpool2
-    - EDB_OS
+      - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
+      - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
+      - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
+      - EDB_PG_TYPE
+      - EDB_PG_VERSION
+      - CASE_NAME=manage_pgpool2
+      - EDB_OS
     volumes:
-    - ../../..:/workspace
+      - ../../..:/workspace
     command: "/workspace/tests/docker/exec-tests.sh"
   primary1-rocky8:
     privileged: true
@@ -22,10 +22,10 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.rocky8
     cap_add:
-    - SYS_ADMIN
+      - SYS_ADMIN
     volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+      - .:/workspace
+      - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   pool1-rocky8:
     privileged: true
@@ -33,10 +33,10 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.rocky8
     cap_add:
-    - SYS_ADMIN
+      - SYS_ADMIN
     volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+      - .:/workspace
+      - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   primary1-centos7:
     privileged: true
@@ -44,10 +44,10 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.centos7
     cap_add:
-    - SYS_ADMIN
+      - SYS_ADMIN
     volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+      - .:/workspace
+      - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   pool1-centos7:
     privileged: true
@@ -55,10 +55,10 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.centos7
     cap_add:
-    - SYS_ADMIN
+      - SYS_ADMIN
     volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+      - .:/workspace
+      - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   primary1-oraclelinux7:
     privileged: true
@@ -66,10 +66,10 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.oraclelinux7
     cap_add:
-    - SYS_ADMIN
+      - SYS_ADMIN
     volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+      - .:/workspace
+      - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   pool1-oraclelinux7:
     privileged: true
@@ -77,8 +77,8 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.oraclelinux7
     cap_add:
-    - SYS_ADMIN
+      - SYS_ADMIN
     volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+      - .:/workspace
+      - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init

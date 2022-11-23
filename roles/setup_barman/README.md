@@ -5,28 +5,29 @@ This role is for configuring Barman backups on Postgres nodes.
 ## Requirements
 
 Following are the requirements of this role.
-  1. Ansible
-  2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
-     the systems.
+
+1. Ansible
+2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
+   the systems.
 
 ## Role Variables
 
 When executing the role via ansible these are the required variables:
 
-  * ***pg_version***
+- **_pg_version_**
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+Postgres Versions supported are: 10, 11, 12, 13 and 14
 
-  * ***pg_type***
+- **_pg_type_**
 
-  Database Engine supported are: PG and EPAS
+Database Engine supported are: PG and EPAS
 
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `setup_barman` role in your Playbook*
+section: _How to include the `setup_barman` role in your Playbook_
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_barman/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_barman/defaults/main.yml](./defaults/main.yml)
 
 Below is the documentation of the rest of the main variables:
 
@@ -35,8 +36,9 @@ Below is the documentation of the rest of the main variables:
 Dedicated Postgres user excuting barman queries. Default: `barman`
 
 Example:
+
 ```yaml
-barman_pg_user: 'barman'
+barman_pg_user: "barman"
 ```
 
 ## Host Variables
@@ -49,6 +51,7 @@ node we want to backup with Barman.
 Enable Barman backups for the host. Default: `false`
 
 Example:
+
 ```yaml
 barman: yes
 ```
@@ -58,6 +61,7 @@ barman: yes
 Barman server private IP address. Default: None
 
 Example:
+
 ```yaml
 barman_server_private_ip: 10.0.0.123
 ```
@@ -66,9 +70,9 @@ barman_server_private_ip: 10.0.0.123
 
 Backup method. Can be:
 
-  * `postgres` for backups based on `pg_basebackup` using Streaming
-    Replication protocol.
-  * `rsync` for backups based on the `rsync` command using SSH protocol.
+- `postgres` for backups based on `pg_basebackup` using Streaming
+  Replication protocol.
+- `rsync` for backups based on the `rsync` command using SSH protocol.
 
 Default: `rsync`
 
@@ -122,7 +126,6 @@ all:
           barman_backup_method: postgres
 ```
 
-
 In the High-Availability context, when using a Virtual IP address for routing
 read/write traffic to the primary node, then it's possible to configure barman
 to use this VIP address as Postgres connection endpoint. This way, in case of
@@ -134,6 +137,7 @@ This configuration is only possible when using the `postgres` backup method,
 which is based on backup and WAL archiving using streaming replication.
 
 Above is an example of inventory file implementing this type of configuration:
+
 ```yaml
 ---
 all:
@@ -180,6 +184,7 @@ all:
 ### How to include the `setup_barman` role in your Playbook
 
 Below is an example of how to include the `setup_barman` role:
+
 ```yaml
 ---
 - hosts: primary, standby
@@ -205,7 +210,7 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/setup_barman/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_barman/defaults/main.yml](./defaults/main.yml)
 
 ## Important notes for recovery
 
@@ -214,6 +219,7 @@ this implies that the server where a backup is restored is able to access barman
 with ssh.
 If no ssh access is possible to the Barman server from the new PostgreSQL server
 then it is required to execute the recovery with: `--no-get-wal` parameter, like:
+
 ```bash
 $ barman recover --no-get-wal \
      --remote-ssh-command 'ssh postgresql@restore_server' \
@@ -235,8 +241,8 @@ BSD
 
 Author:
 
-  * Cédric Villemain
-  * Julien Tachoires
-  * Vibhor Kumar (Reviewer)
-  * EDB Postgres
-  * edb-devops@enterprisedb.com www.enterprisedb.com
+- Cédric Villemain
+- Julien Tachoires
+- Vibhor Kumar (Reviewer)
+- EDB Postgres
+- edb-devops@enterprisedb.com www.enterprisedb.com

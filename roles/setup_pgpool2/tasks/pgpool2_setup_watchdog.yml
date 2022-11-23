@@ -71,8 +71,7 @@
   loop: "{{ pgpool2_node_list }}"
   loop_control:
     extended: yes
-    loop_var:
-      node_item
+    loop_var: node_item
 
 # Update the configuration file
 - name: Include pgpooL2_manage_configuration

@@ -21,71 +21,73 @@ privileges.**
 
 The only dependency required for this ansible galaxy role is:
 
-  1. Ansible
+1. Ansible
 
 ## Role variables
 
 When executing the role via Ansible these are the required variables:
 
-  * **pg_version**
+- **pg_version**
 
-  Postgres Versions supported are: `10`, `11`, `12`, `13` and `14`
+Postgres Versions supported are: `10`, `11`, `12`, `13` and `14`
 
-  * **pg_type**
+- **pg_type**
 
-  Database Engine supported are: `PG` and `EPAS`
+Database Engine supported are: `PG` and `EPAS`
 
-  * **enable_edb_repo**
+- **enable_edb_repo**
 
-  Configure access to EDB package repository. Default: `true`
+Configure access to EDB package repository. Default: `true`
 
-  * **repo_username**
+- **repo_username**
 
-  Username used to access EDB package repository.
-  Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
+Username used to access EDB package repository.
+Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
 
-  * **repo_password**
+- **repo_password**
 
-  Password used to access EDB package repository.
-  Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
+Password used to access EDB package repository.
+Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
 
-  * **repo_token**
+- **repo_token**
 
-  EDB repository token used to access EDB package repository.
-  Required when **enable_edb_repo** is set to `true` and **repo_username** and **repo_password** aren't used.
+EDB repository token used to access EDB package repository.
+Required when **enable_edb_repo** is set to `true` and **repo_username** and **repo_password** aren't used.
 
-  * **yum_additional_repos**
+- **yum_additional_repos**
 
-  List of additional YUM repositories. List items are dictionnaries:
-  * *name* - Repository name
-  * *description* - Repository description
-  * *baseurl* - Repository URL
-  * *gpgkey* - GPG key locatio. Default: `None`
-  * *gpgcheck* - Enable package signature checking with GPG. Default: `false`
+List of additional YUM repositories. List items are dictionnaries:
 
-  Example:
-  ```yaml
-        # Additional repositories
-        yum_additional_repos:
-          - name: "Additional Repo. 1"
-            description: "Description of the repo."
-            baseurl: https://my.repo.internal/CentOS$releasever-$basearch
-            gpgkey: https://my.repo.internal/key.asc
-            gpgcheck: true
-          - name: "Local Repo"
-            baseurl: file:///opt/my_local_repo
-  ```
+- _name_ - Repository name
+- _description_ - Repository description
+- _baseurl_ - Repository URL
+- _gpgkey_ - GPG key locatio. Default: `None`
+- _gpgcheck_ - Enable package signature checking with GPG. Default: `false`
 
-  * **apt_additional_repos**
+Example:
 
-  List of additional APT repositories. List items are dictionnaries:
-  * *repo* - Debian repository connection string
-  * *filename* - Repository file name on disk: `<filename>.list`
+```yaml
+# Additional repositories
+yum_additional_repos:
+  - name: "Additional Repo. 1"
+    description: "Description of the repo."
+    baseurl: https://my.repo.internal/CentOS$releasever-$basearch
+    gpgkey: https://my.repo.internal/key.asc
+    gpgcheck: true
+  - name: "Local Repo"
+    baseurl: file:///opt/my_local_repo
+```
 
+- **apt_additional_repos**
+
+List of additional APT repositories. List items are dictionnaries:
+
+- _repo_ - Debian repository connection string
+- _filename_ - Repository file name on disk: `<filename>.list`
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/setup_repo/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_repo/defaults/main.yml](./defaults/main.yml)
 
 ## Dependencies
 
@@ -178,33 +180,33 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/setup_repo/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_repo/defaults/main.yml](./defaults/main.yml)
 
 ## Database engines supported
 
 ### PostgreSQL
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 ### EnterpriseDB Postgres Advanced Server
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |         10         |         11         |         12         |         13         |         14         |
+| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| RockyLinux 8                      |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Red Hat Linux 8                   |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 |        :x:         |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: |
+| Debian 9 (Stretch) - x86_64       |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10 (Buster) - x86_64       |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 
@@ -238,8 +240,9 @@ BSD
 ## Author information
 
 Author:
-  * Doug Ortiz
-  * Vibhor Kumar (Co-Author)
-  * Julien Tachoires (Co-Author)
+
+- Doug Ortiz
+- Vibhor Kumar (Co-Author)
+- Julien Tachoires (Co-Author)
 
 Contact: **edb-devops@enterprisedb.com**

@@ -5,9 +5,9 @@
     tasks_from: manage_pgpass
   vars:
     pg_pgpass_values:
-       - user: "{{ pg_replication_user }}"
-         password: "{{ pg_replication_user_password }}"
-         create: yes
+      - user: "{{ pg_replication_user }}"
+        password: "{{ pg_replication_user_password }}"
+        create: yes
   no_log: "{{ disable_logging }}"
 
 - name: Create standby

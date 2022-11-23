@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  author: Sang Myeung Lee
   role_name: setup_pgbackrest
   namespace: edb_postgres
   description: Setup pgBackRest backups

@@ -1,8 +1,0 @@
----
-all:
-  children:
-    primary:
-      hosts:
-        primary1:
-          ansible_host: 172.19.0.2
-          private_ip: 172.19.0.2

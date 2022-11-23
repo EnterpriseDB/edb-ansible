@@ -8,16 +8,16 @@ used the tasks given in the this role.
 
 Following are the dependencies and requirement of this role.
 
-  1. Ansible
-  2. `community.general` Ansible Module - Utilized when creating aditional
-     users during a Postgres Install
-
+1. Ansible
+2. `community.general` Ansible Module - Utilized when creating aditional
+   users during a Postgres Install
 
 ## Role variables
 
 This role requires the following variables to be defined:
-  * pg_type (available: PG, HyperSQL)
-  * pg_version (available: 11, 12, 13, 14)
+
+- pg_type (available: PG, HyperSQL)
+- pg_version (available: 11, 12, 13, 14)
 
 This role allows users to pass following variables which helps managing day to
 day tasks:
@@ -27,6 +27,7 @@ day tasks:
 Using this parameters user can set the database parameters.
 
 Example:
+
 ```yaml
 pg_postgres_conf_params:
   - name: listen_addresses
@@ -69,9 +70,9 @@ Postgres extensions management.
 
 ```yaml
 pg_extensions:
-    - name: "postgis"
-      database: "postgres"
-      state: present
+  - name: "postgis"
+    database: "postgres"
+    state: present
 ```
 
 ### `pg_grant_privileges`
@@ -80,12 +81,12 @@ Grant privileges management.
 
 ```yaml
 pg_grant_privileges:
-    - roles: "postgres_role"
-      database: "postgres"
-      privileges: execute
-      schema: pg_catalog
-      objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
-      type: function
+  - roles: "postgres_role"
+    database: "postgres"
+    privileges: execute
+    schema: pg_catalog
+    objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
+    type: function
 ```
 
 ### `pg_grant_roles`
@@ -94,8 +95,8 @@ Grant roles management.
 
 ```yaml
 pg_grant_roles:
-    - role: pg_monitor
-      user: postgres_user
+  - role: pg_monitor
+    user: postgres_user
 ```
 
 ### `pg_sql_scripts`
@@ -104,8 +105,8 @@ SQL script execution.
 
 ```yaml
 pg_sql_scripts:
-    - file_path: "/usr/postgres/sample.sql"
-      db: postgres
+  - file_path: "/usr/postgres/sample.sql"
+    db: postgres
 ```
 
 ### `pg_copy_files`
@@ -114,11 +115,11 @@ Copy file on remote host.
 
 ```yaml
 pg_copy_files:
-    - file: "./test.sh"
-      remote_file: "/var/lib/postgres/test.sh"
-      owner: postgres
-      group: postgres
-      mode: 0700
+  - file: "./test.sh"
+    remote_file: "/var/lib/postgres/test.sh"
+    owner: postgres
+    group: postgres
+    mode: 0700
 ```
 
 ### `pg_query`
@@ -127,8 +128,8 @@ Execute a query on a database.
 
 ```yaml
 pg_query:
-    - query: "Update test set a=b"
-      db: postgres
+  - query: "Update test set a=b"
+    db: postgres
 ```
 
 ### `pg_pgpass_values`
@@ -137,11 +138,11 @@ pg_query:
 
 ```yaml
 pg_pgpass_values:
-    - host: "127.0.0.1"
-      database: postgres
-      user: postgres_user
-      password: <password>
-      state: present
+  - host: "127.0.0.1"
+    database: postgres
+    user: postgres_user
+    password: <password>
+    state: present
 ```
 
 ### `pg_databases`
@@ -150,26 +151,26 @@ Databases management.
 
 ```yaml
 pg_databases:
-    - name: another_postgres 
-      owner: postgres
-      encoding: UTF-8
+  - name: another_postgres
+    owner: postgres
+    encoding: UTF-8
 ```
 
 Tablesapces management.
 
 ```yaml
 pg_tablespaces:
-    - name: index_tablespace
-      owner: postgres
-      location: "/data/index_tablespace"
-      state: present
+  - name: index_tablespace
+    owner: postgres
+    location: "/data/index_tablespace"
+    state: present
 ```
 
 ## Dependencies
 
 The `manage_dbserver` role does depend on the following roles:
 
-  * `community.general`
+- `community.general`
 
 ## Example Playbook
 
@@ -247,22 +248,25 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/manage_dbserver/defaults/main.yml](./defaults/main.yml)
-  * [roles/manage_dbserver/vars/main.yml](./vars/main.yml)
-  * [roles/manage_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
-  * [roles/manage_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+- [roles/manage_dbserver/defaults/main.yml](./defaults/main.yml)
+- [roles/manage_dbserver/vars/main.yml](./vars/main.yml)
+- [roles/manage_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+- [roles/manage_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## License
 
 BSD
 
 ## Author information
+
 Author:
-  * [Sung Woo Chang](https://github.com/dbxpert)
+
+- [Sung Woo Chang](https://github.com/dbxpert)
 
 Original Author:
-  * Doug Ortiz
-  * Julien Tachoires
-  * Vibhor Kumar
-  * EDB Postgres
-  * DevOps
+
+- Doug Ortiz
+- Julien Tachoires
+- Vibhor Kumar
+- EDB Postgres
+- DevOps

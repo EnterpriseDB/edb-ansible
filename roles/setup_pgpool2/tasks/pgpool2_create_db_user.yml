@@ -12,7 +12,7 @@
 
 - name: Set pg_pgpool_user_password
   set_fact:
-     pg_pgpool_user_password: "{{ input_password }}"
+    pg_pgpool_user_password: "{{ input_password }}"
   when: pg_pgpool_user_password|length < 1
   run_once: true
 
@@ -24,10 +24,10 @@
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_users:
-       - name: "{{ pg_pgpool_user }}"
-         pass: "{{ pg_pgpool_user_password }}"
-         role_attr_flags: replication
-         groups: pg_read_all_settings
+      - name: "{{ pg_pgpool_user }}"
+        pass: "{{ pg_pgpool_user_password }}"
+        role_attr_flags: replication
+        groups: pg_read_all_settings
   run_once: true
   when: pg_pgpool_user_password|length > 1
 
@@ -39,12 +39,12 @@
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_grant_privileges:
-       - roles: "{{ pg_pgpool_user }}"
-         database: "{{ pg_pgpool_database }}"
-         privileges: execute
-         schema: pg_catalog
-         objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
-         type: function
+      - roles: "{{ pg_pgpool_user }}"
+        database: "{{ pg_pgpool_database }}"
+        privileges: execute
+        schema: pg_catalog
+        objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
+        type: function
   run_once: true
   when: pg_pgpool_user_password|length > 1
 
@@ -54,8 +54,8 @@
     tasks_from: pgpool2_manage_users
   vars:
     pgpool2_users:
-       - name: "{{ pg_pgpool_user }}"
-         pass: "{{ pg_pgpool_user_password }}"
-         auth: scram
+      - name: "{{ pg_pgpool_user }}"
+        pass: "{{ pg_pgpool_user_password }}"
+        auth: scram
   no_log: "{{ disable_logging }}"
   when: pg_pgpool_user_password|length > 1

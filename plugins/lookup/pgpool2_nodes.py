@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -37,35 +38,37 @@ class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 
         nodes = []
-        if len(variables['groups'].get('pgpool2', [])) == 0:
+        if len(variables["groups"].get("pgpool2", [])) == 0:
             return []
 
-        myvars = getattr(self._templar, '_available_variables', {})
+        myvars = getattr(self._templar, "_available_variables", {})
         # Inventory hostname
-        inventory_hostname= variables['inventory_hostname']
+        inventory_hostname = variables["inventory_hostname"]
 
         primary_private_ip = terms[0] if len(terms) > 0 else None
 
         # Lookup for pgpool2 nodes with a matching primary_private_ip
         node_id = 0
-        for host in variables['groups']['pgpool2']:
-            hostvars = myvars['hostvars'][host]
+        for host in variables["groups"]["pgpool2"]:
+            hostvars = myvars["hostvars"][host]
 
             # Ignore current item if primary_private_ip is set and does not
             # match
-            if (primary_private_ip is not None and
-                    hostvars.get('primary_private_ip', None) != primary_private_ip):
+            if (
+                primary_private_ip is not None
+                and hostvars.get("primary_private_ip", None) != primary_private_ip
+            ):
                 continue
 
             nodes.append(
                 dict(
                     node_id=node_id,
-                    node_type='pgpool2',
-                    ansible_host=hostvars['ansible_host'],
-                    private_ip=hostvars['private_ip'],
-                    hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
-                    inventory_hostname=hostvars['inventory_hostname'],
-                    primary_private_ip=hostvars.get('primary_private_ip', None),
+                    node_type="pgpool2",
+                    ansible_host=hostvars["ansible_host"],
+                    private_ip=hostvars["private_ip"],
+                    hostname=hostvars.get("hostname", hostvars["ansible_hostname"]),
+                    inventory_hostname=hostvars["inventory_hostname"],
+                    primary_private_ip=hostvars.get("primary_private_ip", None),
                 )
             )
             node_id += 1

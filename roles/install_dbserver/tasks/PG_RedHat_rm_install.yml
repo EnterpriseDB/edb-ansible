@@ -33,7 +33,6 @@
   become: true
   when: ansible_distribution_major_version == '8'
 
-
 - name: Remove Postgres
   package:
     name:

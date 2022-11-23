@@ -14,7 +14,7 @@
 
 - name: Initialize variables
   ansible.builtin.set_fact:
-    spl_list: "{{ spl.query_result[0].setting.split(',') | map('regex_replace', '[\"]+', '') | map('trim') | list }}"
+    spl_list: '{{ spl.query_result[0].setting.split('','') | map(''regex_replace'', ''["]+'', '''') | map(''trim'') | list }}'
     new_spl_list: []
     update_spl: false
 

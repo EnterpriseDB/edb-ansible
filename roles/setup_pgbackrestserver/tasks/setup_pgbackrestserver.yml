@@ -1,5 +1,4 @@
 ---
-
 - name: Set the os variable
   set_fact:
     os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
@@ -18,20 +17,23 @@
 
 - name: Check pgbackrest_log_level_console configuration value
   fail:
-    msg: "pgBackRest console logging level = {{ pgbackrest_log_level_console }} not valid.
-          Available logging levels are {{ supported_log_level }}"
+    msg:
+      "pgBackRest console logging level = {{ pgbackrest_log_level_console }} not valid.
+      Available logging levels are {{ supported_log_level }}"
   when: pgbackrest_log_level_console not in supported_log_level
 
 - name: Check pgbackrest_log_level_file configuration value
   fail:
-    msg: "pgBackRest file logging level = {{ pgbackrest_log_level_file }} not valid.
-          Available logging levels are {{ supported_log_level }}"
+    msg:
+      "pgBackRest file logging level = {{ pgbackrest_log_level_file }} not valid.
+      Available logging levels are {{ supported_log_level }}"
   when: pgbackrest_log_level_file not in supported_log_level
 
 - name: Check repo_retention_full_type configuration value
   fail:
-    msg: "pgBackRest repo retention type = {{ repo_retention_full_type }} not valid.
-          Available repo retention types  are {{ supported_repo_retention_type }}"
+    msg:
+      "pgBackRest repo retention type = {{ repo_retention_full_type }} not valid.
+      Available repo retention types  are {{ supported_repo_retention_type }}"
   when: repo_retention_full_type not in supported_repo_retention_type
 
 - name: Reference pg_type variables
@@ -62,4 +64,3 @@
 
 - name: Include the generate_config installation tasks
   include_tasks: generate_config.yml
-

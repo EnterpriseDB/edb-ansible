@@ -1,4 +1,4 @@
-- name : Check Operating System,  PostgreSQL Type, PostgreSQL Version
+- name: Check Operating System,  PostgreSQL Type, PostgreSQL Version
   include_role:
     name: common
     tasks_from: check_version.yml

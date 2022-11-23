@@ -1,5 +1,4 @@
 ---
-
 - name: Get pgBackRest server informations
   set_fact:
     _pgbackrest_server_info: "{{ lookup('hypersql_devops.postgres.pgbackrest_server', wantlist=True) }}"
@@ -38,7 +37,7 @@
   lineinfile:
     path: "{{ pgbackrest_configuration_file }}"
     line: backup-standby=y
-    insertafter: '^start-fast=y$'
+    insertafter: "^start-fast=y$"
     state: present
   delegate_to: "{{ item }}"
   run_once: true
@@ -61,4 +60,3 @@
     _pgbackrest_server_public_ip: null
     _pgbackrest_host: Null
     _update_config: Null
-

@@ -19,7 +19,7 @@
 
 - name: Set _remote_server_ssh_public_key
   ansible.builtin.set_fact:
-      _remote_server_ssh_public_key: "{{ _remote_server_ssh_public_key_b64.content | b64decode | trim }}"
+    _remote_server_ssh_public_key: "{{ _remote_server_ssh_public_key_b64.content | b64decode | trim }}"
 
 - name: Fetch local {{ pg_owner }} SSH public key
   ansible.builtin.slurp:
@@ -29,7 +29,7 @@
 
 - name: Set _local_ssh_public_key
   set_fact:
-      _local_ssh_public_key: "{{ _local_ssh_public_key_b64.content | b64decode | trim }}"
+    _local_ssh_public_key: "{{ _local_ssh_public_key_b64.content | b64decode | trim }}"
 
 - name: Ensure local {{ pg_owner }} SSH public key is on the remote server
   ansible.builtin.lineinfile:

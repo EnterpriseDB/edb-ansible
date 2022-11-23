@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure logging directory {{ pgbackrest_log_file }} exists
   file:
     path: "{{ pgbackrest_log_file | dirname }}"

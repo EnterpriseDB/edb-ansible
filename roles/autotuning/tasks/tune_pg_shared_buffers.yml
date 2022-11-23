@@ -1,5 +1,4 @@
 ---
-
 # Set the shared_buffers value based on the following formula
 # base = RAM / 4
 # if RAM < 3 GB:

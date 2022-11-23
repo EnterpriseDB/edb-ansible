@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure the directory {{ pgbackrest_home }}/.ssh exists
   file:
     state: directory
@@ -41,4 +40,3 @@
     group: "{{ pgbackrest_group }}"
   when: not pgbackrest_ssh_private_key.stat.exists
   become: true
-

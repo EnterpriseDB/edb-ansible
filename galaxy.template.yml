@@ -7,14 +7,14 @@ authors:
   - "Sang Myeung Lee"
 description: This Ansible Galaxy Role sets up and configures the repositories from which packages will be retrieved for HyperSQL installations.
 license:
-- "BSD-3-Clause"
-license_file: ''
+  - "BSD-3-Clause"
+license_file: ""
 tags:
-- database
-- postgresql
-- postgres
-- repo
-- hypersql
+  - database
+  - postgresql
+  - postgres
+  - repo
+  - hypersql
 repository: "https://github.com/hypersql/pg-ansible"
 documentation: "https://github.com/hypersql/pg-ansible/blob/master/README.md"
 homepage: "https://github.com/hypersql/pg-ansible"
@@ -24,3 +24,11 @@ dependencies:
   "ansible.posix": "1.3.0"
   "community.general": "2.5.8"
   "community.crypto": "1.9.12"
+build_ignore:
+  - dist
+  - git-config
+  - tests/logs
+  - __pycache__
+  - galaxy.template.yml
+  - Makefile
+  - ".*"

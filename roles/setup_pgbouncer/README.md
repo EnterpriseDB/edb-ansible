@@ -6,9 +6,10 @@ lightweight connection pooler for PostgreSQL.
 ## Requirements
 
 Following are the requirements of this role.
-  1. Ansible
-  2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
-     the systems.
+
+1. Ansible
+2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
+   the systems.
 
 ## Role Variables
 
@@ -17,6 +18,7 @@ Following are the requirements of this role.
 Which port to listen on. Applies to both TCP and Unix sockets. Default: `6432`
 
 Example:
+
 ```yaml
 pgbouncer_listen_port: 6432
 ```
@@ -28,6 +30,7 @@ use `*` meaning “listen on all addresses”. Addresses can be specified
 numerically (IPv4/IPv6) or by name. Default: `*`
 
 Example:
+
 ```yaml
 pgbouncer_listen_addr: "*"
 ```
@@ -38,6 +41,7 @@ System user account that runs PgBouncer process and owns its configuration
 files. Default: `pgbouncer`
 
 Example:
+
 ```yaml
 pgbouncer_user: "pgbouncer"
 ```
@@ -47,6 +51,7 @@ pgbouncer_user: "pgbouncer"
 System group that PgBouncer system user is part of. Default: `pgbouncer`
 
 Example:
+
 ```yaml
 pgbouncer_group: "pgbouncer"
 ```
@@ -57,6 +62,7 @@ How many server connections to allow per user/database pair. Can be overridden
 in the per-database configuration. Default: `20`
 
 Example:
+
 ```yaml
 pgbouncer_default_pool_size: 20
 ```
@@ -66,6 +72,7 @@ pgbouncer_default_pool_size: 20
 Maximum number of client connections allowed. Default: `100`
 
 Example:
+
 ```yaml
 pgbouncer_max_client_conn: 100
 ```
@@ -75,6 +82,7 @@ pgbouncer_max_client_conn: 100
 File descriptor limits. Default: `2048`
 
 Example:
+
 ```yaml
 pgbouncer_fd_limit: 2048
 ```
@@ -85,6 +93,7 @@ Pooling mode. Could be `session`, `transaction` or `statement`.
 Default: `session`
 
 Example:
+
 ```yaml
 pgbouncer_pool_mode: "session"
 ```
@@ -95,6 +104,7 @@ Query sent to server on connection release, before making it available to
 other clients. Default: `DISCARD ALL`
 
 Example:
+
 ```yaml
 pgbouncer_server_reset_query: "DISCARD ALL"
 ```
@@ -105,6 +115,7 @@ Comma-separated list of database users that are allowed to connect and run all
 commands on the console. Default: `pgbouncer_admin`
 
 Example:
+
 ```yaml
 pgbouncer_admin_users: "pgbouncer_admin"
 ```
@@ -115,6 +126,7 @@ Comma-separated list of database users that are allowed to connect and run
 read-only queries on the console. Default: `pgbouncer_stats`
 
 Example:
+
 ```yaml
 pgbouncer_stats_users: "pgbouncer_stats"
 ```
@@ -125,6 +137,7 @@ How to authenticate users. Could be `pam`, `hba`, `cert`, `md5`,
 `scram-sha-256`, `plain`, `trust` or `any`. Default: `scram-sha-256`
 
 Example:
+
 ```yaml
 pgbouncer_auth_type: "scram-sha-256"
 ```
@@ -135,6 +148,7 @@ The path of the file to load user names and passwords from.
 Default: `/etc/pgbouncer/userlist.txt`
 
 Example:
+
 ```yaml
 pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
 ```
@@ -146,6 +160,7 @@ user is not found in the authentication file.
 Default: `not defined`
 
 Example:
+
 ```yaml
 pgbouncer_auth_user: "pgbouncer"
 ```
@@ -155,6 +170,7 @@ pgbouncer_auth_user: "pgbouncer"
 Query to load user’s password from database. Default: `not defined`
 
 Example:
+
 ```yaml
 pgbouncer_auth_query: "SELECT usename, passwd FROM pg_shadow WHERE usename = $1"
 ```
@@ -164,6 +180,7 @@ pgbouncer_auth_query: "SELECT usename, passwd FROM pg_shadow WHERE usename = $1"
 Main configuration file path. Default: `/etc/pgbouncer/pgbouncer.ini`
 
 Example:
+
 ```yaml
 pgbouncer_config_file: "/etc/pgbouncer/pgbouncer.ini"
 ```
@@ -173,6 +190,7 @@ pgbouncer_config_file: "/etc/pgbouncer/pgbouncer.ini"
 PID file path. Default: `/run/pgbouncer/pgbouncer.pid`
 
 Example:
+
 ```yaml
 pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
 ```
@@ -182,6 +200,7 @@ pgbouncer_pid_file: "/run/pgbouncer/pgbouncer.pid"
 Log file path. Default: `/var/log/pgbouncer/pgbouncer.log`
 
 Example:
+
 ```yaml
 pgbouncer_log_file: "/var/log/pgbouncer/pgbouncer.log"
 ```
@@ -191,6 +210,7 @@ pgbouncer_log_file: "/var/log/pgbouncer/pgbouncer.log"
 Toggles syslog on/off. Default: `0`
 
 Example:
+
 ```yaml
 pgbouncer_syslog: 0
 ```
@@ -200,6 +220,7 @@ pgbouncer_syslog: 0
 Under what name to send logs to syslog. Default: `pgbouncer`
 
 Example:
+
 ```yaml
 pgbouncer_syslog_ident: "pgbouncer"
 ```
@@ -211,6 +232,7 @@ configuration.
 Default: `/etc/pgbouncer/databases.ini`
 
 Example:
+
 ```yaml
 pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
 ```
@@ -221,6 +243,7 @@ Systemd unit configuration file path.
 Default: `/etc/systemd/system/pgbouncer.service.d/pgbouncer.conf`
 
 Example:
+
 ```yaml
 pgbouncer_systemd_unit_file: "/etc/systemd/system/pgbouncer.service.d/pgbouncer.conf"
 ```
@@ -239,6 +262,7 @@ To deploy PgBouncer as a standalone application on a dedicated host,
 a Postgres instance, the key `pgbouncer` should be set up to `true`.
 
 Content of the `inventory.yml` file:
+
 ```yaml
 ---
 all:
@@ -261,6 +285,7 @@ all:
 ### How to include the `setup_pgbouncer` role in your Playbook
 
 Below is an example of how to include the `setup_pgbouncer` role:
+
 ```yaml
 ---
 - hosts: pgbouncer,primary,standby
@@ -269,7 +294,7 @@ Below is an example of how to include the `setup_pgbouncer` role:
   gather_facts: yes
 
   collections:
-    - hypersql_devops.postgres 
+    - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -289,7 +314,7 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
+- [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
 ## License
 
@@ -299,7 +324,7 @@ BSD
 
 Author:
 
-  * Julien Tachoires
-  * Vibhor Kumar (Reviewer)
-  * EDB Postgres
-  * edb-devops@enterprisedb.com www.enterprisedb.com
+- Julien Tachoires
+- Vibhor Kumar (Reviewer)
+- EDB Postgres
+- edb-devops@enterprisedb.com www.enterprisedb.com
