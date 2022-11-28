@@ -8,7 +8,7 @@ supported_os:
   - Rocky8
   - OracleLinux7
 
-dbt2_version: "0.48.4"
+dbt2_version: "0.48.5"
 dbttools_version: "0.3.1"
 
 # These variables are set in the respective vars file.

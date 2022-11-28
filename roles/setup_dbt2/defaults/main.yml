@@ -1,5 +1,5 @@
 ---
-dbt2_version: "0.48.4"
+dbt2_version: "0.48.5"
 dbttools_version: "0.3.1"
 driver_pub_key: ""
 pg_dbt2_dbname: dbt2
