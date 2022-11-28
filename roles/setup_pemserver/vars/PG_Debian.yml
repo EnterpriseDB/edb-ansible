@@ -19,7 +19,7 @@ pem_pg_port: 5432
 pg_port: 5432
 
 pem_server_service: "apache2"
-pem_server_configuration_file: "/etc/apache2/sites-available/edb-ssl-pem.conf"
+pem_httpd_ssl_conf: "/etc/apache2/sites-available/edb-ssl-pem.conf"
 
 # postgres service
 pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}"
