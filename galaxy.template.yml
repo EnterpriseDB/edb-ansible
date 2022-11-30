@@ -27,7 +27,7 @@ dependencies:
 build_ignore:
   - dist
   - git-config
-  - tests/logs
+  - tests
   - __pycache__
   - galaxy.template.yml
   - Makefile

@@ -4,3 +4,4 @@ pytest
 pytest-testinfra
 paramiko
 pyyaml
+termcolor

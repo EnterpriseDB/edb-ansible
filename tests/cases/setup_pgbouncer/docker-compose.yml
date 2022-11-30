@@ -6,13 +6,10 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.ansible-tester
     environment:
-      - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
-      - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
-      - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
-      - EDB_PG_TYPE
-      - EDB_PG_VERSION
-      - CASE_NAME=setup_pgbouncer
-      - EDB_OS
+      - HYPERSQL_PG_TYPE
+      - HYPERSQL_PG_VERSION
+      - HYPERSQL_OS_TYPE
+      - CASE_NAME
     volumes:
       - ../../..:/workspace
     command: "/workspace/tests/docker/exec-tests.sh"

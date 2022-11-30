@@ -1,0 +1,34 @@
+---
+available_pg_types:
+  - PG
+  - HyperSQL
+available_pg_versions:
+  - 14.0
+  - 14.1
+  - 14.2
+  - 14.3
+  - 14.4
+  - 14.5
+  - 14.6
+  - 15.0
+available_os_types:
+  - centos7
+  - rocky8
+  - debian9
+  - debian10
+  - ubuntu20
+  - oraclelinux7
+available_roles:
+  - init_dbserver
+  - install_dbserver
+  - manage_dbserver
+  - manage_pgpool2
+  - setup_barman
+  - setup_barmanserver
+  - setup_pgbackrest
+  - setup_pgbackrestserver
+  - setup_pgbouncer
+  - setup_pgpool2
+  - setup_replication
+  - setup_repmgr
+  - setup_repo

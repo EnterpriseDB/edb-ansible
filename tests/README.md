@@ -114,8 +114,8 @@ command line.
 Usage:
 
 ```shell
-usage: test-runner.py [-h] [-j JOBS] [--configuration CONFIGURATION] --edb-repo-username EDB_REPO_USERNAME --edb-repo-password
-                      EDB_REPO_PASSWORD [--pg-version PG_VERSION [PG_VERSION ...]] [--pg-type PG_TYPE [PG_TYPE ...]]
+usage: test-runner.py [-h] [-j JOBS] [--configuration CONFIGURATION]
+                      [--pg-version PG_VERSION [PG_VERSION ...]] [--pg-type PG_TYPE [PG_TYPE ...]]
                       [--os OS [OS ...]] [-k KEYWORD [KEYWORD ...]]
 
 optional arguments:
@@ -123,14 +123,10 @@ optional arguments:
   -j JOBS, --jobs JOBS  Number of parallel jobs. Default: 4
   --configuration CONFIGURATION
                         Configuration file
-  --edb-repo-username EDB_REPO_USERNAME
-                        EDB package repository username
-  --edb-repo-password EDB_REPO_PASSWORD
-                        EDB package repository password
   --pg-version PG_VERSION [PG_VERSION ...]
-                        Postgres versions list. Default: ['14']
+                        Postgres versions list. Default: ['14.6']
   --pg-type PG_TYPE [PG_TYPE ...]
-                        Postgres DB engines list. Default: all
+                        Postgres DB engines list. Default: ['PG']
   --os OS [OS ...]      Operating systems list. Default: all
   -k KEYWORD [KEYWORD ...], --keywords KEYWORD [KEYWORD ...]
                         Execute test cases with a name matching the given keywords.
@@ -143,13 +139,11 @@ The example below shows how to run the tests for:
 - the `install_dbserver` test case
 - on `centos7` and `rocky8` operating systems
 - PostgreSQL engine only
-- for versions `13` and `14`
+- for versions `14.5`
 
 ```shell
 test-runner.py \
-  --edb-repo-username <edb-repo-username> \
-  --edb-repo-password <edb-repo-password> \
-  --pg-version 14 13 \
+  --pg-version 14.5 \
   --os rocky8 centos7 \
   --pg-type PG \
   -k install_dbserver
@@ -163,13 +157,11 @@ Tests passed: 4/4 100.00%
 ```
 
 Running the tests for all the test cases, for every OS, for PostgreSQL and
-EPAS, in version `14`:
+EPAS, in version `14.6`:
 
 ```shell
 test-runner.py \
-  --edb-repo-username <edb-repo-username> \
-  --edb-repo-password <edb-repo-password> \
-  --pg-version 14
+  --pg-version 14.6
 ```
 
 ### Manual test execution
@@ -179,21 +171,17 @@ without using the `test-runner.py` script. This can be done with the following
 command lines:
 
 ```shell
-export EDB_PG_TYPE=<pg-type>
-export EDB_PG_VERSION=<pg-version>
-export EDB_REPO_USERNAME=<edb-repo-username>
-export EDB_REPO_PASSWORD=<edb-repo-password>
+export HYPERSQL_PG_TYPE=<pg-type>
+export HYPERSQL_PG_VERSION=<pg-version>
 make -C cases/<test-case> <os>
 ```
 
 Below is an example of running the tests for test case `init_dbserver`, in
-version 14 of PostgreSQL, on RockyLinux8:
+version 14.6 of PostgreSQL, on RockyLinux8:
 
 ```shell
-export EDB_PG_TYPE=PG
-export EDB_PG_VERSION=14
-export EDB_REPO_USERNAME=<edb-repo-username>
-export EDB_REPO_PASSWORD=<edb-repo-password>
+export HYPERSQL_PG_TYPE=PG
+export HYPERSQL_PG_VERSION=14.6
 make -C cases/init_dbserver rocky8
 ```
 

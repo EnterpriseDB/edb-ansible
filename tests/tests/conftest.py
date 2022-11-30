@@ -6,21 +6,19 @@ import yaml
 
 # Path to the file containing ansible variables for the role:
 # <role_name>/vars.json
-EDB_ANSIBLE_VARS = os.getenv("EDB_ANSIBLE_VARS")
+HYPERSQL_ANSIBLE_VARS = os.getenv("HYPERSQL_ANSIBLE_VARS")
 # Operating system name of the containers
-EDB_OS = os.getenv("EDB_OS", "rocky8")
+HYPERSQL_OS_TYPE = os.getenv("HYPERSQL_OS_TYPE", "rocky8")
 # Path to the ansible inventory file: <role_name>/inventory.yml
-EDB_INVENTORY = os.getenv("EDB_INVENTORY")
+HYPERSQL_INVENTORY = os.getenv("HYPERSQL_INVENTORY")
 # Postgres version
-EDB_PG_VERSION = os.getenv("EDB_PG_VERSION")
+HYPERSQL_PG_VERSION = os.getenv("HYPERSQL_PG_VERSION")
 # Postgres type
-EDB_PG_TYPE = os.getenv("EDB_PG_TYPE")
-# Use EDB repo
-EDB_ENABLE_REPO = os.getenv("EDB_ENABLE_REPO").lower() in ["true", "1"]
+HYPERSQL_PG_TYPE = os.getenv("HYPERSQL_PG_TYPE")
 # SSH parameters
-EDB_SSH_USER = os.getenv("EDB_SSH_USER", "root")
-EDB_SSH_KEY = os.getenv("EDB_SSH_KEY", "../.ssh/id_rsa")
-EDB_SSH_CONFIG = os.getenv("EDB_SSH_CONFIG", "../.ssh/ssh_config")
+HYPERSQL_SSH_USER = os.getenv("HYPERSQL_SSH_USER", "root")
+HYPERSQL_SSH_KEY = os.getenv("HYPERSQL_SSH_KEY", "../.ssh/id_rsa")
+HYPERSQL_SSH_CONFIG = os.getenv("HYPERSQL_SSH_CONFIG", "../.ssh/ssh_config")
 # Globale variable used as a cache
 HOSTS = None
 
@@ -29,7 +27,7 @@ def load_ansible_vars():
     """
     Loading Ansible variables from the vars.json file
     """
-    with open(EDB_ANSIBLE_VARS, "r") as f:
+    with open(HYPERSQL_ANSIBLE_VARS, "r") as f:
         return json.loads(f.read())
 
 
@@ -38,7 +36,7 @@ def load_inventory():
     Loading data from the inventory file
     """
     # Read the inventory file
-    with open(EDB_INVENTORY, "r") as f:
+    with open(HYPERSQL_INVENTORY, "r") as f:
         return yaml.load(f.read(), Loader=yaml.Loader)
 
 
@@ -59,9 +57,9 @@ def get_hosts(group_name):
     for host, attrs in children[group_name]["hosts"].items():
         nodes.append(
             testinfra.get_host(
-                "paramiko://%s@%s:22" % (EDB_SSH_USER, attrs["ansible_host"]),
-                ssh_identity_file=EDB_SSH_KEY,
-                ssh_config=EDB_SSH_CONFIG,
+                "paramiko://%s@%s:22" % (HYPERSQL_SSH_USER, attrs["ansible_host"]),
+                ssh_identity_file=HYPERSQL_SSH_KEY,
+                ssh_config=HYPERSQL_SSH_CONFIG,
             )
         )
     HOSTS = nodes
@@ -69,11 +67,11 @@ def get_hosts(group_name):
 
 
 def get_os():
-    return EDB_OS
+    return HYPERSQL_OS_TYPE
 
 
 def get_pg_version():
-    return EDB_PG_VERSION
+    return HYPERSQL_PG_VERSION
 
 
 def os_family():
@@ -90,7 +88,7 @@ def os_family():
 
 
 def get_pg_type():
-    return EDB_PG_TYPE
+    return HYPERSQL_PG_TYPE
 
 
 def get_primary():

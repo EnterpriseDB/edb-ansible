@@ -2,18 +2,52 @@
 # encoding: utf-8
 
 import argparse
-import os as os_
+import itertools
+import os
 import re
+import shlex
 import subprocess
-import sys
 from multiprocessing import Pool
 from pathlib import Path
 
+import termcolor
 import yaml
 
 
+class ColoredPrinter:
+    colors = ["red", "green", "yellow", "blue", "magenta", "cyan"]
+
+    def print_message(self, message):
+        pid = os.getpid()
+        color = self.colors[pid % len(self.colors)]
+        text = termcolor.colored(f"[PID={pid}] " + message, color)
+        print(text)
+
+
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class TestConfiguration(metaclass=Singleton):
+    def __init__(self):
+        config_path = "test-config.yml"
+        with open(config_path, "r") as config_file:
+            self.config = yaml.load(config_file, Loader=yaml.BaseLoader)
+
+    def __getitem__(self, item):
+        return self.config[item]
+
+
 class PgVersionChecker(argparse.Action):
-    available_versions = ["10", "11", "12", "13", "14"]
+    def __init__(self, option_strings, *args, **kwargs):
+        config = TestConfiguration()
+        self.available_versions = config["available_pg_versions"]
+        super(PgVersionChecker, self).__init__(option_strings, *args, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
         for v in values:
@@ -23,7 +57,10 @@ class PgVersionChecker(argparse.Action):
 
 
 class PgTypeChecker(argparse.Action):
-    available_types = ["EPAS", "PG"]
+    def __init__(self, option_strings, *args, **kwargs):
+        config = TestConfiguration()
+        self.available_types = config["available_pg_types"]
+        super(PgTypeChecker, self).__init__(option_strings, *args, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
         for v in values:
@@ -33,81 +70,136 @@ class PgTypeChecker(argparse.Action):
 
 
 class OSChecker(argparse.Action):
-    available_os = [
-        "centos7",
-        "rocky8",
-        "debian9",
-        "debian10",
-        "ubuntu20",
-        "oraclelinux7",
-    ]
+    def __init__(self, option_strings, *args, **kwargs):
+        config = TestConfiguration()
+        self.available_os_types = config["available_os_types"]
+        super(OSChecker, self).__init__(option_strings, *args, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
         for v in values:
-            if v not in self.available_os:
+            if v not in self.available_os_types:
                 parser.error("Operating system %s not supported" % v)
         setattr(namespace, self.dest, values)
 
 
-def load_configuration(configuration):
-    return yaml.load(configuration.read(), Loader=yaml.Loader)
+def main():
+    make_ansible_collection_tar_ball()
+    make_log_dir()
+
+    args = get_input_arguments()
+    testing_roles = get_testing_roles_from_keywords(args.keyword)
+
+    if not testing_roles:
+        print("No test cases matching with the given keywords")
+        quit()
+
+    args_for_exec_test = get_args_for_exec_test(testing_roles, args)
+
+    with Pool(args.jobs) as p:
+        results = p.starmap(exec_test, args_for_exec_test)
+        print_test_result(results)
 
 
-def exec_test_case(
-    case_name,
-    case_config,
-    edb_repo_username,
-    edb_repo_password,
-    pg_version_list,
-    pg_type_list,
-    os_list,
-    edb_enable_repo,
-):
-    n_success = 0
-    n_executed = 0
-    for os in case_config["os"]:
-        if len(os_list) > 0 and os not in os_list:
-            continue
-        for pg_type in case_config["pg_type"]:
-            if len(pg_type_list) > 0 and pg_type not in pg_type_list:
-                continue
-            for pg_version in case_config["pg_version"]:
-                pg_version = str(pg_version)
-                if len(pg_version_list) > 0 and pg_version not in pg_version_list:
-                    continue
-                # Execute the test
-                success = exec_test(
-                    case_name,
-                    edb_repo_username,
-                    edb_repo_password,
-                    os,
-                    pg_type,
-                    pg_version,
-                    edb_enable_repo,
-                )
-                n_executed += 1
-                if success:
-                    n_success += 1
-    return (n_success, n_executed)
+def make_ansible_collection_tar_ball():
+    r = subprocess.run(
+        ["make", "-C", "..", "clean_for_test", "build_for_test"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if r.returncode != 0:
+        raise Exception(r.stderr.decode("utf-8"))
 
 
-def exec_test(
-    case_name,
-    edb_repo_username,
-    edb_repo_password,
-    os,
-    pg_type,
-    pg_version,
-    edb_enable_repo,
-):
-    env = os_.environ.copy()
+def make_log_dir():
+    if not Path("./logs").exists():
+        os.mkdir("logs")
+
+
+def get_input_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-j",
+        "--jobs",
+        dest="jobs",
+        type=int,
+        help="Number of parallel jobs. Default: %(default)s",
+        default=4,
+    )
+
+    parser.add_argument(
+        "--pg-type",
+        dest="pg_type",
+        nargs="+",
+        default=["PG"],
+        action=PgTypeChecker,
+        help="Postgres DB engines list. Default: %(default)s",
+    )
+
+    parser.add_argument(
+        "--pg-version",
+        dest="pg_version",
+        nargs="+",
+        default=["14.6"],
+        action=PgVersionChecker,
+        help="Postgres versions list. Default: %(default)s",
+    )
+
+    parser.add_argument(
+        "--os_type",
+        dest="os_type",
+        nargs="+",
+        default=["centos7"],
+        action=OSChecker,
+        help="Operating systems list. Default: %(default)s",
+    )
+
+    parser.add_argument(
+        "-k",
+        "--keywords",
+        dest="keyword",
+        nargs="+",
+        default=[""],
+        help="Execute test cases with a name matching the given keywords.",
+    )
+
+    return parser.parse_args()
+
+
+def get_testing_roles_from_keywords(keywords):
+    testing_roles = []
+    for keyword in keywords:
+        for role in TestConfiguration()["available_roles"]:
+            if re.search(re.escape(keyword), role):
+                testing_roles.append(role)
+
+    return testing_roles
+
+
+def get_args_for_exec_test(testing_roles, args):
+    return [
+        (role, args.pg_type, args.pg_version, args.os_type) for role in testing_roles
+    ]
+
+
+def exec_test(case_name, pg_types, pg_versions, os_types):
+    executed = 0
+    success = 0
+    for iter in itertools.product([case_name], pg_types, pg_versions, os_types):
+        if exec_test_case(*iter):
+            success = success + 1
+        executed = executed + 1
+
+    return (executed, success)
+
+
+def exec_test_case(case_name, pg_type, pg_version, os_type):
+    env = os.environ.copy()
     env.update(
         {
-            "EDB_REPO_USERNAME": edb_repo_username,
-            "EDB_REPO_PASSWORD": edb_repo_password,
-            "EDB_ENABLE_REPO": edb_enable_repo,
-            "EDB_PG_VERSION": pg_version,
-            "EDB_PG_TYPE": pg_type,
+            "HYPERSQL_PG_VERSION": pg_version,
+            "HYPERSQL_PG_TYPE": pg_type,
+            "HYPERSQL_OS_TYPE": os_type,
+            "CASE_NAME": case_name,
         }
     )
 
@@ -115,31 +207,12 @@ def exec_test(
     # are still running here.
     tears_down(case_name)
 
-    r = subprocess.run(
-        "make -C cases/%s %s" % (case_name, os),
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env=env,
-    )
-    if r.returncode != 0:
-        test_result = "\033[1m\033[91mFAILED\033[0m\n"
-    else:
-        test_result = "\033[1m\033[92mOK\033[0m\n"
-    sys.stdout.write(
-        "Test %s with %s/%s on %s ... %s"
-        % (case_name, pg_type, pg_version, os, test_result)
-    )
-    sys.stdout.flush()
-
-    if r.returncode != 0:
-        log_stdout(case_name, os, pg_type, pg_version, r.stdout)
-        log_stderr(case_name, os, pg_type, pg_version, r.stderr)
+    result = use_makefile_to_run(case_name, pg_type, pg_version, os_type, env)
 
     # Tears down containers
     tears_down(case_name)
 
-    return r.returncode == 0
+    return result
 
 
 def tears_down(case_name):
@@ -152,141 +225,45 @@ def tears_down(case_name):
         raise Exception(r.stderr.decode("utf-8"))
 
 
-def make_build():
-    r = subprocess.run(
-        ["make", "-C", "..", "clean", "build"],
+def use_makefile_to_run(case_name, pg_type, pg_version, os_type, env):
+    printer = ColoredPrinter()
+    message = f"Testing...(case={case_name}, pg_type={pg_type}, pg_version={pg_version}, os_type={os_type})"
+    printer.print_message(message)
+
+    command = shlex.split(f"make -C cases/{case_name} {os_type}")
+    process = subprocess.Popen(
+        command,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        close_fds=True,
+        env=env,
     )
-    if r.returncode != 0:
-        raise Exception(r.stderr.decode("utf-8"))
+
+    stdout_logfile_name = f"logs/{case_name}_{os_type}_{pg_type}_{pg_version}.stdout"
+    stdout_logfile = open(stdout_logfile_name, "wb", buffering=0)
+    printer.print_message(f"Logs are written in {stdout_logfile_name}")
+
+    while process.poll() is not None:
+        line = process.stdout.readline()
+        stdout_logfile.write(line)
+
+    stdout_logfile.close()
+    exitcode = process.wait()
+
+    result_message = "Success" if exitcode == 0 else "Fail"
+    printer.print_message(
+        f"Test Complete...({case_name}, {pg_type}, {pg_version}, {os_type}) with result: {result_message}"
+    )
+
+    return exitcode == 0
 
 
-def make_log_dir():
-    if not Path("./logs").exists():
-        os_.mkdir("logs")
-
-
-def log_stdout(case_name, os, pg_type, pg_version, stdout):
-    log_name = "logs/%s_%s_%s_%s.stdout" % (case_name, os, pg_type, pg_version)
-    with open(log_name, "wb") as f:
-        f.write(stdout)
-
-
-def log_stderr(case_name, os, pg_type, pg_version, stderr):
-    log_name = "logs/%s_%s_%s_%s.stderr" % (case_name, os, pg_type, pg_version)
-    with open(log_name, "wb") as f:
-        f.write(stderr)
+def print_test_result(results):
+    n_executed = sum([x[0] for x in results])
+    n_success = sum([x[1] for x in results])
+    ratio = float(n_success) / float(n_executed) * 100
+    print("\nTests passed: %s/%s %.2f%%" % (n_success, n_executed, ratio))
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-j",
-        "--jobs",
-        dest="jobs",
-        type=int,
-        help="Number of parallel jobs. Default: %(default)s",
-        default=4,
-    )
-    parser.add_argument(
-        "--configuration",
-        dest="configuration",
-        type=argparse.FileType("r", encoding="UTF-8"),
-        help="Configuration file",
-        default="config.yml",
-    )
-
-    parser.add_argument(
-        "--edb-repo-username",
-        dest="edb_repo_username",
-        type=str,
-        default="",
-        help="EDB package repository username",
-    )
-    parser.add_argument(
-        "--edb-repo-password",
-        dest="edb_repo_password",
-        type=str,
-        default="",
-        help="EDB package repository password",
-    )
-    parser.add_argument(
-        "--edb-enable-repo",
-        dest="edb_enable_repo",
-        choices=["true", "false"],
-        default="true",
-        help="Use EDB package repository",
-    )
-    parser.add_argument(
-        "--pg-version",
-        dest="pg_version",
-        nargs="+",
-        default=["14"],
-        action=PgVersionChecker,
-        help="Postgres versions list. Default: %(default)s",
-    )
-    parser.add_argument(
-        "--pg-type",
-        dest="pg_type",
-        nargs="+",
-        default=[],
-        action=PgTypeChecker,
-        help="Postgres DB engines list. Default: all",
-    )
-    parser.add_argument(
-        "--os",
-        dest="os",
-        nargs="+",
-        default=[],
-        action=OSChecker,
-        help="Operating systems list. Default: all",
-    )
-    parser.add_argument(
-        "-k",
-        "--keywords",
-        dest="keyword",
-        nargs="+",
-        default=[],
-        help="Execute test cases with a name matching the given keywords.",
-    )
-    env = parser.parse_args()
-
-    make_build()
-    make_log_dir()
-
-    test_cases = []
-
-    for name, config in load_configuration(env.configuration)["cases"].items():
-
-        execute_test = False if len(env.keyword) > 0 else True
-
-        for k in env.keyword:
-            if re.search(re.escape(k), name):
-                execute_test = True
-
-        if not execute_test:
-            continue
-
-        test_cases.append(
-            (
-                name,
-                config,
-                env.edb_repo_username,
-                env.edb_repo_password,
-                env.pg_version,
-                env.pg_type,
-                env.os,
-                env.edb_enable_repo,
-            )
-        )
-
-    with Pool(env.jobs) as p:
-        r = p.starmap(exec_test_case, test_cases)
-        p.close()
-        p.join()
-        if len(test_cases) > 0:
-            n_executed = sum([x[1] for x in r])
-            n_success = sum([x[0] for x in r])
-            ratio = float(n_success) / float(n_executed) * 100
-            print("\nTests passed: %s/%s %.2f%%" % (n_success, n_executed, ratio))
+    main()
