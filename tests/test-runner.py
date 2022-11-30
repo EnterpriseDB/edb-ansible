@@ -243,7 +243,7 @@ def use_makefile_to_run(case_name, pg_type, pg_version, os_type, env):
     stdout_logfile = open(stdout_logfile_name, "wb", buffering=0)
     printer.print_message(f"Logs are written in {stdout_logfile_name}")
 
-    while process.poll() is not None:
+    while process.poll() is None:
         line = process.stdout.readline()
         stdout_logfile.write(line)
 
