@@ -32,3 +32,11 @@
   changed_when: drop_cluster.rc == 0
   failed_when: drop_cluster.rc != 0
   become: true
+
+- name: Install sslutils
+  ansible.builtin.package:
+    name:
+      - sslutils_{{ pg_version }}
+    state: present
+  become: true
+  when: pg_ssl

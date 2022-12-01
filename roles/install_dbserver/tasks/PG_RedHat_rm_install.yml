@@ -42,3 +42,12 @@
       - postgresql{{ pg_version }}-contrib
     state: absent
   become: true
+
+- name: Remove sslutils
+  ansible.builtin.package:
+    name:
+      - sslutils_{{ pg_version }}
+    state: absent
+    update_cache: true
+  become: true
+  when: pg_ssl

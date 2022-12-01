@@ -1,0 +1,15 @@
+---
+cert_common_name: "PEM"
+cert_country: "KR"
+cert_state: "Seongnam"
+cert_city: "Bundang"
+cert_org_unit: "HyperSQL Manager"
+cert_email: "hypersql_tech@tmax.co.kr"
+
+pg_ssl_postgres_conf_params:
+  - { name: "ssl", value: "on" }
+  - { name: "ssl_ca_file", value: "{{ pg_data }}/root.crt" }
+  - { name: "ssl_key_file", value: "{{ pg_data }}/server.key" }
+  - { name: "ssl_cert_file", value: "{{ pg_data }}/server.crt" }
+  - { name: "ssl_crl_file", value: "{{ pg_data }}/root.crl" }
+  

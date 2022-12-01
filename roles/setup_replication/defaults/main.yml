@@ -3,7 +3,6 @@
 # port constants
 
 disable_logging: yes
-pg_remote_ssl_src: no
 
 force_replication: false
 use_replication_slots: true
@@ -32,7 +31,8 @@ upstream_hostname: ""
 
 # Local path to SSL server key and certificate to be sent to the server
 # if empty, they are generated
-# pg_ssl_key_file: ""
-# pg_ssl_cert_file: ""
-# pg_ssl_ca_file: ""
-# pg_ssl_crl_file: ""
+pg_remote_ssl_src: no
+pg_ssl_key_file: ""
+pg_ssl_cert_file: ""
+pg_ssl_ca_file: ""
+pg_ssl_crl_file: ""

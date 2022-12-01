@@ -79,3 +79,14 @@
     state: present
   when: ansible_distribution_major_version == '8'
   become: true
+<<<<<<< HEAD
+=======
+
+- name: Install sslutils
+  ansible.builtin.package:
+    name:
+      - sslutils_{{ pg_version }}
+    state: present
+  become: true
+  when: pg_ssl
+>>>>>>> Restore ssl

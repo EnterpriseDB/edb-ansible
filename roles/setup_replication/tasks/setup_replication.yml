@@ -100,10 +100,16 @@
 
 - name: Build standby service check
   block:
-    - import_tasks: create_directories.yml
-    - import_tasks: pg_basebackup.yml
-    - import_tasks: pg_setup_systemd.yml
-    - import_tasks: configure_node.yml
+    - name: Create directories if not exists
+      ansible.builtin.import_tasks: create_directories.yml
+    - name: Take PG base backup
+      ansible.builtin.import_tasks: pg_basebackup.yml
+    - name: Setup systemd file
+      ansible.builtin.import_tasks: pg_setup_systemd.yml
+    - name: Send SSL files based on users input
+      ansible.builtin.import_tasks: pg_ssl_send_files.yml
+    - name: Configure standby node
+      ansible.builtin.import_tasks: configure_node.yml
   become: yes
 
 - name: Update primary for synchronous replication

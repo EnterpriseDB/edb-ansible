@@ -3,6 +3,7 @@ pg_minor_version: ""
 pg_owner: "postgres"
 enable_core_dump: false
 core_dump_directory: "/var/coredumps"
+pg_ssl: true
 
 # only ubuntu
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"

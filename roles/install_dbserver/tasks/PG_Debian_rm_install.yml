@@ -59,3 +59,12 @@
   when:
     - os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
+
+- name: Remove sslutils
+  ansible.builtin.package:
+    name:
+      - postgresql-{{ pg_version }}-sslutils
+    state: absent
+    update_cache: true
+  become: true
+  when: pg_ssl

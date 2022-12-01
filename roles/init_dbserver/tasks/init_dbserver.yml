@@ -7,6 +7,10 @@
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Reference ssl variables
+  ansible.builtin.include_vars: ssl.yml
+  when: pg_ssl
+
 - name: Gather service facts
   service_facts:
 
@@ -47,3 +51,12 @@
     - import_tasks: pg_set_superuser_password.yml
     - import_tasks: set_primary_slot.yml
   become: yes
+
+- name: Configure ssl based on pg_ssl parameter
+  when:
+    - pg_ssl
+  become: true
+  block:
+      - import_tasks: pg_ssl_send_files.yml
+      - import_tasks: pg_ssl_check.yml
+      - import_tasks: pg_ssl_config.yml

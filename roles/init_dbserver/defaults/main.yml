@@ -1,5 +1,7 @@
 ---
 pg_instance_name: main
+pg_ssl: true
+pg_remote_ssl_src: false
 
 disable_logging: yes
 use_replication_slots: true
@@ -52,6 +54,13 @@ pg_group: "postgres"
 pg_superuser: "postgres"
 pg_superuser_password: ""
 pg_random_password: true
+
+# Local path to SSL server key and certificate to be sent to the server
+# if empty, they are generated
+pg_ssl_key_file: ""
+pg_ssl_cert_file: ""
+pg_ssl_ca_file: ""
+pg_ssl_crl_file: ""
 
 # Input variables
 input_user: ""
