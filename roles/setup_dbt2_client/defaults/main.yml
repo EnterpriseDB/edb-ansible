@@ -1,6 +1,6 @@
 ---
 dbt2_client_port: 30000
-dbt2_version: "0.48.5"
+dbt2_version: "0.48.6"
 
 # The following variables are set by the respective vars file.
 pg_data: ""
