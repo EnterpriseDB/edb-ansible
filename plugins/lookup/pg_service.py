@@ -19,7 +19,7 @@ RETURN = """
 
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
-        self.pg_version = variables.get("pg_version")
+        self.pg_major_version = variables.get("pg_major_version")
         self.pg_instance_name = variables.get("pg_instance_name", "main")
         self.os_family = variables.get("ansible_os_family")
 
@@ -44,13 +44,13 @@ class LookupModule(LookupBase):
 
         if self.pg_instance_name != "main":
             pg_service_name = (pg_service_name + "-%s") % (
-                self.pg_version,
+                self.pg_major_version,
                 self.pg_instance_name,
             )
         else:
-            pg_service_name = pg_service_name % self.pg_version
+            pg_service_name = pg_service_name % self.pg_major_version
 
         return pg_service_name
 
     def get_pg_service_name_for_debian(self):
-        return "postgresql@%s-%s" % (self.pg_version, self.pg_instance_name)
+        return "postgresql@%s-%s" % (self.pg_major_version, self.pg_instance_name)

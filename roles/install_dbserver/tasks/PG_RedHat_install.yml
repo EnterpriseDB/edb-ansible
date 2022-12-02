@@ -37,7 +37,7 @@
       - python3-libs
     state: present
   become: true
-  when: pg_version|int >= 14
+  when: pg_major_version|int >= 14
 
 - name: Install Postgres
   package:
@@ -45,18 +45,18 @@
       - libxslt
       - libicu
       - glibc-common
-      - postgresql{{ pg_version }}-libs
-      - postgresql{{ pg_version }}
-      - postgresql{{ pg_version }}-server
-      - postgresql{{ pg_version }}-contrib
+      - postgresql{{ pg_major_version }}-libs
+      - postgresql{{ pg_major_version }}
+      - postgresql{{ pg_major_version }}-server
+      - postgresql{{ pg_major_version }}-contrib
     state: present
   become: true
   when: rpm_install==false
 
 - name: Install Postgres rpm list
   ansible.builtin.yum:
-    name: "{{ item }}"
-    state: "present"
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
   become: true
   loop: "{{ rpm_list }}"
   when:
@@ -79,14 +79,11 @@
     state: present
   when: ansible_distribution_major_version == '8'
   become: true
-<<<<<<< HEAD
-=======
 
 - name: Install sslutils
   ansible.builtin.package:
     name:
-      - sslutils_{{ pg_version }}
+      - sslutils_{{ pg_major_version }}
     state: present
   become: true
   when: pg_ssl
->>>>>>> Restore ssl

@@ -1,7 +1,6 @@
 # setup_replication
 
-This Ansible Galaxy Role configures Replication on PostgresSQL or EnterpriseDB
-Postgres Advanced Server versions: 10, 11, 12, 13 and 14 on instances previously
+This Ansible Galaxy Role configures Replication on PostgresSQL versions: 14 on instances previously
 configured.
 
 ## Requirements
@@ -27,17 +26,16 @@ Operating Systems supported are: CentOS7 and RHEL7
 
 - **_pg_version_**
 
-Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
 
 - **_pg_type_**
 
-Database Engine supported are: PG and EPAS
+  Database Engine supported are: `PG`
 
 The rest of the variables can be configured and are available in the:
 
-- [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
-- [roles/setup_replication/vars/EPAS.yml](./vars/EPAS.yml)
-- [roles/setup_replication/vars/PG.yml](./vars/PG.yml)
+  * [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_replication/vars/PG.yml](./vars/PG.yml)
 
 ## Dependencies
 
@@ -89,7 +87,7 @@ Below is an example of how to include the `setup_replication` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 14
+        pg_version: 14.6
         pg_type: "PG"
 
   roles:
@@ -100,58 +98,30 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-- [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
-- [roles/setup_replication/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
-- [roles/setup_replication/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
-- [roles/setup_replication/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
-- [roles/setup_replication/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_replication/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_replication/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## Database engines supported
 
 ### Community PostgreSQL
 
-| Distribution                      |         10         |         11         |         12         |         13         |         14         |
-| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Distribution                      |               14 |
+| --------------------------------- |:----------------:|
+| CentOS 7                          |:white_check_mark:|
+| CentOS 8                          |:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
 
-### EnterpriseDB Postgres Advanced Server and PEM
-
-| Distribution                      |         10         |         11         |         12         |         13         |         14         |
-| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| RockyLinux 8                      |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 8                   |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 20.04 LTS (Focal) - x86_64 |        :x:         |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: |
-| Debian 9 (Stretch) - x86_64       |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 10 (Buster) - x86_64       |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+- :white_check_mark: - Tested and supported
 
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13 on CentOS7 hosts with the user centos
-# EFM version 4.0
+# To deploy community Postgres version 14 on CentOS7 hosts with the user centos
 $ ansible-playbook playbook.yml \
   -u centos \
   -i inventory.yml \
-  --private-key <key.pem> \
-  --extra-vars="pg_version=13 pg_type=PG efm_version=4.0"
-```
-
-```bash
-# To deploy EPAS version 12 on RHEL8 hosts with the user ec2-user EFM version
-# 3.10
-$ ansible-playbook playbook.yml \
-  -u ec2-user \
-  -i inventory.yml \
-  --private-key <key.pem> \
-  --extra-vars="os=RHEL8 pg_version=12 pg_type=EPAS efm_version=3.10"
+  --extra-vars="pg_version=14.6 pg_type=PG"
 ```
 
 ## License
@@ -161,5 +131,7 @@ BSD
 ## Author information
 
 Author:
+  * [Sang Myeung Lee](https://github.com/sungmu1)
 
-- EDB Postgres - www.enterprisedb.com
+Original Author:
+  * EDB Postgres - www.enterprisedb.com

@@ -13,7 +13,7 @@
 
 - name: Drop the default debian database
   shell: >
-    {{ pg_deb_drop_cluster }} {{ pg_version }} {{ pg_instance_name }}
+    {{ pg_deb_drop_cluster }} {{ pg_major_version }} {{ pg_instance_name }}
   args:
     executable: /bin/bash
   changed_when: drop_cluster.rc == 0

@@ -1,10 +1,10 @@
 ---
-pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
-pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_data: "/var/lib/pgsql/{{ pg_major_version }}/data"
+pg_default_data: "/var/lib/pgsql/{{ pg_major_version }}/data"
 pg_log: "/var/log/postgres"
 pg_wal: ""
 pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
-pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_version }}.service"
+pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_major_version }}.service"
 
 primary_host_name: ""
 
@@ -22,7 +22,7 @@ pg_database: "postgres"
 pg_service: "{{ lookup('hypersql_devops.postgres.pg_service') }}.service"
 
 pg_user_home: "/var/lib/pgsql"
-pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
+pg_bin_path: "/usr/pgsql-{{ pg_major_version }}/bin"
 pg_basebackup: "{{ pg_bin_path }}/pg_basebackup -Fp -R -l standby --checkpoint=fast --wal-method=stream"
 pg_basebackup_options: ""
 

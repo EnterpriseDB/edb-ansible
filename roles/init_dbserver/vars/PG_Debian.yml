@@ -1,10 +1,10 @@
 ---
-pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
-pg_default_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
+pg_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"
+pg_default_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"
 
 # required & optional directories
 pg_user_home: "/var/lib/postgresql"
-pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
+pg_bin_path: "/usr/lib/postgresql/{{ pg_major_version }}/bin"
 
 # unix socket domain directories
 pg_unix_socket_directories:
@@ -14,11 +14,11 @@ pg_unix_socket_directories:
 pg_port: 5432
 
 #postgres service
-pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}.service"
+pg_service: "postgresql@{{ pg_major_version }}-{{ pg_instance_name }}.service"
 
 pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer --user={{ pg_owner }}"
 pg_initdb: "{{ pg_bin_path}}/initdb"
-#pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
+#pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_major_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
 
 # postgres database
 pg_database: "postgres"

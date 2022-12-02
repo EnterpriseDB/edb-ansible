@@ -28,4 +28,4 @@
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
       Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
+  when: pg_version not in supported_pg_version

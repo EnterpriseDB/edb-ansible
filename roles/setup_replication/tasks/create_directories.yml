@@ -4,7 +4,7 @@
     {{ pg_initdb }}
   args:
     executable: /bin/bash
-    creates: "/etc/postgresql/{{ pg_version }}/{{ pg_instance_name }}/postgresql.conf"
+    creates: "/etc/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}/postgresql.conf"
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
   register: initdb_cmd

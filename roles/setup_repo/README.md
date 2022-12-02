@@ -1,8 +1,7 @@
 # setup_repo
 
 This Ansible Role sets up and configures the repositories from which
-packages will be retrieved for any PostgresSQL or EnterpriseDB Postgres
-Advanced Server installations.
+packages will be retrieved for any PostgresSQL installations.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -11,8 +10,8 @@ For more details refer to the
 [Database engines supported](#database-engines-supported) section.
 
 **Note:**
-Should there be a need to install and/or configure a PostgreSQL or EnterpriseDB
-Postgres Advanced Server Cluster you can utilize the **install_dbserver** role.
+Should there be a need to install and/or configure a PostgreSQL  Cluster
+you can utilize the **install_dbserver** role.
 
 **The ansible playbook must be executed under an account that has full
 privileges.**
@@ -29,30 +28,11 @@ When executing the role via Ansible these are the required variables:
 
 - **pg_version**
 
-Postgres Versions supported are: `10`, `11`, `12`, `13` and `14`
+  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
 
 - **pg_type**
 
-Database Engine supported are: `PG` and `EPAS`
-
-- **enable_edb_repo**
-
-Configure access to EDB package repository. Default: `true`
-
-- **repo_username**
-
-Username used to access EDB package repository.
-Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
-
-- **repo_password**
-
-Password used to access EDB package repository.
-Required when **enable_edb_repo** is set to `true` and **repo_token** isn't used.
-
-- **repo_token**
-
-EDB repository token used to access EDB package repository.
-Required when **enable_edb_repo** is set to `true` and **repo_username** and **repo_password** aren't used.
+  Database Engine supported are: `PG`
 
 - **yum_additional_repos**
 
@@ -126,33 +106,7 @@ Note: don't forget to replace IP addresses.
 
 ### How to include the `setup_repo` role in your Playbook
 
-Below is an example of how to include the `setup_repo` role for setting up
-repositories access to EDB Postgres Advanced Server packages in version 14:
-
-```yaml
----
-- hosts: all
-  name: Setup EPAS Repositories
-  become: yes
-  gather_facts: yes
-
-  collections:
-    - hypersql_devops.postgres
-
-  pre_tasks:
-    - name: Initialize the user defined variables
-      set_fact:
-        pg_version: 14
-        pg_type: "EPAS"
-        repo_username: "<edb-repo-username>"
-        repo_password: "<edb-repo-password>"
-        repo_token: "<edb-repo-token>"
-
-  roles:
-    - setup_repo
-```
-
-Following is another example of how to include the `setup_repo` role for
+Below is an example of how to include the `setup_repo` role for
 setting up repositories access to PostgreSQL packages in version 14:
 
 ```yaml
@@ -168,9 +122,8 @@ setting up repositories access to PostgreSQL packages in version 14:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 14
+        pg_version: 14.6
         pg_type: "PG"
-        enable_edb_repo: false
 
   roles:
     - setup_repo
@@ -186,27 +139,11 @@ All the variables are available at:
 
 ### PostgreSQL
 
-| Distribution                      |         10         |         11         |         12         |         13         |         14         |
-| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-
-### EnterpriseDB Postgres Advanced Server
-
-| Distribution                      |         10         |         11         |         12         |         13         |         14         |
-| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| RockyLinux 8                      |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 8                   |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 20.04 LTS (Focal) - x86_64 |        :x:         |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: |
-| Debian 9 (Stretch) - x86_64       |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 10 (Buster) - x86_64       |        :x:         |        :x:         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Distribution                      |               14 |
+| --------------------------------- |:----------------:|
+| CentOS 7                          |:white_check_mark:|
+| CentOS 8                          |:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 
@@ -217,20 +154,7 @@ All the variables are available at:
 $ ansible-playbook playbook.yml \
   -u <ssh-user> \
   --private-key <ssh-private-key> \
-  --extra-vars="pg_type=PG pg_version=14 enable_edb_repo=false"
-```
-
-```bash
-# To setup EDB repos
-$ ansible-playbook playbook.yml \
-  -u <ssh-user> \
-  --private-key <ssh-private-key> \
-  --extra-vars="pg_type=EPAS pg_version=14 repo_username=<edb-repo-username> repo_password=<edb-repo-password>"
-# OR
-$ ansible-playbook playbook.yml \
-  -u <ssh-user> \
-  --private-key <ssh-private-key> \
-  --extra-vars="pg_type=EPAS pg_version=14 repo_token=<edb-repo-token>"
+  --extra-vars="pg_type=PG pg_version=14.6"
 ```
 
 ## License
@@ -240,9 +164,10 @@ BSD
 ## Author information
 
 Author:
+  * [Sang Myeung Lee](https://github.com/sungmu1)
 
-- Doug Ortiz
-- Vibhor Kumar (Co-Author)
-- Julien Tachoires (Co-Author)
-
-Contact: **edb-devops@enterprisedb.com**
+Original Author:
+  * Doug Ortiz
+  * Vibhor Kumar (Co-Author)
+  * Julien Tachoires (Co-Author)
+  

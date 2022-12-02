@@ -1,4 +1,7 @@
 ---
+pg_major_version: "{{ pg_version | int }}"
+pg_minor_version: "{{ pg_version | string | split('.') | last | int }}"
+
 pg_instance_name: main
 pg_ssl: true
 pg_remote_ssl_src: false
@@ -13,8 +16,8 @@ pass_dir: "~/.pg"
 
 pg_wal: ""
 pg_local_wal_archive_dir: ""
-pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
-pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_data: "/var/lib/pgsql/{{ pg_major_version }}/data"
+pg_default_data: "/var/lib/pgsql/{{ pg_major_version }}/data"
 pg_encoding: ""
 
 # log directory and filename
@@ -22,12 +25,12 @@ pg_log: "/var/log/postgres"
 pg_log_filename: "postgresql-%a.log"
 
 # postgres service
-pg_service: "postgresql-{{ pg_version }}"
+pg_service: "postgresql-{{ pg_major_version }}"
 
 # required & optional directories
 pg_user_home: "/var/lib/pgsql"
-pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
-pg_initdb: "{{ pg_bin_path }}/postgresql-{{ pg_version }}-setup initdb"
+pg_bin_path: "/usr/pgsql-{{ pg_major_version }}/bin"
+pg_initdb: "{{ pg_bin_path }}/postgresql-{{ pg_major_version }}-setup initdb"
 pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
 
 # unix socket domain directories

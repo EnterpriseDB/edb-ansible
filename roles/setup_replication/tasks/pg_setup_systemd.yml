@@ -1,6 +1,4 @@
 ---
-<<<<<<< HEAD
-=======
 - name: Gather service facts
   service_facts:
 
@@ -14,7 +12,6 @@
     - ansible_facts.services[pg_service].state == 'running'
   become: yes
 
->>>>>>> Refactoring Replication Role
 - name: Copy global systemd unit file to /etc/systemd/system
   ansible.builtin.copy:
     remote_src: true
@@ -35,7 +32,7 @@
     insertafter: "{{ item.insertafter | default('EOF') }}"
   become: true
   loop:
-    - line: "Description=Database server {{ pg_type }} {{ pg_version }}"
+    - line: "Description=Database server {{ pg_type }} {{ pg_major_version }}"
       regexp: "^Description=.*"
     - line: "Environment=PGDATA={{ pg_default_data }}"
       regexp: "^Environment=PGDATA.*"
@@ -62,7 +59,7 @@
     insertafter: "{{ item.insertafter | default('EOF') }}"
   become: true
   loop:
-    - line: "Description=Database server {{ pg_type }} {{ pg_version }} {{ pg_instance_name }}"
+    - line: "Description=Database server {{ pg_type }} {{ pg_major_version }} {{ pg_instance_name }}"
       regexp: "^Description=.*"
     - line: "AssertPathExists={{ pg_default_data }}"
       regexp: "^AssertPathExists=.*"

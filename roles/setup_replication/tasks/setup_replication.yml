@@ -1,25 +1,8 @@
 ---
-<<<<<<< HEAD
-- name: Set the os variable
-  set_fact:
-    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
-
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
-
-- name: Check supported versions for Database engine
-  fail:
-    msg: "Database Engine Version = {{ pg_version }} not supported.
-      Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
-=======
 - name : Check Operating System, PostgreSQL Type, PostgreSQL Version
   include_role:
     name: common
     tasks_from: check_version.yml
->>>>>>> Refactoring Replication Role
 
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"

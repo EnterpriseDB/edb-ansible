@@ -1,5 +1,6 @@
 ---
-pg_minor_version: ""
+pg_major_version: "{{ pg_version | int }}"
+pg_minor_version: "{{ pg_version | string | split('.') | last | int }}"
 pg_owner: "postgres"
 enable_core_dump: false
 core_dump_directory: "/var/coredumps"
@@ -8,7 +9,7 @@ pg_ssl: true
 # only ubuntu
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 deb_cluster_name: "main"
-pg_service: "postgresql@{{ pg_version }}-{{ deb_cluster_name }}.service"
+pg_service: "postgresql@{{ pg_major_version }}-{{ deb_cluster_name }}.service"
 
 sysctl_params:
   - {
@@ -19,17 +20,21 @@ sysctl_params:
   - { "name": "fs.suid_dumpable", "value": "2", "state": "present" }
 
 rpm_install: false
-rpm_install_path: "https://download.postgresql.org/pub/repos/yum/{{ pg_version }}/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/postgresql{{ pg_version }}"
+rpm_install_path: "https://download.postgresql.org/pub/repos/yum/{{ pg_major_version }}/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/postgresql{{ pg_major_version }}"
 rpm_list:
   - {
-      "{{ rpm_install_path }}-libs-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "name": "{{ rpm_install_path }}-libs-{{ pg_major_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "state": present,
     }
   - {
-      "{{ rpm_install_path }}-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "name": "{{ rpm_install_path }}-{{ pg_major_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "state": present,
     }
   - {
-      "{{ rpm_install_path }}-server-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "name": "{{ rpm_install_path }}-server-{{ pg_major_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "state": present,
     }
   - {
-      "{{ rpm_install_path }}-contrib-{{ pg_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "name": "{{ rpm_install_path }}-contrib-{{ pg_major_version }}.{{ pg_minor_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
+      "state": present,
     }
