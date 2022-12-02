@@ -15,6 +15,7 @@ ANSIBLE_PIPELINING=1 ansible-playbook \
 	--extra-vars "pg_type=${EDB_PG_TYPE}" \
 	--extra-vars "pg_version=${EDB_PG_VERSION}" \
 	--extra-vars "@/workspace/tests/cases/${CASE_NAME}/vars.json" \
+	--extra-vars "ansible_core_version=${ANSIBLE_CORE_VERSION}" \
 	--private-key /root/.ssh/id_rsa \
 	/workspace/tests/cases/${CASE_NAME}/playbook.yml
 
