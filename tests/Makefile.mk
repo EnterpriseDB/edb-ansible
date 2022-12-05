@@ -26,4 +26,3 @@ clean:
 	rm -rf ./.ssh
 	rm -f ./inventory.yml
 	docker compose rm -s -f
-	docker builder prune -f
