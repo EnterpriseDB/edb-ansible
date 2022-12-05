@@ -2,7 +2,7 @@
 
 FROM debian:11-slim
 
-ARG ansible_core_version
+ARG ansible_core_version=2.12
 
 RUN apt update
 RUN apt install -y python3

@@ -1,5 +1,5 @@
 ansible-tester-up:
-	docker compose up ansible-tester --abort-on-container-exit --exit-code-from ansible-tester
+	docker compose up ansible-tester --force-recreate --build --abort-on-container-exit --exit-code-from ansible-tester
 
 post-build:
 	python3 ../../scripts/ssh-keygen.py --ssh-dir .ssh
@@ -26,3 +26,4 @@ clean:
 	rm -rf ./.ssh
 	rm -f ./inventory.yml
 	docker compose rm -s -f
+	docker builder prune -f
