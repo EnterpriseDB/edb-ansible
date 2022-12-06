@@ -103,10 +103,12 @@ def main():
         results = p.starmap(exec_test, args_for_exec_test)
         print_test_result(results)
 
+
 def invoke_make_clean_for_all_directories():
     r = subprocess.run(["make", "-f", "Makefile.mk", "clean_all"])
     if r.returncode != 0:
         raise Exception(r.stderr.decode("utf-8"))
+
 
 def make_ansible_collection_tar_ball():
     r = subprocess.run(
@@ -175,7 +177,7 @@ def get_input_arguments():
         "--containers-only",
         dest="containers_only",
         action="store_true",
-        help="Build and create OS and tester containers only."
+        help="Build and create OS and tester containers only.",
     )
 
     parser.add_argument(
@@ -183,7 +185,7 @@ def get_input_arguments():
         "--remove-containers",
         dest="remove_containers",
         action="store_true",
-        help="Remove all containers created from this test."
+        help="Remove all containers created from this test.",
     )
 
     return parser.parse_args()
@@ -200,9 +202,7 @@ def get_testing_roles_from_keywords(keywords):
 
 
 def get_args_for_exec_test(testing_roles, args):
-    return [
-        (role, args) for role in testing_roles
-    ]
+    return [(role, args) for role in testing_roles]
 
 
 def exec_test(case_name, args):
@@ -212,7 +212,9 @@ def exec_test(case_name, args):
     pg_versions = args.pg_version
     os_types = args.os_type
     containers_only = args.containers_only
-    for iter in itertools.product([case_name], pg_types, pg_versions, os_types, [containers_only]):
+    for iter in itertools.product(
+        [case_name], pg_types, pg_versions, os_types, [containers_only]
+    ):
         if exec_test_case(*iter):
             success = success + 1
         executed = executed + 1

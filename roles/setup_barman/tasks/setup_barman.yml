@@ -1,7 +1,8 @@
 ---
-- name: Set the os variable
-  set_fact:
-    os: "{{ ansible_distribution | replace('RedHat', 'RHEL') }}{{ ansible_distribution_major_version }}"
+- name: Check Operating System,  PostgreSQL type, PostgreSQL version
+  include_role:
+    name: common
+    tasks_from: check_version.yml
 
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
@@ -22,11 +23,6 @@
   when:
     - hostvars[inventory_hostname].barman_primary_vip is defined
     - barman_backup_method != 'postgres'
-
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
 
 - name: Reference pg_type variables
   include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
