@@ -67,3 +67,7 @@ supported_os:
   - Debian10
   - OracleLinux7
   - Ubuntu20
+
+supported_pgbouncer_version:
+ - 1.6
+ - 1.7
