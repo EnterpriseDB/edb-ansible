@@ -124,8 +124,8 @@ optional arguments:
   --pg-version PG_VERSION [PG_VERSION ...]
                         Postgres versions list. Default: ['14']
   --pg-type PG_TYPE [PG_TYPE ...]
-                        Postgres DBANSIBLE_CORE_VERSION engines list. Default: all
-  --ansible-core-version  [ANSIBLE_CORE_VERSION ...]
+                        Postgres DB engines list. Default: all
+  --ansible-core-version ANSIBLE_CORE_VERSION [ANSIBLE_CORE_VERSION ...]
                         Version of ansible-core to be used in the testing container. Default: ['2.12']
   --os OS [OS ...]      Operating systems list. Default: all
   -k KEYWORD [KEYWORD ...], --keywords KEYWORD [KEYWORD ...]
