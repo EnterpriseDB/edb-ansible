@@ -1,42 +1,42 @@
 ---
-# Configure pgpoolII SR checking and streaming replication
+# Configure pgpoolII Health checking and streaming replication
 
 # Build random password for pgpool2_sr_user if needed
 - name: Build random password for pgpool2_sr_user
   set_fact:
-    pgpool2_sr_check_password: >-
+    pgpool2_health_check_password: >-
       {{ lookup('password', '/dev/null chars=ascii_letters,digits length=12') }}
   run_once: true
   when:
-    - pgpool2_sr_check_password|length == 0
+    - pgpool2_health_check_password|length == 0
 
 - name: Check if there are other users
   set_fact:
-    pgpool2_sr_check_password: "{{ pgpool2_user.password }}"
+    pgpool2_health_check_password: "{{ pgpool2_user.password }}"
   loop: "{{ pgpool2_user_map }}"
   loop_control:
     loop_var: pgpool2_user
-  when: pgpool2_user.name == pgpool2_sr_check_user
-  register: sr_user_exist
+  when: pgpool2_user.name == pgpool2_health_check_user
+  register: health_check_user_exist
   no_log: "{{ disable_logging }}"
 
-- name: Add pgpool2_sr_check_password if not exist in user map
+- name: Add pgpool2_health_check_password if not exist in user map
   set_fact:
     pgpool2_user_map: >-
      {{ pgpool2_user_map | default([]) + [ 
             { 
-              'name' : pgpool2_sr_check_user, 
-              'password' : pgpool2_sr_check_password
+              'name' : pgpool2_health_check_user, 
+              'password' : pgpool2_health_check_password
             } 
           ] }}
   run_once: true
   when: 
     - pgpool2_user_map is defined
-    - sr_user_exist is skipped
+    - health_check_user_exist is skipped
   no_log: "{{ disable_logging }}"
 
-# Create pgpool2_sr_user Postgres user on the primary node
-- name: Create pgpoolII SR check role on Postgres primary node
+# Create pgpool2_health_check_user Postgres user on the primary node
+- name: Create pgpoolII Health check role on Postgres primary node
   include_role:
     name: manage_dbserver
     tasks_from: manage_users
@@ -44,8 +44,8 @@
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_users:
-      - name: "{{ pgpool2_sr_check_user }}"
-        pass: "{{ pgpool2_sr_check_password }}"
+      - name: "{{ pgpool2_health_check_user }}"
+        pass: "{{ pgpool2_health_check_password }}"
         role_attr_flags: login
   run_once: true
   when:
@@ -61,43 +61,49 @@
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_grant_roles:
-       - user: "{{ pgpool2_sr_check_user }}"
+       - user: "{{ pgpool2_health_check_user }}"
          role: "pg_monitor"
   run_once: true
   when:
     - pgpool2_primary_inventory_hostname is defined
     - pgpool2_primary_inventory_hostname|length > 0
 
-- name: Build pgpoolII SR configuration
+- name: Build pgpoolII Health Check configuration
   set_fact:
-    pgpool2_sr_configuration: >-
+    pgpool2_health_check_configuration: >-
       [
         {
-          'key': 'backend_clustering_mode',
-          'value': 'streaming_replication',
-          'state': 'present',
-          'quoted': true
-        },
-        {
-          'key': 'sr_check_period',
-          'value': 1,
+          'key': 'health_check_period',
+          'value': 10,
           'state': 'present',
           'quoted': false
         },
         {
-          'key': 'sr_check_user',
-          'value': '{{ pgpool2_sr_check_user }}',
+          'key': 'health_check_timeout',
+          'value': 10,
+          'state': 'present',
+          'quoted': false
+        },
+        {
+          'key': 'health_check_max_retries',
+          'value': 3,
+          'state': 'present',
+          'quoted': false
+        },
+        {
+          'key': 'health_check_user',
+          'value': '{{ pgpool2_health_check_user }}',
           'state': 'present',
           'quoted': true
         },
         {
-          'key': 'sr_check_password',
-          'value': '{{ pgpool2_sr_check_password }}',
+          'key': 'health_check_password',
+          'value': '{{ pgpool2_health_check_password }}',
           'state': 'present',
           'quoted': true
         },
         {
-          'key': 'sr_check_database',
+          'key': 'health_check_database',
           'value': '{{ pg_database }}',
           'state': 'present',
           'quoted': true
@@ -110,4 +116,4 @@
     name: manage_pgpool2
     tasks_from: pgpool2_manage_configuration
   vars:
-    pgpool2_configuration_lines: "{{ pgpool2_sr_configuration }}"
+    pgpool2_configuration_lines: "{{ pgpool2_health_check_configuration }}"

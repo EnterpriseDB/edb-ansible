@@ -39,7 +39,7 @@
   include_tasks: pcp_add_user.yml
   loop: "{{ pcp_users }}"
   loop_control:
-    loop_var: user_item
+    loop_var: pcp_user
   when:
     - pcp_users|length > 0
-    - user_item.state is not defined or user_item.state == 'present'
+    - pcp_user.state is not defined or pcp_user.state == 'present'

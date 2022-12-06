@@ -15,7 +15,10 @@
 
 - name: Install pgpoolII package on RedHat
   ansible.builtin.package:
-    name: "{{ pgpool2_package_name }}"
+    name:
+      - "libevent"
+      - "libmemcached"
+      - "{{ pgpool2_package_name }}"
     state: present
   when:
     - ansible_os_family == 'RedHat'

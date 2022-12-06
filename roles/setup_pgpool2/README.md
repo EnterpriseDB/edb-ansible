@@ -17,20 +17,19 @@ When executing the role via ansible these are the required variables:
 
 - **_pg_version_**
 
-Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
 
 - **_pg_type_**
 
-Database Engine supported are: PG and EPAS
+  Database Engine supported are: `PG`
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: _How to include the `setup_pgpool2` role in your Playbook_
 
 The rest of the variables can be configured and are available in the:
 
-- [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
-- [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
-- [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
 
 Below is the documentation of the rest of the main variables:
 
@@ -166,7 +165,7 @@ Below is an example of how to include the `setup_pgpool2` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 14
+        pg_version: 14.6
         pg_type: "PG"
 
         pgpool2_load_balancing: true
@@ -183,9 +182,8 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-- [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
-- [roles/setup_pgpool2/vars/EPAS.yml](./vars/EPAS.yml)
-- [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
+  * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
 
 ## License
 
@@ -194,8 +192,10 @@ BSD
 ## Author information
 
 Author:
+  * [Sang Myeung Lee](https://github.com/sungmu1)
 
-- Julien Tachoires
-- Vibhor Kumar (Reviewer)
-- EDB Postgres
-- edb-devops@enterprisedb.com www.enterprisedb.com
+Original Author:
+  * Julien Tachoires
+  * Vibhor Kumar (Reviewer)
+  * EDB Postgres
+  * edb-devops@enterprisedb.com www.enterprisedb.com

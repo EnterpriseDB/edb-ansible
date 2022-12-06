@@ -2,99 +2,65 @@
 - name: Gather service facts
   service_facts:
 
-- name: Open listening TCP port {{ pgpool2_port | default('') }}
-  ansible.posix.firewalld:
-    port: "{{ pgpool2_port }}/tcp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'] is defined
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-    - pgpool2_port is defined
-  become: yes
+- name: Open TCP, UDP port
+  block:
+  - name: Open listening TCP port {{ pgpool2_port | default('') }}
+    ansible.posix.firewalld:
+      port: "{{ pgpool2_port }}/tcp"
+      permanent: yes
+      state: enabled
+      immediate: true
+    when:
+      - pgpool2_port is defined
 
-- name: Open PCP TCP port {{ pgpool2_pcp_port | default('') }}
-  ansible.posix.firewalld:
-    port: "{{ pgpool2_pcp_port }}/tcp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'] is defined
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-    - pgpool2_pcp_port is defined
-  become: yes
+  - name: Open PCP TCP, UDP port {{ pgpool2_pcp_port | default('') }}
+    ansible.posix.firewalld:
+      port: "{{ open_port }}"
+      permanent: yes
+      state: enabled
+      immediate: true
+    loop:
+      - "{{ pgpool2_pcp_port }}/tcp"
+      - "{{ pgpool2_pcp_port }}/udp"
+    loop_control:
+      loop_var: open_port
+    when:
+      - pgpool2_pcp_port is defined
 
-- name: Open PCP UDP port {{ pgpool2_pcp_port | default('') }}
-  ansible.posix.firewalld:
-    port: "{{ pgpool2_pcp_port }}/udp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'] is defined
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-    - pgpool2_pcp_port is defined
-  become: yes
+  - name: Open Watchdog TCP, UDP port {{ pgpool2_wd_port | default('') }}
+    ansible.posix.firewalld:
+      port: "{{ open_port }}"
+      permanent: yes
+      state: enabled
+      immediate: true
+    loop:
+      - "{{ pgpool2_wd_port }}/tcp"
+      - "{{ pgpool2_wd_port }}/udp"
+    loop_control:
+      loop_var: open_port
+    when:
+      - pgpool2_wd_port is defined
+      - pgpool2_watchdog
 
-- name: Open Watchdog TCP port {{ pgpool2_wd_port | default('') }}
-  ansible.posix.firewalld:
-    port: "{{ pgpool2_wd_port }}/tcp"
-    permanent: yes
-    state: enabled
-    immediate: true
+  - name: Open Watchdog heartbeat TCP, UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
+    ansible.posix.firewalld:
+      port: "{{ open_port }}/tcp"
+      permanent: yes
+      state: enabled
+      immediate: true
+    loop:
+      - "{{ pgpool2_wd_heartbeat_port }}/tcp"
+      - "{{ pgpool2_wd_heartbeat_port }}/udp"
+    loop_control:
+      loop_var: open_port
+    when:
+      - pgpool2_wd_heartbeat_port is defined
+      - pgpool2_watchdog
+  
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-    - pgpool2_wd_port is defined
-    - pgpool2_watchdog
-  become: yes
-
-- name: Open Watchdog UDP port {{ pgpool2_wd_port | default('') }}
-  ansible.posix.firewalld:
-    port: "{{ pgpool2_wd_port }}/udp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'] is defined
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-    - pgpool2_wd_port is defined
-    - pgpool2_watchdog
-  become: yes
-
-- name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port | default('') }}
-  ansible.posix.firewalld:
-    port: "{{ pgpool2_wd_heartbeat_port }}/tcp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'] is defined
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-    - pgpool2_wd_heartbeat_port is defined
-    - pgpool2_watchdog
-  become: yes
-
-- name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
-  ansible.posix.firewalld:
-    port: "{{ pgpool2_wd_heartbeat_port }}/udp"
-    permanent: yes
-    state: enabled
-    immediate: true
-  when:
-    - ansible_facts.services['firewalld.service'] is defined
-    - ansible_facts.services['firewalld.service'].state == 'running'
-    - ansible_facts.services['firewalld.service'].status == 'enabled'
-    - pgpool2_wd_heartbeat_port is defined
-    - pgpool2_watchdog
   become: yes
 
 # Tasks for setting up pgpoolII

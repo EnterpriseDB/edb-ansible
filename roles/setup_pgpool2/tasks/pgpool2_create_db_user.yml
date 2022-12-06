@@ -1,7 +1,7 @@
 ---
 - name: Generate the pg_pgpool_user_password
   include_role:
-    name: manage_dbserver
+    name: common
     tasks_from: generate_password
   vars:
     input_user: "{{ pg_pgpool_user }}"
