@@ -13,4 +13,4 @@
 
 - name: Update system hostname
   ansible.builtin.hostname:
-    name: "{{ inventory_hostname }}"
+     name: "{{ inventory_hostname }}"

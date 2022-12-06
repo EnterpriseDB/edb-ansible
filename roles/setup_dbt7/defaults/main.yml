@@ -2,7 +2,7 @@
 dbt7_version: "0.4.1"
 dbt7_pgdata: "/pgdata/dbt7/pgdata"
 pg_version: 14
-have_tpcfile: True
+have_tpcfile: true
 tpcfile: ""
 
 supported_os:

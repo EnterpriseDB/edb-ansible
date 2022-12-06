@@ -45,7 +45,7 @@
     loop_var: dir_item
   become: true
 
-- name: Create logging directory {{ pgbouncer_log_file | dirname }}
+- name: Create logging directory for {{ pgbouncer_log_file }}
   ansible.builtin.file:
     path: "{{ pgbouncer_log_file | dirname }}"
     state: directory
@@ -54,7 +54,7 @@
     mode: 0755
   become: true
 
-- name: Create running directory {{ pgbouncer_pid_file | dirname }}
+- name: Create running directory for {{ pgbouncer_pid_file }}
   ansible.builtin.file:
     path: "{{ pgbouncer_pid_file | dirname }}"
     state: directory

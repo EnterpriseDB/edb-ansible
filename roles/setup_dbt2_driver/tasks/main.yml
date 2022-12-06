@@ -17,13 +17,13 @@
 
 - name: Make a list of DBT-2 client system addresses
   ansible.builtin.set_fact:
-    ssh_targets: "{{ ssh_targets + [ hostvars[item]['private_ip'] ] }}"
+    ssh_targets: "{{ ssh_targets + [hostvars[item]['private_ip']] }}"
   with_items: "{{ groups['dbt2_client'] }}"
   when: "'dbt2_client' in groups"
 
 - name: Make a list of database system addresses
   ansible.builtin.set_fact:
-    ssh_targets: "{{ ssh_targets + [ hostvars[item]['private_ip'] ] }}"
+    ssh_targets: "{{ ssh_targets + [hostvars[item]['private_ip']] }}"
   with_items: "{{ groups['primary'] }}"
   when: "'primary' in groups"
 
@@ -31,6 +31,7 @@
   ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ item }}
   register: ssh_keyscan
   loop: "{{ ssh_targets }}"
+  changed_when: false
 
 - name: Add DBT-2 client servers and database systems to known_hosts
   ansible.builtin.known_hosts:
