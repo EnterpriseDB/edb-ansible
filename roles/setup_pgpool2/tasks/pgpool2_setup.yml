@@ -3,7 +3,7 @@
 - name: Gather service facts
   ansible.builtin.service_facts:
 
-- name: Open listening TCP port {{ pgpool2_port | default('') }}
+- name: Open listening TCP port {{ pgpool2_port }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_port }}/tcp"
     permanent: true
@@ -16,7 +16,7 @@
     - pgpool2_port is defined
   become: true
 
-- name: Open PCP TCP port {{ pgpool2_pcp_port | default('') }}
+- name: Open PCP TCP port {{ pgpool2_pcp_port }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_pcp_port }}/tcp"
     permanent: true
@@ -29,7 +29,7 @@
     - pgpool2_pcp_port is defined
   become: true
 
-- name: Open PCP UDP port {{ pgpool2_pcp_port | default('') }}
+- name: Open PCP UDP port {{ pgpool2_pcp_port }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_pcp_port }}/udp"
     permanent: true
@@ -42,7 +42,7 @@
     - pgpool2_pcp_port is defined
   become: true
 
-- name: Open Watchdog TCP port {{ pgpool2_wd_port | default('') }}
+- name: Open Watchdog TCP port {{ pgpool2_wd_port }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_port }}/tcp"
     permanent: true
@@ -56,7 +56,7 @@
     - pgpool2_watchdog
   become: true
 
-- name: Open Watchdog UDP port {{ pgpool2_wd_port | default('') }}
+- name: Open Watchdog UDP port {{ pgpool2_wd_port }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_port }}/udp"
     permanent: true
@@ -70,7 +70,7 @@
     - pgpool2_watchdog
   become: true
 
-- name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port | default('') }}
+- name: Open Watchdog heartbeat TCP port {{ pgpool2_wd_heartbeat_port }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_heartbeat_port }}/tcp"
     permanent: true
@@ -84,7 +84,7 @@
     - pgpool2_watchdog
   become: true
 
-- name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
+- name: Open Watchdog heartbeat UDP port {{ pgpool2_wd_heartbeat_port }}
   ansible.posix.firewalld:
     port: "{{ pgpool2_wd_heartbeat_port }}/udp"
     permanent: true
@@ -114,7 +114,7 @@
     create_home: false
   become: true
 
-- name: Create configuration directory {{ pgpool2_configuration_file | dirname }}
+- name: Create configuration directory for {{ pgpool2_configuration_file }}
   ansible.builtin.file:
     path: "{{ pgpool2_configuration_file | dirname }}"
     state: directory
@@ -133,7 +133,7 @@
   when: pgpool2_logdir is defined
   become: true
 
-- name: Create running directory {{ pgpool2_pid_file_name | default('') | dirname }}
+- name: Create running directory for {{ pgpool2_pid_file_name }}
   ansible.builtin.file:
     path: "{{ pgpool2_pid_file_name | dirname }}"
     state: directory

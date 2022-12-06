@@ -1,4 +1,4 @@
 ---
 # Entry point of the setup_repmgr role
 - name: Include the setup_repmgr.yml
-  include_tasks: setup_repmgr.yml
+  ansible.builtin.include_tasks: setup_repmgr.yml

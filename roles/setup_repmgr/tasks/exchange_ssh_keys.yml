@@ -19,19 +19,19 @@
 
 - name: Set _remote_server_ssh_public_key
   ansible.builtin.set_fact:
-      _remote_server_ssh_public_key: "{{ _remote_server_ssh_public_key_b64.content | b64decode | trim }}"
+    _remote_server_ssh_public_key: "{{ _remote_server_ssh_public_key_b64.content | b64decode | trim }}"
 
-- name: Fetch local {{ pg_owner }} SSH public key
+- name: Fetch local SSH public key for {{ pg_owner }}
   ansible.builtin.slurp:
     src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
   register: _local_ssh_public_key_b64
   become: true
 
 - name: Set _local_ssh_public_key
-  set_fact:
-      _local_ssh_public_key: "{{ _local_ssh_public_key_b64.content | b64decode | trim }}"
+  ansible.builtin.set_fact:
+    _local_ssh_public_key: "{{ _local_ssh_public_key_b64.content | b64decode | trim }}"
 
-- name: Ensure local {{ pg_owner }} SSH public key is on the remote server
+- name: Ensure local pg_owner SSH public key is on the remote server
   ansible.builtin.lineinfile:
     path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pg_owner }}"
@@ -42,7 +42,7 @@
   delegate_to: "{{ remote_node.inventory_hostname }}"
   become: true
 
-- name: Ensure remote {{ pg_owner }} SSH public key is on the local server
+- name: Ensure remote pg_owner SSH public key is on the local server
   ansible.builtin.lineinfile:
     path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pg_owner }}"
@@ -62,20 +62,20 @@
 # port value is equal to the default value (22) or not.
 # When the SSH port value is not the default value, format is: [hostname]:port
 - name: Set _ssh_local_keyname and _ssh_remote_keyname when SSH port is 22
-  set_fact:
+  ansible.builtin.set_fact:
     _ssh_local_keyname: "{{ _local_host }}"
     _ssh_remote_keyname: "{{ _remote_host }}"
   when:
     - ssh_port == 22
 
 - name: Set _ssh_local_keyname and _ssh_remote_keyname when SSH port is different than 22
-  set_fact:
+  ansible.builtin.set_fact:
     _ssh_local_keyname: "[{{ _local_host }}]:{{ ssh_port }}"
     _ssh_remote_keyname: "[{{ _remote_host }}]:{{ ssh_port }}"
   when:
     - ssh_port != 22
 
-- name: Add local {{ pg_owner }} SSH public key into remote server known hosts
+- name: Add local pg_owner SSH public key into remote server known hosts
   ansible.builtin.known_hosts:
     path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
     name: "{{ _ssh_local_keyname }}"
@@ -91,7 +91,7 @@
 - name: Run ssh-keyscan from the local server
   ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _remote_host }}
   register: _local_ssh_keyscan_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Add remote SSH public key into local server known hosts
