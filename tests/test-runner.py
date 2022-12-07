@@ -42,13 +42,23 @@ class OSChecker(argparse.Action):
         setattr(namespace, self.dest, values)
 
 
+class ACVersionChecker(argparse.Action):
+    available_versions = ['2.11', '2.12', '2.13']
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        for v in values:
+            if v not in self.available_versions:
+                parser.error("Ansible Core version %s not supported" % v)
+        setattr(namespace, self.dest, values)
+
+
 def load_configuration(configuration):
     return yaml.load(configuration.read(), Loader=yaml.Loader)
 
 
 def exec_test_case(case_name, case_config, edb_repo_username,
                    edb_repo_password, pg_version_list, pg_type_list, os_list,
-                   edb_enable_repo):
+                   edb_enable_repo, ansible_core_version_list):
     n_success = 0
     n_executed = 0
     for os in case_config['os']:
@@ -62,24 +72,26 @@ def exec_test_case(case_name, case_config, edb_repo_username,
                 if len(pg_version_list) > 0 and \
                         pg_version not in pg_version_list:
                     continue
-                # Execute the test
-                success = exec_test(
-                    case_name,
-                    edb_repo_username,
-                    edb_repo_password,
-                    os,
-                    pg_type,
-                    pg_version,
-                    edb_enable_repo,
-                )
-                n_executed += 1
-                if success:
-                    n_success += 1
+                for ansible_core_version in ansible_core_version_list:
+                    # Execute the test
+                    success = exec_test(
+                        case_name,
+                        edb_repo_username,
+                        edb_repo_password,
+                        os,
+                        pg_type,
+                        pg_version,
+                        edb_enable_repo,
+                        ansible_core_version,
+                    )
+                    n_executed += 1
+                    if success:
+                        n_success += 1
     return (n_success, n_executed)
 
 
 def exec_test(case_name, edb_repo_username, edb_repo_password, os, pg_type,
-              pg_version, edb_enable_repo):
+              pg_version, edb_enable_repo, ansible_core_version):
     env = os_.environ.copy()
     env.update({
         'EDB_REPO_USERNAME': edb_repo_username,
@@ -87,6 +99,7 @@ def exec_test(case_name, edb_repo_username, edb_repo_password, os, pg_type,
         'EDB_ENABLE_REPO': edb_enable_repo,
         'EDB_PG_VERSION': pg_version,
         'EDB_PG_TYPE': pg_type,
+        'ANSIBLE_CORE_VERSION': ansible_core_version,
     })
 
     # Tears down containers for this test case, just in case some containers
@@ -104,19 +117,20 @@ def exec_test(case_name, edb_repo_username, edb_repo_password, os, pg_type,
     else:
         test_result = '\033[1m\033[92mOK\033[0m\n'
     sys.stdout.write(
-        "Test %s with %s/%s on %s ... %s"
-        % (case_name, pg_type, pg_version, os, test_result)
+        "Test %s with ansible-core v%s %s/%s on %s ... %s"
+        % (case_name, ansible_core_version, pg_type, pg_version, os, test_result)
     )
     sys.stdout.flush()
 
     if r.returncode != 0:
-        log_stdout(case_name, os, pg_type, pg_version, r.stdout)
-        log_stderr(case_name, os, pg_type, pg_version, r.stderr)
+        log_stdout(case_name, os, pg_type, pg_version, r.stdout, ansible_core_version)
+        log_stderr(case_name, os, pg_type, pg_version, r.stderr, ansible_core_version)
 
     # Tears down containers
     tears_down(case_name)
 
     return (r.returncode == 0)
+
 
 def tears_down(case_name):
     r = subprocess.run(
@@ -141,14 +155,14 @@ def make_log_dir():
         os_.mkdir('logs')
 
 
-def log_stdout(case_name, os, pg_type, pg_version, stdout):
-    log_name = 'logs/%s_%s_%s_%s.stdout' % (case_name, os, pg_type, pg_version)
+def log_stdout(case_name, os, pg_type, pg_version, stdout, ansible_core_version):
+    log_name = 'logs/%s_%s_%s_%s_%s.stdout' % (case_name, ansible_core_version, os, pg_type, pg_version)
     with open(log_name, 'wb') as f:
         f.write(stdout)
 
 
-def log_stderr(case_name, os, pg_type, pg_version, stderr):
-    log_name = 'logs/%s_%s_%s_%s.stderr' % (case_name, os, pg_type, pg_version)
+def log_stderr(case_name, os, pg_type, pg_version, stderr, ansible_core_version):
+    log_name = 'logs/%s_%s_%s_%s_%s.stderr' % (case_name, ansible_core_version, os, pg_type, pg_version)
     with open(log_name, 'wb') as f:
         f.write(stderr)
 
@@ -170,6 +184,14 @@ if __name__ == '__main__':
         default='config.yml',
     )
 
+    parser.add_argument(
+        '--ansible-core-version',
+        dest='ansible_core_version',
+        nargs='+',
+        default=['2.12'],
+        action=ACVersionChecker,
+        help="Ansible-core version to be used by tester. Default: %(default)s",
+    )
     parser.add_argument(
         '--edb-repo-username',
         dest='edb_repo_username',
@@ -242,7 +264,8 @@ if __name__ == '__main__':
 
         test_cases.append(
             (name, config, env.edb_repo_username, env.edb_repo_password,
-             env.pg_version, env.pg_type, env.os, env.edb_enable_repo)
+             env.pg_version, env.pg_type, env.os, env.edb_enable_repo,
+             env.ansible_core_version)
         )
 
 

@@ -109,6 +109,7 @@ Usage:
 ```shell
 usage: test-runner.py [-h] [-j JOBS] [--configuration CONFIGURATION] --edb-repo-username EDB_REPO_USERNAME --edb-repo-password
                       EDB_REPO_PASSWORD [--pg-version PG_VERSION [PG_VERSION ...]] [--pg-type PG_TYPE [PG_TYPE ...]]
+                      [--ansible-core-version ANSIBLE_CORE_VERSION [ANSIBLE_CORE_VERSION ...]]
                       [--os OS [OS ...]] [-k KEYWORD [KEYWORD ...]]
 
 optional arguments:
@@ -124,6 +125,8 @@ optional arguments:
                         Postgres versions list. Default: ['14']
   --pg-type PG_TYPE [PG_TYPE ...]
                         Postgres DB engines list. Default: all
+  --ansible-core-version ANSIBLE_CORE_VERSION [ANSIBLE_CORE_VERSION ...]
+                        Version of ansible-core to be used in the testing container. Default: ['2.12']
   --os OS [OS ...]      Operating systems list. Default: all
   -k KEYWORD [KEYWORD ...], --keywords KEYWORD [KEYWORD ...]
                         Execute test cases with a name matching the given keywords.
@@ -134,6 +137,7 @@ optional arguments:
 The example below shows how to run the tests for:
 - the `install_dbserver` test case
 - on `centos7` and `rocky8` operating systems
+- using `ansible-core` version 2.12
 - PostgreSQL engine only
 - for versions `13` and `14`
 
@@ -143,13 +147,14 @@ $ test-runner.py \
   --edb-repo-password <edb-repo-password> \
   --pg-version 14 13 \
   --os rocky8 centos7 \
+  --ansible-core-version 2.12 \
   --pg-type PG \
   -k install_dbserver
 
-Test install_dbserver with PG/13 on centos7 ... OK
-Test install_dbserver with PG/14 on centos7 ... OK
-Test install_dbserver with PG/13 on rocky8 ... OK
-Test install_dbserver with PG/14 on rocky8 ... OK
+Test install_dbserver with ansible-core v2.12 PG/13 on centos7 ... OK
+Test install_dbserver with ansible-core v2.12 PG/14 on centos7 ... OK
+Test install_dbserver with ansible-core v2.12 PG/13 on rocky8 ... OK
+Test install_dbserver with ansible-core v2.12 PG/14 on rocky8 ... OK
 
 Tests passed: 4/4 100.00%
 ```
@@ -174,17 +179,19 @@ $ export EDB_PG_TYPE=<pg-type>
 $ export EDB_PG_VERSION=<pg-version>
 $ export EDB_REPO_USERNAME=<edb-repo-username>
 $ export EDB_REPO_PASSWORD=<edb-repo-password>
+$ export ANSIBLE_CORE_VERSION=<ansible-core-version>
 $ make -C cases/<test-case> <os>
 ```
 
 Below is an example of running the tests for test case `init_dbserver`, in
-version 14 of PostgreSQL, on RockyLinux8:
+version 14 of PostgreSQL, with `ansible-core` version 2.12, on RockyLinux8:
 
 ```shell
 $ export EDB_PG_TYPE=PG
 $ export EDB_PG_VERSION=14
 $ export EDB_REPO_USERNAME=<edb-repo-username>
 $ export EDB_REPO_PASSWORD=<edb-repo-password>
+$ export ANSIBLE_CORE_VERSION=2.12
 $ make -C cases/init_dbserver rocky8
 ```
 
