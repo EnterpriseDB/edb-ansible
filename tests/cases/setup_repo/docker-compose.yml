@@ -12,8 +12,7 @@ services:
       - CASE_NAME
     volumes:
       - ../..:/workspace
-    command: "/bin/bash"
-    tty: true
+    command: "/workspace/docker/exec-tests.sh"
   primary1-rocky8:
     privileged: true
     build:
