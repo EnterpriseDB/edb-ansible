@@ -2,6 +2,7 @@
 - name: Install Postgres
   package:
     name:
+      - ca-ca-certificates
       - python3-pycurl
       - python3-psycopg2
       - postgresql-client-{{ pg_major_version }}

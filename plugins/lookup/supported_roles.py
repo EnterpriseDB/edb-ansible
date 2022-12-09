@@ -32,6 +32,7 @@ GROUP_ROLES = {
     'primary': [
         'setup_repo',
         'install_dbserver',
+        'manage_extension',
         'init_dbserver',
         'manage_dbserver'
         'autotuning',
@@ -41,11 +42,13 @@ GROUP_ROLES = {
     'standby': [
         'setup_repo',
         'install_dbserver',
+        'manage_extension',
         'setup_replication',
         'manage_dbserver',
         'autotuning',
         'setup_repmgr',
         'manage_dbpatches',
+        'manage_extension',
     ],
     'pemserver': [
         'setup_repo',
@@ -63,13 +66,12 @@ GROUP_ROLES = {
     "standby": [
         "setup_repo",
         "install_dbserver",
+        "manage_extension",
         "setup_replication",
         "manage_dbserver",
-        "setup_efm",
         "autotuning",
         "setup_repmgr",
         "manage_dbpatches",
-        "manage_efm",
     ],
     "pemserver": [
         "setup_repo",
@@ -93,10 +95,8 @@ GROUP_ROLES = {
     "witness": [
         "setup_repo",
         "install_dbserver",
-        "setup_efm",
         "setup_repmgr",
         "manage_dbpatches",
-        "manage_efm",
     ],
     "proxy": [
         "setup_repo",

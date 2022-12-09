@@ -44,6 +44,7 @@
     name:
       - libxslt
       - libicu
+      - ca-certificates
       - glibc-common
       - postgresql{{ pg_major_version }}-libs
       - postgresql{{ pg_major_version }}
@@ -61,7 +62,6 @@
   loop: "{{ rpm_list }}"
   when:
     - rpm_install
-    - pg_minor_version is defined
     - rpm_list|length > 0
 
 - name: Install psycopg2 on EL7

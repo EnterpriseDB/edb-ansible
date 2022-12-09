@@ -13,6 +13,7 @@ def test_install_dbserver_pg_centos():
     packages = [
         "glibc-common",
         "ca-certificates",
+        "postgresql%s-libs" % pg_version,
         "postgresql%s" % pg_version,
         "postgresql%s-server" % pg_version,
         "postgresql%s-contrib" % pg_version,
@@ -22,61 +23,13 @@ def test_install_dbserver_pg_centos():
         packages += [
             "python-pycurl",
             "libselinux-python",
-            "python2-psycopg2",
+            "python-psycopg2",
             "python-ipaddress",
         ]
     elif get_os() == "rocky8":
         packages += ["python3-pycurl", "python3-libselinux", "python3-psycopg2"]
     for package in packages:
         assert host.package(package).is_installed, "Package %s not installed" % packages
-
-
-def test_install_dbserver_epas_centos():
-    if os_family() != "RedHat":
-        pytest.skip()
-    if get_pg_type() != "EPAS":
-        pytest.skip()
-
-    host = get_primary()
-    pg_version = int(get_pg_version())
-    packages = [
-        "edb-as%s-server" % pg_version,
-        "edb-as%s-server-core" % pg_version,
-        "edb-as%s-server-contrib" % pg_version,
-        "edb-as%s-server-libs" % pg_version,
-        "edb-as%s-server-client" % pg_version,
-        "edb-as%s-server-sslutils" % pg_version,
-        "edb-as%s-server-indexadvisor" % pg_version,
-        "edb-as%s-server-sqlprofiler" % pg_version,
-        "edb-as%s-server-sqlprotect" % pg_version,
-        "edb-as%s-server-sslutils" % pg_version,
-    ]
-    if get_os() in ["centos7", "oraclelinux7"]:
-        packages += [
-            "python2-pip",
-            "python2-psycopg2",
-            "python-ipaddress",
-        ]
-    elif get_os() == "rocky8":
-        packages += [
-            "python3-pip",
-            "python3-psycopg2",
-        ]
-    if pg_version > 10:
-        packages += [
-            "edb-as%s-server-llvmjit" % pg_version,
-        ]
-    if pg_version > 10 and pg_version < 14:
-        packages += [
-            "edb-as%s-server-edb-modules" % pg_version,
-        ]
-    elif pg_version >= 14:
-        packages += [
-            "edb-as%s-server-edb_wait_states" % pg_version,
-        ]
-    for package in packages:
-        assert host.package(package).is_installed, "Package %s not installed" % packages
-
 
 def test_install_dbserver_pg_debian():
     if os_family() != "Debian":
@@ -96,42 +49,5 @@ def test_install_dbserver_pg_debian():
     ]
     if get_os() in ["debian9", "debian10"]:
         packages += ["python-psycopg2", "python-ipaddress"]
-    for package in packages:
-        assert host.package(package).is_installed, "Package %s not installed" % packages
-
-
-def test_install_dbserver_epas_debian():
-    if os_family() != "Debian":
-        pytest.skip()
-    if get_pg_type() != "EPAS":
-        pytest.skip()
-
-    host = get_primary()
-    pg_version = int(get_pg_version())
-    packages = [
-        "python3-pip",
-        "python3-psycopg2",
-        "edb-as%s-server" % pg_version,
-        "edb-as%s-server-core" % pg_version,
-        "edb-as%s-server-client" % pg_version,
-        "edb-as%s-server-sslutils" % pg_version,
-        "edb-as%s-server-indexadvisor" % pg_version,
-        "edb-as%s-server-sqlprofiler" % pg_version,
-        "edb-as%s-server-sqlprotect" % pg_version,
-        "edb-as%s-server-sslutils" % pg_version,
-    ]
-    if get_os() in ["debian9", "debian10"]:
-        packages += [
-            "python-psycopg2",
-            "python-ipaddress",
-        ]
-    if pg_version < 14:
-        packages += [
-            "edb-as%s-server-edb-modules" % pg_version,
-        ]
-    else:
-        packages += [
-            "edb-as%s-server-edb-wait-states" % pg_version,
-        ]
     for package in packages:
         assert host.package(package).is_installed, "Package %s not installed" % packages

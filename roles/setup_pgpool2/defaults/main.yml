@@ -1,6 +1,5 @@
 ---
 pg_major_version: "{{ pg_version | int }}"
-pg_minor_version: "{{ pg_version | string | split('.') | last | int }}"
 
 use_hostname: false
 update_etc_file: true

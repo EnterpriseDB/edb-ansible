@@ -15,7 +15,7 @@
   fail:
     msg: "PgBouncer version {{ pgbouncer_version }} not supported.
         Supported versions are {{ supported_pgbouncer_version }}."
-  when: pgbouncer_versioni not in supported_pgbouncer_version
+  when: pgbouncer_version not in supported_pgbouncer_version
 
 - name: Check PgBouncer pool_mode configuration value
   fail:

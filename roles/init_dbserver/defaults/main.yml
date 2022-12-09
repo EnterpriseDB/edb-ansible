@@ -1,6 +1,5 @@
 ---
 pg_major_version: "{{ pg_version | int }}"
-pg_minor_version: "{{ pg_version | string | split('.') | last | int }}"
 
 pg_instance_name: main
 pg_ssl: true

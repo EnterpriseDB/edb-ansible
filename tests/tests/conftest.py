@@ -12,7 +12,7 @@ HYPERSQL_OS_TYPE = os.getenv("HYPERSQL_OS_TYPE", "rocky8")
 # Path to the ansible inventory file: <role_name>/inventory.yml
 HYPERSQL_INVENTORY = os.getenv("HYPERSQL_INVENTORY")
 # Postgres version
-HYPERSQL_PG_VERSION = os.getenv("HYPERSQL_PG_VERSION")
+HYPERSQL_PG_VERSION = os.getenv("HYPERSQL_PG_VERSION").split('.')[0]
 # Postgres type
 HYPERSQL_PG_TYPE = os.getenv("HYPERSQL_PG_TYPE")
 # SSH parameters

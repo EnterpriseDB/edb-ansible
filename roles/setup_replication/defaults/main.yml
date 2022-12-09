@@ -1,9 +1,7 @@
 ---
 # default empty rpm repo
 # port constants
-
 pg_major_version: "{{ pg_version | int }}"
-pg_minor_version: "{{ pg_version | string | split('.') | last | int }}"
 
 disable_logging: yes
 

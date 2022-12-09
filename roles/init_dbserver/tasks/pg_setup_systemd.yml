@@ -39,7 +39,7 @@
     - line: "PIDFile={{ pg_default_data }}/postmaster.pid"
       regexp: "^PIDFile=.*"
       insertafter: "^\\[Service\\]$"
-    - line: "ExecStopPost=+/usr/bin/systemctl daemon-reload"
+    - line: "ExecStopPost=/usr/bin/systemctl daemon-reload"
       regexp: "^ExecStopPost=.*"
       insertafter: "^\\[Service\\]$"
     - line: "User={{ pg_owner }}"

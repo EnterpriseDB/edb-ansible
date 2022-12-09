@@ -19,7 +19,7 @@ RETURN = """
 
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
-        self.pg_major_version = variables.get("pg_major_version")
+        self.pg_major_version = variables.get("pg_version").split('.')[0]
         self.pg_instance_name = variables.get("pg_instance_name", "main")
         self.os_family = variables.get("ansible_os_family")
 

@@ -11,9 +11,8 @@
     - name: Initialize the user defined variables
       set_fact:
         disable_logging: false
-        pg_users:
-          - name: "test"
-            pass: "password"
+        pg_pgpool_user: "test"
+        pg_pgpool_user_password: "password"
 
   roles:
     - role: setup_repo
