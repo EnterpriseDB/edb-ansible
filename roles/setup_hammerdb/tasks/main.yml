@@ -30,10 +30,10 @@
     name: setup_hammerdbserver
     tasks_from: install_hammerdb
 
-- name: Include Touchstone installation
-  ansible.builtin.include_role:
-    name: setup_touchstone
-    tasks_from: main
+#- name: Include Touchstone installation
+#  ansible.builtin.include_role:
+#    name: setup_touchstone
+#    tasks_from: main
 
 - name: Include the TPROC-C load script tasks
   ansible.builtin.include_tasks: install_tproc-c_load_scripts.yml

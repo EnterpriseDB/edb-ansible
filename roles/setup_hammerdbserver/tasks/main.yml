@@ -26,10 +26,10 @@
   become: true
   failed_when: false
 
-- name: Include Touchstone installation
-  ansible.builtin.include_role:
-    name: setup_touchstone
-    tasks_from: main
+#- name: Include Touchstone installation
+#  ansible.builtin.include_role:
+#    name: setup_touchstone
+#    tasks_from: main
 
 - name: Include HammerDB installation
   ansible.builtin.include_tasks: install_hammerdb.yml
