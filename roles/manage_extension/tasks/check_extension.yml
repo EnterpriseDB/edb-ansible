@@ -1,0 +1,5 @@
+---
+- name: Check extension is supported
+  fail:
+    msg: "{{ pg_extension }} not supported."
+  when: not supported_extension|selectattr("name", "equalto", pg_extension)

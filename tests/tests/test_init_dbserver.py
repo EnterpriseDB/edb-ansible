@@ -16,10 +16,6 @@ def test_init_dbserver_files():
     pg_user = "postgres"
     pg_group = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
-
     host = get_primary()
 
     for pg_dir in [pg_data, pg_wal]:
@@ -48,13 +44,9 @@ def test_init_dbserver_service():
     if os_family() == "RedHat":
         if get_pg_type() == "PG":
             service = "postgresql-%s" % pg_version
-        elif get_pg_type() == "EPAS":
-            service = "edb-as-%s" % pg_version
     elif os_family() == "Debian":
         if get_pg_type() == "PG":
             service = "postgresql@%s-main" % pg_version
-        elif get_pg_type() == "EPAS":
-            service = "edb-as@%s-main" % pg_version
 
     assert host.service(service).is_running, "Postgres service not running"
 
@@ -66,14 +58,6 @@ def test_init_dbserver_socket():
 
     if get_pg_type() == "PG":
         sockets = ["tcp://5432", "unix:///var/run/postgresql/.s.PGSQL.5432"]
-    elif get_pg_type() == "EPAS":
-        sockets = [
-            "tcp://5444",
-        ]
-        if os_family() == "RedHat":
-            sockets.append("unix:///var/run/edb/as%s/.s.PGSQL.5444" % get_pg_version())
-        elif os_family() == "Debian":
-            sockets.append("unix:///var/run/edb-as/.s.PGSQL.5444")
     for socket in sockets:
         assert host.socket(socket).is_listening, (
             "Postgres is not listening on %s" % socket
@@ -84,8 +68,6 @@ def test_init_dbserver_data_directory():
     ansible_vars = load_ansible_vars()
     pg_data = ansible_vars["pg_data"]
     pg_user = "postgres"
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()

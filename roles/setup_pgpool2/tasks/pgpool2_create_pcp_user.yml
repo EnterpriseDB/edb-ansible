@@ -1,7 +1,7 @@
 ---
 - name: Generate the pcp_admin_user_password
   include_role:
-    name: manage_dbserver
+    name: common
     tasks_from: generate_password
   vars:
     input_user: "{{ pcp_admin_user }}"

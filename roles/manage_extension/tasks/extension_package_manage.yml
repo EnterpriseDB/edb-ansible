@@ -1,0 +1,60 @@
+---
+- name: Check required variables for this role
+  include_role:
+    name: common
+    tasks_from: check_required_variables
+  vars:
+    required_variables:
+      - pg_extension
+
+- name: Check extension supported
+  include_tasks: check_extension.yml
+
+- name: Set fact extension_info
+  set_fact:
+    extension_info: "{{ supported_extension|selectattr('name', 'search', pg_extension)|join('\n') }}"
+  when: pg_extension is defined
+
+- name: Install Required Package for extension
+  ansible.builtin.package:
+    name: "{{ package }}"
+    state: "present"
+  with_items: "{{ extension_info.required_package }}"
+  loop_control:
+    loop_var: package
+  when: 
+    - extension_info.required_package is defined
+    - extension_info.required_package|length > 0
+  become: true
+
+- name: Manage Extension {{ extension_info.name }} from package manager
+  ansible.builtin.package:
+    name: "{{ extension_info.extension_package }}"
+    state: "{{ extension_info.state|default('present') }}"
+  when:
+    - extension_info is defined
+    - pg_extension|length > 0
+    - extension_info.pg_repo|default('true')
+  become: true
+
+- name: Manage Extension {{ extension_info.name }} from external uri
+  ansible.builtin.yum:
+    name: "{{ extension_info.uri }}"
+    state: "{{ extension_info.state|default('present') }}"
+  when:
+    - pg_extension is defined
+    - pg_extension|length > 0
+    - not extension_info.pg_repo|default('true')
+    - ansible_os_family == 'RedHat'
+  become: true
+
+- name: Manage Extension {{ extension_info.name }} from external uri
+  ansible.builtin.apt:
+    deb: "{{ extension_info.uri }}"
+    state: "{{ extension_info.state|default('present') }}"
+  when:
+    - pg_extension is defined
+    - pg_extension|length > 0
+    - not extension_info.pg_repo|default('true')
+    - ansible_os_family == 'Debian'
+  become: true

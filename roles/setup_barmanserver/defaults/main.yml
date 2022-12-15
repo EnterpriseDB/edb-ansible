@@ -1,6 +1,6 @@
 ---
-barman_package: "barman-2.19-1"
-barman_cli_package: "barman-cli-2.19-1"
+barman_package: "barman-3.2.0-1"
+barman_cli_package: "barman-cli-3.2.0-1"
 
 barman_user: "barman"
 barman_group: "barman"

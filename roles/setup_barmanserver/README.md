@@ -13,25 +13,6 @@ Following are the requirements of this role.
 
 ## Role Variables
 
-When executing the role via ansible these are the required variables:
-
-- **_pg_version_**
-
-Postgres Versions supported are: 10, 11, 12, 13 and 14
-
-- **_pg_type_**
-
-Database Engine supported are: PG and EPAS
-
-These and other variables can be assigned in the `pre_tasks` definition of the
-section: _How to include the `setup_barmanserver` role in your Playbook_
-
-The rest of the variables can be configured and are available in the:
-
-- [roles/setup_barmanserver/defaults/main.yml](./defaults/main.yml)
-
-Below is the documentation of the rest of the main variables:
-
 ### `barman_user`
 
 System user running barman commands. Default: `barman`
@@ -106,7 +87,10 @@ barman_log_file: "/var/log/barman/barman.log"
 
 ### `barman_log_level`
 
-Logging level. Default: `INFO`
+Logging level.
+
+- Options: DEBUG, INFO, WARNING, ERROR, CRITICAL.
+- Default: `INFO`
 
 Example:
 
@@ -116,7 +100,10 @@ barman_log_level: "INFO"
 
 ### `barman_compression`
 
-Compression tool to use for backups and archived WAL files. Default: `gzip`
+Compression tool to use for backups and archived WAL files.
+
+- Options: gzip, lz4, zstd, none
+- Default: `gzip`
 
 Example:
 
@@ -126,8 +113,8 @@ barman_compression: "gzip"
 
 ## Dependencies
 
-This role does not have any dependencies, but packages repositories should have
-been configured beforehand with the `setup_repo` role.
+- setup_repo: packages repositories should have been configured beforehand with the `setup_repo` role.
+- install_dbserver: Postgres binaries are required for Barman
 
 ## Example Playbook
 
@@ -163,11 +150,15 @@ Below is an example of how to include the `setup_barmanserver` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 14
+<<<<<<< Updated upstream
+        pg_version: 14.5
+=======
+        pg_version: 14.6
+>>>>>>> Stashed changes
         pg_type: "PG"
 
   roles:
-    # Install Postgres binaries required for Barman
+    - setup_repo
     - install_dbserver
     - setup_barmanserver
 ```
@@ -185,6 +176,10 @@ BSD
 ## Author information
 
 Author:
+
+- [Sung Woo Chang](https://github.com/dbxpert)
+
+Original Authors:
 
 - Julien Tachoires
 - Vibhor Kumar (Reviewer)

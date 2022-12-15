@@ -25,13 +25,11 @@
     msg: "pgpoolII Version = {{ pgpool2_version }} not supported.
       Supported versions are {{ supported_pgpool2_version }}"
   when:
-    - pg_type == "EPAS"
     - pgpool2_version not in supported_pgpool2_version
 
 - name: Set service name
   set_fact:
-    pgpool2_service_name: >-
-      {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II{% endif %}
+    pgpool2_service_name: pgpool-II
 
 - name: Include the pgpool2_manage_configuration
   include_tasks: pgpool2_manage_configuration.yml

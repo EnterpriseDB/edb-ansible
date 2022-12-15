@@ -18,14 +18,13 @@
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
       Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
+  when: pg_version|float not in supported_pg_version
 
 - name: Check supported versions for pgpoolII
   fail:
     msg: "pgpoolII Version = {{ pgpool2_version }} not supported.
       Supported versions are {{ supported_pgpool2_version }}"
   when:
-    - pg_type == "EPAS"
     - pgpool2_version not in supported_pgpool2_version
 
 - name: Check watchdog settings
@@ -39,8 +38,7 @@
 
 - name: Set the service name
   set_fact:
-    pgpool2_service_name: >-
-      {% if pg_type == 'EPAS' %}edb-pgpool-{{ pgpool2_version }}{% elif pg_type == 'PG' %}pgpool-II{% endif %}
+    pgpool2_service_name: pgpool-II
 
 - name: Initialize local variables
   set_fact:
@@ -137,8 +135,9 @@
   include_tasks: pgpool2_setup_user_auth.yml
 
 - name: Update /etc/hosts based on use_hostname
-  import_tasks: linux_update_etc_hosts.yml
-  become: true
+  include_role:
+    name: common
+    tasks_from: linux_update_etc_hosts.yml
   when:
     - use_hostname|bool
     - update_etc_file|bool
@@ -153,6 +152,14 @@
 
 - name: Include the pgpool2_setup_sr_mode
   include_tasks: pgpool2_setup_sr_mode.yml
+  when:
+    - _pgpool2_backends|length > 0
+    - _pgpool2_primary_inventory_hostname|length > 0
+  vars:
+    pgpool2_primary_inventory_hostname: "{{ _pgpool2_primary_inventory_hostname }}"
+
+- name: Include the pgpool2_setup_health_check
+  include_tasks: pgpool2_setup_health_check.yml
   when:
     - _pgpool2_backends|length > 0
     - _pgpool2_primary_inventory_hostname|length > 0

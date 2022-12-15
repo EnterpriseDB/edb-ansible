@@ -4,8 +4,8 @@ repmgrd_service: repmgrd
 repmgr_configuration_file: "/etc/repmgr.conf"
 
 # Database variables
-pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
-pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
+pg_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"
+pg_bin_path: "/usr/lib/postgresql/{{ pg_major_version }}/bin"
 pg_ssl: true
 pg_owner: "postgres"
 pg_group: "postgres"
@@ -13,5 +13,5 @@ pg_database: "postgres"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
 pg_port: 5432
-pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}"
+pg_service: "postgresql@{{ pg_major_version }}-{{ pg_instance_name }}"
 pg_user_home: "/var/lib/postgresql"

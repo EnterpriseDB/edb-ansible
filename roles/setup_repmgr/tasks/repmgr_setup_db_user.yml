@@ -1,6 +1,6 @@
 - name: Generate the pg_repmgr_user_password
   ansible.builtin.include_role:
-    name: manage_dbserver
+    name: common
     tasks_from: generate_password
   vars:
     input_user: "{{ pg_repmgr_user }}"

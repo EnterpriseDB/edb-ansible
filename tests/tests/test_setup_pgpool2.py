@@ -2,17 +2,6 @@ import pytest
 from conftest import get_pg_type, get_pgpool2, get_primary, load_ansible_vars
 
 
-def test_setup_pgpool2_EPAS():
-    if get_pg_type() != "EPAS":
-        pytest.skip()
-    host = get_pgpool2()[0]
-    service = "edb-pgpool-4.3"
-
-    assert host.service(service).is_running, "pgpool2 service not running"
-
-    assert host.service(service).is_enabled, "pgpool2 service not enabled"
-
-
 def test_setup_pgpool2_PG():
     if get_pg_type() != "PG":
         pytest.skip()
@@ -34,16 +23,6 @@ def test_setup_pgpool_PG_packages():
         assert host.package(package).is_installed, "Package %s not installed" % packages
 
 
-def test_setup_pgpool_EPAS_packages():
-    if get_pg_type() != "EPAS":
-        pytest.skip()
-    host = get_pgpool2()[0]
-    packages = ["edb-pgpool43", "openssl"]
-
-    for package in packages:
-        assert host.package(package).is_installed, "Package %s not installed" % packages
-
-
 def test_setup_pgpool_test_user():
     ansible_vars = load_ansible_vars()
     pgpool2_user = ansible_vars["pgpool2_users"][0]["name"]
@@ -51,9 +30,6 @@ def test_setup_pgpool_test_user():
     pgpool2_port = ansible_vars["pgpool2_port"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]
@@ -78,16 +54,12 @@ def test_setup_pgpool_users():
 
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]
     host = get_primary()
 
     with host.sudo(pg_user):
-        query = "Select usename from pg_user where usename = '%s' or usename ='%s'" % (
-            "pgpool",
+        query = "Select usename from pg_user where usename = '%s'" % (
             "pgpool2",
         )
         cmd = host.run(
@@ -96,7 +68,7 @@ def test_setup_pgpool_users():
         )
         result = cmd.stdout.strip().split("\n")
 
-    assert len(result) == 2, "pgpool users was not created sucessfully."
+    assert len(result) == 1, "pgpool users was not created sucessfully."
 
 
 def test_setup_pgpool_loadbalance():
@@ -106,9 +78,6 @@ def test_setup_pgpool_loadbalance():
     pgpool2_port = ansible_vars["pgpool2_port"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]

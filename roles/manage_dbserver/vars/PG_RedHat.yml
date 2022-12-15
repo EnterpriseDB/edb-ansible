@@ -7,5 +7,5 @@ shell_profile_content: |
   export PGDATABASE=postgres
   export PGUSER=postgres
   export PGPORT={{ pg_port }}
-  export PGLOCALEDIR=/usr/pgsql-{{ pg_version }}/share/locale
+  export PGLOCALEDIR=/usr/pgsql-{{ pg_major_version }}/share/locale
   export PGHOST={{ pg_unix_socket_directories[0] }}

@@ -17,7 +17,7 @@ Following are the dependencies and requirement of this role.
 This role requires the following variables to be defined:
 
 - pg_type (available: PG, HyperSQL)
-- pg_version (available: 11, 12, 13, 14)
+- pg_version (available: 14)
 
 This role allows users to pass following variables which helps managing day to
 day tasks:
@@ -215,7 +215,7 @@ Below is an example of how to include the `manage_dbserver` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 14
+        pg_version: 14.6
         pg_type: "PG"
 
         pg_postgres_conf_params:

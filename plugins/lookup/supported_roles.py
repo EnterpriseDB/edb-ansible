@@ -29,27 +29,64 @@ _value:
 
 
 GROUP_ROLES = {
-    "primary": [
-        "setup_repo",
-        "install_dbserver",
-        "init_dbserver",
-        "manage_dbserver",
-        "setup_efm",
-        "autotuning",
-        "setup_repmgr",
-        "manage_dbpatches",
-        "manage_efm",
+    'primary': [
+        'setup_repo',
+        'install_dbserver',
+        'manage_extension',
+        'init_dbserver',
+<<<<<<< Updated upstream
+        'manage_dbserver'
+=======
+        'manage_dbserver',
+>>>>>>> Stashed changes
+        'autotuning',
+        'setup_repmgr',
+        'manage_dbpatches',
+    ],
+    'standby': [
+        'setup_repo',
+        'install_dbserver',
+        'manage_extension',
+        'setup_replication',
+        'manage_dbserver',
+        'autotuning',
+        'setup_repmgr',
+        'manage_dbpatches',
+<<<<<<< Updated upstream
+        'manage_extension',
+=======
+>>>>>>> Stashed changes
+    ],
+    'pemserver': [
+        'setup_repo',
+        'install_dbserver',
+        'init_dbserver',
+        'manage_dbserver',
+        'setup_pemserver',
+<<<<<<< Updated upstream
+        'autotuning'
+=======
+        'autotuning',
+>>>>>>> Stashed changes
+    ],
+    'pgbouncer': [
+        'setup_repo',
+        'setup_pgbouncer',
+<<<<<<< Updated upstream
+        'manage_pgbouncer'
+=======
+        'manage_pgbouncer',
+>>>>>>> Stashed changes
     ],
     "standby": [
         "setup_repo",
         "install_dbserver",
+        "manage_extension",
         "setup_replication",
         "manage_dbserver",
-        "setup_efm",
         "autotuning",
         "setup_repmgr",
         "manage_dbpatches",
-        "manage_efm",
     ],
     "pemserver": [
         "setup_repo",
@@ -73,10 +110,8 @@ GROUP_ROLES = {
     "witness": [
         "setup_repo",
         "install_dbserver",
-        "setup_efm",
         "setup_repmgr",
         "manage_dbpatches",
-        "manage_efm",
     ],
     "proxy": [
         "setup_repo",

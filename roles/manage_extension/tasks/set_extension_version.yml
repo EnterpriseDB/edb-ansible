@@ -1,0 +1,12 @@
+---
+- name: Set postgis version
+  set_fact:
+    postgis_version: 32
+    pgaudit_version: 16
+  when: pg_major_version == 14
+
+- name: Set pgaudit version
+  set_fact:
+    postgis_version: 33
+    pgaudit_version: 17
+  when: pg_major_version == 15

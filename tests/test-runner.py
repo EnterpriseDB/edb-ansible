@@ -83,11 +83,15 @@ class OSChecker(argparse.Action):
 
 
 def main():
+    args = get_input_arguments()
+
+    if args.remove_containers:
+        invoke_make_clean_for_all_directories()
+        quit()
+
+    testing_roles = get_testing_roles_from_keywords(args.keyword)
     make_ansible_collection_tar_ball()
     make_log_dir()
-
-    args = get_input_arguments()
-    testing_roles = get_testing_roles_from_keywords(args.keyword)
 
     if not testing_roles:
         print("No test cases matching with the given keywords")
@@ -98,6 +102,12 @@ def main():
     with Pool(args.jobs) as p:
         results = p.starmap(exec_test, args_for_exec_test)
         print_test_result(results)
+
+
+def invoke_make_clean_for_all_directories():
+    r = subprocess.run(["make", "-f", "Makefile.mk", "clean_all"])
+    if r.returncode != 0:
+        raise Exception(r.stderr.decode("utf-8"))
 
 
 def make_ansible_collection_tar_ball():
@@ -145,7 +155,7 @@ def get_input_arguments():
     )
 
     parser.add_argument(
-        "--os_type",
+        "--os-type",
         dest="os_type",
         nargs="+",
         default=["centos7"],
@@ -162,6 +172,30 @@ def get_input_arguments():
         help="Execute test cases with a name matching the given keywords.",
     )
 
+    parser.add_argument(
+<<<<<<< Updated upstream
+        "-c",
+        "--containers-only",
+        dest="containers_only",
+        action="store_true",
+        help="Build and create OS and tester containers only.",
+=======
+        "-m",
+        "--maintain-containers",
+        dest="maintain_containers",
+        action="store_true",
+        help=".",
+>>>>>>> Stashed changes
+    )
+
+    parser.add_argument(
+        "-r",
+        "--remove-containers",
+        dest="remove_containers",
+        action="store_true",
+        help="Remove all containers created from this test.",
+    )
+
     return parser.parse_args()
 
 
@@ -176,41 +210,46 @@ def get_testing_roles_from_keywords(keywords):
 
 
 def get_args_for_exec_test(testing_roles, args):
-    return [
-        (role, args.pg_type, args.pg_version, args.os_type) for role in testing_roles
-    ]
+    return [(role, args) for role in testing_roles]
 
 
-def exec_test(case_name, pg_types, pg_versions, os_types):
+def exec_test(case_name, args):
     executed = 0
     success = 0
+    pg_types = args.pg_type
+    pg_versions = args.pg_version
+    os_types = args.os_type
+<<<<<<< Updated upstream
+    containers_only = args.containers_only
+    for iter in itertools.product(
+        [case_name], pg_types, pg_versions, os_types, [containers_only]
+    ):
+=======
+    maintain_containers = args.maintain_containers
     for iter in itertools.product([case_name], pg_types, pg_versions, os_types):
+>>>>>>> Stashed changes
         if exec_test_case(*iter):
             success = success + 1
         executed = executed + 1
+        if not maintain_containers:
+            tears_down(case_name)
 
     return (executed, success)
 
 
-def exec_test_case(case_name, pg_type, pg_version, os_type):
+def exec_test_case(case_name, pg_type, pg_version, os_type, containers_only):
     env = os.environ.copy()
     env.update(
         {
             "HYPERSQL_PG_VERSION": pg_version,
             "HYPERSQL_PG_TYPE": pg_type,
             "HYPERSQL_OS_TYPE": os_type,
+            "HYPERSQL_CONTAINERS_ONY": str(containers_only),
             "CASE_NAME": case_name,
         }
     )
 
-    # Tears down containers for this test case, just in case some containers
-    # are still running here.
-    tears_down(case_name)
-
     result = use_makefile_to_run(case_name, pg_type, pg_version, os_type, env)
-
-    # Tears down containers
-    tears_down(case_name)
 
     return result
 

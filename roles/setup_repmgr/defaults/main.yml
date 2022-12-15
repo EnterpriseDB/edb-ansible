@@ -1,8 +1,8 @@
 ---
-pg_version: 14
+pg_major_version: "{{ pg_version | int }}"
 pg_instance_name: main
 disable_logging: true
-use_hostname: true
+use_hostname: false
 update_etc_file: true
 
 # Database name used by repmgr
@@ -50,8 +50,10 @@ supported_pg_type:
   - PG
 
 supported_pg_version:
-  - 10
-  - 11
-  - 12
-  - 13
-  - 14
+  - 14.0
+  - 14.1
+  - 14.2
+  - 14.3
+  - 14.4
+  - 14.5
+  - 14.6

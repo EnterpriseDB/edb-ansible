@@ -14,7 +14,7 @@ Following are the dependencies and requirement of this role.
 
 When executing the role via ansible these are the required variables:
 
-- pg_version (available: 11, 12, 13, 14)
+- pg_version (available: 14)
 - pg_type (available: PG, HyperSQL)
 
 These and other variables can be assigned in the `pre_tasks` definition of the
@@ -101,7 +101,7 @@ Below is an example of how to include the `autotuning` role:
     - name: Initialize the user defined variables
       set_fact:
         pg_type: "PG"
-        pg_version: 14
+        pg_version: 14.6
         ssd_disk: yes
 
   roles:

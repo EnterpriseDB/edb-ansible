@@ -16,7 +16,7 @@
   ansible.builtin.copy:
     remote_src: true
     src: "{{ pg_systemd_global_unit_file }}"
-    dest: "/etc/systemd/system/{{ pg_service }}.service"
+    dest: "/etc/systemd/system/{{ pg_service }}"
     mode: 0600
     owner: root
     group: root
@@ -26,20 +26,20 @@
 
 - name: Update systemd unit file in Redhat
   ansible.builtin.lineinfile:
-    path: "/etc/systemd/system/{{ pg_service }}.service"
+    path: "/etc/systemd/system/{{ pg_service }}"
     line: "{{ item.line }}"
     regexp: "{{ item.regexp }}"
     insertafter: "{{ item.insertafter | default('EOF') }}"
   become: true
   loop:
-    - line: "Description=Database server {{ pg_type }} {{ pg_version }}"
+    - line: "Description=Database server {{ pg_type }} {{ pg_major_version }}"
       regexp: "^Description=.*"
     - line: "Environment=PGDATA={{ pg_default_data }}"
       regexp: "^Environment=PGDATA.*"
     - line: "PIDFile={{ pg_default_data }}/postmaster.pid"
       regexp: "^PIDFile=.*"
       insertafter: "^\\[Service\\]$"
-    - line: "ExecStopPost=+/usr/bin/systemctl daemon-reload"
+    - line: "ExecStopPost=/usr/bin/systemctl daemon-reload"
       regexp: "^ExecStopPost=.*"
       insertafter: "^\\[Service\\]$"
     - line: "User={{ pg_owner }}"
@@ -59,7 +59,7 @@
     insertafter: "{{ item.insertafter | default('EOF') }}"
   become: true
   loop:
-    - line: "Description=Database server {{ pg_type }} {{ pg_version }} {{ pg_instance_name }}"
+    - line: "Description=Database server {{ pg_type }} {{ pg_major_version }} {{ pg_instance_name }}"
       regexp: "^Description=.*"
     - line: "AssertPathExists={{ pg_default_data }}"
       regexp: "^AssertPathExists=.*"
@@ -85,7 +85,7 @@
 
 - name: Unlimited core file size when core_dump enable in systemd file
   ansible.builtin.lineinfile:
-    path: "/etc/systemd/system/{{ pg_service }}.service"
+    path: "/etc/systemd/system/{{ pg_service }}"
     line: "{{ item.line }}"
     regexp: "{{ item.regexp }}"
     insertafter: "{{ item.insertafter | default('EOF') }}"

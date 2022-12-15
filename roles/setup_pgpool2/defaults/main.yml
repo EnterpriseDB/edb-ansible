@@ -1,9 +1,11 @@
 ---
-use_hostname: true
+pg_major_version: "{{ pg_version | int }}"
+
+use_hostname: false
 update_etc_file: true
 # Default configuration values
 pgpool2_port: 9999
-pgpool2_listen_addresses: "*"
+pgpool2_listen_addresses: '*'
 pgpool2_pcp_port: 9898
 pgpool2_wd_port: 9000
 pgpool2_wd_heartbeat_port: 9694
@@ -34,6 +36,13 @@ pgpool2_sr_check_user: "pgpool2"
 # If empty or not defined, a random password will be generated
 pgpool2_sr_check_password: ""
 
+# health check mdoe
+pgpool2_health_check_user: "pgpool2"
+# If empty or not defined, a random password will be generated
+pgpool2_health_check_password: ""
+
+pgpool2_user_map: []
+
 # Enable SSL
 pgpool2_ssl: true
 # Directory containing SSL keys and certs
@@ -57,11 +66,13 @@ supported_os:
   - OracleLinux7
 
 supported_pg_version:
-  - 10
-  - 11
-  - 12
-  - 13
-  - 14
+  - 14.0
+  - 14.1
+  - 14.2
+  - 14.3
+  - 14.4
+  - 14.5
+  - 14.6
 
 supported_pgpool2_version:
   - 4.3

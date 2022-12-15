@@ -1,0 +1,17 @@
+---
+supported_extension: [
+    {
+      "name": "postgis",
+      "extension_package": "postgis",
+      "required_package":
+        [
+          "gdal26",
+          "libgeos-c1v5",
+          "libproj15",
+        ],
+    },
+    {
+      "name": "pgaudit",
+      "extension_package": "postgresql-{{ pg_major_version }}-pgaudit",
+    }
+  ]

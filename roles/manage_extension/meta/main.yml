@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  role_name: setup_repo
+  author: HyperSQL
+  description: Installation of Postgres to CentOS or RHEL repos
+  company: "Tmax"
+  license: BSD-3-Clause
+  min_ansible_version: 2.8
+
+  platforms:
+    - name: CentOS
+      versions:
+        - 7
+    - name: Red Hat
+      versions:
+        - 7
+
+  galaxy_tags:
+    - database
+    - postgresql
+    - postgres
+    - repo
+
+dependencies: []

@@ -19,3 +19,6 @@ clean:
 	rm -rf ./.ssh
 	rm -f ./inventory.yml
 	docker compose down -t 1
+
+clean_all:
+	find ./cases -type f -name Makefile -execdir make clean \;

@@ -40,10 +40,6 @@ def test_setup_barman_user():
     port = "5432"
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-        port = "5444"
-
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
 
@@ -62,10 +58,6 @@ def test_setup_barman_logical_wal_level():
     # previously configured to 'logical'.
     port = "5432"
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-        port = "5444"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()

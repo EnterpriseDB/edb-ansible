@@ -1,0 +1,13 @@
+---
+- name: Check required variables for this role
+  include_role:
+    name: common
+    tasks_from: check_required_variables
+  vars:
+    required_variables:
+      - pg_type
+      - pg_version
+
+# Entry point of the extension_manage role
+- name: Include the manage_extension.yml
+  include_tasks: manage_extension.yml

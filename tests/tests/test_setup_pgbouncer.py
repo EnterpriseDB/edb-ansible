@@ -11,12 +11,6 @@ def test_setup_pgbouncer_service():
     host = get_pgbouncer()[0]
     service = "pgbouncer"
 
-    if get_pg_type() == "EPAS":
-        if os_family() == "Debian":
-            service = "edb-pgbouncer117"
-        elif os_family() == "RedHat":
-            service = "edb-pgbouncer-1.17"
-
     assert host.service(service).is_running, "pgbouncer service not running"
 
     assert host.service(service).is_enabled, "pgbouncer service not enabled"
@@ -26,9 +20,6 @@ def test_setup_pgbouncer_packages():
     host = get_pgbouncer()[0]
 
     packages = ["pgbouncer"]
-
-    if get_pg_type() == "EPAS":
-        packages = ["edb-pgbouncer117"]
 
     for package in packages:
         assert host.package(package).is_installed, "Package %s not installed" % packages
@@ -41,9 +32,6 @@ def test_setup_pgbouncer_test_user():
     pgbouncer_port = ansible_vars["pgbouncer_listen_port"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split("//")[1]
@@ -76,9 +64,6 @@ def test_setup_pgbouncer_config():
 
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split("//")[1]
     host = get_primary()
@@ -110,9 +95,6 @@ def test_setup_pgbouncer_port():
     pgbouncer_port = ansible_vars["pgbouncer_listen_port"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split("//")[1]

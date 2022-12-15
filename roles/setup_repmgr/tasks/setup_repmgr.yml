@@ -12,7 +12,7 @@
   ansible.builtin.fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
       Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
+  when: pg_version|float not in supported_pg_version
 
 - name: Reference variables
   ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
@@ -35,7 +35,9 @@
   run_once: true
 
 - name: Include linux_update_etc_hosts.yml
-  ansible.builtin.include_tasks: linux_update_etc_hosts.yml
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: linux_update_etc_hosts.yml
   when:
     - use_hostname|bool
     - update_etc_file|bool
@@ -66,23 +68,12 @@
 - name: Include repmgr_configure.yml
   ansible.builtin.include_tasks: repmgr_configure.yml
 
-- name: Register the repmgr primary node
+- name: Register the repmgr primary, standby, witness nodes
   ansible.builtin.include_tasks: repmgr_register_node.yml
-  when: "'primary' in group_names"
+  when: "item in group_names"
+  with_items: ['primary', 'standby', 'witness']
   vars:
-    repmgr_role: primary
-
-- name: Register the repmgr standby nodes
-  ansible.builtin.include_tasks: repmgr_register_node.yml
-  when: "'standby' in group_names"
-  vars:
-    repmgr_role: standby
-
-- name: Register the repmgr witness nodes
-  ansible.builtin.include_tasks: repmgr_register_node.yml
-  when: "'witness' in group_names"
-  vars:
-    repmgr_role: witness
+    repmgr_role: "{{ item }}"
 
 - name: Include generate_ssh_keys.yml
   ansible.builtin.include_tasks: generate_ssh_keys.yml

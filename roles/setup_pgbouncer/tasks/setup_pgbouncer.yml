@@ -11,6 +11,12 @@
 - name: Include OS and pg_type dependent variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Check PgBouncer version
+  fail:
+    msg: "PgBouncer version {{ pgbouncer_version }} not supported.
+        Supported versions are {{ supported_pgbouncer_version }}."
+  when: pgbouncer_version not in supported_pgbouncer_version
+
 - name: Check PgBouncer pool_mode configuration value
   fail:
     msg: "PgBouncer pooling mode = {{ pgbouncer_pool_mode }} not valid.

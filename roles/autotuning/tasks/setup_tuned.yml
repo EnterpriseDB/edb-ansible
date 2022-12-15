@@ -43,6 +43,10 @@
     mode: 0600
   become: true
 
+- name: Start tuned daemon
+  command: tuned -d
+  become: true
+
 - name: Ensure tuned profile is active
   command: tuned-adm profile {{ tuned_profile }}
   become: true

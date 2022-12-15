@@ -15,11 +15,6 @@ def test_manage_dbserver_files():
     pg_sql_script = ansible_vars["pg_sql_scripts"][0]["file_path"]
     profile_prefix = "pgsql"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-        pg_group = "enterprisedb"
-        profile_prefix = "enterprisedb"
-
     host = get_primary()
 
     # Testing if '.psqlrc' file was created properly
@@ -75,9 +70,6 @@ def test_manage_dbserver_create_user():
     pg_user = "postgres"
     pg_created_user = ansible_vars["pg_users"][0]["name"]
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     with host.sudo(pg_user):
@@ -93,9 +85,6 @@ def test_manage_dbserver_sql_script():
     pg_user = "postgres"
     pg_sql_script = ansible_vars["pg_sql_scripts"][0]["file_path"]
     pg_script_table = ansible_vars["pg_script_table"]
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -113,9 +102,6 @@ def test_manage_dbserver_sql_script():
 
 def test_manage_dbserver_hba_file():
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -136,9 +122,6 @@ def test_manage_dbserver_conf_params():
     pg_conf_param = ansible_vars["pg_postgres_conf_params"][0]["name"]
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
 
@@ -155,9 +138,6 @@ def test_manage_dbserver_pg_slots():
     pg_slot = ansible_vars["pg_slots"][0]["name"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -176,9 +156,6 @@ def test_manage_dbserver_pg_extension():
 
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
 
@@ -195,9 +172,6 @@ def test_manage_dbserver_pg_grant_roles():
     pg_role = ansible_vars["pg_grant_roles"][0]["role"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -222,9 +196,6 @@ def test_manage_dbserver_query():
 
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
 
@@ -233,7 +204,7 @@ def test_manage_dbserver_query():
         cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
         result = cmd.stdout.strip()
 
-    assert len(result) > 0, "Query wwas not succesfully executed" % pg_query_table
+    assert len(result) > 0, "Query was not succesfully executed" % pg_query_table
 
 
 def test_manage_dbserver_database():
@@ -241,9 +212,6 @@ def test_manage_dbserver_database():
     pg_database = ansible_vars["pg_databases"][0]["name"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()

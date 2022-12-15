@@ -1,14 +1,15 @@
 cases:
   setup_repo:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - oraclelinux7
@@ -18,14 +19,15 @@ cases:
       - ubuntu20
   install_dbserver:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -35,14 +37,15 @@ cases:
       - oraclelinux7
   init_dbserver:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -52,14 +55,15 @@ cases:
       - oraclelinux7
   manage_dbserver:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -69,31 +73,15 @@ cases:
       - oraclelinux7
   setup_replication:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
-    os:
-      - centos7
-      - rocky8
-      - debian9
-      - debian10
-      - ubuntu20
-      - oraclelinux7
-  setup_efm:
-    pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
-    pg_type:
-      - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -103,70 +91,75 @@ cases:
       - oraclelinux7
   setup_pemserver:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
       - oraclelinux7
   setup_pemagent:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
       - oraclelinux7
   setup_pgpool2:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
       - oraclelinux7
   manage_pgpool2:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
       - oraclelinux7
   setup_pgbouncer:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -175,14 +168,15 @@ cases:
       - ubuntu20
   manage_pgbouncer:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -191,14 +185,15 @@ cases:
       - ubuntu20
   setup_barmanserver:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -207,14 +202,15 @@ cases:
       - ubuntu20
   setup_barman:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - rocky8
@@ -223,11 +219,13 @@ cases:
       - ubuntu20
   setup_repmgr:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
     os:
@@ -239,77 +237,83 @@ cases:
       - oraclelinux7
   setup_hammerdbserver:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - rocky8
   setup_hammerdb:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - rocky8
   setup_dbt2_driver:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - rocky8
       - centos7
   setup_dbt2_client:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - rocky8
       - centos7
   setup_dbt2:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - rocky8
       - centos7
   manage_dbpatches:
     pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - centos7
       - oraclelinux7
@@ -317,27 +321,17 @@ cases:
       - debian9
       - debian10
       - ubuntu20
-  setup_efm_api:
-    pg_version:
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
-    pg_type:
-      - PG
-      - EPAS
-    os:
-      - centos7
-      - oraclelinux7
   setup_pgbackrest:
     pg_version:
-      - 14
-      - 13
-      - 12
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - rocky8
       - centos7
@@ -345,12 +339,15 @@ cases:
       - ubuntu20
   setup_pgbackrestserver:
     pg_version:
-      - 14
-      - 13
-      - 12
+      - 14.0
+      - 14.1
+      - 14.2
+      - 14.3
+      - 14.4
+      - 14.5
+      - 14.6
     pg_type:
       - PG
-      - EPAS
     os:
       - rocky8
       - centos7

@@ -7,9 +7,6 @@ def test_manage_pgpool_pcp_user():
     pcp_pass = ansible_vars["pcp_users"][0]["pass"]
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_pgpool2()[0]
 
     with host.sudo(pg_user):
@@ -29,9 +26,6 @@ def test_manage_pgpool_pcp_node_count():
     pcp_user = ansible_vars["pcp_users"][0]["name"]
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_pgpool2()[0]
 
     with host.sudo(pg_user):
@@ -48,9 +42,6 @@ def test_manage_pgpool_test_user():
     pgpool2_port = ansible_vars["pgpool2_port"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]
@@ -74,9 +65,6 @@ def test_manage_pgpool_pcp_socket():
     pgpool2_port = ansible_vars["pgpool2_port"]
 
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     pgpool2_address = get_pgpool2()[0]
     address = str(pgpool2_address).strip("<>").split("//")[1]

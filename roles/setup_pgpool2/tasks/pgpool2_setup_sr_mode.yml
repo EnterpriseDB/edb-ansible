@@ -10,6 +10,31 @@
   when:
     - pgpool2_sr_check_password|length == 0
 
+- name: Check if there are other users
+  set_fact:
+    pgpool2_sr_check_password: "{{ pgpool2_user.password }}"
+  loop: "{{ pgpool2_user_map }}"
+  loop_control:
+    loop_var: pgpool2_user
+  when: pgpool2_user.name == pgpool2_sr_check_user
+  register: sr_user_exist
+  no_log: "{{ disable_logging }}"
+
+- name: Add pgpool2_sr_check_password if not exist in user map
+  set_fact:
+    pgpool2_user_map: >-
+     {{ pgpool2_user_map | default([]) + [ 
+            { 
+              'name' : pgpool2_sr_check_user, 
+              'password' : pgpool2_sr_check_password
+            } 
+          ] }}
+  run_once: true
+  when: 
+    - pgpool2_user_map is defined
+    - sr_user_exist is skipped
+  no_log: "{{ disable_logging }}"
+
 # Create pgpool2_sr_user Postgres user on the primary node
 - name: Create pgpoolII SR check role on Postgres primary node
   include_role:
@@ -36,8 +61,8 @@
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_grant_roles:
-      - user: "{{ pgpool2_sr_check_user }}"
-        role: "pg_monitor"
+       - user: "{{ pgpool2_sr_check_user }}"
+         role: "pg_monitor"
   run_once: true
   when:
     - pgpool2_primary_inventory_hostname is defined
@@ -68,6 +93,12 @@
         {
           'key': 'sr_check_password',
           'value': '{{ pgpool2_sr_check_password }}',
+          'state': 'present',
+          'quoted': true
+        },
+        {
+          'key': 'sr_check_database',
+          'value': '{{ pg_database }}',
           'state': 'present',
           'quoted': true
         }

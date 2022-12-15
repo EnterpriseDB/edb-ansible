@@ -4,7 +4,7 @@
 
 - name: Set fact pg_service for Debian
   set_fact:
-    pg_service: "postgresql@{{ pg_version }}-{{ deb_cluster_name }}.service"
+    pg_service: "postgresql@{{ pg_major_version }}-{{ deb_cluster_name }}.service"
   when: ansible_os_family == 'Debian'
 
 - name: Stop pg service if running
@@ -21,9 +21,9 @@
   package:
     name:
       - python3-psycopg2
-      - postgresql-{{ pg_version }}
-      - postgresql-client-{{ pg_version }}
-      - postgresql-server-dev-{{ pg_version }}
+      - postgresql-{{ pg_major_version }}
+      - postgresql-client-{{ pg_major_version }}
+      - postgresql-server-dev-{{ pg_major_version }}
     state: absent
     update_cache: yes
   become: true
@@ -34,10 +34,10 @@
 
 - name: Check PostgreSQL other versions
   command: echo {{ version }}
-  loop: "{{ supported_pg_version }}"
+  loop: "{{ supported_pg_major_version }}"
   loop_control:
     loop_var: version
-  when: ansible_facts.packages[ 'postgresql-' ~ version ] is defined
+  when: ansible_facts.packages[ 'postgresql-' ~ version|int ] is defined
   register: other_version_exist
 
 - name: Remove postgreSQL-common
@@ -59,3 +59,12 @@
   when:
     - os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
+
+- name: Remove sslutils
+  ansible.builtin.package:
+    name:
+      - postgresql-{{ pg_major_version }}-sslutils
+    state: absent
+    update_cache: true
+  become: true
+  when: pg_ssl

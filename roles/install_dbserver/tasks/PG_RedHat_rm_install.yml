@@ -4,7 +4,7 @@
 
 - name: Set fact pg_service for RedHat
   set_fact:
-    pg_service: "postgresql-{{ pg_version }}.service"
+    pg_service: "postgresql-{{ pg_major_version }}.service"
   when: ansible_os_family == 'RedHat'
 
 - name: Stop pg service if running
@@ -36,9 +36,18 @@
 - name: Remove Postgres
   package:
     name:
-      - postgresql{{ pg_version }}-libs
-      - postgresql{{ pg_version }}
-      - postgresql{{ pg_version }}-server
-      - postgresql{{ pg_version }}-contrib
+      - postgresql{{ pg_major_version }}-libs
+      - postgresql{{ pg_major_version }}
+      - postgresql{{ pg_major_version }}-server
+      - postgresql{{ pg_major_version }}-contrib
     state: absent
   become: true
+
+- name: Remove sslutils
+  ansible.builtin.package:
+    name:
+      - sslutils_{{ pg_major_version }}
+    state: absent
+    update_cache: true
+  become: true
+  when: pg_ssl

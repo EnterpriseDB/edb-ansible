@@ -1,4 +1,5 @@
 ---
+pgbouncer_version: 1.7
 # RPM package name
 pgbouncer_package_name: "pgbouncer"
 

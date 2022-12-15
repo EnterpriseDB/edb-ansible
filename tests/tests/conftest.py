@@ -12,7 +12,7 @@ HYPERSQL_OS_TYPE = os.getenv("HYPERSQL_OS_TYPE", "rocky8")
 # Path to the ansible inventory file: <role_name>/inventory.yml
 HYPERSQL_INVENTORY = os.getenv("HYPERSQL_INVENTORY")
 # Postgres version
-HYPERSQL_PG_VERSION = os.getenv("HYPERSQL_PG_VERSION")
+HYPERSQL_PG_VERSION = os.getenv("HYPERSQL_PG_VERSION").split('.')[0]
 # Postgres type
 HYPERSQL_PG_TYPE = os.getenv("HYPERSQL_PG_TYPE")
 # SSH parameters
@@ -152,11 +152,6 @@ def get_pg_unix_socket_dir():
     pg_version = get_pg_version()
     if pg_type == "PG":
         return "/var/run/postgresql"
-    elif pg_type == "EPAS":
-        if os_family() == "RedHat":
-            return "/var/run/edb/as%s" % pg_version
-        elif os_family() == "Debian":
-            return "/var/run/edb-as"
 
 
 def get_pg_profile_dir():
@@ -166,11 +161,6 @@ def get_pg_profile_dir():
             return "/var/lib/pgsql"
         elif os_family() == "Debian":
             return "/var/lib/postgresql"
-    elif pg_type == "EPAS":
-        if os_family() == "RedHat":
-            return "/var/lib/edb/"
-        elif os_family() == "Debian":
-            return "/var/lib/edb-as"
 
 
 def get_pgbouncer_pid_file():
@@ -180,11 +170,6 @@ def get_pgbouncer_pid_file():
             return "/run/pgbouncer/pgbouncer.pid"
         elif os_family() == "Debian":
             return "/var/run/pgbouncer/pgbouncer.pid"
-    elif pg_type == "EPAS":
-        if os_family() == "RedHat":
-            return "/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid"
-        elif os_family() == "Debian":
-            return "/var/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid"
 
 
 def get_pgbouncer_auth_file():
@@ -194,8 +179,3 @@ def get_pgbouncer_auth_file():
             return "/etc/pgbouncer/userlist.txt"
         elif os_family() == "Debian":
             return "/etc/pgbouncer/userlist.txt"
-    elif pg_type == "EPAS":
-        if os_family() == "RedHat":
-            return "/etc/edb/pgbouncer1.17/userlist.txt"
-        elif os_family() == "Debian":
-            return "/etc/edb/pgbouncer1.17/userlist.txt"

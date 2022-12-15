@@ -1,6 +1,6 @@
 ---
-pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
-pg_default_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
+pg_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"
+pg_default_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"
 pg_log: "/var/log/postgres"
 pg_wal: ""
 pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
@@ -18,14 +18,14 @@ synchronous_standby_names: ""
 random_string: ""
 
 pg_database: "postgres"
-pg_service: "postgresql@{{ pg_version }}-{{ pg_instance_name }}"
+pg_service: "postgresql@{{ pg_major_version }}-{{ pg_instance_name }}.service"
 
 pg_user_home: "/var/lib/postgresql"
-pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
+pg_bin_path: "/usr/lib/postgresql/{{ pg_major_version }}/bin"
 pg_basebackup: "{{ pg_bin_path }}/pg_basebackup -Fp -R -l standby --checkpoint=fast --wal-method=stream"
 pg_basebackup_options: ""
 pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer"
-pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
+pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_major_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
 
 # unix socket domain directories
 pg_unix_socket_directories:

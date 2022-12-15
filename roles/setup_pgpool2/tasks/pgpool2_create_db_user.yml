@@ -1,7 +1,7 @@
 ---
 - name: Generate the pg_pgpool_user_password
   include_role:
-    name: manage_dbserver
+    name: common
     tasks_from: generate_password
   vars:
     input_user: "{{ pg_pgpool_user }}"
@@ -15,6 +15,31 @@
     pg_pgpool_user_password: "{{ input_password }}"
   when: pg_pgpool_user_password|length < 1
   run_once: true
+
+- name: Check if there are other users
+  set_fact:
+    pg_pgpool_user_password: "{{ pgpool2_user.password }}"
+  loop: "{{ pgpool2_user_map }}"
+  loop_control:
+    loop_var: pgpool2_user
+  when: pgpool2_user.name == pg_pgpool_user
+  register: sr_user_exist
+  no_log: "{{ disable_logging }}"
+
+- name: Add pg_pgpool_user_password if not exist in user map
+  set_fact:
+    pgpool2_user_map: >-
+     {{ pgpool2_user_map | default([]) + [ 
+            { 
+              'name' : pg_pgpool_user, 
+              'password' : pg_pgpool_user_password
+            } 
+          ] }}
+  run_once: true
+  when: 
+    - pgpool2_user_map is defined
+    - sr_user_exist is skipped
+  no_log: "{{ disable_logging }}"
 
 - name: Set postgres pgpool users's database cluster password
   include_role:

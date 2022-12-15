@@ -11,9 +11,12 @@
     - name: Initialize the user defined variables
       set_fact:
         disable_logging: false
-        pg_users:
-          - name: "test"
-            pass: "password"
+        pg_pgpool_user: "test"
+        pg_pgpool_user_password: "password"
+<<<<<<< Updated upstream
+=======
+        pg_local_wal_archive_dir: "/var/lib/pgsql/archive"
+>>>>>>> Stashed changes
 
   roles:
     - role: setup_repo
@@ -22,6 +25,8 @@
       when: "'install_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
       when: "'init_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+    - role: setup_replication
+      when: "'setup_replication' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pgpool2
       when: "'setup_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: manage_pgpool2
