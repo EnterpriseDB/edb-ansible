@@ -14,7 +14,7 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
-- name: Install packages
+- name: Install packages on RedHat distributions
   ansible.builtin.yum:
     name:
       - curl
@@ -25,11 +25,19 @@
       - tmux
   become: true
   failed_when: false
+  when: ansible_os_family == 'RedHat'
 
-#- name: Include Touchstone installation
-#  ansible.builtin.include_role:
-#    name: setup_touchstone
-#    tasks_from: main
+- name: Install packages on Debian distributions
+  ansible.builtin.package:
+    name:
+      - curl
+      - patch
+      - postgresql
+      - tcl
+      - tmux
+  become: true
+  failed_when: false
+  when: ansible_os_family == 'Debian'
 
 - name: Include HammerDB installation
   ansible.builtin.include_tasks: install_hammerdb.yml

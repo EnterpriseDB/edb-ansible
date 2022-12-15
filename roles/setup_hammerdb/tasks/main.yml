@@ -19,9 +19,10 @@
   ansible.builtin.include_tasks: update_pg_hba.yml
 
 - name: Install packages
-  ansible.builtin.yum:
+  ansible.builtin.package:
     name:
       - tmux
+      - curl
   become: true
   failed_when: false
 
@@ -30,11 +31,6 @@
     name: setup_hammerdbserver
     tasks_from: install_hammerdb
 
-#- name: Include Touchstone installation
-#  ansible.builtin.include_role:
-#    name: setup_touchstone
-#    tasks_from: main
-
 - name: Include the TPROC-C load script tasks
   ansible.builtin.include_tasks: install_tproc-c_load_scripts.yml
 
@@ -42,14 +38,13 @@
   ansible.builtin.set_fact:
     _sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
 
-- name: Set the variable _pg_shared_buffers_mb for HammerDB TPROC-C
+- name: Set the variable _pg_shared_buffers_mb for HammerDB TPROC-C to the lesser of half system memory or 24576
   ansible.builtin.set_fact:
-    _pg_shared_buffers_mb: 24576
+    _pg_shared_buffers_mb: "{{ [(_sys_memtotal_mb | int // 2) | int, 24576] | min }}"
 
-- name: Set the variable _pg_effective_cache_size_mb for HammerDB TPROC-C
+- name: Set the variable _pg_effective_cache_size_mb for HammerDB TPROC-C to a quarter of system memory
   ansible.builtin.set_fact:
-    _pg_effective_cache_size_mb: >-
-      {{ ((_sys_memtotal_mb | int - _pg_shared_buffers_mb | int) - 4096) }}
+    _pg_effective_cache_size_mb: "{{ (_sys_memtotal_mb | int // 4) }}"
 
 - name: Re-initialize the Postgres parameters for t-shirt size {{ tshirt_size }}
   ansible.builtin.set_fact:

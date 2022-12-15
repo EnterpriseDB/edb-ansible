@@ -257,6 +257,8 @@ cases:
     - EPAS
     os:
     - rocky8
+    - debian10
+    - ubuntu20
   setup_hammerdb:
     pg_version:
     - 10
@@ -269,6 +271,8 @@ cases:
     - EPAS
     os:
     - rocky8
+    - debian10
+    - ubuntu20
   setup_dbt2_driver:
     pg_version:
     - 10
