@@ -256,7 +256,7 @@ if __name__ == '__main__':
         execute_test = False if len(env.keyword) > 0 else True
 
         for k in env.keyword:
-            if re.search(k, name):
+            if re.search(re.escape(k), name):
                 execute_test = True
 
         if not execute_test:
