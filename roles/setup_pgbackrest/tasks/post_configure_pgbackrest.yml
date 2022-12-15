@@ -27,6 +27,7 @@
   ansible.builtin.set_fact:
     _update_config: "{{ (_update_config | default([]) | union([item]) | flatten) }}"
   when: backup_standby == 'y'
+  run_once: true
   loop:
     - "{{ standby_node_hostname }}"
     - "{{ _pgbackrest_host }}"

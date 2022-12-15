@@ -82,6 +82,7 @@ class LookupModule(LookupBase):
 
         # define empty list to place primary_node_ip
         primary_node_ip = []
+        counter = 1
 
         # find the primary pgbackrest node
         for host in variables['groups']['primary']:
@@ -94,9 +95,11 @@ class LookupModule(LookupBase):
                         inventory_hostname=hostvars['inventory_hostname'],
                         ansible_host=hostvars['ansible_host'],
                         hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
-                        private_ip=hostvars['private_ip']
+                        private_ip=hostvars['private_ip'],
+                        index_var=str(counter)
                     ))
                     primary_node_ip.append(hostvars['private_ip'])
+                    counter += 1
 
         # if no corresponding primary pgbackrest node, return empty list
         if len(primary_node_ip) == 0:
@@ -127,8 +130,10 @@ class LookupModule(LookupBase):
                                 inventory_hostname=hostvars['inventory_hostname'],
                                 ansible_host=hostvars['ansible_host'],
                                 hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
-                                private_ip=hostvars['private_ip']
+                                private_ip=hostvars['private_ip'],
+                                index_var=str(counter)
                             ))
+                            counter += 1
 
         return pgbr_nodes
 

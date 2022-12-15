@@ -5,12 +5,12 @@
 
 - name: Determine if standby
   ansible.builtin.set_fact:
-    _standby_list: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | default([]) | list }}"
+    standby_node_info: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | default([]) | list }}"
 
 - name: Determine if standby_present
   ansible.builtin.set_fact:
     standby_present: 'y'
-  when: _standby_list|length > 0
+  when: standby_node_info|length > 0
 
 - name: Get primary node informations
   ansible.builtin.set_fact:
@@ -69,7 +69,3 @@
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'Debian'
-
-- name: Reset local variables
-  ansible.builtin.set_fact:
-    _standby_list: null

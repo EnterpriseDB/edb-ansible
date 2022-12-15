@@ -21,6 +21,15 @@
   when:
     - use_hostname|bool
 
+- name: Set _pgbackrest_host when using hostname
+  ansible.builtin.set_fact:
+    _standby_index_var: "{{ item.index_var }}"
+  loop: "{{ standby_node_info }}"
+  when:
+    - standby_present is defined
+    - "'standby' in group_names"
+    - item.inventory_hostname ==  inventory_hostname
+
 - name: Ensure lock directory pgbackrest_lock_path exists
   ansible.builtin.file:
     path: "{{ pgbackrest_lock_path }}"

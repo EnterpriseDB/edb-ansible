@@ -20,7 +20,7 @@ process-max={{ process_max_backup }}
 
 
 [{{ pg_instance_name }}]
-pg2-path={{ pg_data }}
+pg{{ _standby_index_var }}-path={{ pg_data }}
 {% if pg_type == 'PG' %}
 recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} user={{ replication_user }}
 {% endif %}
