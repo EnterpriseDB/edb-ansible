@@ -129,7 +129,7 @@ playbook:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 14
+        pg_version: 14.6
         pg_type: "PG"
         disable_logging: false
 
@@ -178,8 +178,6 @@ accounts:
 
 - The `~/.pgpassfile` folder and contained files are secured by assigning the
   permissions to `user` executing the playbook.
-- A password of 20 characters will be automatically created under: `~/.edb`
-  folder.
 - The naming convention for the password file is: `<username>_pass`
 
 ## Playbook examples
@@ -197,12 +195,12 @@ set in two places:
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 13
+# To deploy community Postgres version 14.6
 ansible-playbook playbook.yml \
   -i inventory.yml \
   -u <ssh-user> \
   --private-key <ssh-private-key> \
-  --extra-vars="pg_version=13 pg_type=PG"
+  --extra-vars="pg_version=14.6 pg_type=PG"
 ```
 
 ## Database engines supported

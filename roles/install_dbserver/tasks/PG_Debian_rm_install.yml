@@ -37,7 +37,7 @@
   loop: "{{ supported_pg_major_version }}"
   loop_control:
     loop_var: version
-  when: ansible_facts.packages[ 'postgresql-' ~ version ] is defined
+  when: ansible_facts.packages[ 'postgresql-' ~ version|int ] is defined
   register: other_version_exist
 
 - name: Remove postgreSQL-common

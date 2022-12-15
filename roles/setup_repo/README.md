@@ -28,7 +28,11 @@ When executing the role via Ansible these are the required variables:
 
 - **pg_version**
 
+<<<<<<< Updated upstream
   Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
+=======
+  Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
+>>>>>>> Stashed changes
 
 - **pg_type**
 

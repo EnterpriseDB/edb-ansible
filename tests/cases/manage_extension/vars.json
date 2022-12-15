@@ -1,0 +1,21 @@
+{
+    "pg_extension_list": ["postgis", "pgaudit"],
+
+    "supported_extension": [
+        {
+          "name": "postgis",
+          "extension_package": "postgis32_14",
+          "required_package":
+            [
+              "SFCGAL",
+              "gdal34-libs",
+              "geos39",
+              "proj72"
+            ]
+        },
+        {
+          "name": "pgaudit",
+          "extension_package": "pgaudit16_14"
+        }
+      ]
+}

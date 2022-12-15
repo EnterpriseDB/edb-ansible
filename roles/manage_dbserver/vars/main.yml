@@ -8,13 +8,13 @@ pg_unix_socket_directories:
   - "/var/run/postgresql"
 
 shell_profile_path: "{{ pg_user_home }}/.pgsql_profile"
-shell_profile_owner: "postgres"
-shell_profile_group: "postgres"
+shell_profile_owner: "{{ pg_owner }}"
+shell_profile_group: "{{ pg_group }}"
 shell_profile_mode: "0600"
 
 psqlrc_path: "{{ pg_user_home }}/.psqlrc"
-psqlrc_owner: "postgres"
-psqlrc_group: "postgres"
+psqlrc_owner: "{{ pg_owner }}"
+psqlrc_group: "{{ pg_group }}"
 psqlrc_mode: "0600"
 psqlrc_content: |
   -- psql configuration

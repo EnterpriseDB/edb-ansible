@@ -12,7 +12,7 @@ The requirements for this ansible galaxy role are:
    Postgres Install. Only on primary nodes.
 3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
 4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
-   PostgreSQL/EPAS binaries.
+   PostgreSQL binaries.
 5. `hypersql_devops.postgres` -> `init_dbserver` - for the initialization of
    primary server
 
@@ -26,7 +26,11 @@ Operating Systems supported are: CentOS7 and RHEL7
 
 - **_pg_version_**
 
+<<<<<<< Updated upstream
   Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
+=======
+  Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
+>>>>>>> Stashed changes
 
 - **_pg_type_**
 

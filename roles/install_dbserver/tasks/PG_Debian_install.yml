@@ -1,8 +1,12 @@
 ---
-- name: Install Postgres
+- name: Install certificated
   package:
     name:
+<<<<<<< Updated upstream
       - ca-ca-certificates
+=======
+      - ca-certificates
+>>>>>>> Stashed changes
       - python3-pycurl
       - python3-psycopg2
       - postgresql-client-{{ pg_major_version }}
@@ -37,7 +41,11 @@
 - name: Install sslutils
   ansible.builtin.package:
     name:
+<<<<<<< Updated upstream
       - sslutils_{{ pg_major_version }}
+=======
+      - postgresql-{{ pg_major_version }}-sslutils
+>>>>>>> Stashed changes
     state: present
   become: true
   when: pg_ssl

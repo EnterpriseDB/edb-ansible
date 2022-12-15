@@ -4,7 +4,7 @@ This Ansible Role installs and configures High-Availability of a streaming
 replication Postgres cluster, based on `repmgr`.
 
 **Note:**
-Only PostgreSQL is supported by this role, EPAS will be supported in the future.
+Only PostgreSQL is supported by this role.
 For more details refer to the: _Database engines supported_ section.
 
 **The ansible playbook must be executed under an account that has full
@@ -16,11 +16,11 @@ The requirements for this Ansible Role are:
 
 1. Ansible >= 2.9
 2. `community.general`
-3. `hypersql_devops.postgres` -> `setup_repo` - for installing the EPAS/PG
+3. `hypersql_devops.postgres` -> `setup_repo` - for installing the PG
    repository
-4. `hypersql_devops.postgres` -> `install_dbserver` - for installing the EPAS/PG
+4. `hypersql_devops.postgres` -> `install_dbserver` - for installing the PG
    binaries
-5. `hypersql_devops.postgres` -> `init_dbserver` - for initializing the EPAS/PG
+5. `hypersql_devops.postgres` -> `init_dbserver` - for initializing the PG
    data directory and configuring a primary node.
 6. `hypersql_devops.postgres` -> `setup_replication` - for creating the standby.
 
@@ -30,11 +30,10 @@ When executing the role via ansible there are three required variables:
 
 - **_pg_version_**
 
-Postgres Versions supported are: 10, 11, 12, 13 and 14
-
+  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
 - **_pg_type_**
 
-Database Engine supported is PG
+Database Engine supported is `PG`
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: _How to include the `setup_repmgr` role in your Playbook_
@@ -123,7 +122,7 @@ Below is an example of how to include the `setup_repmgr` role:
     - name: Initialize the user defined variables
       set_fact:
         pg_type: "PG"
-        pg_version: 14
+        pg_version: 14.6
 
         repmgr_failover: automatic
         repmgr_reconnect_attemps: 2
@@ -137,15 +136,11 @@ Below is an example of how to include the `setup_repmgr` role:
 
 ### Community PostgreSQL
 
-| Distribution                      |         10         |         11         |         12         |         13         |         14         |
-| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Distribution                      |               14 |
+| --------------------------------- |:----------------:|
+| CentOS 7                          |:white_check_mark:|
+| CentOS 8                          |:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 - :x: - Not supported
@@ -153,12 +148,11 @@ Below is an example of how to include the `setup_repmgr` role:
 ## Playbook execution examples
 
 ```bash
-# To deploy community Postgres version 14 on CentOS8 hosts with the user centos
+# To deploy community Postgres version 14.6 on CentOS8 hosts with the user centos
 $ ansible-playbook playbook.yml \
   -u centos \
   -i inventory.yml \
-  --private-key <key.pem> \
-  --extra-vars="pg_version=14 pg_type=PG"
+  --extra-vars="pg_version=14.6 pg_type=PG"
 ```
 
 ## License
@@ -166,7 +160,9 @@ $ ansible-playbook playbook.yml \
 BSD
 
 ## Author information
-
 Author:
+  * [Sang Myeung Lee](https://github.com/sungmu1)
+
+Original Author:
 
 - Julien Tachoires (@jt-edb)

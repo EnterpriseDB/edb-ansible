@@ -1,0 +1,10 @@
+---
+pg_major_version: "{{ pg_version | int }}"
+
+postgis_version: 32
+pgaudit_version: 16
+
+#changed by the user in case
+pg_extension_list:
+  - postgis
+  - pgaudit

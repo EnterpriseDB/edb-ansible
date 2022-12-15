@@ -4,9 +4,6 @@ from conftest import get_pg_type, get_pg_unix_socket_dir, get_primary, get_stand
 def test_setup_replication_user():
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
 
@@ -20,9 +17,6 @@ def test_setup_replication_user():
 
 def test_setup_replication_slots():
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -38,9 +32,6 @@ def test_setup_replication_slots():
 def test_setup_replication_stat_replication():
     pg_user = "postgres"
 
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
-
     host = get_primary()
     rep_count = len(get_standbys())
     socket_dir = get_pg_unix_socket_dir()
@@ -55,9 +46,6 @@ def test_setup_replication_stat_replication():
 
 def test_setup_replication_stat_wal_receiver():
     pg_user = "postgres"
-
-    if get_pg_type() == "EPAS":
-        pg_user = "enterprisedb"
 
     hosts = get_standbys()
     socket_dir = get_pg_unix_socket_dir()

@@ -412,8 +412,8 @@ service_reload_command = '/bin/sudo /usr/bin/systemctl reload {{ pg_service }}'
 
 # Used by "repmgr service (start|stop)" to control repmgrd
 #
-repmgrd_service_start_command = '/bin/sudo /usr/bin/systemctl start repmgr-{{ pg_version }}'
-repmgrd_service_stop_command = '/bin/sudo /usr/bin/systemctl stop repmgr-{{ pg_version }}'
+repmgrd_service_start_command = '/bin/sudo /usr/bin/systemctl start repmgr-{{ pg_major_version }}'
+repmgrd_service_stop_command = '/bin/sudo /usr/bin/systemctl stop repmgr-{{ pg_major_version }}'
 
 #------------------------------------------------------------------------------
 # Status check thresholds

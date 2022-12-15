@@ -3,5 +3,5 @@ Defaults:{{ pg_owner }} !requiretty
 	/usr/bin/systemctl start {{ pg_service }}, \
 	/usr/bin/systemctl restart {{ pg_service }}, \
 	/usr/bin/systemctl reload {{ pg_service }}, \
-	/usr/bin/systemctl start repmgr-{{ pg_version }}, \
-	/usr/bin/systemctl stop repmgr-{{ pg_version }}
+	/usr/bin/systemctl start repmgr-{{ pg_major_version }}, \
+	/usr/bin/systemctl stop repmgr-{{ pg_major_version }}

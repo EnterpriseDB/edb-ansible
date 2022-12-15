@@ -15,14 +15,21 @@ Following are the dependencies and requirement of this role.
 When executing the role via ansible these are the required variables:
 
   * ***pg_version***
+<<<<<<< Updated upstream
 
   Postgres Versions supported are: 14
+=======
+>>>>>>> Stashed changes
 
-Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
 
+<<<<<<< Updated upstream
   Database Engine supported are: PG
 
 Database Engine supported are: PG and EPAS
+=======
+  Database Engine supported are: `PG`
+>>>>>>> Stashed changes
 
 The rest of the variables can be configured and are available in the:
 
@@ -146,7 +153,7 @@ Below is an example of how to include the `manage_pgpool2` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        pg_version: 14
+        pg_version: 14.6
         pg_type: "PG"
 
         pgpool2_configuration:

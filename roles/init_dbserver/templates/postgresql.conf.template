@@ -9,12 +9,16 @@ hot_standby = on
 max_replication_slots = 10
 wal_compression = on
 wal_log_hints = on
-{{ 'wal_keep_segments = 10' if pg_version is version('13','<') else 'wal_keep_size = 160' }}
+{{ 'wal_keep_segments = 10' if pg_version|int is version('13','<') else 'wal_keep_size = 160' }}
 checkpoint_timeout = 15min
 password_encryption = 'scram-sha-256'
 checkpoint_completion_target = 0.9
 archive_mode = on
+{% if pg_local_wal_archive_dir|length > 0 %}
+archive_command = 'test ! -f {{ pg_local_wal_archive_dir }}/%f && cp %p {{ pg_local_wal_archive_dir }}/%f'
+{% else %}
 archive_command = '/bin/true'
+{% endif %}
 random_page_cost = 1.1
 cpu_tuple_cost = 0.03
 logging_collector = on

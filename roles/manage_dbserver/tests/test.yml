@@ -8,7 +8,7 @@
     - name: User defined variables
       set_fact:
         pg_type: "PG"
-        pg_version: 14
+        pg_version: 14.6
         disable_logging: false
   roles:
     - manage_dbserver

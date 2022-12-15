@@ -1,0 +1,19 @@
+---
+- hosts: all
+  name: Postgres deployment playbook
+  become: yes
+  gather_facts: yes
+
+  collections:
+    - hypersql_devops.postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        disable_logging: false
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+    - role: manage_extension
+      when: "'manage_extension' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

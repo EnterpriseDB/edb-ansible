@@ -24,7 +24,7 @@ The only dependencies required for this ansible galaxy role are:
    users during a Postgres Install. Only on primary nodes.
 3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
 4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
-   PostgreSQL/EPAS binaries.
+   PostgreSQL binaries.
 
 ## Role variables
 
@@ -32,7 +32,11 @@ When executing the role via ansible there are three required variables:
 
 - **_pg_version_**
 
+<<<<<<< Updated upstream
   Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
+=======
+  Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
+>>>>>>> Stashed changes
 
 - **_pg_type_**
 
@@ -40,6 +44,49 @@ Database Engine supported are: `PG`
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: _How to include the `init_dbserver` role in your Playbook_
+
+This role allows users to pass following variables which helps managing day to
+day tasks:
+
+### `pg_data`
+
+Using this parameters user can set the database cluster directory path.
+
+Example:
+
+```yaml
+pg_data: "/var/lib/pgsql/14/data"
+```
+
+### `pg_wal`
+
+Using this parameters user can set the database wal directory path.
+
+Example:
+
+```yaml
+pg_wal: "/var/lib/pgsql/14/pg_wal"
+```
+
+### `pg_log`
+
+Using this parameters user can set the database log directory path.
+
+Example:
+
+```yaml
+pg_log: "/var/run/pg_log"
+```
+
+### `pg_local_wal_archive_dir`
+
+Using this parameters user can set the database log directory path.
+
+Example:
+
+```yaml
+pg_local_wal_archive_dir: "/var/lib/pgsql/14/archive"
+```
 
 The rest of the variables can be configured and are available in the:
 
@@ -110,7 +157,11 @@ All the variables are available at:
 - [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
 - [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 - [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+<<<<<<< Updated upstream
 - [roles/init_dbserver/vars/edb-ssl.yml](./vars/ssl.yml)
+=======
+- [roles/init_dbserver/vars/ssl.yml](./vars/ssl.yml)
+>>>>>>> Stashed changes
 
 ## Database engines supported
 

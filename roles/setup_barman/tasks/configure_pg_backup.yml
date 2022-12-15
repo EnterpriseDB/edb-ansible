@@ -64,7 +64,7 @@
         value: >-
           rsync -a -e
           "ssh -p {{ ssh_port }}"
-          %p {{ barman_user }}@{{ _barman_host }}:{{ barman_home }}/{{ inventory_hostname }}-{{ pg_instance_name }}/incoming/%f'
+          %p {{ barman_user }}@{{ _barman_host }}:{{ barman_home }}/{{ inventory_hostname }}-{{ pg_instance_name }}/incoming/%f
   no_log: "{{ disable_logging }}"
   when: barman_backup_method == 'rsync'
 

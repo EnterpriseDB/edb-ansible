@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - edb.postgres.install
+    - hypersql_devops.postgres.install

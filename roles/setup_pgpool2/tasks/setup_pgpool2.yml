@@ -18,7 +18,7 @@
   fail:
     msg: "Database Engine Version = {{ pg_version }} not supported.
       Supported versions are {{ supported_pg_version }}"
-  when: pg_version|int not in supported_pg_version
+  when: pg_version|float not in supported_pg_version
 
 - name: Check supported versions for pgpoolII
   fail:
