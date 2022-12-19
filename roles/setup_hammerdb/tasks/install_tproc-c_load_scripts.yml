@@ -26,8 +26,8 @@
     src: loader.tcl.template
     mode: 0644
   become: false
-  vars:
-    primary_private_ip: "{{ primary_private_ip }}"
+#  vars:
+#    primary_private_ip: "{{ primary_private_ip }}"
 
 - name: Create TPROC-C load script
   ansible.builtin.template:
