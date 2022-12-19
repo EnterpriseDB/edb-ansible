@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     pgbackrest_standby_configuration: >-
       {{ pgbackrest_standby_configuration | default([]) + [
-        { 
+        {
           'key': 'pg' + standby_node.index_var + '-host' | string,
           'value': standby_node.inventory_hostname
         },
@@ -24,7 +24,7 @@
   ansible.builtin.set_fact:
     pgbackrest_standby_configuration: >-
       {{ pgbackrest_standby_configuration | default([]) + [
-        { 
+        {
           'key': 'pg' + standby_node.index_var + '-host' | string,
           'value': standby_node.private_ip
         },
@@ -45,7 +45,7 @@
   ansible.builtin.set_fact:
     pgbackrest_standby_configuration: >-
       {{ pgbackrest_standby_configuration | default([]) + [
-        { 
+        {
           'key': 'pg' + standby_node.index_var + '-host' | string,
           'value': standby_node.inventory_hostname
         },
@@ -69,7 +69,6 @@
           'key': 'pg' + standby_node.index_var + '-socket-path' | string,
           'value': pg_unix_socket_epas
         }
-      
       ] }}
   loop: "{{ standby_node_info }}"
   loop_control:
@@ -83,7 +82,7 @@
   ansible.builtin.set_fact:
     pgbackrest_standby_configuration: >-
       {{ pgbackrest_standby_configuration | default([]) + [
-        { 
+        {
           'key': 'pg' + standby_node.index_var + '-host' | string,
           'value': standby_node.private_ip
         },
