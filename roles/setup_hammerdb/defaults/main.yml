@@ -1,6 +1,7 @@
 ---
 
 tshirt_size: "medium"
+use_patroni: false
 
 ssh_port: 22
 

@@ -1,0 +1,149 @@
+---
+- name: Set the os variable
+  ansible.builtin.set_fact:
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  ansible.builtin.fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  ansible.builtin.fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+- name: Reference pg_type variables
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
+- name: Reference ssl variables
+  ansible.builtin.include_vars: edb-ssl.yml
+  when: pg_ssl
+
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Open Postgres TCP port {{ pg_port }}
+  ansible.posix.firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: true
+
+- name: Open Postgres TCP port {{ patroni_rest_api_port }}
+  ansible.posix.firewalld:
+    port: "{{ patroni_rest_api_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: true
+
+- name: Gather the patroni cluster informations
+  ansible.builtin.set_fact:
+    etcd_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.etcd_cluster_nodes', wantlist=True) }}"
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+  run_once: true
+
+- name: Prepare synchronous_standby_names
+  ansible.builtin.set_fact:
+    _synchronous_standbys: "{{ _synchronous_standbys | default([]) + [node.inventory_hostname] }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:
+    - node.node_type == 'standby'
+    - node.replication_type == 'synchronous'
+    - synchronous_standby_names|length < 1
+  no_log: "{{ disable_logging }}"
+  run_once: true
+
+- name: Create a symbolic link for edb-postgres as postgres for Patroni
+  ansible.builtin.file:
+    src: "{{ pg_bin_path }}/edb-postgres"
+    dest: "{{ pg_bin_path }}/postgres"
+    owner: root
+    group: root
+    state: link
+  when: pg_type == 'EPAS'
+  become: true
+
+- name: Update /etc/hosts based on use_hostname
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
+  become: true
+
+- name: Create require directories
+  ansible.builtin.import_tasks: create_directories.yml
+  become: true
+
+- name: Install patroni
+  ansible.builtin.import_tasks: patroni_install.yml
+  become: true
+
+- name: Generate patroni declared users passwords
+  ansible.builtin.import_tasks: patroni_generate_basic_passwords.yml
+  become: true
+
+- name: Check and configure the node as primary or pemserver
+  become: true
+  when: "'primary' in group_names"
+  block:
+    - name: Configure patroni
+      ansible.builtin.import_tasks: patroni_configure.yml
+    - name: Set superuser password
+      ansible.builtin.import_tasks: patroni_set_user_passwords_privs.yml
+    - name: Update hba of primary
+      ansible.builtin.import_tasks: prepare_update_hba.yml
+
+- name: Configure ssl based on pg_ssl parameter
+  when:
+    - pg_ssl
+    - "'primary' in group_names"
+  become: true
+  block:
+    - name: Send pg_ssl_file if defined
+      ansible.builtin.import_tasks: pg_ssl_send_files.yml
+    - name: Check if we have SSL configured
+      ansible.builtin.import_tasks: pg_ssl_check.yml
+    - name: Configure SSL if not exists
+      ansible.builtin.import_tasks: pg_ssl_config.yml
+
+- name: Check and configure the node as standby
+  become: true
+  when: "'standby' in group_names"
+  block:
+    - name: Configure patroni
+      ansible.builtin.import_tasks: patroni_configure.yml
+    - name: Update hba of primary
+      ansible.builtin.import_tasks: prepare_update_hba.yml
+
+- name: Configure ssl based on pg_ssl parameter
+  when:
+    - pg_ssl
+    - "'standby' in group_names"
+  become: true
+  block:
+    - name: Send pg_ssl_file if defined
+      ansible.builtin.import_tasks: pg_ssl_send_files.yml
+
+- name: Update primary for synchronous replication
+  ansible.builtin.import_tasks: primary_synchronous_param.yml
+  when: >-
+      _synchronous_standbys is defined and (
+      _synchronous_standbys|length > 0
+      or synchronous_standby_names|length > 0 )
+      and 'primary' in group_names
+  run_once: true
+  no_log: "{{ disable_logging }}"

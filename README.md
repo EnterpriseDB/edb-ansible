@@ -47,6 +47,8 @@ currently supports the following ansible roles:
 | [setup_pgbackrest](roles/setup_pgbackrest/README.md)                                     | Set up EPAS/PostgreSQL backups with pgBackRest.                                                                                                                                                        |
 | [setup_pgbackrestserver](roles/setup_pgbackrestserver/README.md)                         | Set up pgBackRest server for Postgres backups and recovery.                                                                                                                                            |
 | [setup_pgbouncer](roles/setup_pgbouncer/README.md)                                       | Set up PgBouncer connection pooler.                                                                                                                                                                    |
+| [setup_etcd](roles/setup_etcd/README.md)                                                 | Set up etcd for patroni cluster.                                                                                                                                                                       |
+| [setup_patroni](roles/setup_patroni/README.md)                                           | Set up for patroni managed cluster.                                                                                                                                                                    |
 | [setup_pgpool2](roles/setup_pgpool2/README.md)                                           | Set up Pgpool-II connection pooler/load balancer.                                                                                                                                                      |
 | [setup_replication](roles/setup_replication/README.md)                                   | Set up the data replication (synchronous/asynchronous).                                                                                                                                                |
 | [setup_repmgr](roles/setup_repmgr/README.md)                                             | Set up Repmgr for PostgreSQL/EPAS HA cluster.                                                                                                                                                          |
@@ -265,6 +267,40 @@ playbook:
 
 You can customize the above example to install PostgreSQL, EPAS, EFM or PEM or
 limit what roles you would like to execute.
+
+If you are planning to try Patroni based cluster below is an example of hot to include roles for patroni cluster
+playbook:
+```yaml
+---
+- hosts: all
+  name: Postgres deployment playbook
+  become: yes
+  gather_facts: yes
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 14
+        pg_type: "EPAS"
+        repo_username: "<edb-package-repository-username>"
+        repo_password: "<edb-package-repository-password>"
+        repo_token: "<edb-package-repository-token>"
+        use_patroni: true
+        disable_logging: false
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_etcd
+      when: "'setup_etcd' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_patroni
+      when: "'setup_patroni' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+```
 
 ### Access to EDB's package repository
 

@@ -1,0 +1,13 @@
+# watchdog for patroni services
+
+[Unit]
+Description=Makes kernel watchdog device available for Patroni
+Before=patroni.service
+
+[Service]
+Type=oneshot
+
+ExecStart=/sbin/modprobe softdog
+
+[Install]
+WantedBy=multi-user.target

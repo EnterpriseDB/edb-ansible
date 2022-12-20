@@ -1,0 +1,98 @@
+---
+- name: Set the os variable
+  ansible.builtin.set_fact:
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  ansible.builtin.fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Reference pg_type variables
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Open etcd peer port {{ etcd_peer_port }}
+  ansible.posix.firewalld:
+    port: "{{ etcd_peer_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: true
+
+- name: Open etcd client port {{ etcd_client_port }}
+  ansible.posix.firewalld:
+    port: "{{ etcd_client_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: true
+
+- name: Gather the ETCD cluster informations
+  ansible.builtin.set_fact:
+    etcd_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.etcd_cluster_nodes', wantlist=True) }}"
+  run_once: true
+
+- name: Update /etc/hosts based on use_hostname
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
+  become: true
+
+- name: Prepare etcd_inital_cluster based on use_hostname
+  ansible.builtin.set_fact:
+    etcd_initial_cluster: >-
+      {{ etcd_initial_cluster | default([]) + [node.inventory_hostname + '=http://' + node.inventory_hostname + ':' + etcd_peer_port | string] }}
+  loop: "{{ etcd_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when: use_hostname|bool
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Prepare etcd_inital_cluster based on private_ip
+  ansible.builtin.set_fact:
+    etcd_initial_cluster: >-
+      {{ etcd_initial_cluster | default([]) + [node.inventory_hostname + '=http://' + node.private_ip + ':' + etcd_peer_port | string] }}
+  when:
+    - not use_hostname|bool
+  loop: "{{ etcd_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Update /etc/hosts based on use_hostname
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
+  become: true
+
+- name: Create etcd required directories
+  ansible.builtin.include_tasks: create_directories.yml
+
+- name: Install etcd package/binaries
+  ansible.builtin.include_tasks: etcd_install.yml
+
+- name: Update etcd config and service file
+  ansible.builtin.include_tasks: etcd_properties.yml
+
+- name: Enable and start etcd service
+  ansible.builtin.systemd:
+    name: "{{ etcd_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  become: true

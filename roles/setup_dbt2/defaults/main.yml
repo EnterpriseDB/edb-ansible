@@ -4,6 +4,7 @@ dbttools_version: "0.3.1"
 driver_pub_key: ""
 pg_dbt2_dbname: dbt2
 pg_version: 14
+use_patroni: false
 
 # These variables are set in respective vars files.
 pg_data: ""

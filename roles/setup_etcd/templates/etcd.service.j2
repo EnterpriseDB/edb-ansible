@@ -1,0 +1,21 @@
+[Unit]
+Description=Etcd distributed store
+After=network-online.target local-fs.target remote-fs.target time-sync.target syslog.target network.target
+Wants=network-online.target local-fs.target remote-fs.target time-sync.target
+
+[Service]
+Type=notify
+User={{ pg_owner }}
+Group={{ pg_group }}
+
+StandardOutput=syslog
+
+WorkingDirectory={{ etcd_data_dir }}
+EnvironmentFile={{ etcd_config }}
+ExecStart={{ etcd_bin_dir }}/etcd
+Restart=always
+RestartSec=10s
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target

@@ -37,6 +37,7 @@ GROUP_ROLES = {
         'setup_repmgr',
         'manage_dbpatches',
         'manage_efm',
+        'setup_patroni',
     ],
     'standby': [
         'setup_repo',
@@ -48,6 +49,7 @@ GROUP_ROLES = {
         'setup_repmgr',
         'manage_dbpatches',
         'manage_efm',
+        'setup_patroni',
     ],
     'pemserver': [
         'setup_repo',
@@ -55,6 +57,7 @@ GROUP_ROLES = {
         'init_dbserver',
         'manage_dbserver',
         'setup_pemserver',
+        'setup_patroni',
         'autotuning'
     ],
     'pgbouncer': [
@@ -192,11 +195,11 @@ class LookupModule(LookupBase):
                         | set(['setup_bdr'])
                     )
             # etcd case
-            if (group in ['primary', 'proxy', 'barmanserver']
-                    and hostvars.get('bdr')):
+            if (group in ['primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
+                'barmanserver', 'witness', 'proxy', 'pgbackrestserver',]):
                 # etcd can be deployed on BDR nodes, proxy nodes and barman
                 # nodes. The etcd hostvar must be set to true.
-                if hostvars['bdr'].get('etcd', False):
+                if 'etcd' in hostvars and hostvars.get('etcd'):
                     supported_roles = list(
                         set(supported_roles)
                         | set(['setup_etcd'])

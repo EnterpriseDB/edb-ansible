@@ -1,0 +1,5 @@
+---
+
+pg_owner: "enterprisedb"
+pg_group: "enterprisedb"
+etcd_systemd_global_unit_file: "/usr/lib/systemd/system/{{ etcd_service }}.service"

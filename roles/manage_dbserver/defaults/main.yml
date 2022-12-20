@@ -8,6 +8,13 @@ efm_cluster_name: "{{ pg_instance_name }}"
 efm_version: 4.5
 efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
 
+# Patroni information
+use_patroni: false
+patroni_config_dir: "/etc/patroni"
+patroni_config_file: "{{ patroni_config_dir }}/{{ inventory_hostname }}.yml"
+patroni_bin_dir: "{{ '/usr/local/bin' if ansible_distribution_major_version == '8' else '/usr/bin' }}"
+
+
 pass_dir: "~/.edb"
 passfile: ""
 pg_postgres_conf_params: []

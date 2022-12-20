@@ -1,0 +1,43 @@
+---
+- name: Download official etcd release
+  ansible.builtin.get_url:
+    url: "{{ etcd_download_url }}/{{ etcd_package }}.tar.gz"
+    dest: "{{ etcd_download_dir }}/{{ etcd_package }}.tar.gz"
+    checksum: "{{ etcd_checksum_url }}"
+    mode: "{{ etcd_download_mode }}"
+  when: not etcd_rpm
+  become: true
+
+- name: Unzip downloaded file
+  ansible.builtin.unarchive:
+    src: "{{ etcd_download_dir }}/{{ etcd_package }}.tar.gz"
+    dest: "{{ etcd_download_dir }}/"
+    remote_src: true
+    owner: "root"
+    group: "root"
+    creates: "{{ etcd_download_dir }}/{{ etcd_package }}"
+  when: not etcd_rpm
+  become: true
+
+- name: Copy etcd binaries to destination directory
+  ansible.builtin.copy:
+    src: "{{ etcd_download_dir }}/{{ etcd_package }}/{{ item }}"
+    dest: "{{ etcd_bin_dir }}/{{ item }}"
+    mode: 0755
+    owner: root
+    group: root
+    remote_src: true
+  with_items:
+    - etcd
+    - etcdctl
+  when: not etcd_rpm
+  become: true
+
+- name: Install etcd using RPM
+  ansible.builtin.package:
+    name: "{{ etcd_package }}"
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - etcd_rpm
+  become: true

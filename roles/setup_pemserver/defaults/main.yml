@@ -6,6 +6,7 @@ use_hostname: true
 update_etc_file: true
 pem_agent: false
 pass_dir: "~/.edb"
+use_patroni: false
 
 pg_pem_admin_user: "pemadmin"
 pg_pem_admin_password: ""

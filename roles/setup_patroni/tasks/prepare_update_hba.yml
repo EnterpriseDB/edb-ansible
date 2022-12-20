@@ -1,0 +1,66 @@
+---
+- name: Prepare hba non ssl list
+  ansible.builtin.set_fact:
+    pg_allow_ip_addresses: >-
+      {{ pg_allow_ip_addresses | default([]) + [
+        {
+          "contype": "host",
+          "users": pg_replication_user,
+          "source": node.private_ip + "/32",
+          "databases": "replication"
+          },
+          {
+           "contype": "host",
+           "users": pg_replication_user,
+           "source": node.private_ip + "/32",
+           "databases": pg_database
+           },
+          {
+           "contype": "host",
+           "users": pg_rewind_user,
+           "source": node.private_ip + "/32",
+           "databases": pg_database
+           }
+        ] }}
+  when: not pg_ssl
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Prepare hba ssl list
+  ansible.builtin.set_fact:
+    pg_allow_ip_addresses: >-
+      {{ pg_allow_ip_addresses | default([]) + [
+        {
+          "users": pg_replication_user,
+          "source": node.private_ip + "/32",
+          "databases": "replication"
+          },
+          {
+           "users": pg_replication_user,
+           "source": node.private_ip + "/32",
+           "databases": pg_database
+           },
+          {
+           "users": pg_rewind_user,
+           "source": node.private_ip + "/32",
+           "databases": pg_database
+           }
+        ] }}
+  when: pg_ssl
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Update primary hba config
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
+  no_log: "{{ disable_logging }}"
+  run_once: true

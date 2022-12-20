@@ -1,0 +1,136 @@
+---
+os: ""
+pg_type: PG
+pg_version: 14
+pg_ssl: true
+pg_instance_name: main
+pg_remote_ssl_src: false
+
+disable_logging: true
+use_hostname: true
+update_etc_file: true
+enable_core_dump: false
+use_replication_slots: true
+
+pass_dir: "~/.edb"
+
+pg_wal: ""
+pg_local_wal_archive_dir: ""
+pg_data: "/var/lib/pgsql/{{ pg_version }}/data"
+pg_default_data: "/var/lib/pgsql/{{ pg_version }}/data"
+edb_audit_directory: ""
+pg_encoding: ""
+
+# log directory and filename
+pg_log: "/var/log/postgres"
+pg_log_filename: "postgresql-%a.log"
+
+# postgres service
+pg_service: "postgresql-{{ pg_version }}-patroni"
+
+# required & optional directories
+pg_user_home: "/var/lib/pgsql"
+pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
+pgpass_file: "{{ pg_user_home }}/.pgpass"
+patroni_initdb_options:
+  - "data-checksum"
+  - "encoding: UTF-8"
+  - "locale: en_US.UTF-8"
+  - "auth: ident"
+  - "auth-host: scram-sha-256"
+  - "auth-local: peer"
+pg_basebackup: "{{ pg_bin_path }}/pg_basebackup -Fp -R -l standby --checkpoint=fast --wal-method=stream"
+pg_basebackup_options: ""
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+# initial configuration for starting postgres
+# example:
+# pg_init_conf_params:
+# - name: "edb_filter_log.redact_password_commands"
+#   value: "true"
+pg_init_conf_params: []
+# postgres port
+pg_port: 5432
+
+# postgres database
+pg_database: "postgres"
+
+# postgres user
+pg_owner: "postgres"
+pg_group: "postgres"
+
+# postgres superuser
+pg_superuser: "postgres"
+pg_superuser_password: ""
+pg_random_password: true
+pg_replication_user: "repuser"
+pg_replication_user_password: ""
+pg_rewind_user: "rewind"
+pg_rewind_user_password: ""
+synchronous_standby_names: ""
+standby_quorum_type: "any"
+
+pg_allow_ip_addresses: []
+
+# Local path to SSL server key and certificate to be sent to the server
+# if empty, they are generated
+pg_ssl_key_file: ""
+pg_ssl_cert_file: ""
+pg_ssl_ca_file: ""
+pg_ssl_crl_file: ""
+
+# Input variables
+input_user: ""
+input_password: ""
+
+upstream_public_ip: ""
+upstream_hostname: ""
+etc_hosts_lists: []
+
+
+# etcd related parameters
+etcd_version: "3.5.6"
+etcd_service: "etcd-{{ etcd_version }}"
+etcd_client_port: 2379
+etcd_bin_dir: "/usr/bin"
+
+# Patroni and etcd variables
+patroni_exec_start_pre: ""
+patroni_rest_api_port: 8008
+patroni_rest_api_listen_addrr: "0.0.0.0"
+patroni_rest_api_connect_addrr: "{{ hostvars[inventory_hostname].private_ip }}:{{ patroni_rest_api_port }}"
+patroni_log_dir: "/var/log/patroni"
+use_patroni: true
+
+patroni_pip_install: true
+patroni_package_install: false
+patroni_config_dir: "/etc/patroni"
+patroni_config_file: "{{ patroni_config_dir }}/{{ inventory_hostname }}.yml"
+patroni_bin_dir: "{{ '/usr/local/bin' if ansible_distribution_major_version == '8' else '/usr/bin' }}"
+patroni_pip_packages:
+  - patroni
+  - python-etcd
+  - patroni[dependencies]
+  - psycopg2
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Rocky8
+  - OracleLinux7
+
+supported_pg_type:
+  - EPAS
+  - PG
+
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14

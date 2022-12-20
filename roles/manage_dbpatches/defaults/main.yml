@@ -6,6 +6,7 @@ run_in_sequence: false
 user_defined_services: []
 pg_package_list: []
 user_package_list: []
+use_patroni: false
 
 pg_instance_name: main
 disable_logging: true
