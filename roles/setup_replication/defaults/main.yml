@@ -5,6 +5,7 @@
 pg_version: 14
 disable_logging: true
 pg_remote_ssl_src: false
+use_patroni: false
 
 force_replication: false
 use_replication_slots: true

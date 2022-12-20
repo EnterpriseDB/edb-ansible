@@ -1,0 +1,28 @@
+---
+- hosts: all
+  name: Patroni postgres cluster deployment playbook
+  become: true
+  any_errors_fatal: true
+  gather_facts: true
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      ansible.builtin.set_fact:
+        pg_version: 14
+        pg_type: "EPAS"
+        repo_token: "XXXXXX"
+        disable_logging: false
+        use_hostname: true
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_etcd
+      when: "'setup_etcd' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_patroni
+      when: "'setup_patroni' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

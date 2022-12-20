@@ -1,0 +1,5 @@
+{
+  "use_hostname": false,
+  "pg_data": "/opt/pg_data/pgdata",
+  "pg_wal": "/opt/pg_wal/pgwal"
+}

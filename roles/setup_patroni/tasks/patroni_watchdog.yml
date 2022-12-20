@@ -1,0 +1,22 @@
+---
+
+- name: Create udev rule for watchdog
+  ansible.builtin.copy:
+    content: 'KERNEL=="{{ patroni_watchdog_device | basename }}", OWNER="{{ pg_user }}", GROUP="{{ pg_group }}", MODE="0600"'
+    dest: /etc/udev/rules.d/60-watchdog.rules
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install watchdog
+  ansible.builtin.package:
+    name: watchdog
+    update_cache: true
+
+- name: Make kernel watchdog device available for patroni
+  ansible.builtin.template:
+    src: patroni.watchdog.service.j2
+    dest: /etc/systemd/system/patroni-watchdog.service
+    owner: root
+    group: root
+    mode: 0644

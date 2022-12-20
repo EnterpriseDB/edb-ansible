@@ -1,0 +1,36 @@
+---
+- name: Check if we have ca key exists or not
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/ca_key.key"
+  become: true
+  register: ssl_ca_key
+
+- name: Check if we have ca certificate exists or not
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/ca_certificate.crt"
+  become: true
+  register: ssl_ca_certificate
+
+- name: Check if we have root.crt exists or not
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/root.crt"
+  become: true
+  register: ssl_root_crt
+
+- name: Check if we have root crl exists or not
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/root.crl"
+  become: true
+  register: ssl_root_crl
+
+- name: Check if we have server.key exists or not
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/server.key"
+  become: true
+  register: ssl_server_key
+
+- name: Check if we have server.crt exists or not
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/server.crt"
+  become: true
+  register: ssl_server_crt

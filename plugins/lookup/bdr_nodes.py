@@ -65,7 +65,7 @@ class LookupModule(LookupBase):
                 ),
                 private_ip=hostvars['private_ip'],
                 inventory_hostname=hostvars['inventory_hostname'],
-                ha_location=hostvars['bdr'].get('ha_location', None),
+                ha_location=hostvars.get('ha_location', None),
                 roles=hostvars['bdr'].get('roles', ['primary']),
                 upstream_node_private_ip=hostvars['bdr'].get(
                     'upstream_node_private_ip', None

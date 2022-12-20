@@ -1,0 +1,74 @@
+---
+- name: Create patroni configuration file
+  ansible.builtin.template:
+    src: patroni.config.yml.j2
+    dest: "{{ patroni_config_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0600
+  become: true
+
+- name: Create patroni unit file
+  ansible.builtin.template:
+    src: patroni.service.j2
+    dest: "/etc/systemd/system/{{ pg_service }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  when: patroni_pip_install
+  become: true
+
+- name: Update pg_service patroni unit file
+  ansible.builtin.template:
+    src: patroni.service.j2
+    dest: "{{ pg_systemd_global_unit_file }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: patroni_pip_install
+  become: true
+
+- name: Check if we have PG_VERSION in pg_data
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/PG_VERSION"
+  become: true
+  register: pg_version_stat
+
+- name: Enable and start systemd service
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  become: true
+
+- name: Pause for few seconds for postgres to be available
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Copy the postgresql.conf.template to the server
+  ansible.builtin.template:
+    src: postgresql.conf.template
+    dest: "{{ pg_data }}/postgresql.auto.conf"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0600
+  when:
+    - not pg_version_stat.stat.exists
+    - "'primary' in group_names"
+  become: true
+
+- name: Restart postgres after change of postgresql.auto.conf
+  ansible.builtin.shell: >
+    {{ patroni_bin_dir }}/patronictl -c {{ patroni_config_file }} \
+        restart {{ pg_instance_name }} {{ inventory_hostname }} --force
+  args:
+    executable: /bin/bash
+  register: patronictl_exec
+  changed_when: patronictl_exec.rc == 0
+  failed_when: patronictl_exec.rc != 0
+  when:
+    - not pg_version_stat.stat.exists
+    - "'primary' in group_names"
+  become_user: "{{ pg_owner }}"
+  become: true

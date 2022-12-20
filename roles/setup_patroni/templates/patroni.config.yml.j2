@@ -1,0 +1,59 @@
+scope: {{ pg_instance_name }}
+namespace: /db/
+name: {{ inventory_hostname }}
+restapi:
+  listen: "{{ patroni_rest_api_listen_addrr }}:{{ patroni_rest_api_port }}"
+  connect_address: "{{ patroni_rest_api_connect_addrr }}"
+etcd3:
+    hosts:
+    {% for node in etcd_cluster_nodes -%}
+    - {{ node.inventory_hostname if use_hostname else node.private_ip }}:{{ etcd_client_port|string }}
+    {% endfor %}
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        unix_socket_directories: '{{ pg_unix_socket_directories | join(",") }}'
+        port: {{ pg_port }}
+        listen_addresses: '*'
+        wal_level: logical
+        cluster_name: '{{ pg_instance_name }}'
+  initdb:
+{% if pg_wal|length > 0 and pg_data not in pg_wal %}
+    - waldir: {{ pg_wal }}
+{% endif %}
+    {% for option in patroni_initdb_options -%}
+    - {{ option }}
+    {% endfor %}
+
+postgresql:
+  listen: "0.0.0.0:{{ pg_port }}"
+  connect_address: "{{ hostvars[inventory_hostname].private_ip }}:{{ pg_port }}"
+  use_unix_socket: true
+  data_dir: "{{ pg_data }}"
+  bin_dir: "{{ pg_bin_path }}"
+  pgpass: {{ pgpass_file }}
+  authentication:
+    replication:
+      username: {{ pg_replication_user }}
+    superuser:
+      username: {{ pg_superuser }}
+    pg_rewind:
+      username: {{ pg_rewind_user }}
+tags:
+  nosync: false
+log:
+  level: INFO
+  dir: "{{ patroni_log_dir }}"
+  file_size: 50000000
+  file_num: 10
+  loggers:
+    etcd.client: DEBUG
+    urllib3: DEBUG

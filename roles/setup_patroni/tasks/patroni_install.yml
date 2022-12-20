@@ -1,0 +1,69 @@
+---
+- name: Install require python3 package on EL7
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-devel
+      - python3-pip
+      - gcc
+      - postgresql-devel
+      - python3-setuptools
+    state: present
+  become: true
+  when: ansible_distribution_major_version == '7'
+
+- name: Install require python package on EL8
+  ansible.builtin.package:
+    name:
+      - python3-devel
+      - python3-setuptools
+      - python3-pip
+      - gcc
+    state: present
+  become: true
+  when: ansible_distribution_major_version == '8'
+
+- name: Install require patroni package on EL7
+  ansible.builtin.package:
+    name:
+      - python3-etcd
+      - python3-psycopg2
+      - patroni
+      - watchdog
+    state: present
+  become: true
+  when: ansible_distribution_major_version == '7'
+
+- name: Upgrade pip
+  ansible.builtin.pip:
+    name: pip
+    umask: "0022"
+    state: present
+    extra_args: --upgrade
+    executable: pip3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  become: true
+  when: ansible_distribution_major_version == '7'
+
+- name: Install multi python packages using pip3
+  ansible.builtin.pip:
+    name:
+      - python-etcd
+      - psycopg2
+    umask: "0022"
+    state: present
+    executable: pip3
+    extra_args: --upgrade
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  become: true
+  when: ansible_distribution_major_version == '7'
+
+- name: Install multi python packages with version specifiers
+  ansible.builtin.pip:
+    name: "{{ patroni_pip_packages }}"
+    umask: "0022"
+    state: present
+  become: true
+  when: ansible_distribution_major_version == '8'

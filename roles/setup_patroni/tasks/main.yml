@@ -1,0 +1,4 @@
+---
+# Entry point of the init_dbserver role
+- name: Include the setup_patroni.yml
+  ansible.builtin.include_tasks: setup_patroni.yml

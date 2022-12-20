@@ -1,0 +1,36 @@
+---
+- name: Ensure etcd data directory exists
+  ansible.builtin.file:
+    path: "{{ etcd_data_dir }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_owner }}"
+    mode: 0700
+    state: directory
+  become: true
+
+- name: Ensure etcd conf directory exists
+  ansible.builtin.file:
+    path: "{{ etcd_config_dir }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_owner }}"
+    mode: 0700
+    state: directory
+  become: true
+
+- name: Create etcd download directory
+  ansible.builtin.file:
+    path: "{{ etcd_download_dir }}"
+    state: directory
+    mode: "{{ etcd_download_mode }}"
+  become: true
+
+- name: Copy certificates
+  ansible.builtin.copy:
+    src: "{{ etcd_ca_conf_directory }}/{{ item }}"
+    dest: "{{ etcd_conf_dir }}/{{ item }}"
+    mode: 0640
+    owner: root
+    group: root
+  with_items:
+    - "{{ etcd_certificates }}"
+  when: etcd_certificates | length > 0

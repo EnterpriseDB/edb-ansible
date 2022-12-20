@@ -1,0 +1,52 @@
+---
+# defaults file for setup_etcd
+os: ""
+
+pg_type: "PG"
+pg_version: 14
+pg_owner: "postgres"
+pg_group: "postgres"
+
+use_hostname: true
+
+etcd_version: "3.5.6"
+etcd_service: "etcd-{{ etcd_version }}"
+etcd_download_url: "https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}"
+etcd_checksum_url: "sha256:https://github.com/coreos/etcd/releases/download/v{{ etcd_version }}/SHA256SUMS"
+etcd_architecture: "amd64"
+etcd_package: "etcd-v{{ etcd_version }}-linux-{{ etcd_architecture }}"
+etcd_rpm: false
+
+etcd_name: "{{ inventory_hostname }}"
+etcd_client_port: 2379
+etcd_peer_port: 2380
+etcd_compaction_mode: revision
+etcd_compaction_retention: 10
+etcd_initial_cluster: []
+etcd_initial_cluster_state: "new"
+etcd_cluster_nodes: []
+etcd_data_dir: "/var/lib/etcd"
+etcd_config_dir: "/etc/etcd"
+etcd_config: "{{ etcd_config_dir }}/etcd-{{ etcd_version }}.conf"
+etcd_owner: "{{ pg_owner }}"
+etcd_download_dir: "/tmp/etcd"
+etcd_download_mode: "0755"
+etcd_bin_dir: "/usr/bin"
+etcd_certificates: []
+
+update_etc_file: true
+etc_hosts_lists: []
+# etcd parametrs needed for initialization
+# example:
+# etcd_ccnf_parameters
+#  - name: "cert-file"
+#    value: "/etc/etcd/cert-etcd-server.pem"
+etcd_conf_params: []
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Rocky8
+  - OracleLinux7

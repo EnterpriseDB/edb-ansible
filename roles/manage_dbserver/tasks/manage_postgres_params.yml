@@ -37,6 +37,41 @@
     - pg_postgres_conf_params|length > 0
     - params.changed
     - not params_restart_required
+    - not use_patroni
+
+- name: Reload patroni postgres
+  ansible.builtin.shell: >
+    {{ patroni_bin_dir }}/patronictl -c {{ patroni_config_file }} \
+        reload {{ pg_instance_name }} {{ inventory_hostname }} --force
+  args:
+    executable: /bin/bash
+  register: patronictl_exec
+  changed_when: patronictl_exec.rc == 0
+  failed_when: patronictl_exec.rc != 0
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - not params_restart_required
+    - use_patroni
+  become_user: "{{ pg_owner }}"
+  become: true
+
+- name: Restart patroni postgres
+  ansible.builtin.shell: >
+    {{ patroni_bin_dir }}/patronictl -c {{ patroni_config_file }} \
+        restart {{ pg_instance_name }} {{ inventory_hostname }} --force
+  args:
+    executable: /bin/bash
+  register: patronictl_exec
+  changed_when: patronictl_exec.rc == 0
+  failed_when: patronictl_exec.rc != 0
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - params_restart_required
+    - use_patroni
+  become_user: "{{ pg_owner }}"
+  become: true
 
 - name: Gather services facts
   ansible.builtin.service_facts:
@@ -53,6 +88,7 @@
     - params.changed
     - params_restart_required is defined
     - params_restart_required
+    - not use_patroni
   become: true
 
 - name: Restart the pg service
@@ -66,6 +102,7 @@
     - params.changed
     - params_restart_required is defined
     - params_restart_required
+    - not use_patroni
 
 - name: Start failover manager service if exists
   ansible.builtin.systemd:
@@ -79,6 +116,7 @@
     - params.changed
     - params_restart_required is defined
     - params_restart_required
+    - not use_patroni
   become: true
 
 - name: Reset the restart_required

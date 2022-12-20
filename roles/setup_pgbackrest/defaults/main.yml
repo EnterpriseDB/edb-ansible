@@ -7,6 +7,7 @@ replication_user: "repuser"
 
 # spool directory - only used with archive-async
 pgbackrest_spool_directory: "/var/spool/pgbackrest"
+use_patroni: false
 
 # number of parallel processes to be used during backup and recovery
 # recommended to not use more than 25% of available CPU for the backup command

@@ -1,0 +1,30 @@
+---
+galaxy_info:
+  author: "EDB"
+  description: "Installation of etcd RHEL and CentOS on Instances"
+  company: "EnterpriseDB"
+
+  license: "BSD"
+
+  min_ansible_version: "2.8"
+
+  platforms:
+    - name: EL
+      versions:
+        - "7"
+        - "8"
+    - name: Debian
+      versions:
+        - 'buster'
+    - name: Ubuntu
+      versions:
+        - 'focal'
+
+  galaxy_tags:
+    - database
+    - postgresql
+    - postgres
+    - edb
+    - etcd
+
+dependencies: []

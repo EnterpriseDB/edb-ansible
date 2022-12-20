@@ -1,0 +1,16 @@
+ETCD_NAME="{{ inventory_hostname }}"
+ETCD_ENABLE_V2="true"
+ETCD_DATA_DIR="/var/lib/etcd/{{ inventory_hostname|replace('-', '_') }}"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://{{ inventory_hostname if use_hostname else hostvars[inventory_hostname].private_ip }}:{{ etcd_peer_port }}"
+ETCD_LISTEN_PEER_URLS="http://0.0.0.0:{{ etcd_peer_port }}"
+ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:{{ etcd_client_port }}"
+ETCD_ADVERTISE_CLIENT_URLS="http://{{ inventory_hostname if use_hostname else hostvars[inventory_hostname].private_ip }}:{{ etcd_client_port }}"
+ETCD_INITIAL_CLUSTER_STATE="{{ etcd_initial_cluster_state|default('new') }}"
+ETCD_INITIAL_CLUSTER="{{ etcd_initial_cluster | join(',') }}"
+ETCD_AUTO_COMPACTION_MODE="{{ etcd_compaction_mode }}"
+ETCD_AUTO_COMPACTION_RETENTION="{{ etcd_compaction_retention }}"
+{% if etcd_conf_params|length > 0 %}
+{% for item in etcd_conf_params %}
+ETCD_{{ item.name|upper }}="{{ item.value }}"
+{% endfor %}
+{% endif %}
