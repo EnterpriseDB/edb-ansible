@@ -21,7 +21,7 @@
   when:
     - use_hostname|bool
 
-- name: Set _pgbackrest_host when using hostname
+- name: Set _standby_index_var for each standby node
   ansible.builtin.set_fact:
     _standby_index_var: "{{ item.index_var }}"
   loop: "{{ standby_node_info }}"
@@ -67,3 +67,4 @@
   ansible.builtin.set_fact:
     _pgbackrest_server_info: ""
     _pgbackrest_host: null
+    _standby_index_var: null
