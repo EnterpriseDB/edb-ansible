@@ -1,7 +1,9 @@
 ---
 
-hammerdb_version: 3.3
+hammerdb_version: 4.6
 supported_os:
   - CentOS8
   - RHEL8
   - Rocky8
+  - Debian10
+  - Ubuntu20
