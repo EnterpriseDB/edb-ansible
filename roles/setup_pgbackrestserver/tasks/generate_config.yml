@@ -1,4 +1,119 @@
 ---
+- name: Build lines about standby's
+  ansible.builtin.set_fact:
+    pgbackrest_standby_configuration: >-
+      {{ pgbackrest_standby_configuration | default([]) + [
+        {
+          'key': 'pg' + standby_node.index_var + '-host' | string,
+          'value': standby_node.inventory_hostname
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-path' | string,
+          'value': pg_data
+        }
+      ] }}
+  loop: "{{ standby_node_info }}"
+  loop_control:
+    loop_var: standby_node
+  when:
+    - use_hostname|bool
+    - pg_type == 'PG'
+    - standby_present is defined
+
+- name: Build lines about standby's
+  ansible.builtin.set_fact:
+    pgbackrest_standby_configuration: >-
+      {{ pgbackrest_standby_configuration | default([]) + [
+        {
+          'key': 'pg' + standby_node.index_var + '-host' | string,
+          'value': standby_node.private_ip
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-path' | string,
+          'value': pg_data
+        }
+      ] }}
+  loop: "{{ standby_node_info }}"
+  loop_control:
+    loop_var: standby_node
+  when:
+    - "not use_hostname|bool"
+    - pg_type == 'PG'
+    - standby_present is defined
+
+- name: Build lines about standby's
+  ansible.builtin.set_fact:
+    pgbackrest_standby_configuration: >-
+      {{ pgbackrest_standby_configuration | default([]) + [
+        {
+          'key': 'pg' + standby_node.index_var + '-host' | string,
+          'value': standby_node.inventory_hostname
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-path' | string,
+          'value': pg_data
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-host-user' | string,
+          'value': 'enterprisedb'
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-database' | string,
+          'value': pg_database_name
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-port' | string,
+          'value': '5444'
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-socket-path' | string,
+          'value': pg_unix_socket_epas
+        }
+      ] }}
+  loop: "{{ standby_node_info }}"
+  loop_control:
+    loop_var: standby_node
+  when:
+    - use_hostname|bool
+    - pg_type == 'EPAS'
+    - standby_present is defined
+
+- name: Build lines about standby's
+  ansible.builtin.set_fact:
+    pgbackrest_standby_configuration: >-
+      {{ pgbackrest_standby_configuration | default([]) + [
+        {
+          'key': 'pg' + standby_node.index_var + '-host' | string,
+          'value': standby_node.private_ip
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-path' | string,
+          'value': pg_data
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-host-user' | string,
+          'value': 'enterprisedb'
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-database' | string,
+          'value': pg_database_name
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-port' | string,
+          'value': '5444'
+        },
+        {
+          'key': 'pg' + standby_node.index_var + '-socket-path' | string,
+          'value': pg_unix_socket_epas
+        }
+      ] }}
+  loop: "{{ standby_node_info }}"
+  loop_control:
+    loop_var: standby_node
+  when:
+    - "not use_hostname|bool"
+    - pg_type == 'EPAS'
+    - standby_present is defined
 
 - name: Build configuration file {{ pgbackrest_configuration_file }}
   ansible.builtin.template:
@@ -8,3 +123,18 @@
     group: "{{ pgbackrest_group }}"
     mode: 0600
   become: true
+
+- name: Add standby information to configuration file
+  ansible.builtin.lineinfile:
+    path: "{{ pgbackrest_configuration_file }}"
+    owner: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    mode: 0600
+    insertafter: "EOF"
+    line: '{{ node.key }}={{ node.value }}'
+  loop: "{{ pgbackrest_standby_configuration }}"
+  loop_control:
+    loop_var: node
+  become: true
+  when:
+    - standby_present is defined
