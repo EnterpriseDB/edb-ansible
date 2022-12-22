@@ -10,11 +10,7 @@
         create: yes
   no_log: "{{ disable_logging }}"
 
-<<<<<<< Updated upstream
-- name: Check ping primary
-=======
 - name: Register upstream node ping state
->>>>>>> Stashed changes
   community.postgresql.postgresql_ping:
     db: "{{ pg_database }}"
     login_host: "{{ hostvars[inventory_hostname].upstream_node_private_ip }}"
@@ -24,15 +20,12 @@
   become: yes
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
-<<<<<<< Updated upstream
-=======
   register: ping_result
 
 - name: Check upstream node ping state
   fail:
     msg: "Unable to access primary node to create standby node."
   when: not ping_result.is_available
->>>>>>> Stashed changes
 
 - name: Create standby
   shell: >

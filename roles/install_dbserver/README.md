@@ -31,17 +31,11 @@ When executing the role via ansible these are the required variables:
 
 - **pg_version**
 
-<<<<<<< Updated upstream
-  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
-=======
   Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
->>>>>>> Stashed changes
 
 - **pg_type**
 
   Database Engine supported are: `PG`
-<<<<<<< Updated upstream
-=======
 
 This role allows users to pass following variables which helps managing day to
 day tasks:
@@ -55,7 +49,6 @@ Example:
 ```yaml
 rpm_install: true
 ```
->>>>>>> Stashed changes
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: [How to include the install_dbserver role in your Playbook](#how-to-include-the-install_dbserver-role-in-your-playbook)

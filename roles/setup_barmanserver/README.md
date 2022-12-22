@@ -150,11 +150,7 @@ Below is an example of how to include the `setup_barmanserver` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-<<<<<<< Updated upstream
-        pg_version: 14.5
-=======
         pg_version: 14.6
->>>>>>> Stashed changes
         pg_type: "PG"
 
   roles:

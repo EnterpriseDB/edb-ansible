@@ -15,21 +15,10 @@ Following are the dependencies and requirement of this role.
 When executing the role via ansible these are the required variables:
 
   * ***pg_version***
-<<<<<<< Updated upstream
-
-  Postgres Versions supported are: 14
-=======
->>>>>>> Stashed changes
 
   Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
 
-<<<<<<< Updated upstream
-  Database Engine supported are: PG
-
-Database Engine supported are: PG and EPAS
-=======
   Database Engine supported are: `PG`
->>>>>>> Stashed changes
 
 The rest of the variables can be configured and are available in the:
 

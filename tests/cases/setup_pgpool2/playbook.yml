@@ -13,10 +13,7 @@
         disable_logging: false
         pg_pgpool_user: "test"
         pg_pgpool_user_password: "password"
-<<<<<<< Updated upstream
-=======
         pg_local_wal_archive_dir: "/var/lib/pgsql/archive"
->>>>>>> Stashed changes
 
   roles:
     - role: setup_repo

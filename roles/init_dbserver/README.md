@@ -32,11 +32,7 @@ When executing the role via ansible there are three required variables:
 
 - **_pg_version_**
 
-<<<<<<< Updated upstream
-  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
-=======
   Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
->>>>>>> Stashed changes
 
 - **_pg_type_**
 
@@ -157,11 +153,7 @@ All the variables are available at:
 - [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
 - [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 - [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
-<<<<<<< Updated upstream
-- [roles/init_dbserver/vars/edb-ssl.yml](./vars/ssl.yml)
-=======
 - [roles/init_dbserver/vars/ssl.yml](./vars/ssl.yml)
->>>>>>> Stashed changes
 
 ## Database engines supported
 
