@@ -1,6 +1,7 @@
 - name: "Ensure /etc/systemd/system/{{ repmgrd_service }}.service.d exists"
   ansible.builtin.file:
     path: "/etc/systemd/system/{{ repmgrd_service }}.service.d"
+    mode: "0744"
     state: directory
   become: true
   when: ansible_os_family == 'RedHat'
@@ -19,6 +20,7 @@
   ansible.builtin.template:
     src: default.repmgrd.j2
     dest: /etc/default/repmgrd
+    mode: "0700"
     owner: root
     group: root
   become: true

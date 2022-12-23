@@ -1,5 +1,5 @@
 ---
-- name : Check Operating System, PostgreSQL Type, PostgreSQL Version
+- name: Check Operating System, PostgreSQL Type, PostgreSQL Version
   include_role:
     name: common
     tasks_from: check_version.yml
@@ -13,21 +13,22 @@
 - name: Open Postgres TCP port {{ pg_port }}
   ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Force cleanup based on force_initdb/replication
-  block:
-    - include_tasks: rm_replication.yml
   when: (force_initdb is defined and force_initdb)
     or (force_replication is defined and force_replication)
-  become: yes
+  become: true
+  block:
+    - name: Remove replication node
+      ansible.builtin.include_tasks: rm_replication.yml
 
 - name: Gather the cluste_nodes information
   set_fact:
@@ -75,13 +76,15 @@
     - update_etc_file|bool
 
 - name: Call upstream update based on the upstream node
-  block:
-    - import_tasks: upstream_node.yml
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
   no_log: "{{ disable_logging }}"
+  block:
+    - name: Set upstream node
+      ansible.builtin.import_tasks: upstream_node.yml
 
 - name: Build standby service check
+  become: true
   block:
     - name: Create directories if not exists
       ansible.builtin.import_tasks: create_directories.yml
@@ -93,7 +96,6 @@
       ansible.builtin.import_tasks: pg_ssl_send_files.yml
     - name: Configure standby node
       ansible.builtin.import_tasks: configure_node.yml
-  become: yes
 
 - name: Update primary for synchronous replication
   import_tasks: primary_synchronous_param.yml

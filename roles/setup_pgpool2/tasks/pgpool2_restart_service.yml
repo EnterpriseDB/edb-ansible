@@ -4,7 +4,7 @@
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: restarted
-  become: yes
+  become: true
 
 - name: Wait for port {{ pgpool2_port }}
   wait_for:

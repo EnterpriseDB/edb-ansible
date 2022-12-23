@@ -3,7 +3,7 @@
 # port constants
 pg_major_version: "{{ pg_version | int }}"
 
-disable_logging: yes
+disable_logging: true
 
 force_replication: false
 use_replication_slots: true
@@ -32,7 +32,7 @@ upstream_hostname: ""
 
 # Local path to SSL server key and certificate to be sent to the server
 # if empty, they are generated
-pg_remote_ssl_src: no
+pg_remote_ssl_src: false
 pg_ssl_key_file: ""
 pg_ssl_cert_file: ""
 pg_ssl_ca_file: ""

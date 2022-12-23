@@ -3,7 +3,7 @@
   group:
     name: "{{ barman_group }}"
     state: present
-  become: yes
+  become: true
 
 - name: Ensure barman system user {{ barman_user }} exists
   user:
@@ -13,7 +13,7 @@
     state: present
     create_home: true
     home: "{{ barman_home }}"
-  become: yes
+  become: true
 
 - name: Check if getenforce is installed
   ansible.builtin.shell: command -v getenforce > /dev/null 2>&1

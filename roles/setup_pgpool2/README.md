@@ -156,8 +156,8 @@ Below is an example of how to include the `setup_pgpool2` role:
 ---
 - hosts: pgpool2
   name: Deploy PgpoolII instances
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres

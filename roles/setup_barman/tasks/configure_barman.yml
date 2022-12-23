@@ -41,7 +41,7 @@
     group: "{{ barman_group }}"
     mode: 0700
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
   vars:
     pg_host: "{{ _pg_host }}"
 

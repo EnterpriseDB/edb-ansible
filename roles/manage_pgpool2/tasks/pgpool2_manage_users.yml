@@ -13,14 +13,14 @@
     - pgpool2_users|length > 0
     - user_item.state is defined
     - user_item.state == 'absent'
-  become: yes
+  become: true
 
 - name: Add users with SCRAM authentication
   command:
     cmd: >-
       script -q -c '{{ pgpool2_bin_path }}/pg_enc -k ~/.pgpoolkey -f {{ pgpool2_configuration_file }} -u {{ user_item.name }} -p -m'
     stdin: "{{ user_item.pass }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   loop: "{{ pgpool2_users }}"
   loop_control:
@@ -35,7 +35,7 @@
     cmd: >-
       script -q -c '{{ pgpool2_bin_path }}/pg_md5 -f {{ pgpool2_configuration_file }} -u {{ user_item.name }} -p -m'
     stdin: "{{ user_item.pass }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   loop: "{{ pgpool2_users }}"
   loop_control:

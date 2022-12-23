@@ -32,7 +32,7 @@
     src: "{{ barman_home + '/.ssh/id_rsa.pub' }}"
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   register: _barman_server_ssh_public_key_b64
-  become: yes
+  become: true
 
 - name: Set _barman_server_ssh_public_key
   set_fact:
@@ -42,7 +42,7 @@
   slurp:
     src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
   register: _pg_ssh_public_key_b64
-  become: yes
+  become: true
 
 - name: Set _pg_ssh_public_key
   set_fact:
@@ -55,9 +55,9 @@
     group: "{{ barman_group }}"
     mode: 0600
     line: "{{ _pg_ssh_public_key }}"
-    create: yes
+    create: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
 
 - name: Ensure {{ barman_user }} SSH public key is on the Postgres server
   lineinfile:
@@ -66,13 +66,13 @@
     group: "{{ pg_group }}"
     mode: 0600
     line: "{{ _barman_server_ssh_public_key }}"
-    create: yes
+    create: true
 
 - name: Run ssh-keyscan from the Barman server
   command: ssh-keyscan -p {{ ssh_port }} {{ _pg_host }}
   register: _barman_ssh_keyscan_output
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
   changed_when: false
 
 # The SSH key name format used by the known_hosts module differs if the SSH
@@ -101,14 +101,14 @@
   loop_control:
     loop_var: _item
   delegate_to: "{{ _barman_server_inventory_hostname }}"
-  become: yes
+  become: true
   become_user: "{{ barman_user }}"
   no_log: "{{ disable_logging }}"
 
 - name: Run ssh-keyscan from the Postgres server
   command: ssh-keyscan -p {{ ssh_port }} {{ _barman_host }}
   register: _pg_ssh_keyscan_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Add {{ barman_user }} SSH public key into Postgres server known hosts
@@ -119,7 +119,7 @@
   with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
   loop_control:
     loop_var: _item
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
 

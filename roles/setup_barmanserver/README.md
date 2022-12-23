@@ -141,8 +141,8 @@ Below is an example of how to include the `setup_barmanserver` role:
 ---
 - hosts: barmanserver
   name: Deploy Barman Servers
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres

@@ -12,11 +12,11 @@
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
     mode: 0600
-    remote_src: yes
+    remote_src: true
   when:
     - not pcp_conf.stat.exists
     - pcp_users|length > 0
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
 
 - name: Remove pcp users
@@ -33,7 +33,7 @@
     - pcp_users|length > 0
     - user_item.state is defined
     - user_item.state == 'absent'
-  become: yes
+  become: true
 
 - name: Add pcp users
   include_tasks: pcp_add_user.yml
