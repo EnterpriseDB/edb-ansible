@@ -1,13 +1,13 @@
 - name: Check Operating System,  PostgreSQL Type, PostgreSQL Version
-  include_role:
+  ansible.builtin.include_role:
     name: common
     tasks_from: check_version.yml
 
 - name: Cleanup the repos based on force_repo
-  include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_repos.yml"
+  ansible.builtin.include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_repos.yml"
   when:
     - force_repo is defined
     - force_repo
 
 - name: Install Postgres repositories
-  include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_setuprepos.yml"
+  ansible.builtin.include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_setuprepos.yml"

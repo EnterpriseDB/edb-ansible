@@ -1,32 +1,32 @@
 ---
 - name: Download PGDG GPG key for EL8
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ pg_gpg_key_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
-  become: yes
+  become: true
 
 - name: Download EPEL GPG key for EL8
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ epel_gpg_key_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
-  become: yes
+  become: true
 
 - name: Install EPEL repo for EL7, EL8
-  package:
+  ansible.builtin.package:
     name: "{{ epel_repo }}"
     state: present
-  become: yes
+  become: true
 
 - name: Install PG repo for EL7, EL8
-  package:
+  ansible.builtin.package:
     name: "{{ pg_rpm_repo }}"
     state: present
-  become: yes
+  become: true
   when:
     - pg_type == 'PG'
 

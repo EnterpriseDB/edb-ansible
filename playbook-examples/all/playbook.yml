@@ -29,8 +29,6 @@
       when: "'manage_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: manage_dbserver
       when: "'manage_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
-    - role: setup_pemserver
-      when: "'setup_pemserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_pgbouncer
       when: "'setup_pgbouncer' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: manage_pgbouncer
@@ -39,9 +37,5 @@
       when: "'setup_barmanserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: setup_barman
       when: "'setup_barman' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
-    - role: setup_pemagent
-      when: "'setup_pemagent' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
     - role: autotuning
       when: "'autotuning' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
-    - role: manage_dbpatches
-      when: "'manage_dbpatches' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

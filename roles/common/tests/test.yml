@@ -1,16 +1,16 @@
 ---
 - hosts: localhost
   remote_user: root
-  become: yes
+  become: true
 
   tasks:
     - name: Test for checking required variables
       ansible.builtin.import_tasks: test_role.yml
       vars:
         - test_var1: "test var1"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Try to call the role common itself
       ansible.builtin.include_role:
         name: common
-      ignore_errors: yes
+      ignore_errors: true

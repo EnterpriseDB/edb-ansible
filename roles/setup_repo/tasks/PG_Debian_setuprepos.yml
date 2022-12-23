@@ -12,21 +12,21 @@
   become: true
 
 - name: Install apt-transport-https
-  apt:
+  ansible.builtin.apt:
     name: apt-transport-https
     update_cache: true
     state: present
   become: true
 
 - name: Add PG Debian keys
-  apt_key:
+  ansible.builtin.apt_key:
     url: "{{ pg_deb_keys }}"
     state: present
   when: pg_type == 'PG'
   become: true
 
 - name: Add PG Debian repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ pg_deb_repo_url }}"
     state: present
     filename: "pgdg"
