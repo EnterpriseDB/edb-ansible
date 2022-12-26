@@ -32,7 +32,7 @@
     src: "{{ pgbackrest_home + '/.ssh/id_rsa.pub' }}"
   delegate_to: "{{ _pgbackrest_server_inventory_hostname }}"
   register: _pgbackrest_server_ssh_public_key_b64
-  become: yes
+  become: true
 
 - name: Set _pgbackrest_server_ssh_public_key
   set_fact:
@@ -42,7 +42,7 @@
   slurp:
     src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
   register: _pg_ssh_public_key_b64
-  become: yes
+  become: true
 
 - name: Set _pg_ssh_public_key
   set_fact:
@@ -55,9 +55,9 @@
     group: "{{ pgbackrest_group }}"
     mode: 0600
     line: "{{ _pg_ssh_public_key }}"
-    create: yes
+    create: true
   delegate_to: "{{ _pgbackrest_server_inventory_hostname }}"
-  become: yes
+  become: true
 
 - name: Ensure {{ pgbackrest_user }} SSH public key is on the Postgres server
   lineinfile:
@@ -66,14 +66,14 @@
     group: "{{ pg_group }}"
     mode: 0600
     line: "{{ _pgbackrest_server_ssh_public_key }}"
-    create: yes
+    create: true
 
 - name: Run ssh-keyscan from the pgBackRest server
   command: ssh-keyscan {{ _pg_host }}
   register: _pgbackrest_ssh_keyscan_output
   delegate_to: "{{ _pgbackrest_server_inventory_hostname }}"
   delegate_facts: true
-  become: yes
+  become: true
   changed_when: false
 
 - name: Add {{ pg_owner }} SSH public key into pgbackrest_server known hosts
@@ -92,7 +92,7 @@
 - name: Run ssh-keyscan from the Postgres server
   command: ssh-keyscan {{ _pgbackrest_host }}
   register: _pg_ssh_keyscan_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Add {{ pgbackrest_user }} SSH public key into Postgres server known hosts
@@ -103,7 +103,7 @@
   with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
   loop_control:
     loop_var: _item
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
 

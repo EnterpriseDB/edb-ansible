@@ -1,6 +1,6 @@
 # install_dbserver
 
-This Ansible role installs PostgreSQL versions: 14 on machines previously configured. 
+This Ansible role installs PostgreSQL versions: 14 on machines previously configured.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -19,11 +19,11 @@ privileges.**
 
 The only dependencies required for this ansible galaxy role are:
 
-  1. Ansible
-  2. `community.general` Ansible Module - Utilized when creating aditional
-     users during a Postgres Install
-  3. `hypersql_devops.postgres` -> `setup_repo` role for 
-     setting the repository on the systems
+1. Ansible
+2. `community.general` Ansible Module - Utilized when creating aditional
+   users during a Postgres Install
+3. `hypersql_devops.postgres` -> `setup_repo` role for
+   setting the repository on the systems
 
 ## Role variables
 
@@ -100,8 +100,8 @@ Below is an example of how to include the `install_dbserver` role:
 ---
 - hosts: primary,standby,pemserver
   name: Install Postgres binaries
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres
@@ -126,11 +126,11 @@ All the variables are available at:
 
 ### PostgreSQL
 
-| Distribution                      |               14 |
-| --------------------------------- |:----------------:|
-| CentOS 7                          |:white_check_mark:|
-| CentOS 8                          |:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
+| Distribution                      |         14         |
+| --------------------------------- | :----------------: |
+| CentOS 7                          | :white_check_mark: |
+| CentOS 8                          | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 
@@ -151,8 +151,10 @@ BSD
 ## Author information
 
 Author:
-  * [Sang Myeung Lee](https://github.com/sungmu1)
+
+- [Sang Myeung Lee](https://github.com/sungmu1)
 
 Original Author:
-  * Vibhor Kumar (Co-Author)
-  * Julien Tachoires (Co-Author)
+
+- Vibhor Kumar (Co-Author)
+- Julien Tachoires (Co-Author)

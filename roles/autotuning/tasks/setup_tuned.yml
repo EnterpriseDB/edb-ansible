@@ -32,7 +32,7 @@
     owner: "root"
     group: "root"
     mode: 0700
-  become: yes
+  become: true
 
 - name: Ensure tuned profile configuration exists
   template:
@@ -46,6 +46,7 @@
 - name: Start tuned daemon
   command: tuned -d
   become: true
+  changed_when: false
 
 - name: Ensure tuned profile is active
   command: tuned-adm profile {{ tuned_profile }}

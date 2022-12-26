@@ -10,7 +10,7 @@
   when:
     - ansible_facts.services[pg_service] is defined
     - ansible_facts.services[pg_service].state == 'running'
-  become: yes
+  become: true
 
 - name: Copy global systemd unit file to /etc/systemd/system
   ansible.builtin.copy:

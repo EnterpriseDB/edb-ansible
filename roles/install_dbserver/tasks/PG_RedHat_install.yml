@@ -7,7 +7,7 @@
   register: disable_builtin_postgres
   changed_when: disable_builtin_postgres.rc == 0
   failed_when: disable_builtin_postgres.rc != 0
-  ignore_errors: yes
+  ignore_errors: true
   become: true
   when: ansible_distribution_major_version == '8'
 
@@ -52,7 +52,7 @@
       - postgresql{{ pg_major_version }}-contrib
     state: present
   become: true
-  when: rpm_install==false
+  when: not rpm_install
 
 - name: Install Postgres rpm list
   ansible.builtin.yum:

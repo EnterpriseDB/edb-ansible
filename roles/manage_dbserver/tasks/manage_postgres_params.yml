@@ -9,7 +9,7 @@
     value: "{{ line_item.value }}"
   when: pg_postgres_conf_params|length > 0
   with_items: "{{ pg_postgres_conf_params }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   loop_control:
     loop_var: line_item
@@ -18,7 +18,7 @@
 
 - name: Register the restart requirements
   set_fact:
-    params_restart_required: True
+    params_restart_required: true
   when:
     - pg_postgres_conf_params|length > 0
     - line_item.changed and line_item.restart_required
@@ -30,9 +30,9 @@
 - name: Reload the pg service
   systemd:
     name: "{{ pg_service }}"
-    daemon_reload: yes
+    daemon_reload: true
     state: reloaded
-  become: yes
+  become: true
   when:
     - pg_postgres_conf_params|length > 0
     - params.changed
@@ -42,9 +42,9 @@
 - name: Restart the pg service
   systemd:
     name: "{{ pg_service }}"
-    daemon_reload: yes
+    daemon_reload: true
     state: restarted
-  become: yes
+  become: true
   when:
     - pg_postgres_conf_params|length > 0
     - params.changed

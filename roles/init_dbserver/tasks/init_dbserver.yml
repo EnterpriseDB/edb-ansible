@@ -17,22 +17,23 @@
 - name: Open Postgres TCP port {{ pg_port }}
   ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"
-    permanent: yes
+    permanent: true
     state: enabled
     immediate: true
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
 
 - name: Force cleanup based on force_initdb
-  block:
-    - include_tasks: rm_initdb.yml
   when:
     - force_initdb is defined
     - force_initdb
-  become: yes
+  become: true
+  block:
+    - name: Include rm_initdb task
+      include_tasks: rm_initdb.yml
 
 - name: Update /etc/hosts based on use_hostname
   include_role:
@@ -43,20 +44,29 @@
     - update_etc_file|bool
 
 - name: Check and configure the node as primary or pemserver
+  become: true
   block:
-    - import_tasks: create_os_user.yml
-    - import_tasks: create_directories.yml
-    - import_tasks: pg_setup_systemd.yml
-    - import_tasks: pg_initdb.yml
-    - import_tasks: pg_set_superuser_password.yml
-    - import_tasks: set_primary_slot.yml
-  become: yes
+    - name: Import create_os_user task
+      import_tasks: create_os_user.yml
+    - name: Import create_directories task
+      import_tasks: create_directories.yml
+    - name: Import pg_setup_systemd task
+      import_tasks: pg_setup_systemd.yml
+    - name: Import pg_initdb task
+      import_tasks: pg_initdb.yml
+    - name: Import pg_set_superuser_password task
+      import_tasks: pg_set_superuser_password.yml
+    - name: Import set_primary_slot task
+      import_tasks: set_primary_slot.yml
 
 - name: Configure ssl based on pg_ssl parameter
   when:
     - pg_ssl
   become: true
   block:
-      - import_tasks: pg_ssl_send_files.yml
-      - import_tasks: pg_ssl_check.yml
-      - import_tasks: pg_ssl_config.yml
+    - name: Import pg_ssl_send_files task
+      import_tasks: pg_ssl_send_files.yml
+    - name: Import pg_ssl_check task
+      import_tasks: pg_ssl_check.yml
+    - name: Import pg_ssl_config task
+      import_tasks: pg_ssl_config.yml

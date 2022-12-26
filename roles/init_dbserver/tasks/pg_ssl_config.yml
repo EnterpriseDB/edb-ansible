@@ -32,16 +32,16 @@
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     query: "select public.openssl_csr_to_crt(
-                       public.openssl_rsa_key_to_csr(
-                             '{{ ca_key }}',
-                             '{{ cert_common_name }}',
-                             '{{ cert_country }}',
-                             '{{ cert_state }}',
-                             '{{ cert_city }}',
-                             '{{ cert_org_unit }}',
-                             '{{ cert_email }}'),
-                        null,
-                        '{{ pg_data }}/ca_key.key');"
+      public.openssl_rsa_key_to_csr(
+      '{{ ca_key }}',
+      '{{ cert_common_name }}',
+      '{{ cert_country }}',
+      '{{ cert_state }}',
+      '{{ cert_city }}',
+      '{{ cert_org_unit }}',
+      '{{ cert_email }}'),
+      null,
+      '{{ pg_data }}/ca_key.key');"
     db: "{{ pg_database }}"
   when: not ssl_ca_certificate.stat.exists
   become: true
@@ -79,8 +79,8 @@
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     query: "select public.openssl_rsa_generate_crl(
-                           '{{ pg_data }}/ca_certificate.crt',
-                           '{{ pg_data }}/ca_key.key');"
+      '{{ pg_data }}/ca_certificate.crt',
+      '{{ pg_data }}/ca_key.key');"
     db: "{{ pg_database }}"
   when: not ssl_root_crl.stat.exists
   become: true
@@ -130,16 +130,16 @@
     port: "{{ pg_port }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     query: "select public.openssl_csr_to_crt(
-                       public.openssl_rsa_key_to_csr(
-                                  '{{ server_key }}',
-                                  '{{ cert_common_name }}',
-                                  '{{ cert_country }}',
-                                  '{{ cert_state }}',
-                                  '{{ cert_city }}',
-                                  '{{ cert_org_unit }}',
-                                  '{{ cert_email }}'),
-                       null,
-                       '{{ pg_data }}/ca_key.key');"
+      public.openssl_rsa_key_to_csr(
+      '{{ server_key }}',
+      '{{ cert_common_name }}',
+      '{{ cert_country }}',
+      '{{ cert_state }}',
+      '{{ cert_city }}',
+      '{{ cert_org_unit }}',
+      '{{ cert_email }}'),
+      null,
+      '{{ pg_data }}/ca_key.key');"
     db: "{{ pg_database }}"
   when: not ssl_server_crt.stat.exists
   become: true

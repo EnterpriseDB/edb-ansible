@@ -5,19 +5,19 @@
     owner: root
     mode: "0733"
     state: directory
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"
 
 - name: Add core dump parameters in sysctl.conf
   ansible.posix.sysctl:
     name: "{{ line_item.name }}"
     value: "{{ line_item.value }}"
-    state: "{{ line_item.state|default('present') }}"
-    reload: yes
+    state: "{{ line_item.state | default('present') }}"
+    reload: true
   with_items: "{{ sysctl_params }}"
   loop_control:
     loop_var: line_item
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"
 
 - name: Update limits.conf file
@@ -26,5 +26,5 @@
     limit_type: soft
     limit_item: core
     value: unlimited
-  become: yes
+  become: true
   no_log: "{{ disable_logging }}"

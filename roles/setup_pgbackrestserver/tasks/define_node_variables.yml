@@ -57,42 +57,12 @@
     primary_host_user: "postgres"
   when: pg_type == 'PG'
 
-- name: Define postgres user on primary node when pg_type = EPAS
-  set_fact:
-    primary_host_user: "enterprisedb"
-  when: pg_type == 'EPAS'
-
 - name: Define postgres user on standby node when pg_type = PG
   set_fact:
     standby_host_user: "postgres"
   when:
     - pg_type == 'PG'
     - standby_present is defined
-
-- name: Define postgres user on standby node when pg_type = EPAS
-  set_fact:
-    standby_host_user: "enterprisedb"
-  when:
-    - pg_type == 'EPAS'
-    - standby_present is defined
-
-- name: Define EPAS DB information
-  set_fact:
-    pg_unix_socket_EPAS: "/var/run/edb/as{{ pg_version }}"
-    pg_port_EPAS: "5444"
-    pg_database_name: "edb"
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'RedHat'
-
-- name: Define EPAS DB information
-  set_fact:
-    pg_unix_socket_EPAS: "/var/run/edb-as"
-    pg_port_EPAS: "5444"
-    pg_database_name: "postgres"
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'Debian'
 
 - name: Reset local variables
   set_fact:

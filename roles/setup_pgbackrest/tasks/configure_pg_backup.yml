@@ -36,7 +36,7 @@
     cmd: "pgbackrest --stanza={{ pg_instance_name }} --no-online stanza-create"
   become_user: "{{ pg_owner }}"
   delegate_to: "{{ primary_node_hostname[0] }}"
-  become: yes
+  become: true
   run_once: true
 
 # do full backup from primary
@@ -45,7 +45,7 @@
     cmd: "pgbackrest --stanza={{ pg_instance_name }} --type=full backup"
   become_user: "{{ pgbackrest_user }}"
   delegate_to: "{{ _pgbackrest_server_public_ip }}"
-  become: yes
+  become: true
   run_once: true
 
 - name: Reset local variables

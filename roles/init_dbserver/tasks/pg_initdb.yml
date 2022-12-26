@@ -2,7 +2,7 @@
 - name: Check if we have PG_VERSION in pg_data
   stat:
     path: "{{ pg_data }}/PG_VERSION"
-  become: yes
+  become: true
   register: pg_version_stat
 
 - name: Verify pg_wal and accordingly add in initdb
@@ -11,6 +11,8 @@
   when: pg_wal|length > 0  and not pg_data in pg_wal
 
 - name: Initialize database service
+  when: not pg_version_stat.stat.exists
+  become: true
   block:
     - name: Initialize database postgres service in RedHat
       ansible.builtin.command: >
@@ -35,8 +37,6 @@
         owner: "{{ pg_owner }}"
         group: "{{ pg_group }}"
         mode: 0600
-  when: not pg_version_stat.stat.exists
-  become: yes
 
 - name: Enable and start systemd service
   ansible.builtin.systemd:
@@ -44,5 +44,5 @@
     daemon_reload: true
     state: started
     enabled: true
-    no_block: no
+    no_block: false
   become: true

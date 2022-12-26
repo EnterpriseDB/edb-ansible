@@ -9,7 +9,7 @@
       - postgresql-{{ pg_major_version }}
       - postgresql-server-dev-{{ pg_major_version }}
     state: present
-    update_cache: yes
+    update_cache: true
   register: install_package
   become: true
 
@@ -19,7 +19,7 @@
       - python-psycopg2
       - python-ipaddress
     state: present
-    update_cache: yes
+    update_cache: true
   when: os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
 

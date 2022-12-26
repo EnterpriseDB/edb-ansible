@@ -15,7 +15,7 @@
   when:
     - ansible_facts.services[pg_service] is defined
     - ansible_facts.services[pg_service].state == 'running'
-  become: yes
+  become: true
 
 - name: Remove require python package on EL7
   package:

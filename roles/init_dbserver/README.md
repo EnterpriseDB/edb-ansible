@@ -8,7 +8,7 @@ available.**
 For more details refer to the: _Database engines supported_ section.
 
 **Note:**
-The role does not configure Postgresfor replication it only installs 
+The role does not configure Postgresfor replication it only installs
 Postgres across multiple nodes: Main and Standby.
 Should there be a need to configure a Postgres Cluster for replication you can utilize the `setup_replication` role.
 
@@ -130,8 +130,8 @@ Below is an example of how to include the `init_dbserver` role:
 ---
 - hosts: primary,pemserver
   name: Initialize Postgres instances
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres
@@ -159,11 +159,11 @@ All the variables are available at:
 
 ### PostgreSQL
 
-| Distribution                      |               14 |
-| --------------------------------- |:----------------:|
-| CentOS 7                          |:white_check_mark:|
-| CentOS 8                          |:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
+| Distribution                      |         14         |
+| --------------------------------- | :----------------: |
+| CentOS 7                          | :white_check_mark: |
+| CentOS 8                          | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 
@@ -184,7 +184,8 @@ BSD
 ## Author information
 
 Author:
-  * [Sang Myeung Lee](https://github.com/sungmu1)
+
+- [Sang Myeung Lee](https://github.com/sungmu1)
 
 Original Author:
 

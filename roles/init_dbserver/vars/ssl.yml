@@ -12,4 +12,3 @@ pg_ssl_postgres_conf_params:
   - { name: "ssl_key_file", value: "{{ pg_data }}/server.key" }
   - { name: "ssl_cert_file", value: "{{ pg_data }}/server.crt" }
   - { name: "ssl_crl_file", value: "{{ pg_data }}/root.crl" }
-  

@@ -2,9 +2,10 @@
 - name: Check if the host is a standby node
   import_tasks: check_database_is_standby.yml
   vars:
-    host_is_standby: False
+    host_is_standby: false
 
 - name: Manage privileges
+  when: not host_is_standby
   block:
     - name: Grant object privilege to users
       community.postgresql.postgresql_privs:
@@ -18,7 +19,7 @@
         login_user: "{{ pg_owner }}"
         login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
         port: "{{ pg_port }}"
-      become: yes
+      become: true
       become_user: "{{ pg_owner }}"
       with_items: "{{ pg_grant_privileges }}"
       loop_control:
@@ -31,12 +32,12 @@
       community.postgresql.postgresql_membership:
         group: "{{ line_item.role }}"
         target_role: "{{ line_item.user }}"
-        state: "{{ line_item.grant|default('present') }}"
+        state: "{{ line_item.grant | default('present') }}"
         db: "{{ pg_database }}"
         login_user: "{{ pg_owner }}"
         login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
         port: "{{ pg_port }}"
-      become: yes
+      become: true
       become_user: "{{ pg_owner }}"
       with_items: "{{ pg_grant_roles }}"
       loop_control:
@@ -44,4 +45,3 @@
       no_log: "{{ disable_logging }}"
       when:
         - pg_grant_roles|length > 0
-  when: not host_is_standby

@@ -3,23 +3,23 @@
   group:
     name: "{{ pgbackrest_group }}"
     state: present
-  become: yes
+  become: true
 
 - name: Ensure pgBackRest system user {{ pgbackrest_user }} exists
   user:
     name: "{{ pgbackrest_user }}"
-    system: yes
+    system: true
     group: "{{ pgbackrest_group }}"
-    create_home: yes
+    create_home: true
     home: "{{ pgbackrest_home }}"
     state: present
-  become: yes
+  become: true
 
 - name: Ensure postgres user {{ pg_owner }} exists in {{ pgbackrest_group }}
   user:
     name: "{{ pg_owner }}"
-    system: yes
+    system: true
     group: "{{ pgbackrest_group }}"
-    create_home: no
+    create_home: false
     state: present
-  become: yes
+  become: true

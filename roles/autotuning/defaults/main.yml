@@ -2,7 +2,7 @@
 pg_instance_name: main
 tuned_profile: "postgres"
 tuned_configuration_dir: "/etc/tuned"
-ssd_disk: no
+ssd_disk: false
 
 supported_os:
   - Debian10
