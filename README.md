@@ -22,7 +22,7 @@ currently supports the following ansible roles:
 
 | Role name                                                                                | Description                                                                                                                                                                                            |
 |------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [autotuning](roles/autotuning/README.md)                                                 | The autotuning role configures the system and Postgres instances for optimal performances. Most of the configuration values are calculated automatically from available resources found on the system. |
+| [tuning](roles/tuning/README.md)                                                         | The tuning role configures the system and Postgres instances for optimal performances. Most of the configuration values are calculated automatically from available resources found on the system.     |
 | [init_dbserver](roles/init_dbserver/README.md)                                           | Initialize the EPAS/PostgreSQL cluster (data) directory.                                                                                                                                               |
 | [install_dbserver](roles/install_dbserver/README.md)                                     | Install EPAS/PostgreSQL database server packages.                                                                                                                                                      |
 | [manage_dbserver](roles/manage_dbserver/README.md)                                       | Manage EPAS/PostgreSQL clusters and covers common tasks.                                                                                                                                               |
@@ -261,8 +261,8 @@ playbook:
       when: "'setup_barmanserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_barman
       when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
-    - role: autotuning
-      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: tuning
+      when: "'tuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 You can customize the above example to install PostgreSQL, EPAS, EFM or PEM or

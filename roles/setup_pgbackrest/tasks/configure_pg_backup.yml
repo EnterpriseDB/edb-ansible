@@ -21,7 +21,7 @@
         value: "on"
   when: standby_present is defined
 
-- name: Apply Postgres autotuning
+- name: Apply Postgres tuning
   ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_postgres_params

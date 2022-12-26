@@ -85,8 +85,8 @@ Below is an example of how to include the `setup_dbt2` role:
       when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_dbt2
       when: "'setup_dbt2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
-    - role: autotuning
-      when: "'autotuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: tuning
+      when: "'tuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 ## Playbook execution examples

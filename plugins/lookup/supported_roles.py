@@ -33,7 +33,7 @@ GROUP_ROLES = {
         'init_dbserver',
         'manage_dbserver',
         'setup_efm',
-        'autotuning',
+        'tuning',
         'setup_repmgr',
         'manage_dbpatches',
         'manage_efm',
@@ -45,7 +45,7 @@ GROUP_ROLES = {
         'setup_replication',
         'manage_dbserver',
         'setup_efm',
-        'autotuning',
+        'tuning',
         'setup_repmgr',
         'manage_dbpatches',
         'manage_efm',
@@ -58,7 +58,7 @@ GROUP_ROLES = {
         'manage_dbserver',
         'setup_pemserver',
         'setup_patroni',
-        'autotuning'
+        'tuning'
     ],
     'pgbouncer': [
         'setup_repo',
