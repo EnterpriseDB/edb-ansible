@@ -1,0 +1,4 @@
+---
+# Entry point of the tuning role
+- name: Include the tuning.yml
+  ansible.builtin.include_tasks: tuning.yml

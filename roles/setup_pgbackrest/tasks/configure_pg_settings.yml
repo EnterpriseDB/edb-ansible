@@ -7,7 +7,7 @@
       - name: archive_command
         value: "pgbackrest --stanza={{ pg_instance_name }} archive-push %p"
 
-- name: Apply Postgres autotuning
+- name: Apply Postgres tuning
   ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: manage_postgres_params

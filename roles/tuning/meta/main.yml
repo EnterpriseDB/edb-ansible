@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: EDB
-  description: The autotuning role configures the system and Postgres instances for optimal performances.
+  description: The tuning role configures the system and Postgres instances for optimal performances.
   company: "EnterpriseDB"
 
   # If the issue tracker for your role is not on github, uncomment the

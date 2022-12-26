@@ -1,6 +1,6 @@
-# autotuning
+# tuning
 
-The autotuning role configures the system and Postgres instances for optimal
+The tuning role configures the system and Postgres instances for optimal
 performances. Most of the configuration values are calculated automatically
 from available resources found on the system.
 
@@ -22,13 +22,13 @@ When executing the role via ansible these are the required variables:
   Database Engine supported are: PG and EPAS
 
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `autotuning` role in your Playbook*
+section: *How to include the `tuning` role in your Playbook*
 
 The rest of the variables can be configured and are available in the:
 
-  * [roles/autotuning/defaults/main.yml](./defaults/main.yml)
-  * [roles/autotuning/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/autotuning/vars/PG.yml](./vars/PG.yml)
+  * [roles/tuning/defaults/main.yml](./defaults/main.yml)
+  * [roles/tuning/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/tuning/vars/PG.yml](./vars/PG.yml)
 
 
 ### `tuned_profile`
@@ -85,9 +85,9 @@ all:
           upstream_node_private_ip: xxx.xxx.xxx.xxx
 ```
 
-### How to include the `autotuning` role in your Playbook
+### How to include the `tuning` role in your Playbook
 
-Below is an example of how to include the `autotuning` role:
+Below is an example of how to include the `tuning` role:
 ```yaml
 ---
 - hosts: pemserver,primary,standby
@@ -107,16 +107,16 @@ Below is an example of how to include the `autotuning` role:
         ssd_disk: yes
 
   roles:
-    - role: autotuning
+    - role: tuning
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
 All the variables are available at:
 
-  * [roles/autotuning/defaults/main.yml](./defaults/main.yml)
-  * [roles/autotuning/vars/EPAS.yml](./vars/EPAS.yml)
-  * [roles/autotuning/vars/PG.yml](./vars/PG.yml)
+  * [roles/tuning/defaults/main.yml](./defaults/main.yml)
+  * [roles/tuning/vars/EPAS.yml](./vars/EPAS.yml)
+  * [roles/tuning/vars/PG.yml](./vars/PG.yml)
 
 ## License
 
