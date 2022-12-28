@@ -59,8 +59,8 @@ class LookupModule(LookupBase):
             filter_etcd_cluster_name = terms[0]
 
         # etcd can be deployed on BDR, barman and proxy nodes
-        for group in ( 'primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
-            'barmanserver', 'witness', 'proxy', 'pgbackrestserver', ):
+        for group in ['primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
+                      'barmanserver', 'witness', 'proxy', 'pgbackrestserver']:
 
             if group not in variables['groups']:
                 continue
@@ -83,12 +83,10 @@ class LookupModule(LookupBase):
 
                     etcd_node = dict(
                         ansible_host=hostvars['ansible_host'],
-                        hostname=hostvars.get(
-                            'hostname', hostvars.get('ansible_hostname')
-                        ),
+                        hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
                         private_ip=hostvars['private_ip'],
                         inventory_hostname=hostvars['inventory_hostname'],
-                        etcd_cluster_name=hostvars.get['etcd_cluster_name'],
+                        etcd_cluster_name=hostvars.get('etcd_cluster_name', hostvars['etcd_cluster_name']),
                     )
 
                     etcd_nodes.append(etcd_node)
