@@ -101,7 +101,7 @@
 - name: Build the list of pgpool2 IPs
   ansible.builtin.set_fact:
     _pgpool2_ip_list: >-
-      {{ _pgpool2_ip_list | default([]) + [ server.private_ip | string ] }}
+      {{ _pgpool2_ip_list | default([]) + [server.private_ip | string] }}
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
     loop_var: server
@@ -109,7 +109,7 @@
 - name: Build the list of pgpool2 nodes when not use_hostname
   ansible.builtin.set_fact:
     _pgpool2_node_list: >-
-      {{ _pgpool2_node_list | default([]) + [ server.private_ip | string ] }}
+      {{ _pgpool2_node_list | default([]) + [server.private_ip | string] }}
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
     loop_var: server
@@ -118,8 +118,8 @@
 
 - name: Build the list of pgpool2 nodes when use_hostname
   ansible.builtin.set_fact:
-    _pgpool2_node_list: >- 
-      {{ _pgpool2_node_list | default ([]) + [ server.hostname | string ] }}
+    _pgpool2_node_list: >-
+      {{ _pgpool2_node_list | default([]) + [server.hostname | string] }}
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
     loop_var: server
