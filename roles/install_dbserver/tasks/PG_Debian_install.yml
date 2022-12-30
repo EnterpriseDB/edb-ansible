@@ -12,6 +12,9 @@
     update_cache: true
   register: install_package
   become: true
+  notify:
+    - Stop PG service
+    - Drop the default PG debian database
 
 - name: Install sslutils
   ansible.builtin.package:
@@ -43,20 +46,5 @@
     pg_version|int >= 14
     and install_bdr_packages|bool
 
-- name: Stop the service {{ pg_service }}
-  ansible.builtin.systemd:
-    name: "{{ pg_service }}"
-    state: stopped
-  when: install_package.changed
-  become: true
-
-- name: Drop the default debian database
-  ansible.builtin.shell: >
-    {{ pg_deb_drop_cluster }} {{ pg_version }} {{ deb_cluster_name }}
-  args:
-    executable: /bin/bash
-  when: install_package.changed
-  register: drop_cluster
-  changed_when: drop_cluster.rc == 0
-  failed_when: drop_cluster.rc != 0
-  become: true
+- name: Flush handlers
+  meta: flush_handlers

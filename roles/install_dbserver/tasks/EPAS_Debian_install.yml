@@ -14,6 +14,9 @@
     update_cache: true
   become: true
   register: install_package
+  notify:
+    - Stop EPAS service
+    - Drop the default EPAS debian database
 
 - name: "Install EPAS < 14 Packages"
   ansible.builtin.package:
@@ -64,18 +67,5 @@
     pg_version|int >= 14
     and install_bdr_packages|bool
 
-- name: Stop the service {{ epas_service }}
-  ansible.builtin.systemd:
-    name: "{{ epas_service }}"
-    state: stopped
-  when: install_package.changed
-  become: true
-
-- name: Drop the default debian database
-  ansible.builtin.shell: >
-    {{ epas_deb_drop_cluster }} --stop {{ pg_version }} {{ deb_cluster_name }}
-  when: install_package.changed
-  register: drop_cluster
-  changed_when: drop_cluster.rc == 0
-  failed_when: drop_cluster.rc != 0
-  become: true
+- name: Flush handlers
+  meta: flush_handlers
