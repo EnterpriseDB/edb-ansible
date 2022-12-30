@@ -10,7 +10,6 @@
       - postgresql-server-dev-{{ pg_version }}
     state: present
     update_cache: true
-  register: install_package
   become: true
   notify:
     - Stop PG service

@@ -13,7 +13,6 @@
     state: present
     update_cache: true
   become: true
-  register: install_package
   notify:
     - Stop EPAS service
     - Drop the default EPAS debian database
