@@ -82,30 +82,33 @@
     - efm_eager_failover|bool
     - efm_install_version|int >= 40
 
-- name: Update efm efm.properties file
-  ansible.builtin.lineinfile:
-    path: "{{ efm_properties }}"
-    regexp: "{{ line_item.name + '=' }}"
-    line: "{{ line_item.name + '=' + line_item.value | string }}"
-    state: present
+- name: Build efm_properties_lines
+  ansible.builtin.set_fact:
+    efm_properties_lines: >
+      {{ efm_properties_lines | default([]) + [
+          {
+            'line': item.name + '=' + item.value | string,
+            'regexp': item.name | regex_escape() + '='
+          }
+      ] }}
   with_items: "{{ efm_node_parameters }}"
-  loop_control:
-    loop_var: line_item
+
+- name: Update efm efm.properties file
+  edb_devops.edb_postgres.linesinfile:
+    path: "{{ efm_properties }}"
+    lines: "{{ efm_properties_lines }}"
   become: true
   no_log: "{{ disable_logging }}"
   register: properties_changes
 
 - name: Update pg_service to bind efm_service
-  ansible.builtin.lineinfile:
+  edb_devops.edb_postgres.linesinfile:
     path: "/etc/systemd/system/{{ pg_service }}.service"
-    line: "{{ item.line }}"
-    regexp: "{{ item.regexp }}"
-    insertafter: "{{ item.insertafter | default('EOF') }}"
+    lines:
+      - line: "BindsTo={{ efm_service }}.service"
+        regexp: "^BindsTo=.*"
+        insertafter: "^\\[Unit\\]$"
   become: true
-  loop:
-    - line: "BindsTo={{ efm_service }}.service"
-      regexp: "^BindsTo=.*"
-      insertafter: "^\\[Unit\\]$"
   when:
     - efm_eager_failover|bool
     - ansible_os_family == 'RedHat'
@@ -144,3 +147,7 @@
   when:
     - pg_service_changed is defined
     - pg_service_changed.changed
+
+- name: Reset efm_properties_lines
+  ansible.builtin.set_fact:
+    efm_properties_lines: []

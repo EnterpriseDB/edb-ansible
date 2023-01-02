@@ -1,19 +1,30 @@
 ---
+- name: Build pgbouncer_auth_user_lines
+  ansible.builtin.set_fact:
+    pgbouncer_auth_user_lines: >
+      {{ pgbouncer_auth_user_lines | default([]) + [
+        {
+          'line': '"' + item.username + '" "' + item.password + '"',
+          'regexp': '^\"' + item.username | regex_escape() + '\".*',
+          'state': item.state | default('present')
+        }
+      ] }}
+  with_items: "{{ pgbouncer_auth_user_list }}"
+
 - name: Manage PgBouncer auth. file entries in {{ pgbouncer_auth_file }}
-  ansible.builtin.lineinfile:
+  edb_devops.edb_postgres.linesinfile:
     path: "{{ pgbouncer_auth_file }}"
-    line: "\"{{ user_item.username }}\" \"{{ user_item.password }}\""
-    regexp: "^\\\"{{ user_item.username | regex_escape() }}\\\".*"
-    state: "{{ user_item.state | default('present') }}"
+    lines: "{{ pgbouncer_auth_user_lines }}"
     create: true
     mode: 0600
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
   when: pgbouncer_auth_user_list|length > 0
-  with_items: "{{ pgbouncer_auth_user_list }}"
-  loop_control:
-    loop_var: user_item
   become: true
+
+- name: Reset pgbouncer_auth_user_lines
+  ansible.builtin.set_fact:
+    pgbouncer_auth_user_lines: []
 
 - name: Reload PgBouncer configuration
   ansible.builtin.shell:

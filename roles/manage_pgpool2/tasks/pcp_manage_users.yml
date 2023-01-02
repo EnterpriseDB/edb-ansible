@@ -20,21 +20,36 @@
   become: true
   become_user: "{{ pg_owner }}"
 
-- name: Remove pcp users
-  ansible.builtin.lineinfile:
-    path: "{{ pcp_configuration_file }}"
-    line: >-
-      {{ user_item.name }}:
-    regexp: "^{{ user_item.name | regex_escape() }}\\:"
-    state: "absent"
+- name: Init pcp_users_lines
+  ansible.builtin.set_fact:
+    pcp_users_lines: []
+
+- name: Build pcp_users_lines
+  ansible.builtin.set_fact:
+    pcp_users_lines: >
+      {{ pcp_users_lines | default([]) + [
+        {
+          'line': item.name,
+          'regexp': '^' + item.name | regex_escape() + '\:',
+          'state': 'absent'
+        }
+      ] }}
   loop: "{{ pcp_users }}"
-  loop_control:
-    loop_var: user_item
   when:
-    - pcp_users|length > 0
-    - user_item.state is defined
-    - user_item.state == 'absent'
+    - item.state is defined
+    - item.state == 'absent'
+
+- name: Remove pcp users
+  edb_devops.edb_postgres.linesinfile:
+    path: "{{ pcp_configuration_file }}"
+    lines: "{{ pcp_users_lines }}"
+  when:
+    - pcp_users_lines|length > 0
   become: true
+
+- name: Reset pcp_users_lines
+  ansible.builtin.set_fact:
+    pcp_users_lines: []
 
 - name: Add pcp users
   ansible.builtin.include_tasks: pcp_add_user.yml

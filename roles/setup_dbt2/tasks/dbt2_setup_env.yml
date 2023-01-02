@@ -1,15 +1,11 @@
 ---
 - name: Configure DBT-2 environment variables for {{ pg_owner }}
-  ansible.builtin.lineinfile:
+  edb_devops.edb_postgres.linesinfile:
     path: "{{ pg_user_home }}/.dbt2rc"
-    line: "export {{ item.name }}={{ item.value }}"
+    lines:
+      - line: "export PGDATABASE={{ pg_dbt2_dbname }}"
+      - line: "export PGPORT={{ pg_port }}"
+      - line: "export DBT2DBNAME={{ pg_dbt2_dbname }}"
     create: true
     mode: "0600"
   become_user: "{{ pg_owner }}"
-  loop:
-    - name: PGDATABASE
-      value: "{{ pg_dbt2_dbname }}"
-    - name: PGPORT
-      value: "{{ pg_port }}"
-    - name: DBT2DBNAME
-      value: "{{ pg_dbt2_dbname }}"

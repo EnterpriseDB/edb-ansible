@@ -1,19 +1,34 @@
 ---
-- name: Remove users from pool_passwd
-  ansible.builtin.lineinfile:
-    path: "{{ pgpool2_pool_passwd_file }}"
-    line: >-
-      {{ user_item.name }}:
-    regexp: "^{{ user_item.name | regex_escape() }}\\:"
-    state: "absent"
+- name: Init pgpool2_users_lines
+  ansible.builtin.set_fact:
+    pgpool2_users_lines: []
+
+- name: Build pgpool2_users_lines
+  ansible.builtin.set_fact:
+    pgpool2_users_lines: >
+      {{ pgpool2_users_lines | default([]) + [
+        {
+          'line': item.name,
+          'regexp': '^' + item.name | regex_escape() + '\:',
+          'state': 'absent'
+        }
+      ] }}
   loop: "{{ pgpool2_users }}"
-  loop_control:
-    loop_var: user_item
   when:
-    - pgpool2_users|length > 0
-    - user_item.state is defined
-    - user_item.state == 'absent'
+    - item.state is defined
+    - item.state == 'absent'
+
+- name: Remove users from pool_passwd
+  edb_devops.edb_postgres.linesinfile:
+    path: "{{ pgpool2_pool_passwd_file }}"
+    lines: "{{ pgpool2_users_lines }}"
+  when:
+    - pgpool2_users_lines|length > 0
   become: true
+
+- name: Reset pgpool2_users_lines
+  ansible.builtin.set_fact:
+    pgpool2_users_lines: []
 
 - name: Add users with SCRAM authentication
   ansible.builtin.command:
