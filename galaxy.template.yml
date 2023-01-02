@@ -30,5 +30,6 @@ build_ignore:
   - tests
   - __pycache__
   - galaxy.template.yml
+  - galaxy-version-policy.md
   - Makefile
   - ".*"

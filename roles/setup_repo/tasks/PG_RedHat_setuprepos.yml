@@ -1,4 +1,10 @@
 ---
+- name: Update the ca-certificates package
+  ansible.builtin.package:
+    name: ca-certificates
+    state: present
+  become: true
+
 - name: Download PGDG GPG key for EL8
   ansible.builtin.rpm_key:
     key: "{{ pg_gpg_key_8 }}"

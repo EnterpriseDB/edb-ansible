@@ -1,4 +1,10 @@
 ---
+- name: Update the ca-certificates package
+  ansible.builtin.package:
+    name: ca-certificates
+    state: present
+  become: true
+
 - name: Install gpg
   ansible.builtin.package:
     name: gpg
