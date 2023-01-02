@@ -24,12 +24,13 @@
   run_once: true
 
 - name: Save PCP credentials
-  ansible.builtin.lineinfile:
+  edb_devops.edb_postgres.linesinfile:
     path: "{{ pcp_passfile }}"
     owner: "{{ pcp_passfile_owner }}"
     group: "{{ pcp_passfile_group }}"
     mode: "{{ pcp_passfile_mode }}"
-    line: "*:*:{{ pcp_admin_user }}:{{ pcp_admin_user_password }}"
+    lines:
+      - line: "*:*:{{ pcp_admin_user }}:{{ pcp_admin_user_password }}"
     create: true
   become: true
 

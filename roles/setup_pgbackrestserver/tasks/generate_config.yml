@@ -124,17 +124,28 @@
     mode: 0600
   become: true
 
+- name: Build pgbackrest_conf_lines
+  ansible.builtin.set_fact:
+    pgbackrest_conf_lines: >
+      {{ pgbackrest_conf_lines | default([]) + [
+        {
+          'line': item.key + '=' + item.value,
+          'insertafter': 'EOF'
+        }
+      ] }}
+  loop: "{{ pgbackrest_standby_configuration }}"
+
 - name: Add standby information to configuration file
   ansible.builtin.lineinfile:
     path: "{{ pgbackrest_configuration_file }}"
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
     mode: 0600
-    insertafter: "EOF"
-    line: '{{ node.key }}={{ node.value }}'
-  loop: "{{ pgbackrest_standby_configuration }}"
-  loop_control:
-    loop_var: node
+    lines: "{{ pgbackrest_conf_lines }}"
   become: true
   when:
     - standby_present is defined
+
+- name: Reset pgbackrest_conf_lines
+  ansible.builtin.set_fact:
+    pgbackrest_conf_lines: []

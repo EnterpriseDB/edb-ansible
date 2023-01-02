@@ -1,5 +1,6 @@
 ---
 use_hostname: true
+etc_hosts_lists: []
 update_etc_file: true
 # Default configuration values
 pgpool2_port: 9999
@@ -9,6 +10,7 @@ pgpool2_wd_port: 9000
 pgpool2_wd_heartbeat_port: 9694
 use_patroni: false
 
+pg_instance_name: main
 # Default user to login from pgpool
 pg_pgpool_database: "postgres"
 pg_pgpool_user: "pgpool"

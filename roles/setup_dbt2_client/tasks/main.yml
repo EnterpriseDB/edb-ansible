@@ -31,11 +31,9 @@
     tasks_from: dbt2_configure_pgpass
 
 - name: "Increase nofile limits for user {{ pg_owner }}"
-  ansible.builtin.lineinfile:
+  edb_devops.edb_postgres.linesinfile:
     path: /etc/security/limits.conf
-    line: "{{ item }}"
-    state: present
-  loop:
-    - "{{ pg_owner }}    hard  nofile  10000"
-    - "{{ pg_owner }}    soft  nofile  10000"
+    lines:
+      - line: "{{ pg_owner }}    hard  nofile  10000"
+      - line: "{{ pg_owner }}    soft  nofile  10000"
   become: true
