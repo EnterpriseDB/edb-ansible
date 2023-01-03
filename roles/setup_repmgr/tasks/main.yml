@@ -11,3 +11,4 @@
 # Entry point of the setup_repmgr role
 - name: Include the setup_repmgr.yml
   include_tasks: setup_repmgr.yml
+  when: "'setup_repmgr' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

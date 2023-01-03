@@ -11,3 +11,4 @@
 # Entry point of the extension_manage role
 - name: Include the manage_extension.yml
   include_tasks: manage_extension.yml
+  when: "'manage_extension' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

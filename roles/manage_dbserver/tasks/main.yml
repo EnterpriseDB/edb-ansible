@@ -12,3 +12,4 @@
 # Entry point of the manage_dbserver role
 - name: Include the manage_dbserver.yml
   include_tasks: manage_dbserver.yml
+  when: "'manage_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

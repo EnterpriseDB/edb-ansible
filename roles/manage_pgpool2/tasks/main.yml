@@ -2,3 +2,4 @@
 # Entry point of the manage_pgpool2 role
 - name: Include the manage_pgpool2.yml
   include_tasks: manage_pgpool2.yml
+  when: "'manage_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

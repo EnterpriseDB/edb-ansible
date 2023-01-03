@@ -11,3 +11,4 @@
 # Entry point of the setup_replication role
 - name: Include the setup_replication.yml
   include_tasks: setup_replication.yml
+  when: "'setup_replication' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

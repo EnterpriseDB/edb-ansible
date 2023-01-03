@@ -11,3 +11,4 @@
 # Entry point of the install_dbserver role
 - name: Include the install_dbserver.yml
   include_tasks: install_dbserver.yml
+  when: "'install_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

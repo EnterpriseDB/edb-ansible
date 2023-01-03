@@ -156,6 +156,8 @@ pg_databases:
     encoding: UTF-8
 ```
 
+### `pg_tablespaces`
+
 Tablesapces management.
 
 ```yaml

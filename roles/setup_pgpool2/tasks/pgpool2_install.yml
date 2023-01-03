@@ -14,6 +14,15 @@
     - ansible_os_family == 'RedHat'
 
 - name: Install pgpoolII package on RedHat
+  ansible.builtin.set_fact:
+    pgpool2_package_name: "https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-7-x86_64/pgpool-II-4.3.3-1.rhel7.x86_64.rpm"
+    pcp_package_name: "https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-7-x86_64/pgpool-II-pcp-4.3.3-1.rhel7.x86_64.rpm"
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - pgpool2_version == 4.3
+
+- name: Install pgpoolII requried package on RedHat
   ansible.builtin.package:
     name:
       - "libevent"
@@ -35,7 +44,7 @@
 
 - name: Install pgpool-II-pcp package on RedHat
   ansible.builtin.package:
-    name: "pgpool-II-pcp"
+    name: "{{ pcp_package_name }}"
     state: present
   when:
     - ansible_os_family == 'RedHat'
