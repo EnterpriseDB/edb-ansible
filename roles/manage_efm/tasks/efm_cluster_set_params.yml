@@ -11,18 +11,28 @@
   ansible.builtin.set_fact:
     efm_listen_host: "{{ hostvars[inventory_hostname].private_ip }}"
 
-- name: Update efm efm.properties file
-  ansible.builtin.lineinfile:
-    path: "{{ efm_properties }}"
-    regexp: "{{ line_item.name + '=' }}"
-    line: "{{ line_item.name + '=' + line_item.value | string }}"
-    state: present
+- name: Build efm_properties_lines
+  ansible.builtin.set_fact:
+    efm_properties_lines: >
+      {{ efm_properties_lines | default([]) + [
+          {
+            'line': item.name + '=' + item.value | string,
+            'regexp': item.name | regex_escape() + '='
+          }
+      ] }}
   with_items: "{{ efm_parameters }}"
-  loop_control:
-    loop_var: line_item
+
+- name: Update efm efm.properties file
+  edb_devops.edb_postgres.linesinfile:
+    path: "{{ efm_properties }}"
+    lines: "{{ efm_properties_lines }}"
   when: efm_parameters|length > 0
   become: true
   register: properties_changes
+
+- name: Reset efm_properties_lines
+  ansible.builtin.set_fact:
+    efm_properties_lines: []
 
 - name: Update pg_service to bind efm_service
   ansible.builtin.lineinfile:

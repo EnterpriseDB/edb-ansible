@@ -1,16 +1,26 @@
 ---
+- name: Build _pgpool2_configuration_lines
+  ansible.builtin.set_fact:
+    _pgpool2_configuration_lines: >
+      {{ _pgpool2_configuration_lines | default([]) + [
+        {
+          'line': item.key + ' = ' + (item.value | string if not item.quoted | default(false) else "'" + item.value | string + "'"),
+          'regexp': '^' + item.key | regex_escape() + '\s*=',
+          'state': item.state | default('present')
+        }
+      ] }}
+  with_items: "{{ pgpool2_configuration_lines }}"
+
 - name: Manage pgpool2 configuration file content in {{ pgpool2_configuration_file }}
-  ansible.builtin.lineinfile:
+  edb_devops.edb_postgres.linesinfile:
     path: "{{ pgpool2_configuration_file }}"
-    line: >-
-      {{ conf_item.key }} = {% if conf_item.quoted | default(false) %}'{% endif %}{{ conf_item.value }}{% if conf_item.quoted | default(false) %}'{% endif %}
-    regexp: "^{{ conf_item.key | regex_escape() }}\\s*="
-    state: "{{ conf_item.state | default('present') }}"
+    lines: "{{ _pgpool2_configuration_lines }}"
     create: true
     mode: 0600
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
-  with_items: "{{ pgpool2_configuration_lines }}"
-  loop_control:
-    loop_var: conf_item
   become: true
+
+- name: Reset _pgpool2_configuration_lines
+  ansible.builtin.set_fact:
+    _pgpool2_configuration_lines: []
