@@ -50,10 +50,14 @@
     - update_etc_file|bool
   become: true
 
+- name: Set http_type based on etcd_ssl
+  ansible.builtin.set_fact:
+    _http_type: "{{ '=https://' if etcd_ssl else '=http://' }}"
+
 - name: Prepare etcd_inital_cluster based on use_hostname
   ansible.builtin.set_fact:
     etcd_initial_cluster: >-
-      {{ etcd_initial_cluster | default([]) + [node.inventory_hostname + '=http://' + node.inventory_hostname + ':' + etcd_peer_port | string] }}
+      {{ etcd_initial_cluster | default([]) + [node.inventory_hostname + _http_type + node.inventory_hostname + ':' + etcd_peer_port | string] }}
   loop: "{{ etcd_cluster_nodes }}"
   loop_control:
     loop_var: node
@@ -64,7 +68,7 @@
 - name: Prepare etcd_inital_cluster based on private_ip
   ansible.builtin.set_fact:
     etcd_initial_cluster: >-
-      {{ etcd_initial_cluster | default([]) + [node.inventory_hostname + '=http://' + node.private_ip + ':' + etcd_peer_port | string] }}
+      {{ etcd_initial_cluster | default([]) + [node.inventory_hostname + _http_type + node.private_ip + ':' + etcd_peer_port | string] }}
   when:
     - not use_hostname|bool
   loop: "{{ etcd_cluster_nodes }}"
@@ -80,11 +84,29 @@
     - update_etc_file|bool
   become: true
 
+- name: Ensure ETCD user and group exists
+  ansible.builtin.include_tasks: etcd_user_group.yml
+
 - name: Create etcd required directories
   ansible.builtin.include_tasks: create_directories.yml
 
 - name: Install etcd package/binaries
   ansible.builtin.include_tasks: etcd_install.yml
+
+- name: Send ETCD users SSL
+  ansible.builtin.import_tasks: etcd_ssl_send_files.yml
+  when: etcd_ssl
+  become: true
+
+- name: Create ETCD CA Key
+  ansible.builtin.import_tasks: etcd_ssl_ca_key.yml
+  when: etcd_ssl
+  become: true
+
+- name: Create ETCD member Key
+  ansible.builtin.import_tasks: etcd_ssl_member_key.yml
+  when: etcd_ssl
+  become: true
 
 - name: Update etcd config and service file
   ansible.builtin.include_tasks: etcd_properties.yml

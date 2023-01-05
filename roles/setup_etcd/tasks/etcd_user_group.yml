@@ -1,0 +1,13 @@
+---
+
+- name: Ensure etcd_group exists
+  ansible.builtin.group:
+    name: "{{ etcd_group }}"
+    state: present
+  become: true
+
+- name: Ensure etcd_user exists
+  ansible.builtin.user:
+    name: "{{ etcd_owner }}"
+    group: "{{ etcd_group }}"
+  become: true

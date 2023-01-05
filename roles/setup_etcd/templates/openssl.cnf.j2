@@ -1,0 +1,29 @@
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+
+[req_distinguished_name]
+
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[ ssl_client ]
+extendedKeyUsage = clientAuth, serverAuth
+basicConstraints = CA:FALSE
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+subjectAltName = @alt_names
+
+[ v3_ca ]
+basicConstraints = CA:TRUE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+authorityKeyIdentifier=keyid:always,issuer
+
+[alt_names]
+DNS.1 = localhost
+DNS.2 = {{ inventory_hostname }}
+IP.1 = {{ hostvars[inventory_hostname].private_ip }}
+IP.2 = 127.0.0.1

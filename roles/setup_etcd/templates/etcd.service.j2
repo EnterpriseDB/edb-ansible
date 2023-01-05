@@ -5,8 +5,8 @@ Wants=network-online.target local-fs.target remote-fs.target time-sync.target
 
 [Service]
 Type=notify
-User={{ pg_owner }}
-Group={{ pg_group }}
+User={{ etcd_owner }}
+Group={{ etcd_group }}
 
 StandardOutput=syslog
 

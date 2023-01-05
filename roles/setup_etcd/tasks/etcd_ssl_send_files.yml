@@ -1,0 +1,49 @@
+---
+
+- name: Send ETCD CA key file
+  ansible.builtin.copy:
+    src: "{{ etcd_user_ca_key }}"
+    dest: "{{ etcd_ca_key }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_group }}"
+    mode: "0600"
+    remote_src: "{{ etcd_remote_ssl_src }}"
+  become: true
+  when:
+    - etcd_user_ca_key | length > 0
+
+- name: Send ETCD CA crt file
+  ansible.builtin.copy:
+    src: "{{ etcd_user_ca_crt }}"
+    dest: "{{ etcd_ca_crt }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_group }}"
+    mode: "0600"
+    remote_src: "{{ etcd_remote_ssl_src }}"
+  become: true
+  when:
+    - etcd_user_ca_crt | length > 0
+
+- name: Send ETCD member key file
+  ansible.builtin.copy:
+    src: "{{ etcd_user_member_key }}"
+    dest: "{{ etcd_member_key }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_group }}"
+    mode: "0600"
+    remote_src: "{{ etcd_remote_ssl_src }}"
+  become: true
+  when:
+    - etcd_user_member_key | length > 0
+
+- name: Send ETCD member crt file
+  ansible.builtin.copy:
+    src: "{{ etcd_user_member_crt }}"
+    dest: "{{ etcd_member_crt }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_group }}"
+    mode: "0600"
+    remote_src: "{{ etcd_remote_ssl_src }}"
+  become: true
+  when:
+    - etcd_user_member_crt | length > 0

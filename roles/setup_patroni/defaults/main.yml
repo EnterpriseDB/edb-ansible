@@ -46,6 +46,12 @@ pg_basebackup_options: ""
 pg_unix_socket_directories:
   - "/var/run/postgresql"
 
+# ETCD ssl
+etcd_ssl: true
+etcd_ca_crt: "{{ etcd_ssl_dir }}/ca-crt.pem"
+etcd_member_key: "{{ etcd_ssl_dir }}/etcd-key-{{ inventory_hostname }}.pem"
+etcd_member_crt: "{{ etcd_ssl_dir }}/etcd-crt-{{ inventory_hostname }}.pem"
+
 # initial configuration for starting postgres
 # example:
 # pg_init_conf_params:
@@ -115,6 +121,7 @@ patroni_pip_packages:
   - python-etcd
   - patroni[dependencies]
   - psycopg2
+  - idna
 
 supported_os:
   - CentOS7

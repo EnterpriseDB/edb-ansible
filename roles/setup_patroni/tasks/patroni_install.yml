@@ -51,6 +51,7 @@
     name:
       - python-etcd
       - psycopg2
+      - idna
     umask: "0022"
     state: present
     executable: pip3
