@@ -361,9 +361,11 @@ def main():
                     changed = True
                 # Match based on regexp
                 elif len(regexp_idxs) > 0:
-                    buffer[regexp_idxs[-1]] = content + to_bytes('\n')
-                    counters['replaced'] += 1
-                    changed = True
+                    if buffer[regexp_idxs[-1]].rstrip(to_bytes('\r\n')) != content:
+                        # Apply the change only if the content differs
+                        buffer[regexp_idxs[-1]] = content + to_bytes('\n')
+                        counters['replaced'] += 1
+                        changed = True
                 # Match based on insertbefore
                 elif len(insertbefore_idxs) > 0:
                     if l_firstmatch:
