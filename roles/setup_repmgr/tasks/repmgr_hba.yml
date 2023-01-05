@@ -1,6 +1,0 @@
-- name: Update HBA configuration
-  ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: manage_hba_conf
-  vars:
-    pg_hba_ip_addresses: "{{ repmgr_allow_ip_addresses }}"

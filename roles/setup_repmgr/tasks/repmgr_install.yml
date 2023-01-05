@@ -1,5 +1,0 @@
-- name: Install repmgr package
-  ansible.builtin.package:
-    name: "{{ repmgr_package_name }}"
-    state: present
-  become: true

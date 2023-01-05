@@ -229,22 +229,6 @@ cases:
     - debian10
     - oraclelinux7
     - ubuntu20
-  setup_repmgr:
-    pg_version:
-    - 10
-    - 11
-    - 12
-    - 13
-    - 14
-    pg_type:
-    - PG
-    os:
-    - centos7
-    - rocky8
-    - debian9
-    - debian10
-    - ubuntu20
-    - oraclelinux7
   setup_hammerdbserver:
     pg_version:
     - 10

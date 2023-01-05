@@ -34,7 +34,6 @@ GROUP_ROLES = {
         'manage_dbserver',
         'setup_efm',
         'tuning',
-        'setup_repmgr',
         'manage_dbpatches',
         'manage_efm',
         'setup_patroni',
@@ -46,7 +45,6 @@ GROUP_ROLES = {
         'manage_dbserver',
         'setup_efm',
         'tuning',
-        'setup_repmgr',
         'manage_dbpatches',
         'manage_efm',
         'setup_patroni',
@@ -89,7 +87,6 @@ GROUP_ROLES = {
         'setup_repo',
         'install_dbserver',
         'setup_efm',
-        'setup_repmgr',
         'manage_dbpatches',
         'manage_efm',
     ],
@@ -174,15 +171,6 @@ class LookupModule(LookupBase):
                     set(supported_roles)
                     | set(['setup_hammerdb'])
                 )
-            # Special case for the witness nodes when the host variable
-            # init_dbserver is set to true. This is required for repmgr: the
-            # witness node must have a dedicated database instance running.
-            if (group in ['witness'] and hostvars.get('init_dbserver', False)):
-                supported_roles = list(
-                    set(supported_roles)
-                    | set(['init_dbserver'])
-                )
-
             # BDR cases
             if (group in ['primary'] and hostvars.get('bdr')):
                 # BDR nodes are part of the primary group and must have the

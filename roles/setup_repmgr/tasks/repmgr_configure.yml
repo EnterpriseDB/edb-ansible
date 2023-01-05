@@ -1,8 +1,0 @@
-- name: Write repmgr.conf
-  ansible.builtin.template:
-    src: repmgr.conf.j2
-    dest: "{{ repmgr_configuration_file }}"
-    mode: "0600"
-    owner: "{{ pg_owner }}"
-    group: "{{ pg_group }}"
-  become: true
