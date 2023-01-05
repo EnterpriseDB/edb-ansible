@@ -1,0 +1,92 @@
+---
+
+- name: Check if the root CA key exists
+  ansible.builtin.stat:
+    path: "{{ etcd_ca_key }}"
+  become: true
+  register: _etcd_ca_key
+
+- name: Check if the CA crt exists
+  ansible.builtin.stat:
+    path: "{{ etcd_ca_crt }}"
+  become: true
+  register: _etcd_ca_crt
+
+- name: Create etcd CA Key
+  ansible.builtin.shell:
+    cmd: >-
+      openssl genrsa \
+              -out {{ etcd_ca_key }} \
+              2048
+  become: true
+  become_user: "{{ etcd_owner }}"
+  when: not _etcd_ca_key.stat.exists
+  run_once: true
+  delegate_to: "{{ etcd_cluster_nodes[0].inventory_hostname }}"
+
+- name: Create etcd CA cert
+  ansible.builtin.shell:
+    cmd: >-
+      openssl req -x509 -new \
+              -nodes \
+             -key {{ etcd_ca_key }} \
+             -days {{ etcd_ssl_valid_days }} \
+             -out {{ etcd_ca_crt }} \
+             -subj "/CN=etcd-ca"
+  become: true
+  become_user: "{{ etcd_owner }}"
+  when: not _etcd_ca_crt.stat.exists
+  run_once: true
+  delegate_to: "{{ etcd_cluster_nodes[0].inventory_hostname }}"
+
+- name: Fetch root CA key
+  ansible.builtin.slurp:
+    src: "{{ etcd_ca_key }}"
+  register: _local_ca_key_b64
+  become: true
+  when: not _etcd_ca_key.stat.exists
+  run_once: true
+  delegate_to: "{{ etcd_cluster_nodes[0].inventory_hostname }}"
+
+- name: Fetch root CA cert
+  ansible.builtin.slurp:
+    src: "{{ etcd_ca_crt }}"
+  register: _local_ca_crt_b64
+  become: true
+  when: not _etcd_ca_crt.stat.exists
+  run_once: true
+  delegate_to: "{{ etcd_cluster_nodes[0].inventory_hostname }}"
+
+- name: Set CA cert and key in local variables
+  ansible.builtin.set_fact:
+    _local_ca_key: "{{ _local_ca_key_b64.content | b64decode | trim }}"
+    _local_ca_crt: "{{ _local_ca_crt_b64.content | b64decode | trim }}"
+  when:
+    - not _etcd_ca_key.stat.exists
+    - not _etcd_ca_crt.stat.exists
+
+- name: Ensure CA key is available on  nodes
+  ansible.builtin.lineinfile:
+    path: "{{ etcd_ca_key }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_group }}"
+    mode: 0600
+    line: "{{ _local_ca_key }}"
+    create: true
+  when:
+    - inventory_hostname != etcd_cluster_nodes[0].inventory_hostname
+    - not _etcd_ca_crt.stat.exists
+  become: true
+
+- name: Ensure CA cert is available on  nodes
+  ansible.builtin.lineinfile:
+    path: "{{ etcd_ca_crt }}"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_group }}"
+    mode: 0600
+    line: "{{ _local_ca_crt }}"
+    create: true
+  when:
+    - inventory_hostname != etcd_cluster_nodes[0].inventory_hostname
+    - not _etcd_ca_crt.stat.exists
+  become: true

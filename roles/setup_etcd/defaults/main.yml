@@ -6,6 +6,8 @@ pg_type: "PG"
 pg_version: 14
 pg_owner: "postgres"
 pg_group: "postgres"
+etcd_owner: "{{ pg_owner }}"
+etcd_group: "{{ pg_group }}"
 
 use_hostname: true
 
@@ -27,13 +29,30 @@ etcd_initial_cluster_state: "new"
 etcd_cluster_nodes: []
 etcd_data_dir: "/var/lib/etcd"
 etcd_config_dir: "/etc/etcd"
+etcd_ssl_dir: "{{ etcd_config_dir }}/ssl"
 etcd_config: "{{ etcd_config_dir }}/etcd-{{ etcd_version }}.conf"
-etcd_owner: "{{ pg_owner }}"
 etcd_download_dir: "/tmp/etcd"
 etcd_download_mode: "0755"
 etcd_bin_dir: "/usr/bin"
 etcd_certificates: []
 
+# CA key and ETCD member key file names
+etcd_ca_key: "{{ etcd_ssl_dir }}/ca-key.pem"
+etcd_ca_crt: "{{ etcd_ssl_dir }}/ca-crt.pem"
+etcd_member_key: "{{ etcd_ssl_dir }}/etcd-key-{{ inventory_hostname }}.pem"
+etcd_member_csr: "{{ etcd_ssl_dir }}/etcd-{{ inventory_hostname }}.csr"
+etcd_member_crt: "{{ etcd_ssl_dir }}/etcd-crt-{{ inventory_hostname }}.pem"
+etcd_ssl_valid_days: 10000
+
+# User defined key variables
+etcd_remote_ssl_src: false
+etcd_user_ca_key: ""
+etcd_user_ca_crt: ""
+etcd_user_member_key: ""
+etcd_user_member_crt: ""
+
+# Enable SSL
+etcd_ssl: true
 update_etc_file: true
 etc_hosts_lists: []
 # etcd parametrs needed for initialization

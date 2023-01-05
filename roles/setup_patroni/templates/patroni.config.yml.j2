@@ -5,7 +5,13 @@ restapi:
   listen: "{{ patroni_rest_api_listen_addrr }}:{{ patroni_rest_api_port }}"
   connect_address: "{{ patroni_rest_api_connect_addrr }}"
 etcd3:
-    hosts:
+{% if etcd_ssl %}
+  protocol: https
+  cert: {{ etcd_member_crt }}
+  key:  {{ etcd_member_key }}
+  cacert: {{ etcd_ca_crt }}
+{% endif %}
+  hosts:
     {% for node in etcd_cluster_nodes -%}
     - {{ node.inventory_hostname if use_hostname else node.private_ip }}:{{ etcd_client_port|string }}
     {% endfor %}
