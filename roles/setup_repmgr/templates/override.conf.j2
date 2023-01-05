@@ -1,9 +1,0 @@
-[Unit]
-After={{ pg_service }}.service
-
-[Service]
-User={{ pg_owner }}
-Group={{ pg_group }}
-RuntimeDirectory='repmgr'
-
-Environment=REPMGRDCONF={{ repmgr_configuration_file }}
