@@ -14,6 +14,9 @@
 - name: Gather service facts
   service_facts:
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Open Postgres TCP port {{ pg_port }}
   ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"
@@ -52,6 +55,8 @@
       import_tasks: create_directories.yml
     - name: Import pg_setup_systemd task
       import_tasks: pg_setup_systemd.yml
+    - name: Import setup_locale task
+      import_tasks: setup_locale.yml
     - name: Import pg_initdb task
       import_tasks: pg_initdb.yml
     - name: Import pg_set_superuser_password task

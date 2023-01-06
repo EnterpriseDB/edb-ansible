@@ -10,6 +10,7 @@
   when:
     - ansible_facts.services[pg_service] is defined
     - ansible_facts.services[pg_service].state == 'running'
+    - not ansible_module_running_in_container
   become: true
 
 - name: Copy global systemd unit file to /etc/systemd/system
@@ -23,6 +24,7 @@
   become: true
   when:
     - ansible_os_family == 'RedHat'
+    - not ansible_module_running_in_container
 
 - name: Update systemd unit file in Redhat
   ansible.builtin.lineinfile:
@@ -50,6 +52,7 @@
       insertafter: "^\\[Service\\]$"
   when:
     - ansible_os_family == 'RedHat'
+    - not ansible_module_running_in_container
 
 - name: Update systemd unit file in Debian
   ansible.builtin.lineinfile:
@@ -82,6 +85,7 @@
       insertafter: "^\\[Service\\]$"
   when:
     - ansible_os_family == 'Debian'
+    - not ansible_module_running_in_container
 
 - name: Unlimited core file size when core_dump enable in systemd file
   ansible.builtin.lineinfile:
@@ -97,3 +101,4 @@
   when:
     - enable_core_dump|bool
     - ansible_os_family == 'RedHat'
+    - not ansible_module_running_in_container

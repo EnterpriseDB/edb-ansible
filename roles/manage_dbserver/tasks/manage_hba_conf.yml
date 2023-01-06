@@ -39,4 +39,16 @@
     state: reloaded
   become: true
   no_log: "{{ disable_logging }}"
-  when: hba_update.changed
+  when:
+    - hba_update.changed
+    - not ansible_module_running_in_container
+
+- name: Reload the pg service in container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} reload
+  when:
+    - hba_update.changed
+    - ansible_module_running_in_container
+  become: true
+  become_method: su
+  become_user: "{{ pg_owner }}"

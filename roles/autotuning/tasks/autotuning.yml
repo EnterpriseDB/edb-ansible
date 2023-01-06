@@ -8,11 +8,16 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Include the tuned package installation tasks
   include_tasks: install_tuned.yml
+  when: not ansible_module_running_in_container
 
 - name: Include tuned setting up tasks
   include_tasks: setup_tuned.yml
+  when: not ansible_module_running_in_container
 
 - name: Include Postgres tuning tasks
   include_tasks: tune_postgres.yml

@@ -43,11 +43,23 @@
   become: true
   when: ansible_distribution_major_version == '8'
 
+- name: Check for ubi-EL8
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/ubi.repo
+  register: ubi_state
+
+- name: Enable ubi-8-codeready-builder
+  ansible.builtin.command: >
+    dnf config-manager --set-enabled ubi-8-codeready-builder
+  when: ubi_state.stat.exists
+
 - name: Enable powertools for EL8
   ansible.builtin.command: >
     dnf config-manager --set-enabled powertools
   become: true
-  when: ansible_distribution_major_version == '8'
+  when:
+    - ansible_distribution_major_version == '8'
+    - not ubi_state.stat.exists
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:

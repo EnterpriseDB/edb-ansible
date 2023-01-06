@@ -38,6 +38,20 @@
     - params.changed
     - params_restart_required is defined
     - not params_restart_required
+    - not ansible_module_running_in_container
+
+- name: Reload the pg service in container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} relaod
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - params_restart_required is defined
+    - not params_restart_required
+    - ansible_module_running_in_container
+  become: true
+  become_method: su
+  become_user: "{{ pg_owner }}"
 
 - name: Restart the pg service
   systemd:
@@ -50,6 +64,20 @@
     - params.changed
     - params_restart_required is defined
     - params_restart_required
+    - not ansible_module_running_in_container
+
+- name: Restart the pg service in container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} restart
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - params_restart_required is defined
+    - params_restart_required
+    - ansible_module_running_in_container
+  become: true
+  become_method: su
+  become_user: "{{ pg_owner }}"
 
 - name: Reset the restart_required
   set_fact:

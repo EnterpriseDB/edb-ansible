@@ -10,6 +10,9 @@
 - name: Gather service facts
   service_facts:
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Open Postgres TCP port {{ pg_port }}
   ansible.posix.firewalld:
     port: "{{ pg_port }}/tcp"

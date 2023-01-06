@@ -45,4 +45,13 @@
     state: started
     enabled: true
     no_block: false
+  when: not ansible_module_running_in_container
   become: true
+
+- name: Start pg service in container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} start
+  when: ansible_module_running_in_container
+  become: true
+  become_method: su
+  become_user: "{{ pg_owner }}"

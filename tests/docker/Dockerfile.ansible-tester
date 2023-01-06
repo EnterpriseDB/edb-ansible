@@ -14,6 +14,7 @@ RUN ansible-galaxy collection install community.postgresql:=1.6.0
 RUN ansible-galaxy collection install ansible.posix:=1.3.0
 RUN ansible-galaxy collection install community.general:=2.5.8
 RUN ansible-galaxy collection install community.crypto:=1.9.12
+RUN ansible-galaxy collection install community.docker:=2.7.1
 RUN mkdir -p /etc/pg-ansible
 COPY ./hypersql_devops-postgres* /etc/pg-ansible/
 RUN cd /etc/pg-ansible; for FILE in *; do ansible-galaxy collection install $FILE --force; done

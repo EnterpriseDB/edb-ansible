@@ -84,6 +84,16 @@ Example:
 pg_local_wal_archive_dir: "/var/lib/pgsql/14/archive"
 ```
 
+### `pg_locale`
+
+Using this parameters user can set the database locale.
+
+Example:
+
+```yaml
+pg_locale: "C.utf8"
+```
+
 The rest of the variables can be configured and are available in the:
 
 - [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)

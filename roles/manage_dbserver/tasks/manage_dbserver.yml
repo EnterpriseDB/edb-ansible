@@ -2,6 +2,9 @@
 - name: Reference Postgres variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Include manage dbserver tasks
   block:
     - name: Import manage_users

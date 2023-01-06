@@ -6,6 +6,9 @@
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}.yml"
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Reference pg_type variables
   include_vars: "../../init_dbserver/vars/{{ pg_type }}_RedHat.yml"
 
