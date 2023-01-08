@@ -1,0 +1,59 @@
+---
+
+- name: Check if the member key exists
+  ansible.builtin.stat:
+    path: "{{ etcd_member_key }}"
+  become: true
+  register: _etcd_member_key
+
+- name: Check if member cert exists
+  ansible.builtin.stat:
+    path: "{{ etcd_member_crt }}"
+  become: true
+  register: _etcd_member_crt
+
+- name: Copy the etcd config file
+  ansible.builtin.template:
+    src: openssl.cnf.j2
+    dest: "{{ etcd_ssl_dir }}/openssl.conf"
+    owner: "{{ etcd_owner }}"
+    group: "{{ etcd_owner }}"
+    mode: 0644
+  become: true
+
+- name: Create member key
+  ansible.builtin.command:
+    cmd: >-
+      openssl genrsa -out {{ etcd_member_key }} 2048
+  become: true
+  become_user: "{{ etcd_owner }}"
+  when: not _etcd_member_key.stat.exists
+
+- name: Create certificate request
+  ansible.builtin.shell:
+    cmd: >-
+      openssl req -new \
+        -key {{ etcd_member_key }} \
+        -out {{ etcd_member_csr }} \
+        -subj "/CN={{ inventory_hostname }}" \
+        -config "{{ etcd_ssl_dir }}/openssl.conf"
+  become: true
+  become_user: "{{ etcd_owner }}"
+  when: not _etcd_member_key.stat.exists
+
+- name: Create the CA-signed server certificate
+  ansible.builtin.shell:
+    cmd: >-
+      openssl x509 -req \
+        -in {{ etcd_member_csr }} \
+        -days {{ etcd_ssl_valid_days }} \
+        -CA {{ etcd_ca_crt }} \
+        -CAkey {{ etcd_ca_key }} \
+        -CAcreateserial \
+        -extensions ssl_client \
+        -extfile {{ etcd_ssl_dir }}/openssl.conf \
+        -out {{ etcd_member_crt }}
+  become: true
+  become_user: "{{ etcd_owner }}"
+  when:
+    - not _etcd_member_crt.stat.exists
