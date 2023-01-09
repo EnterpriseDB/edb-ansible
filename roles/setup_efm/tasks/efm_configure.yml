@@ -134,7 +134,7 @@
   become: true
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Reset efm_properties_lines
   ansible.builtin.set_fact:
