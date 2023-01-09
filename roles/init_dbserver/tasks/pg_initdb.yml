@@ -32,6 +32,15 @@
   when: ansible_os_family == 'Debian'
   become: true
 
+- name: Add EDB Postgres Tuner to shared_preload_libraries
+  ansible.builtin.set_fact:
+    pg_shared_libraries_list: "{{ pg_shared_libraries_list + \
+                               ['$libdir/edb_pg_tuner'] }}"
+  when: >-
+    enable_edb_repo|bool
+    and install_edb_postgres_tuner|bool
+    and pg_version|int >= 11
+
 - name: Copy the postgresql.conf.template to the server
   ansible.builtin.template:
     src: postgresql.conf.template

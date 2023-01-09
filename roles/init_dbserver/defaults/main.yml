@@ -47,7 +47,11 @@ pg_unix_socket_directories:
 # pg_init_conf_params:
 # - name: "edb_filter_log.redact_password_commands"
 #   value: "true"
-pg_init_conf_params: []
+
+# For ease of configuration, we can always add edb_pg_tuner.autotune whether
+# the extension is installed or not, because these types or settings will be
+# simply ignored if it doesn't apply to anything.
+pg_init_conf_params: [{"name": "edb_pg_tuner.autotune", "value": "true"}]
 # postgres port
 pg_port: 5432
 

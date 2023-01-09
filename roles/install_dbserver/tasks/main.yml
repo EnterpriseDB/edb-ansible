@@ -2,3 +2,33 @@
 # Entry point of the install_dbserver role
 - name: Include the install_dbserver.yml
   ansible.builtin.include_tasks: install_dbserver.yml
+
+- name: Set Postgres Tuner package prefix (PG)
+  ansible.builtin.set_fact:
+    pg_tuner_prefix: "{{ pg_type | lower }}"
+  when: >-
+    pg_type == "PG"
+    and enable_edb_repo|bool
+    and install_edb_postgres_tuner|bool
+    and pg_version|int >= 11
+
+- name: Set Postgres Tuner package prefix (EPAS)
+  ansible.builtin.set_fact:
+    pg_tuner_prefix: "as"
+  when: >-
+    pg_type == "EPAS"
+    and enable_edb_repo|bool
+    and install_edb_postgres_tuner|bool
+    and pg_version|int >= 11
+
+- name: Install EDB Postgres Tuner
+  ansible.builtin.package:
+    name:
+      - "edb-{{ pg_type | lower }}{{ pg_version }}-\
+        postgres-tuner{{ pg_tuner_version }}"
+    state: present
+  become: true
+  when: >-
+    enable_edb_repo|bool
+    and install_edb_postgres_tuner|bool
+    and pg_version|int >= 11
