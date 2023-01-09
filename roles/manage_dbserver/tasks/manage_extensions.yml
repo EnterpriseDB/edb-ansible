@@ -11,6 +11,16 @@
   become_user: "{{ pg_owner }}"
   register: db_status
 
+- name: Add EDB Postgres Tuner to managed extensions
+  ansible.builtin.set_fact:
+    pg_extensions: "{{ pg_extensions + [{\"name\": \"edb_pg_tuner\", \
+                                         \"database\": \"{{ pg_database }}\", \
+                                         \"state\": \"present\"}] }}"
+  when: >-
+    enable_edb_repo|bool
+    and install_edb_postgres_tuner|bool
+    and pg_version|int >= 11
+
 - name: Manage postgres extensions
   community.postgresql.postgresql_ext:
     name: "{{ line_item.name }}"
