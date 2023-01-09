@@ -112,6 +112,7 @@
   become: true
   when:
     - efm_eager_failover|bool
+    - ansible_os_family == 'RedHat'
   notify:
     - Force systemd to reread configs after changes
 
