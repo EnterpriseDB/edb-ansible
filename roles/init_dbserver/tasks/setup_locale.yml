@@ -7,13 +7,7 @@
   failed_when: false
   register: locale_stat
 
-- name: Set default locale
-  ansible.builtin.command: >
-    echo $LANG
-  when: locale_stat.stdout_lines | length < 1
-  register: default_locale
-
 - name: Set pg_locale to default locale
   ansible.builtin.set_fact:
-    pg_locale: "{{ default_locale.stdout }}"
+    pg_locale: "{{ ansible_env.LANG }}"
   when: locale_stat.stdout_lines | length < 1
