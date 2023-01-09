@@ -1,1 +1,4 @@
 ---
+- name: Force systemd to reread configs after changes
+  ansible.builtin.systemd:
+    daemon_reload: true

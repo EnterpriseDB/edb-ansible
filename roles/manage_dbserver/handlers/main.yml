@@ -1,1 +1,6 @@
 ---
+- name: Reload the pg service
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: true
+    state: reloaded

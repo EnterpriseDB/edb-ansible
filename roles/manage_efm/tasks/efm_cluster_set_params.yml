@@ -1,5 +1,4 @@
 ---
-
 - name: Add encrypted EFM password to efm parameters list
   ansible.builtin.set_fact:
     efm_parameters: "{{ efm_parameters + efm_password_parameters }}"

@@ -5,6 +5,7 @@ pg_efm_user_password: ""
 # efm data dir
 pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
 pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
+efm_service_file: "/lib/systemd/system/{{ efm_service }}.service"
 
 pg_ssl: true
 
