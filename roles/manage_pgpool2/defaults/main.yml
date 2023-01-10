@@ -19,6 +19,7 @@ supported_pg_version:
   - 12
   - 13
   - 14
+  - 15
 
 supported_pgpool2_version:
   - 4.3

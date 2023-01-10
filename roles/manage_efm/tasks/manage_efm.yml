@@ -14,6 +14,12 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
+- name: Check if Database Engine is currently supported
+  ansible.builtin.fail:
+    msg: "Database Engine = {{ pg_type }} {{ pg_version }} is not supported"
+  when: >
+    pg_type == 'EPAS' and pg_version|int == 15
+
 - name: Check support for efm
   ansible.builtin.fail:
     msg: "efm version = {{ efm_version }} not supported.
