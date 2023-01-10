@@ -12,7 +12,7 @@ import yaml
 
 
 class PgVersionChecker(argparse.Action):
-    available_versions = ['10', '11', '12', '13', '14']
+    available_versions = ['10', '11', '12', '13', '14', '15']
 
     def __call__(self, parser, namespace, values, option_string=None):
         for v in values:
