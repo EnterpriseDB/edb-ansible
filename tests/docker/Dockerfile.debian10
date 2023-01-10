@@ -18,4 +18,3 @@ RUN apt-add-repository 'deb http://security.debian.org/debian-security stretch/u
 RUN apt-get update -y
 RUN apt-get install openjdk-8-jdk -y
 RUN systemctl disable ssh
-
