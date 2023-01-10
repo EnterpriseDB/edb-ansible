@@ -31,8 +31,15 @@ log_autovacuum_min_duration = 0
 autovacuum_max_workers = 5
 autovacuum_vacuum_cost_limit = 3000
 idle_in_transaction_session_timeout = 10min
+{% if enable_edb_repo|bool and install_edb_postgres_tuner|bool and pg_version|int >= 11 %}
+{{ pg_shared_libraries_list.append('$libdir/edb_pg_tuner') }}
+{% endif %}
 shared_preload_libraries = '{{ pg_shared_libraries_list | join(",") }}'
 cluster_name = '{{ pg_instance_name }}'
+# For ease of configuration, we can always add edb_pg_tuner.autotune whether
+# the extension is installed or not, because these types or settings will be
+# simply ignored if it doesn't apply to anything.
+edb_pg_tuner.autotune = on
 {% if pg_init_conf_params|length > 0 %}
 {% for item in pg_init_conf_params %}
 {{ item.name }} = '{{ item.value }}'

@@ -1,0 +1,5 @@
+---
+edb_tuner_extension:
+  name: edb_pg_tuner
+  database: "{{ pg_database }}"
+  state: present
