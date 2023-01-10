@@ -88,6 +88,11 @@ services:
     volumes:
     - .:/workspace
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    tmpfs:
+    - /run
+    - /tmp
+    - /run/sshd
+    - /run/lock
   primary1-debian9:
     privileged: true
     build:
