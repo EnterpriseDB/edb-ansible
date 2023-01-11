@@ -8,6 +8,12 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Check if Database Engine is currently supported
+  ansible.builtin.fail:
+    msg: "Database Engine = {{ pg_type }} {{ pg_version }} is not supported"
+  when: >
+    pg_type == 'EPAS' and pg_version|int == 15
+
 - name: Include the package installation tasks
   ansible.builtin.include_tasks: install_packages.yml
 
