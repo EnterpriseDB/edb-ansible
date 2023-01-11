@@ -15,7 +15,7 @@
   ansible.builtin.set_fact:
     efm_witness: "{{ 'true' if ('witness' in group_names) else 'false' }}"
 
-- name: Prepare the necessary parameters
+- name: Prepare the necessary parameters when not use_hostname
   ansible.builtin.set_fact:
     efm_node_parameters:
       - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
@@ -24,7 +24,7 @@
       - { name: is.witness, value: "{{ efm_witness }}" }
   when: not use_hostname|bool
 
-- name: Prepare the necessary parameters
+- name: Prepare the necessary parameters when use_hostname
   ansible.builtin.set_fact:
     efm_node_parameters:
       - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
@@ -99,7 +99,8 @@
     lines: "{{ efm_properties_lines }}"
   become: true
   no_log: "{{ disable_logging }}"
-  register: properties_changes
+  notify:
+    - Force systemd to reread configs after changes
 
 - name: Update pg_service to bind efm_service
   edb_devops.edb_postgres.linesinfile:
@@ -112,7 +113,8 @@
   when:
     - efm_eager_failover|bool
     - ansible_os_family == 'RedHat'
-  register: pg_service_changed
+  notify:
+    - Force systemd to reread configs after changes
 
 - name: Populate service facts
   ansible.builtin.service_facts:
@@ -131,22 +133,8 @@
     state: started
   become: true
 
-- name: Restart efm service
-  ansible.builtin.systemd:
-    name: "{{ efm_service }}"
-    enabled: true
-    state: restarted
-  become: true
-  when:
-    - ( efm_nodes_update.changed or properties_changes.changed )
-    - efm_service_file.stat.exists
-
-- name: Force systemd to reread configs of pg_service after changes
-  ansible.builtin.systemd:
-    daemon_reload: true
-  when:
-    - pg_service_changed is defined
-    - pg_service_changed.changed
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Reset efm_properties_lines
   ansible.builtin.set_fact:

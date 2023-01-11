@@ -18,10 +18,11 @@ patroni_bin_dir: "{{ '/usr/local/bin' if ansible_distribution_major_version == '
 pass_dir: "~/.edb"
 passfile: ""
 pg_postgres_conf_params: []
-disable_logging: true
 # Example:
 # - name: listen_addresses
 #   value: "*"
+
+disable_logging: true
 
 pg_hba_ip_addresses: []
 pg_slots: []
