@@ -29,14 +29,9 @@
   loop_control:
     loop_var: line_item
   no_log: "{{ disable_logging }}"
-  register: hba_update
   throttle: 1
+  notify:
+    - Reload the pg service
 
-- name: Reload the pg service
-  ansible.builtin.systemd:
-    name: "{{ pg_service }}"
-    daemon_reload: true
-    state: reloaded
-  become: true
-  no_log: "{{ disable_logging }}"
-  when: hba_update.changed
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

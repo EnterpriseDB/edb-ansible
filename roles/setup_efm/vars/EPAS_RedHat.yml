@@ -8,6 +8,7 @@ pg_efm_user_password: ""
 # efm data dir
 pg_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
 pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
+efm_service_file: "/usr/lib/systemd/system/{{ efm_service }}.service"
 
 pg_ssl: true
 
