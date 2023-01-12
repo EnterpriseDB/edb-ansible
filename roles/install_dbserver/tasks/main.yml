@@ -2,3 +2,13 @@
 # Entry point of the install_dbserver role
 - name: Include the install_dbserver.yml
   ansible.builtin.include_tasks: install_dbserver.yml
+
+- name: Install EDB Postgres Tuner
+  ansible.builtin.package:
+    name: "{{ edb_tuner_package }}"
+    state: present
+  become: true
+  when: >-
+    enable_edb_repo|bool
+    and install_edb_postgres_tuner|bool
+    and pg_version|int >= 11

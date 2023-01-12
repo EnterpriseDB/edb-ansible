@@ -47,6 +47,7 @@ pg_unix_socket_directories:
 # pg_init_conf_params:
 # - name: "edb_filter_log.redact_password_commands"
 #   value: "true"
+
 pg_init_conf_params: []
 # postgres port
 pg_port: 5432
