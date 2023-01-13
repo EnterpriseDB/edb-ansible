@@ -31,7 +31,7 @@ log_autovacuum_min_duration = 0
 autovacuum_max_workers = 5
 autovacuum_vacuum_cost_limit = 3000
 idle_in_transaction_session_timeout = 10min
-{% if enable_edb_repo|bool and install_edb_postgres_tuner|bool and pg_version|int >= 11 %}
+{% if enable_edb_repo|bool and install_edb_postgres_tuner|bool and pg_version|int >= 11 and ansible_os_family == 'RedHat' %}
 {{ pg_shared_libraries_list.append('$libdir/edb_pg_tuner') }}
 {% endif %}
 shared_preload_libraries = '{{ pg_shared_libraries_list | join(",") }}'
