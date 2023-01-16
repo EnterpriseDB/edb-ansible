@@ -1,6 +1,10 @@
 ---
-
 hammerdb_version: 4.6
+hammerdb_filename: "HammerDB-{{ hammerdb_version }}-\
+                    {{ 'RHEL' if ansible_os_family == 'RedHat' else 'Linux' }}\
+                    {{ ansible_distribution_major_version if \
+                    ansible_os_family == 'RedHat'}}.tar.gz"
+hammerdb_url: "https://github.com/TPC-Council/HammerDB/releases/download/"
 supported_os:
   - CentOS8
   - RHEL8

@@ -1,14 +1,19 @@
 ---
+- name: Re-gather facts as non-root ansible user
+  ansible.builtin.gather_facts:
+  become: false
 
 - name: Download HammerDB
-  ansible.builtin.raw: curl -OL https://github.com/TPC-Council/HammerDB/releases/download/v{{ hammerdb_version }}/HammerDB-{{ hammerdb_version }}-Linux.tar.gz
-  become: false
-  changed_when: true
+  ansible.builtin.get_url:
+    url: "{{ hammerdb_url }}/v{{ hammerdb_version }}/{{ hammerdb_filename }}"
+    dest: "{{ ansible_user_dir }}/{{ hammerdb_filename }}"
+    mode: '0644'
 
 - name: Install HammerDB
-  ansible.builtin.raw: tar -xvf HammerDB-{{ hammerdb_version }}-Linux.tar.gz
-  become: false
-  changed_when: true
+  ansible.builtin.unarchive:
+    src: "{{ ansible_user_dir }}/{{ hammerdb_filename }}"
+    dest: "{{ ansible_user_dir }}"
+    remote_src: true
 
 # We need this Azure Database hack until this is resolved:
 # https://github.com/TPC-Council/HammerDB/issues/163
