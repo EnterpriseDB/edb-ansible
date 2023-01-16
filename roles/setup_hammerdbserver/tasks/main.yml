@@ -42,16 +42,6 @@
 - name: Include HammerDB installation
   ansible.builtin.include_tasks: install_hammerdb.yml
 
-- name: Create TPROC-C run scripts
-  ansible.builtin.include_role:
-    name: setup_hammerdb
-    tasks_from: install_tproc-c_run_scripts
-
-- name: Create TPROC-C load scripts
-  ansible.builtin.include_role:
-    name: setup_hammerdb
-    tasks_from: install_tproc-c_load_scripts
-
 - name: Create .pgpass file
   ansible.builtin.include_role:
     name: setup_hammerdb

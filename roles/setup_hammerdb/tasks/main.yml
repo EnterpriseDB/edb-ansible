@@ -1,27 +1,8 @@
 ---
 
-- name: Check T-shirt Size
-  ansible.builtin.fail:
-    msg: "T-shirt size = {{ tshirt_size }} is not supported.
-         Available T-shirt sizes are {{ supported_tshirt_size }}"
-  when: tshirt_size not in supported_tshirt_size
-
-- name: Reference HammerDB TPROC-C variables
-  ansible.builtin.include_vars: "hammerdb-tproc-c.yml"
-
-- name: Reference HammerDB T-shirt variables
-  ansible.builtin.include_vars: "hammerdb_{{ tshirt_size }}.yml"
-
-- name: Reference Postgres variables
-  ansible.builtin.include_vars: "{{ pg_type }}.yml"
-
-- name: Include the HBA file update tasks
-  ansible.builtin.include_tasks: update_pg_hba.yml
-
-- name: Install packages
+- name: Install packages required for installing HammerDB
   ansible.builtin.package:
     name:
-      - tmux
       - curl
   become: true
   failed_when: false
@@ -30,38 +11,3 @@
   ansible.builtin.include_role:
     name: setup_hammerdbserver
     tasks_from: install_hammerdb
-
-- name: Include the TPROC-C load script tasks
-  ansible.builtin.include_tasks: install_tproc-c_load_scripts.yml
-
-- name: Gather hardware informations
-  ansible.builtin.set_fact:
-    _sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
-
-- name: Set the variable _pg_shared_buffers_mb for HammerDB TPROC-C to the lesser of half system memory or 24576
-  ansible.builtin.set_fact:
-    _pg_shared_buffers_mb: "{{ [(_sys_memtotal_mb | int // 2) | int, 24576] | min }}"
-
-- name: Set the variable _pg_effective_cache_size_mb for HammerDB TPROC-C to a quarter of system memory
-  ansible.builtin.set_fact:
-    _pg_effective_cache_size_mb: "{{ (_sys_memtotal_mb | int // 4) }}"
-
-- name: Re-initialize the Postgres parameters for t-shirt size {{ tshirt_size }}
-  ansible.builtin.set_fact:
-    _pg_postgres_conf_params:
-      - name: max_connections
-        value: "{{ max_connections }}"
-      - name: shared_buffers
-        value: "{{ _pg_shared_buffers_mb }}MB"
-      - name: effective_cache_size
-        value: "{{ _pg_effective_cache_size_mb }}MB"
-      - name: max_wal_size
-        value: "{{ max_wal_size }}"
-
-- name: Re-apply Postgres parameters for t-shirt size {{ tshirt_size }}
-  ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: manage_postgres_params
-  vars:
-    pg_postgres_conf_params: "{{ _pg_postgres_conf_params }}"
-  no_log: "{{ disable_logging }}"
