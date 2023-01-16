@@ -44,7 +44,9 @@
         --asb-host-user {{ pg_pem_agent_user }} \
         --asb-ssl-mode prefer \
         --remote-monitoring no \
-    && touch {{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered
+    && touch {{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered \
+    && systemctl stop {{ pem_agent_service }} \
+    && systemctl start {{ pem_agent_service }}
   args:
     executable: /bin/bash
     creates: "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered"
