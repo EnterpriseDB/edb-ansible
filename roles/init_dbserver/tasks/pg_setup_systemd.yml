@@ -13,6 +13,15 @@
     - not ansible_module_running_in_container
   become: true
 
+- name: Stop pg service if running container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} stop
+  when: ansible_module_running_in_container
+  become: true
+  become_method: su
+  become_user: "{{ pg_owner }}"
+  ignore_errors: true
+
 - name: Copy global systemd unit file to /etc/systemd/system
   ansible.builtin.copy:
     remote_src: true

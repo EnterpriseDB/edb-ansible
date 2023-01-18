@@ -86,6 +86,9 @@
     - name: Set upstream node
       ansible.builtin.import_tasks: upstream_node.yml
 
+- name: Import setup_locale task
+  import_tasks: setup_locale.yml
+
 - name: Build standby service check
   become: true
   block:
