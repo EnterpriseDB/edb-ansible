@@ -5,6 +5,10 @@
     # Convert from megibyte to megabyte
     sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
 
+- name: Gather hardware informations in container
+  include_tasks: set_resource_in_container.yml
+  when: ansible_module_running_in_container
+
 - name: Gather Postgres settings
   community.postgresql.postgresql_info:
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"

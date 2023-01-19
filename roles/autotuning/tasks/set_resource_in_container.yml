@@ -1,0 +1,60 @@
+---
+# ref: https://access.redhat.com/documentation/ko-kr/red_hat_enterprise_linux/6/html/resource_management_guide/sec-memory
+- name: Ensure memory limit
+  ansible.builtin.shell: |
+    if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes` != $((0x7FFFFFFFFFFFF000)) ]; then 
+      cat /sys/fs/cgroup/memory/memory.limit_in_bytes;
+    fi
+  register: _cgroup_memory_limit
+  become: true
+
+- name: Set Total memory in container
+  ansible.builtin.set_fact:
+    sys_memtotal_mb: "{{ (_cgroup_memory_limit.stdout_lines / 1024 / 1024) | int }}"
+  when: _cgroup_memory_limit.stdout_lines | length > 0
+  become: true
+
+# base: "cpu cores" of /proc/cpuinfo
+- name: Set limited Core list
+  ansible.builtin.shell: |
+    OIFS=$IFS
+    IFS='-'
+    core_set=$(cat /proc/self/status | grep Cpus_allowed_list | awk '{print $2}')
+    echo $(( 1 + ${core_set[1]} - ${core_set[0]} ))
+    IFS=$OIFS
+  become: true
+  register: _cpu_set
+
+- name: Set core siblings
+  ansible.builtin.shell: |
+    cat /proc/cpuinfo | grep "processor" | wc -l
+  become: true
+  register: _siblings_core
+
+- name: Set the variable sys_nvcpus by cpu_set ratio
+  set_fact:
+    sys_nvcpus: "{{ [sys_nvcpus | int * ( _cpu_set.stdout | int / _siblings_core.stdout | int ), 1] | max }}"
+
+# https://kernel.googlesource.com/pub/scm/linux/kernel/git/glommer/memcg/+/cpu_stat/Documentation/cgroups/cpu.txt
+# docker's --cpus option is made by changing cpu.cfs_quota_us
+# The cpu period assumes little change at 100000 microseconds.
+
+- name: Check CFS quota
+  ansible.builtin.command: >
+    cat /sys/fs/cgroup/cpu/cpu.cfs_quota_us
+  become: true
+  register: _cfs_quota
+
+- name: Set the variable sys_nvcpus by CFS ratio
+  block:
+    - name: Check CFS period
+      ansible.builtin.command: >
+        cat /sys/fs/cgroup/cpu/cpu.cfs_period_us
+      become: true
+      register: _cfs_peroid
+    - name: Set the variable sys_nvcpus by CFS scheduler ratio
+      ansible.builtin.set_fact:
+        sys_nvcpus: "{{ sys_nvcpus * ( _cfs_quota.stdout | int / _cfs_period.stdout | int ) | int }}"
+  when: _cfs_quota.stdout | int > 0
+
+# TODO : If ansible machine is local, It is needed caculate groups share weights

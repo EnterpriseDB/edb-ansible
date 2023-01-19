@@ -10,3 +10,5 @@ shell_profile_content: |
   export PGPORT={{ pg_port }}
   export PGLOCALEDIR=/usr/lib/postgresql/{{ pg_major_version }}/share/locale
   export PGHOST={{ pg_unix_socket_directories[0] }}
+pg_bin_path: "/usr/lib/postgresql/{{ pg_major_version }}/bin"
+pg_default_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"

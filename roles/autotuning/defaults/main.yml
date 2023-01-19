@@ -1,4 +1,5 @@
 ---
+pg_major_version: "{{ pg_version | int }}"
 pg_instance_name: main
 tuned_profile: "postgres"
 tuned_configuration_dir: "/etc/tuned"
