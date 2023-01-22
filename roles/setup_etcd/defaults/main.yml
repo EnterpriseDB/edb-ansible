@@ -67,5 +67,8 @@ supported_os:
   - CentOS8
   - RedHat7
   - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
   - Rocky8
   - OracleLinux7

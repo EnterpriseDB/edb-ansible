@@ -35,7 +35,7 @@ pgpass_file: "{{ pg_user_home }}/.pgpass"
 patroni_initdb_options:
   - "data-checksum"
   - "encoding: UTF-8"
-  - "locale: en_US.UTF-8"
+  - "locale: {{ 'en_US.UTF-8' if ansible_os_family == 'RedHat' else 'C.UTF-8' }}"
   - "auth: ident"
   - "auth-host: scram-sha-256"
   - "auth-local: peer"
@@ -115,7 +115,6 @@ patroni_pip_install: true
 patroni_package_install: false
 patroni_config_dir: "/etc/patroni"
 patroni_config_file: "{{ patroni_config_dir }}/{{ inventory_hostname }}.yml"
-patroni_bin_dir: "{{ '/usr/local/bin' if ansible_distribution_major_version == '8' else '/usr/bin' }}"
 patroni_pip_packages:
   - patroni
   - python-etcd
@@ -128,6 +127,9 @@ supported_os:
   - CentOS8
   - RedHat7
   - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
   - Rocky8
   - OracleLinux7
 
