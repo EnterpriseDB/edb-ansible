@@ -1,7 +1,8 @@
 ---
 pg_wal: ""
-pg_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
-pg_default_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
+pg_default_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
+
 pg_encoding: ""
 
 # log directory and filename
@@ -9,15 +10,15 @@ pg_log: "/var/log/postgres"
 pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
 
 # Patroni bin directory
-patroni_bin_dir: "{{ '/usr/local/bin' if ansible_distribution_major_version == '8' else '/usr/bin' }}"
+patroni_bin_dir: "/usr/local/bin"
 
 # postgres service
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}-patroni"
-pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_version }}-patroni.service"
+pg_systemd_global_unit_file: "/lib/systemd/system/postgresql-{{ pg_version }}-patroni.service"
 
 # required & optional directories
-pg_user_home: "/var/lib/pgsql"
-pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
+pg_user_home: "/var/lib/postgresql"
+pg_bin_path: "/usr/lib/postgresql/{{ pg_version }}/bin"
 
 # unix socket domain directories
 pg_unix_socket_directories:

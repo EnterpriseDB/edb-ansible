@@ -95,8 +95,7 @@
   become: true
 
 - name: Install patroni
-  ansible.builtin.import_tasks: patroni_install.yml
-  become: true
+  ansible.builtin.include_tasks: patroni_{{ ansible_os_family }}_install.yml
 
 - name: Generate patroni declared users passwords
   ansible.builtin.import_tasks: patroni_generate_basic_passwords.yml

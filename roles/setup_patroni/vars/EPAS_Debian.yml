@@ -1,7 +1,9 @@
 ---
 pg_wal: ""
-pg_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
-pg_default_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
+
+pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
+pg_default_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
+
 pg_encoding: ""
 
 # log directory and filename
@@ -9,18 +11,20 @@ pg_log: "/var/log/edb"
 pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
 
 # Patroni bin directory
-patroni_bin_dir: "{{ '/usr/local/bin' if ansible_distribution_major_version == '8' else '/usr/bin' }}"
+patroni_bin_dir: "/usr/local/bin"
 
 # postgres service
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}-patroni"
-pg_systemd_global_unit_file: "/usr/lib/systemd/system/edb-as-{{ pg_version }}-patroni.service"
+pg_systemd_global_unit_file: "/lib/systemd/system/edb-as-{{ pg_version }}-patroni.service"
+
 # required & optional directories
-pg_user_home: "/var/lib/edb"
-pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
+pg_user_home: "/var/lib/edb-as"
+pg_bin_path: "/usr/lib/edb-as/{{ pg_version }}/bin"
+
 
 # unix socket domain directories
 pg_unix_socket_directories:
-  - "/var/run/edb/as{{ pg_version }}"
+  - "/var/run/edb-as"
 
 # postgres port
 pg_port: 5444

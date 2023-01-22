@@ -1,0 +1,43 @@
+---
+
+- name: Install require python3 package for Debian
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-dev
+      - python3-pip
+      - gcc
+      - postgresql-server-dev-{{ pg_version }}
+      - python3-setuptools
+    state: present
+  become: true
+
+- name: Remove patroni package on debian OS if exists
+  ansible.builtin.package:
+    name: patroni
+    state: absent
+  become: true
+
+- name: Install require patroni package on Debian OS
+  ansible.builtin.package:
+    name:
+      - python3-etcd
+      - python3-psycopg2
+      - watchdog
+    state: present
+  become: true
+
+- name: Install patroni with packages packages using pip3
+  ansible.builtin.pip:
+    name:
+      - python-etcd
+      - psycopg2
+      - idna
+      - patroni
+    umask: "0022"
+    state: present
+    executable: pip3
+    extra_args: --upgrade
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  become: true

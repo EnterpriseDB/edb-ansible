@@ -1,0 +1,5 @@
+---
+
+pg_owner: "postgres"
+pg_group: "postgres"
+etcd_systemd_global_unit_file: "/lib/systemd/system/{{ etcd_service }}.service"

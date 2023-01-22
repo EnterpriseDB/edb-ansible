@@ -1,9 +1,9 @@
 ---
-cert_common_name: "PEM"
+cert_common_name: "Patroni"
 cert_country: "US"
 cert_state: "MA"
 cert_city: "Bedford"
-cert_org_unit: "EDB Postgres Enterprise Manager"
+cert_org_unit: "Patroni Cluster"
 cert_email: "support@enterprisedb.com"
 
 pg_ssl_postgres_conf_params:
