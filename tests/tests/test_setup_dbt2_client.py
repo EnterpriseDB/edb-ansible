@@ -25,11 +25,16 @@ def test_setup_dbt2_client_packages():
 def test_setup_dbt2_client_sudo():
     host = get_dbt2_client()[0]
     ansible_vars = load_ansible_vars()
+    pg_owner = 'postgres'
+
+    if get_pg_type() == 'EPAS':
+        pg_owner = 'enterprisedb'
+
     limit_file_path = ansible_vars['limit_file_path']
 
-    cmd = host.run('cat %s | grep postgres' % limit_file_path)
+    cmd = host.run('cat %s | grep %s' % (limit_file_path, pg_owner))
     results = cmd.stdout.strip().split('\n')
     
     for result in results:
         assert '10000' in result, \
-        "%s no file limits was not increased" % limit_file_path
+            "%s no file limits was not increased" % limit_file_path
