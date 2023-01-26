@@ -24,11 +24,14 @@ def test_setup_dbt2_driver_packages():
 def test_setup_dbt2_driver_sudo():
     host = get_dbt2_driver()[0]
     ansible_vars = load_ansible_vars()
-    postgres_user = ansible_vars['postgres_user']
+    pg_user = 'postgres'
 
-    with host.sudo(postgres_user):
+    if get_pg_type() == 'EPAS':
+        pg_user = 'enterprisedb'
+
+    with host.sudo(pg_user):
         cmd = host.run('env | grep USER')
         result = cmd.stdout.strip()
    
-    assert postgres_user in result, \
-        "%s could not be used as a sudo user" % postgres_user
+    assert pg_user in result, \
+        "%s could not be used as a sudo user" % pg_user

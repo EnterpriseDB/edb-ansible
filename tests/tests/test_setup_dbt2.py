@@ -8,6 +8,7 @@ from conftest import (
     get_pg_unix_socket_dir
 )
 
+
 def test_setup_dbt2_packages():
     host = get_primary()
     packages = [
@@ -21,13 +22,12 @@ def test_setup_dbt2_packages():
         assert host.package(package).is_installed, \
             "Package %s not installed" % packages
 
+
 def test_setup_dbt2_user():
     ansible_vars = load_ansible_vars()
     pg_user = 'postgres'
     pg_group = 'postgres'
     pg_port = '5432'
-    postgres_user = ansible_vars['postgres_user']
-
 
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
@@ -37,9 +37,9 @@ def test_setup_dbt2_user():
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     with host.sudo(pg_user):
-        query = "Select * from pg_user WHERE usename='%s'" % postgres_user
+        query = "Select * from pg_user WHERE usename='%s'" % pg_user
         cmd = host.run('psql -p %s -At -h %s -c "%s" postgres' % (pg_port, socket_dir, query))
         result = cmd.stdout.strip()
     
     assert len(result) > 0, \
-        "%s was not sucessfully created." % postgres_user
+        "%s was not successfully created." % pg_user
