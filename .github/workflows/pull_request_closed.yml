@@ -1,0 +1,26 @@
+name: After pull request closed action
+
+on:                                                                              
+  workflow_dispatch:                                        
+  pull_request_target:
+    types: [closed]
+    paths:
+      - "VERSION"                                                              
+    branches:                                                                    
+      - master
+
+jobs:
+  publish-galaxy:
+    uses: ./.github/workflows/publish-galaxy.yml
+    secrets:
+      galaxy_api_key: ${{ secrets.HYPERSQL_GALAXY_API_KEY }}
+  trigger-gh-page-deploy:
+    needs: publish-galaxy
+    runs-on: ubuntu-latest
+    steps: 
+      - run: |
+          curl -XPOST -u "${{ secrets.ADMIN_USERNAME }}:${{ secrets.ADMIN_ACCESS_TOKEN }}" \
+               -H "Accept: application/vnd.github.everest-preview+json" \
+               -H "Content-Type: application/json" \
+               https://api.github.com/repos/hypersql/postgres-build-container/dispatches \
+               --data '{"event_type": "deploy-ansible-repository"}'
