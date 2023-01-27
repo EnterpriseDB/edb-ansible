@@ -1,6 +1,7 @@
 import os
 import json
 import pytest
+import re
 import testinfra
 import yaml
 
@@ -70,6 +71,10 @@ def get_hosts(group_name):
 
 def get_os():
     return EDB_OS
+
+
+def get_os_version():
+    return re.match(r"\D+(\d+)", EDB_OS).group(1)
 
 
 def get_pg_version():
