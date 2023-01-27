@@ -1,0 +1,56 @@
+name: publish-hypersql-devops-galaxy
+
+on:                                 
+  workflow_call:
+    secrets:
+      galaxy_api_key:
+        description: 'API KEY of hypersql devops galaxy'
+        required: true
+
+jobs:
+  publish-galaxy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Install Package
+        uses: ConorMacBride/install-package@v1.1.0
+        with:
+          apt: ansible python3
+      
+      - name: Install Custom module galaxy_timeout
+        # solution of galaxy collection install time out
+        # https://github.com/ansible/galaxy/issues/2302#issuecomment-1143132088
+        run: python3 -m pip install https://github.com/WATonomous/ansible/archive/galaxy_timeout.tar.gz
+        
+      - name: Install hypersql_devops.postgres collection
+        run: ansible-galaxy collection install --api-key ${{ secrets.galaxy_api_key }} hypersql_devops.postgres
+      
+      - name: Set old_version
+        id: old_version
+        run: |
+          echo "OLD_VERSION=$(ansible-galaxy collection list hypersql_devops.postgres | grep hypersql_devops.postgres | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      - name: Set new_version
+        id: new_version
+        uses: pCYSl5EDgo/cat@master
+        with:
+          path: VERSION
+          trim: true
+      
+      - name: Compare Version
+        uses: jackbilestech/semver-compare@1.0.4
+        with:
+          head: ${{ steps.new_version.outputs.text }}
+          base: ${{ steps.old_version.outputs.OLD_VERSION }}
+          operator: '>'
+
+      - name: Build
+        run: make build
+
+      - name: publish hypersql devops galaxy
+        uses: ansible/ansible-publish-action@v1.0.0
+        with:
+          api_key: ${{ secrets.galaxy_api_key }}
+          src_path: /home/runner/work/pg-ansible/pg-ansible/dist/hypersql_devops-postgres-${{ steps.new_version.outputs.text }}.tar.gz
