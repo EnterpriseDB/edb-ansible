@@ -35,7 +35,6 @@ _value:
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
-
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 
@@ -118,7 +117,6 @@ class LookupModule(LookupBase):
                 )
 
             pg_standbys_len = len(pg_standbys.keys())
-
 
         if node_private_ip in pg_primary_map:
             # Current node is part of one of the SR clusters found

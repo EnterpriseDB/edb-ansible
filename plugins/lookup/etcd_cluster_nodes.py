@@ -32,7 +32,6 @@ _value:
   elements: dict
 """
 
-from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
 
@@ -77,7 +76,7 @@ class LookupModule(LookupBase):
                 if hostvars.get('etcd'):
                     if 'etcd_cluster_name' not in hostvars:
                         continue
-                    
+
                     if hv['etcd_cluster_name'] != filter_etcd_cluster_name:
                         continue
 

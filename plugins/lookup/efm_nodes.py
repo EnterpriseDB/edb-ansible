@@ -161,7 +161,6 @@ class LookupModule(LookupBase):
 
             efm_witnesses_len = len(efm_witnesses.keys())
 
-
         if node_private_ip in efm_primary_map:
             # Current node is part of one of the SR clusters found
             return efm_clusters[efm_primary_map[node_private_ip]]
