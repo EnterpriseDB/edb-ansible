@@ -38,6 +38,7 @@ jobs:
         with:
           path: VERSION
           trim: true
+
       - name: Compare Version
         uses: jackbilestech/semver-compare@1.0.4
         with:
@@ -52,4 +53,4 @@ jobs:
         uses: ansible/ansible-publish-action@v1.0.0
         with:
           api_key: ${{ secrets.galaxy_api_key }}
-          src_path: ./dist/hypersql_devops-postgres-${{ steps.new_version.outputs.text }}.tar.gz
+          src_path: /home/runner/work/pg-ansible/pg-ansible/dist/hypersql_devops-postgres-${{ steps.new_version.outputs.text }}.tar.gz
