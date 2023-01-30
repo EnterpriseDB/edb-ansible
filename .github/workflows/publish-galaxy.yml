@@ -37,7 +37,7 @@ jobs:
         uses: pCYSl5EDgo/cat@master
         with:
           path: VERSION
-      
+          trim: true
       - name: Compare Version
         uses: jackbilestech/semver-compare@1.0.4
         with:
