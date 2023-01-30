@@ -38,7 +38,7 @@ jobs:
         with:
           path: VERSION
           trim: true
-      
+
       - name: Compare Version
         uses: jackbilestech/semver-compare@1.0.4
         with:
@@ -53,4 +53,3 @@ jobs:
         run: make publish
         env:
           API_KEY: ${{ secrets.galaxy_api_key }}
-
