@@ -1,18 +1,13 @@
 ---
-supported_extension: [
+supported_extension:
+  [
     {
       "name": "postgis",
       "extension_package": "postgis{{ postgis_version }}_{{ pg_major_version }}",
-      "required_package":
-        [
-          "SFCGAL",
-          "gdal34-libs",
-          "geos39",
-          "proj72",
-        ],
+      "required_package": ["SFCGAL", "gdal34-libs", "geos39", "proj72"],
     },
     {
       "name": "pgaudit",
       "extension_package": "pgaudit{{ pgaudit_version }}_{{ pg_major_version }}",
-    }
+    },
   ]

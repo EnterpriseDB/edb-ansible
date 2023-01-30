@@ -3,72 +3,71 @@
   service_facts:
 
 - name: Open TCP, UDP port
-  block:
-  - name: Open listening TCP port {{ pgpool2_port | default('') }}
-    ansible.posix.firewalld:
-      port: "{{ pgpool2_port }}/tcp"
-      permanent: yes
-      state: enabled
-      immediate: true
-    when:
-      - pgpool2_port is defined
-
-  - name: Open PCP TCP, UDP port {{ pgpool2_pcp_port | default('') }}
-    ansible.posix.firewalld:
-      port: "{{ open_port }}"
-      permanent: yes
-      state: enabled
-      immediate: true
-    loop:
-      - "{{ pgpool2_pcp_port }}/tcp"
-      - "{{ pgpool2_pcp_port }}/udp"
-    loop_control:
-      loop_var: open_port
-    when:
-      - pgpool2_pcp_port is defined
-
-  - name: Open Watchdog TCP, UDP port {{ pgpool2_wd_port | default('') }}
-    ansible.posix.firewalld:
-      port: "{{ open_port }}"
-      permanent: yes
-      state: enabled
-      immediate: true
-    loop:
-      - "{{ pgpool2_wd_port }}/tcp"
-      - "{{ pgpool2_wd_port }}/udp"
-    loop_control:
-      loop_var: open_port
-    when:
-      - pgpool2_wd_port is defined
-      - pgpool2_watchdog
-
-  - name: Open Watchdog heartbeat TCP, UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
-    ansible.posix.firewalld:
-      port: "{{ open_port }}/tcp"
-      permanent: yes
-      state: enabled
-      immediate: true
-    loop:
-      - "{{ pgpool2_wd_heartbeat_port }}/tcp"
-      - "{{ pgpool2_wd_heartbeat_port }}/udp"
-    loop_control:
-      loop_var: open_port
-    when:
-      - pgpool2_wd_heartbeat_port is defined
-      - pgpool2_watchdog
-  
   when:
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
-  become: yes
+  become: true
+  block:
+    - name: Open listening TCP port {{ pgpool2_port | default('') }}
+      ansible.posix.firewalld:
+        port: "{{ pgpool2_port }}/tcp"
+        permanent: true
+        state: enabled
+        immediate: true
+      when:
+        - pgpool2_port is defined
+
+    - name: Open PCP TCP, UDP port {{ pgpool2_pcp_port | default('') }}
+      ansible.posix.firewalld:
+        port: "{{ open_port }}"
+        permanent: true
+        state: enabled
+        immediate: true
+      loop:
+        - "{{ pgpool2_pcp_port }}/tcp"
+        - "{{ pgpool2_pcp_port }}/udp"
+      loop_control:
+        loop_var: open_port
+      when:
+        - pgpool2_pcp_port is defined
+
+    - name: Open Watchdog TCP, UDP port {{ pgpool2_wd_port | default('') }}
+      ansible.posix.firewalld:
+        port: "{{ open_port }}"
+        permanent: true
+        state: enabled
+        immediate: true
+      loop:
+        - "{{ pgpool2_wd_port }}/tcp"
+        - "{{ pgpool2_wd_port }}/udp"
+      loop_control:
+        loop_var: open_port
+      when:
+        - pgpool2_wd_port is defined
+        - pgpool2_watchdog
+
+    - name: Open Watchdog heartbeat TCP, UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
+      ansible.posix.firewalld:
+        port: "{{ open_port }}/tcp"
+        permanent: true
+        state: enabled
+        immediate: true
+      loop:
+        - "{{ pgpool2_wd_heartbeat_port }}/tcp"
+        - "{{ pgpool2_wd_heartbeat_port }}/udp"
+      loop_control:
+        loop_var: open_port
+      when:
+        - pgpool2_wd_heartbeat_port is defined
+        - pgpool2_watchdog
 
 # Tasks for setting up pgpoolII
 - name: Create pgpoolII system group {{ pgpool2_group }}
   group:
     name: "{{ pgpool2_group }}"
     state: present
-  become: yes
+  become: true
 
 - name: Create pgpoolII system user {{ pgpool2_user }}
   user:
@@ -77,7 +76,7 @@
     group: "{{ pgpool2_group }}"
     state: present
     create_home: false
-  become: yes
+  become: true
 
 - name: Create configuration directory {{ pgpool2_configuration_file | dirname }}
   file:
@@ -86,7 +85,7 @@
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
     mode: 0755
-  become: yes
+  become: true
 
 - name: Create pgpoolII logging directory {{ pgpool2_logdir }}
   file:
@@ -96,7 +95,7 @@
     group: "{{ pgpool2_group }}"
     mode: 0755
   when: pgpool2_logdir is defined
-  become: yes
+  become: true
 
 - name: Create running directory {{ pgpool2_pid_file_name | default('') | dirname }}
   file:
@@ -106,7 +105,7 @@
     group: "{{ pgpool2_group }}"
     mode: 0700
   when: pgpool2_pid_file_name is defined
-  become: yes
+  become: true
 
 # Build the configuration file
 - name: Build configuration file {{ pgpool2_configuration_file }}
@@ -127,28 +126,28 @@
     mode: 0700
   when:
     - pg_type == 'PG'
-  become: yes
+  become: true
 
 - name: Generate pgpoolII systemd unit file
   template:
-    backup: yes
+    backup: true
     dest: "{{ pgpool2_systemd_unit_file }}"
     src: ./templates/pgpool-II.unit.conf.template
     mode: 0644
   when:
     - pg_type == 'PG'
-  become: yes
+  become: true
 
 - name: Stop pgpoolII service
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: stopped
-  become: yes
+  become: true
 
 - name: Enable and start pgpoolII service
   systemd:
     name: "{{ pgpool2_service_name }}"
     enabled: true
-    daemon_reload: yes
+    daemon_reload: true
     state: started
-  become: yes
+  become: true

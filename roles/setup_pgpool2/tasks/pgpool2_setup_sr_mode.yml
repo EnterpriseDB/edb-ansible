@@ -23,14 +23,14 @@
 - name: Add pgpool2_sr_check_password if not exist in user map
   set_fact:
     pgpool2_user_map: >-
-     {{ pgpool2_user_map | default([]) + [ 
-            { 
-              'name' : pgpool2_sr_check_user, 
+     {{ pgpool2_user_map | default([]) + [
+            {
+              'name' : pgpool2_sr_check_user,
               'password' : pgpool2_sr_check_password
-            } 
+            }
           ] }}
   run_once: true
-  when: 
+  when:
     - pgpool2_user_map is defined
     - sr_user_exist is skipped
   no_log: "{{ disable_logging }}"
@@ -61,8 +61,8 @@
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
     pg_grant_roles:
-       - user: "{{ pgpool2_sr_check_user }}"
-         role: "pg_monitor"
+      - user: "{{ pgpool2_sr_check_user }}"
+        role: "pg_monitor"
   run_once: true
   when:
     - pgpool2_primary_inventory_hostname is defined

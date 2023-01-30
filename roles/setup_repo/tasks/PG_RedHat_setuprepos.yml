@@ -1,32 +1,38 @@
 ---
+- name: Update the ca-certificates package
+  ansible.builtin.package:
+    name: ca-certificates
+    state: present
+  become: true
+
 - name: Download PGDG GPG key for EL8
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ pg_gpg_key_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
-  become: yes
+  become: true
 
 - name: Download EPEL GPG key for EL8
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ epel_gpg_key_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
-  become: yes
+  become: true
 
 - name: Install EPEL repo for EL7, EL8
-  package:
+  ansible.builtin.package:
     name: "{{ epel_repo }}"
     state: present
-  become: yes
+  become: true
 
 - name: Install PG repo for EL7, EL8
-  package:
+  ansible.builtin.package:
     name: "{{ pg_rpm_repo }}"
     state: present
-  become: yes
+  become: true
   when:
     - pg_type == 'PG'
 
@@ -37,11 +43,23 @@
   become: true
   when: ansible_distribution_major_version == '8'
 
+- name: Check for ubi-EL8
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/ubi.repo
+  register: ubi_state
+
+- name: Enable ubi-8-codeready-builder
+  ansible.builtin.command: >
+    dnf config-manager --set-enabled ubi-8-codeready-builder
+  when: ubi_state.stat.exists
+
 - name: Enable powertools for EL8
   ansible.builtin.command: >
     dnf config-manager --set-enabled powertools
   become: true
-  when: ansible_distribution_major_version == '8'
+  when:
+    - ansible_distribution_major_version == '8'
+    - not ubi_state.stat.exists
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:

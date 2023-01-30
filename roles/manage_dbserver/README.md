@@ -156,6 +156,8 @@ pg_databases:
     encoding: UTF-8
 ```
 
+### `pg_tablespaces`
+
 Tablesapces management.
 
 ```yaml
@@ -209,8 +211,8 @@ Below is an example of how to include the `manage_dbserver` role:
 ---
 - hosts: primary,standby
   name: Manage Postgres server
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   pre_tasks:
     - name: Initialize the user defined variables

@@ -69,5 +69,5 @@ supported_os:
   - Ubuntu20
 
 supported_pgbouncer_version:
- - 1.6
- - 1.7
+  - 1.6
+  - 1.7

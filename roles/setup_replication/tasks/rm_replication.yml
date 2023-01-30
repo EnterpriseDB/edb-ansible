@@ -9,7 +9,16 @@
   when:
     - ansible_facts.services[pg_service] is defined
     - ansible_facts.services[pg_service].state == 'running'
-  become: yes
+  become: true
+
+- name: Stop pg service if running container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} stop
+  when: ansible_module_running_in_container
+  become: true
+  become_method: su
+  become_user: "{{ pg_owner }}"
+  ignore_errors: true
 
 - name: Drop the default debian database
   shell: >
@@ -21,29 +30,29 @@
   when: ansible_os_family == 'Debian'
   become: true
 
-- name: remove postgres data directory if exists
+- name: Remove postgres data directory if exists
   file:
     path: "{{ pg_data }}"
     state: absent
-  become: yes
+  become: true
 
-- name: remove postgres log directory if exists
+- name: Remove postgres log directory if exists
   file:
     path: "{{ pg_log }}"
     state: absent
-  become: yes
+  become: true
   when: pg_log|length > 0
 
-- name: remove postgres wal directory if exists
+- name: Remove postgres wal directory if exists
   file:
     path: "{{ pg_wal }}"
     state: absent
-  become: yes
+  become: true
   when: pg_wal|length > 0
 
-- name: remove postgres local wal archive directory if exists
+- name: Remove postgres local wal archive directory if exists
   file:
     path: "{{ pg_local_wal_archive_dir }}"
     state: absent
-  become: yes
+  become: true
   when: pg_local_wal_archive_dir|length > 0

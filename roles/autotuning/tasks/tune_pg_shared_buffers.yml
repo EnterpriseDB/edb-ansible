@@ -15,7 +15,7 @@
 - name: Set the variable system_base_mem_mb
   set_fact:
     system_base_mem_mb: >-
-      {{  (sys_memtotal_mb | int / 4) | int }}
+      {{ (sys_memtotal_mb | int / 4) | int }}
 
 - name: Set the variable system_base_mem_mb
   set_fact:
@@ -26,16 +26,16 @@
 - name: Set the variable system_base_mem_mb
   set_fact:
     system_base_mem_mb: >-
-      {{ ( system_base_mem_mb| int * 0.75) | int }}
+      {{ (system_base_mem_mb | int * 0.75) | int }}
   when: sys_memtotal_mb | int  >= 3072 and sys_memtotal_mb | int < 8192
 
 - name: Set the variable system_base_mem_mb
   set_fact:
     system_base_mem_mb: >-
-      {{ [ ( system_base_mem_mb| int / 6 ) | int, 16 * 1024 ] | max }}
+      {{ [(system_base_mem_mb | int / 6) | int, 16 * 1024] | max }}
   when: sys_memtotal_mb | int >= 65536
 
 - name: Set the variable pg_shared_buffers_mb
   set_fact:
     pg_shared_buffers_mb: >-
-      {{ [system_base_mem_mb | int,  64 * 1024 ] | min }}
+      {{ [system_base_mem_mb | int, 64 * 1024] | min }}

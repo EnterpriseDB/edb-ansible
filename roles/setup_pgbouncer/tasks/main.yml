@@ -11,3 +11,4 @@
 # Entry point of the setup_pgbouncer role
 - name: Include the setup_pgbouncer.yml
   include_tasks: setup_pgbouncer.yml
+  when: "'setup_pgbouncer' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

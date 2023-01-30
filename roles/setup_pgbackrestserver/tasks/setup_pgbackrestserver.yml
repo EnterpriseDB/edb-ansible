@@ -40,12 +40,13 @@
   include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  block:
+    - name: Import linux_update_etc_hosts task
+      import_tasks: linux_update_etc_hosts.yml
 
 - name: Include the define_node_variables tasks
   include_tasks: define_node_variables.yml

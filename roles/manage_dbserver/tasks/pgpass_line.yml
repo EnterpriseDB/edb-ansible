@@ -2,29 +2,29 @@
 - name: Check if pgpass exists or not
   stat:
     path: "{{ pgpass_file | default('~/.pgpass') }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   register: pgpass_file_exists
   no_log: "{{ disable_logging }}"
 
 - name: Prepare regex and entry line
   set_fact:
-    search_line: "{{ line_item.host|default('*') }}:{{ pg_port }}:{{ line_item.database|default('*') }}:{{ line_item.user }}"
-    pgpass_line: "{{ line_item.host|default('*') }}:{{ pg_port }}:{{ line_item.database|default('*') }}:{{ line_item.user }}:{{ line_item.password }}"
+    search_line: "{{ line_item.host | default('*') }}:{{ pg_port }}:{{ line_item.database | default('*') }}:{{ line_item.user }}"
+    pgpass_line: "{{ line_item.host | default('*') }}:{{ pg_port }}:{{ line_item.database | default('*') }}:{{ line_item.user }}:{{ line_item.password }}"
   when:
     - pg_pgpass_values|length > 0
 
-- name: delete entries in .pgpass
+- name: Delete entries in .pgpass
   lineinfile:
     path: "{{ pgpass_file | default('~/.pgpass') }}"
-    regexp: "{{ search_line|regex_escape() }}"
+    regexp: "{{ search_line | regex_escape() }}"
     state: absent
   when:
     - pg_pgpass_values|length > 0
     - pgpass_file_exists is defined
     - pgpass_file_exists.stat.exists
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
 
 - name: Manage entries in .pgpass
@@ -40,8 +40,8 @@
     pg_pgpass_values|length > 0 and
     (( pgpass_file_exists is defined and pgpass_file_exists.stat.exists )
       or (line_item.create is defined and
-      (line_item.create == 'yes' or line_item.create == 'true'
+      (line_item.create == 'true' or line_item.create == 'true'
        or line_item.create == 'True' or line_item.create )))
   no_log: "{{ disable_logging }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"

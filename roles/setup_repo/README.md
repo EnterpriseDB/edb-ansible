@@ -28,11 +28,7 @@ When executing the role via Ansible these are the required variables:
 
 - **pg_version**
 
-<<<<<<< Updated upstream
-  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
-=======
   Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
->>>>>>> Stashed changes
 
 - **pg_type**
 
@@ -40,13 +36,13 @@ When executing the role via Ansible these are the required variables:
 
 - **yum_additional_repos**
 
-List of additional YUM repositories. List items are dictionnaries:
+  List of additional YUM repositories. List items are dictionnaries:
 
-- _name_ - Repository name
-- _description_ - Repository description
-- _baseurl_ - Repository URL
-- _gpgkey_ - GPG key locatio. Default: `None`
-- _gpgcheck_ - Enable package signature checking with GPG. Default: `false`
+  - _name_ - Repository name
+  - _description_ - Repository description
+  - _baseurl_ - Repository URL
+  - _gpgkey_ - GPG key locatio. Default: `None`
+  - _gpgcheck_ - Enable package signature checking with GPG. Default: `false`
 
 Example:
 
@@ -62,12 +58,19 @@ yum_additional_repos:
     baseurl: file:///opt/my_local_repo
 ```
 
+- **apt_additional_repo_keys**
+
+  List of additional APT repository keys. List items are dictionnaries:
+
+  - _key_ - Debian repository apt key
+
+
 - **apt_additional_repos**
 
-List of additional APT repositories. List items are dictionnaries:
+  List of additional APT repositories. List items are dictionnaries:
 
-- _repo_ - Debian repository connection string
-- _filename_ - Repository file name on disk: `<filename>.list`
+  - _repo_ - Debian repository connection string
+  - _filename_ - Repository file name on disk: `<filename>.list`
 
 The rest of the variables can be configured and are available in the:
 

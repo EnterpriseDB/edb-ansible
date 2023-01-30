@@ -1,0 +1,13 @@
+---
+- name: Check pg_locale exists
+  ansible.builtin.shell: |
+    set -o pipefail
+    locale -a | grep -i {{ pg_locale }}
+  when: pg_locale | length > 0
+  failed_when: false
+  register: locale_stat
+
+- name: Set pg_locale to default locale
+  ansible.builtin.set_fact:
+    pg_locale: "{{ ansible_env.LANG | default('C') }}"
+  when: locale_stat.stdout_lines | length < 1

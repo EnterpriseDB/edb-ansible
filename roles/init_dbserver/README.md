@@ -8,7 +8,7 @@ available.**
 For more details refer to the: _Database engines supported_ section.
 
 **Note:**
-The role does not configure Postgresfor replication it only installs 
+The role does not configure Postgresfor replication it only installs
 Postgres across multiple nodes: Main and Standby.
 Should there be a need to configure a Postgres Cluster for replication you can utilize the `setup_replication` role.
 
@@ -32,11 +32,7 @@ When executing the role via ansible there are three required variables:
 
 - **_pg_version_**
 
-<<<<<<< Updated upstream
-  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
-=======
   Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
->>>>>>> Stashed changes
 
 - **_pg_type_**
 
@@ -88,6 +84,16 @@ Example:
 pg_local_wal_archive_dir: "/var/lib/pgsql/14/archive"
 ```
 
+### `pg_locale`
+
+Using this parameters user can set the database locale.
+
+Example:
+
+```yaml
+pg_locale: "C.utf8"
+```
+
 The rest of the variables can be configured and are available in the:
 
 - [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
@@ -134,8 +140,8 @@ Below is an example of how to include the `init_dbserver` role:
 ---
 - hosts: primary,pemserver
   name: Initialize Postgres instances
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres
@@ -157,21 +163,17 @@ All the variables are available at:
 - [roles/init_dbserver/defaults/main.yml](./defaults/main.yml)
 - [roles/init_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 - [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
-<<<<<<< Updated upstream
-- [roles/init_dbserver/vars/edb-ssl.yml](./vars/ssl.yml)
-=======
 - [roles/init_dbserver/vars/ssl.yml](./vars/ssl.yml)
->>>>>>> Stashed changes
 
 ## Database engines supported
 
 ### PostgreSQL
 
-| Distribution                      |               14 |
-| --------------------------------- |:----------------:|
-| CentOS 7                          |:white_check_mark:|
-| CentOS 8                          |:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
+| Distribution                      |         14         |
+| --------------------------------- | :----------------: |
+| CentOS 7                          | :white_check_mark: |
+| CentOS 8                          | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 
@@ -192,7 +194,8 @@ BSD
 ## Author information
 
 Author:
-  * [Sang Myeung Lee](https://github.com/sungmu1)
+
+- [Sang Myeung Lee](https://github.com/sungmu1)
 
 Original Author:
 

@@ -14,10 +14,10 @@
   with_items: "{{ pgbouncer_databases_list }}"
   loop_control:
     loop_var: db_item
-  become: yes
+  become: true
 
 - name: Reload PgBouncer configuration
   shell:
     cmd: kill -HUP $(cat {{ pgbouncer_pid_file }})
   changed_when: false
-  become: yes
+  become: true

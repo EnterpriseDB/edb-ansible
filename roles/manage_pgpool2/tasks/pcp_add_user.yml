@@ -3,7 +3,7 @@
   command:
     cmd: >-
       script -q -c '{{ pgpool2_bin_path }}/pg_md5 {{ pcp_user.pass }}'
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   when:
     - pcp_user|length > 0
@@ -14,7 +14,7 @@
   lineinfile:
     path: "{{ pcp_configuration_file }}"
     line: "{{ pcp_user.name }}:{{ pcp_password_out.stdout }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   when:
     - pcp_user|length > 0

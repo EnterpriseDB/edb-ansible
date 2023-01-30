@@ -12,28 +12,29 @@ pg_service: "postgresql@{{ pg_major_version }}-{{ deb_cluster_name }}.service"
 
 sysctl_params:
   - {
-      "name": "kernel.core_pattern",
-      "value": "/var/coredumps/core-%e-%p",
-      "state": "present",
-    }
+    "name": "kernel.core_pattern",
+    "value": "/var/coredumps/core-%e-%p",
+    "state": "present",
+  }
   - { "name": "fs.suid_dumpable", "value": "2", "state": "present" }
 
 rpm_install: false
-rpm_install_path: "https://download.postgresql.org/pub/repos/yum/{{ pg_major_version }}/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/postgresql{{ pg_major_version }}"
+rpm_install_path: "https://download.postgresql.org/pub/repos/yum/{{ pg_major_version }}/\
+redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/postgresql{{ pg_major_version }}"
 rpm_list:
   - {
-      "name": "{{ rpm_install_path }}-libs-{{ pg_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
-      "state": present,
-    }
+    "name": "{{ rpm_install_path }}-libs-{{ pg_version }}-1PGDG.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm",
+    "state": present,
+  }
   - {
-      "name": "{{ rpm_install_path }}-{{ pg_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
-      "state": present,
-    }
+    "name": "{{ rpm_install_path }}-{{ pg_version }}-1PGDG.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm",
+    "state": present,
+  }
   - {
-      "name": "{{ rpm_install_path }}-server-{{ pg_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
-      "state": present,
-    }
+    "name": "{{ rpm_install_path }}-server-{{ pg_version }}-1PGDG.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm",
+    "state": present,
+  }
   - {
-      "name": "{{ rpm_install_path }}-contrib-{{ pg_version }}-1PGDG.rhel7.{{ ansible_architecture }}.rpm",
-      "state": present,
-    }
+    "name": "{{ rpm_install_path }}-contrib-{{ pg_version }}-1PGDG.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm",
+    "state": present,
+  }

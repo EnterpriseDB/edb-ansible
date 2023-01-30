@@ -53,7 +53,7 @@ Enable Barman backups for the host. Default: `false`
 Example:
 
 ```yaml
-barman: yes
+barman: true
 ```
 
 ### `barman_server_private_ip`
@@ -189,8 +189,8 @@ Below is an example of how to include the `setup_barman` role:
 ---
 - hosts: primary, standby
   name: Configure Barman backup on Postgres nodes
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres

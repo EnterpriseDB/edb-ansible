@@ -91,7 +91,7 @@
 - name: Run ssh-keyscan from the local server
   ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _remote_host }}
   register: _local_ssh_keyscan_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Add remote SSH public key into local server known hosts

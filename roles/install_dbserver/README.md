@@ -1,6 +1,6 @@
 # install_dbserver
 
-This Ansible role installs PostgreSQL versions: 14 on machines previously configured. 
+This Ansible role installs PostgreSQL versions: 14 on machines previously configured.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -19,11 +19,11 @@ privileges.**
 
 The only dependencies required for this ansible galaxy role are:
 
-  1. Ansible
-  2. `community.general` Ansible Module - Utilized when creating aditional
-     users during a Postgres Install
-  3. `hypersql_devops.postgres` -> `setup_repo` role for 
-     setting the repository on the systems
+1. Ansible
+2. `community.general` Ansible Module - Utilized when creating aditional
+   users during a Postgres Install
+3. `hypersql_devops.postgres` -> `setup_repo` role for
+   setting the repository on the systems
 
 ## Role variables
 
@@ -31,17 +31,11 @@ When executing the role via ansible these are the required variables:
 
 - **pg_version**
 
-<<<<<<< Updated upstream
-  Postgres Versions supported are: `14.0`,`14.1`,`14.2`,`14.3`,`14.3`,`14.5`,`14.6`
-=======
   Postgres Versions supported are: `14.0`, `14.1`, `14.2`, `14.3`,`14.3`, `14.5`, `14.6`
->>>>>>> Stashed changes
 
 - **pg_type**
 
   Database Engine supported are: `PG`
-<<<<<<< Updated upstream
-=======
 
 This role allows users to pass following variables which helps managing day to
 day tasks:
@@ -55,7 +49,6 @@ Example:
 ```yaml
 rpm_install: true
 ```
->>>>>>> Stashed changes
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: [How to include the install_dbserver role in your Playbook](#how-to-include-the-install_dbserver-role-in-your-playbook)
@@ -107,8 +100,8 @@ Below is an example of how to include the `install_dbserver` role:
 ---
 - hosts: primary,standby,pemserver
   name: Install Postgres binaries
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres
@@ -133,11 +126,11 @@ All the variables are available at:
 
 ### PostgreSQL
 
-| Distribution                      |               14 |
-| --------------------------------- |:----------------:|
-| CentOS 7                          |:white_check_mark:|
-| CentOS 8                          |:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
+| Distribution                      |         14         |
+| --------------------------------- | :----------------: |
+| CentOS 7                          | :white_check_mark: |
+| CentOS 8                          | :white_check_mark: |
+| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: |
 
 - :white_check_mark: - Tested and supported
 
@@ -158,8 +151,10 @@ BSD
 ## Author information
 
 Author:
-  * [Sang Myeung Lee](https://github.com/sungmu1)
+
+- [Sang Myeung Lee](https://github.com/sungmu1)
 
 Original Author:
-  * Vibhor Kumar (Co-Author)
-  * Julien Tachoires (Co-Author)
+
+- Vibhor Kumar (Co-Author)
+- Julien Tachoires (Co-Author)

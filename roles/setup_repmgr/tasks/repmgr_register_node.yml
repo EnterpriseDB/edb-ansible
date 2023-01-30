@@ -1,6 +1,7 @@
 - name: Make sure /var/log/repmgr exists
   ansible.builtin.file:
     path: /var/log/repmgr
+    mode: "0755"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     state: directory

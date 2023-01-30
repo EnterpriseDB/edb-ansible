@@ -6,4 +6,4 @@
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
     mode: 0600
-  become: yes
+  become: true

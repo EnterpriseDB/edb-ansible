@@ -1,5 +1,5 @@
 ---
-- name: copying the pg_copy_files
+- name: Copying the pg_copy_files
   copy:
     src: "{{ line_item.file }}"
     dest: "{{ line_item.remote_file }}"
@@ -10,4 +10,4 @@
   loop_control:
     loop_var: line_item
   when: pg_copy_files|length > 0
-  become: yes
+  become: true

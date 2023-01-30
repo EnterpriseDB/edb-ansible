@@ -179,8 +179,8 @@ Below is an example of how to include the `setup_pgbackrest` role:
 ---
 - hosts: primary, standby
   name: Configure pgBackRest backup on Postgres nodes
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres

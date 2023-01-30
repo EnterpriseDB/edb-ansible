@@ -1,6 +1,10 @@
-#skip_list:
-#- '503'
-#- '403'
+# skip_list:
+# - '503'
+# - '403'
+skip_list:
+  - name[template] # Avoid message from Jinja templates should only be at the end of ‘name’
+  - fqcn
+  - schema[meta]
 warn_list:
   - command-instead-of-module  # Using command rather than module
   - no-handler  # Tasks that run when changed should likely be handlers

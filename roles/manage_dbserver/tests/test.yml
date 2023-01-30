@@ -1,12 +1,12 @@
 ---
 - hosts: all
   name: Manage DB Server Playbook
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   pre_tasks:
     - name: User defined variables
-      set_fact:
+      ansible.builtin.set_fact:
         pg_type: "PG"
         pg_version: 14.6
         disable_logging: false

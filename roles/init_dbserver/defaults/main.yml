@@ -5,7 +5,7 @@ pg_instance_name: main
 pg_ssl: true
 pg_remote_ssl_src: false
 
-disable_logging: yes
+disable_logging: true
 use_replication_slots: true
 use_hostname: false
 update_etc_file: true
@@ -26,11 +26,14 @@ pg_log_filename: "postgresql-%a.log"
 # postgres service
 pg_service: "postgresql-{{ pg_major_version }}"
 
+# locale
+pg_locale: "en_US.UTF-8"
+
 # required & optional directories
 pg_user_home: "/var/lib/pgsql"
 pg_bin_path: "/usr/pgsql-{{ pg_major_version }}/bin"
 pg_initdb: "{{ pg_bin_path }}/postgresql-{{ pg_major_version }}-setup initdb"
-pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
+pg_initdb_options: "-k --encoding=UTF-8 --locale={{ pg_locale }}"
 
 # unix socket domain directories
 pg_unix_socket_directories:

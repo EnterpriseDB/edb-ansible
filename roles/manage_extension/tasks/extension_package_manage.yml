@@ -22,7 +22,7 @@
   with_items: "{{ extension_info.required_package }}"
   loop_control:
     loop_var: package
-  when: 
+  when:
     - extension_info.required_package is defined
     - extension_info.required_package|length > 0
   become: true
@@ -30,7 +30,7 @@
 - name: Manage Extension {{ extension_info.name }} from package manager
   ansible.builtin.package:
     name: "{{ extension_info.extension_package }}"
-    state: "{{ extension_info.state|default('present') }}"
+    state: "{{ extension_info.state | default('present') }}"
   when:
     - extension_info is defined
     - pg_extension|length > 0
@@ -40,7 +40,7 @@
 - name: Manage Extension {{ extension_info.name }} from external uri
   ansible.builtin.yum:
     name: "{{ extension_info.uri }}"
-    state: "{{ extension_info.state|default('present') }}"
+    state: "{{ extension_info.state | default('present') }}"
   when:
     - pg_extension is defined
     - pg_extension|length > 0
@@ -51,7 +51,7 @@
 - name: Manage Extension {{ extension_info.name }} from external uri
   ansible.builtin.apt:
     deb: "{{ extension_info.uri }}"
-    state: "{{ extension_info.state|default('present') }}"
+    state: "{{ extension_info.state | default('present') }}"
   when:
     - pg_extension is defined
     - pg_extension|length > 0

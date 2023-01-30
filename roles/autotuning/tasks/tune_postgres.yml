@@ -5,6 +5,10 @@
     # Convert from megibyte to megabyte
     sys_memtotal_mb: "{{ (ansible_memtotal_mb * 1.048576) | int }}"
 
+- name: Gather hardware informations in container
+  include_tasks: set_resource_in_container.yml
+  when: ansible_module_running_in_container
+
 - name: Gather Postgres settings
   community.postgresql.postgresql_info:
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -13,7 +17,7 @@
     login_user: "{{ pg_owner }}"
     filter:
       - "settings"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
   register: pg_settings
@@ -26,7 +30,7 @@
   args:
     executable: /bin/bash
   register: shell_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Set the variable sys_buffers_kb
@@ -39,7 +43,7 @@
   args:
     executable: /bin/bash
   register: shell_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Set the variable sys_cached_kb
@@ -52,7 +56,7 @@
   args:
     executable: /bin/bash
   register: shell_output
-  become: yes
+  become: true
   changed_when: false
 
 - name: Set the variable sys_slab_reclaimable_kb
@@ -68,7 +72,7 @@
 - name: Set the variable pg_max_connections
   set_fact:
     pg_max_connections: >-
-      {{ [ sys_nvcpus | int * 4, 100 ] | max }}
+      {{ pg_max_connections | default([sys_nvcpus | int * 4, 100] | max) }}
 
 # Set the shared buffers value
 - name: Set the variable pg_shared_buffers_mb
@@ -129,7 +133,7 @@
 
 - name: Configure parameters for SSD based disk usage
   set_fact:
-    pg_postgres_conf_params: >-
+    _pg_postgres_conf_params: >-
       {{ _pg_postgres_conf_params + [
         {'name': 'effective_io_concurrency', 'value': '200'},
         {'name': 'random_page_cost', 'value': '1.1'},
@@ -141,5 +145,5 @@
     name: manage_dbserver
     tasks_from: manage_postgres_params
   vars:
-    pg_postgres_conf_params: "{{ pg_postgres_conf_params }}"
+    pg_postgres_conf_params: "{{ _pg_postgres_conf_params }}"
   no_log: "{{ disable_logging }}"

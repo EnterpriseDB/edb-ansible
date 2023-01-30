@@ -6,7 +6,7 @@
 
 - name: Set Extensions version
   include_tasks: set_extension_version.yml
-  when: 
+  when:
     - ansible_os_family == 'RedHat'
     - pg_major_version|int >= 14
 

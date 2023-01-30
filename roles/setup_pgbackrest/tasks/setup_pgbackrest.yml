@@ -25,12 +25,13 @@
     pgbackrest_archive_method not in ['standard', 'async']
 
 - name: Update /etc/hosts based on use_hostname
-  block:
-    - import_tasks: linux_update_etc_hosts.yml
-  become: yes
+  become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
+  block:
+    - name: Import linux_update_etc_hosts task
+      import_tasks: linux_update_etc_hosts.yml
 
 - name: Incluse pgBackRest install
   include_tasks: pgbackrest_install_PG.yml

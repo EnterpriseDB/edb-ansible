@@ -4,6 +4,9 @@
     name: common
     tasks_from: check_version.yml
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Remove Postgres packages
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_install.yml"
   when:

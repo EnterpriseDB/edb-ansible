@@ -161,7 +161,7 @@ Below is an example of how to include the `manage_pgbouncer` role:
 - hosts: pgbouncer,primary,standby
   name: Manage PgBouncer databases and users
   become: true
-  gather_facts: yes
+  gather_facts: true
 
   # When using collections
   collections:

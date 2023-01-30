@@ -1,15 +1,15 @@
 ---
 - hosts: all
   name: Postgres deployment playbook
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
-      set_fact:
+      ansible.builtin.set_fact:
         disable_logging: false
 
   roles:

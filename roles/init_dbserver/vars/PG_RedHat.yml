@@ -15,8 +15,9 @@ pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_major_ver
 # required & optional directories
 pg_user_home: "/var/lib/pgsql"
 pg_bin_path: "/usr/pgsql-{{ pg_major_version }}/bin"
+pg_locale: "en_US.UTF-8"
 pg_initdb: "{{ pg_bin_path }}/initdb"
-pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8 --username={{ pg_owner }}"
+pg_initdb_options: "-k --encoding=UTF-8 --locale={{ pg_locale }} --username={{ pg_owner }}"
 
 # unix socket domain directories
 pg_unix_socket_directories:

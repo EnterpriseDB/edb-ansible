@@ -173,19 +173,11 @@ def get_input_arguments():
     )
 
     parser.add_argument(
-<<<<<<< Updated upstream
-        "-c",
-        "--containers-only",
-        dest="containers_only",
-        action="store_true",
-        help="Build and create OS and tester containers only.",
-=======
         "-m",
         "--maintain-containers",
         dest="maintain_containers",
         action="store_true",
         help=".",
->>>>>>> Stashed changes
     )
 
     parser.add_argument(
@@ -219,15 +211,8 @@ def exec_test(case_name, args):
     pg_types = args.pg_type
     pg_versions = args.pg_version
     os_types = args.os_type
-<<<<<<< Updated upstream
-    containers_only = args.containers_only
-    for iter in itertools.product(
-        [case_name], pg_types, pg_versions, os_types, [containers_only]
-    ):
-=======
     maintain_containers = args.maintain_containers
     for iter in itertools.product([case_name], pg_types, pg_versions, os_types):
->>>>>>> Stashed changes
         if exec_test_case(*iter):
             success = success + 1
         executed = executed + 1
@@ -237,14 +222,13 @@ def exec_test(case_name, args):
     return (executed, success)
 
 
-def exec_test_case(case_name, pg_type, pg_version, os_type, containers_only):
+def exec_test_case(case_name, pg_type, pg_version, os_type):
     env = os.environ.copy()
     env.update(
         {
             "HYPERSQL_PG_VERSION": pg_version,
             "HYPERSQL_PG_TYPE": pg_type,
             "HYPERSQL_OS_TYPE": os_type,
-            "HYPERSQL_CONTAINERS_ONY": str(containers_only),
             "CASE_NAME": case_name,
         }
     )

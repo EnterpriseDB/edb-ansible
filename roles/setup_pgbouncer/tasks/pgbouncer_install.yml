@@ -3,4 +3,4 @@
   package:
     name: "{{ pgbouncer_package_name }}"
     state: present
-  become: yes
+  become: true

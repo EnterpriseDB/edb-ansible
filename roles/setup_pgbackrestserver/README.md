@@ -221,8 +221,8 @@ Below is an example of how to include the `setup_pgbackrestserver` role:
 ---
 - hosts: pgbackrestserver
   name: Deploy pgbackrest servers
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres

@@ -29,14 +29,14 @@
 - name: Add pg_pgpool_user_password if not exist in user map
   set_fact:
     pgpool2_user_map: >-
-     {{ pgpool2_user_map | default([]) + [ 
-            { 
-              'name' : pg_pgpool_user, 
+     {{ pgpool2_user_map | default([]) + [
+            {
+              'name' : pg_pgpool_user,
               'password' : pg_pgpool_user_password
-            } 
+            }
           ] }}
   run_once: true
-  when: 
+  when:
     - pgpool2_user_map is defined
     - sr_user_exist is skipped
   no_log: "{{ disable_logging }}"

@@ -291,7 +291,7 @@ Below is an example of how to include the `setup_pgbouncer` role:
 - hosts: pgbouncer,primary,standby
   name: Setup PgBouncer connection pooler
   become: true
-  gather_facts: yes
+  gather_facts: true
 
   collections:
     - hypersql_devops.postgres

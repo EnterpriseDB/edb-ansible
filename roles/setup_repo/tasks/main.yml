@@ -1,6 +1,6 @@
 ---
 - name: Check required variables for this role
-  include_role:
+  ansible.builtin.include_role:
     name: common
     tasks_from: check_required_variables
   vars:
@@ -10,4 +10,5 @@
 
 # Entry point of the setup_repo role
 - name: Include the setup_repo.yml
-  include_tasks: setup_repo.yml
+  ansible.builtin.include_tasks: setup_repo.yml
+  when: "'setup_repo' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"

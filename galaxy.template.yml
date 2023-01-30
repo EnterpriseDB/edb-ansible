@@ -24,11 +24,14 @@ dependencies:
   "ansible.posix": "1.3.0"
   "community.general": "2.5.8"
   "community.crypto": "1.9.12"
+  "community.docker": "2.7.1"
 build_ignore:
   - dist
   - git-config
   - tests
   - __pycache__
+  - playbook-examples
   - galaxy.template.yml
+  - galaxy-version-policy.md
   - Makefile
   - ".*"

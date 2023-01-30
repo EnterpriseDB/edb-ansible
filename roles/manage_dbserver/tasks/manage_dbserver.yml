@@ -2,26 +2,41 @@
 - name: Reference Postgres variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Include manage dbserver tasks
   block:
-    - import_tasks: manage_users.yml
-    - import_tasks: manage_db.yml
-    - import_tasks: manage_extensions.yml
-    - import_tasks: manage_privileges.yml
-    - import_tasks: manage_tablespaces.yml
+    - name: Import manage_users
+      import_tasks: manage_users.yml
+    - name: Import manage_db
+      import_tasks: manage_db.yml
+    - name: Import manage_extensions task
+      import_tasks: manage_extensions.yml
+    - name: Import manage_privilieges task
+      import_tasks: manage_privileges.yml
+    - name: Import  task
+      import_tasks: manage_tablespaces.yml
 
 - name: Execute SQL scripts and query
   block:
-    - import_tasks: copy_files.yml
-    - import_tasks: execute_sql_scripts.yml
-    - import_tasks: execute_query.yml
+    - name: Import copy_files task
+      import_tasks: copy_files.yml
+    - name: Import execute_sql_scripts task
+      import_tasks: execute_sql_scripts.yml
+    - name: Import execute_query task
+      import_tasks: execute_query.yml
 
 - name: Include Postgres update configuration tasks
   block:
-    - import_tasks: manage_pgpass.yml
-    - import_tasks: manage_slots.yml
-    - import_tasks: manage_postgres_params.yml
-    - import_tasks: manage_hba_conf.yml
+    - name: Import manage_pgpass task
+      import_tasks: manage_pgpass.yml
+    - name: Import manage_slots task
+      import_tasks: manage_slots.yml
+    - name: Import manage_postgres_params task
+      import_tasks: manage_postgres_params.yml
+    - name: Import manage_hba_conf task
+      import_tasks: manage_hba_conf.yml
 
 - name: Include shell profile creation task
   import_tasks: manage_profile.yml

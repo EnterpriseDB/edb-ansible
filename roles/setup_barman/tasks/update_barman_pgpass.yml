@@ -41,10 +41,10 @@
     mode: 0600
     line: "{{ _pg_host }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
     regexp: "^{{ _pg_host | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
-    create: yes
+    create: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   throttle: 1
-  become: yes
+  become: true
 
 - name: Reset _barman_server_info
   set_fact:

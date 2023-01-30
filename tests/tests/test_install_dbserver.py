@@ -23,7 +23,7 @@ def test_install_dbserver_pg_centos():
         packages += [
             "python-pycurl",
             "libselinux-python",
-            "python-psycopg2",
+            "python2-psycopg2",
             "python-ipaddress",
         ]
     elif get_os() == "rocky8":

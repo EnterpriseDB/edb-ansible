@@ -2,18 +2,14 @@
 - name: Install certificated
   package:
     name:
-<<<<<<< Updated upstream
-      - ca-ca-certificates
-=======
       - ca-certificates
->>>>>>> Stashed changes
       - python3-pycurl
       - python3-psycopg2
       - postgresql-client-{{ pg_major_version }}
       - postgresql-{{ pg_major_version }}
       - postgresql-server-dev-{{ pg_major_version }}
     state: present
-    update_cache: yes
+    update_cache: true
   register: install_package
   become: true
 
@@ -23,7 +19,7 @@
       - python-psycopg2
       - python-ipaddress
     state: present
-    update_cache: yes
+    update_cache: true
   when: os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
 
@@ -41,11 +37,7 @@
 - name: Install sslutils
   ansible.builtin.package:
     name:
-<<<<<<< Updated upstream
-      - sslutils_{{ pg_major_version }}
-=======
       - postgresql-{{ pg_major_version }}-sslutils
->>>>>>> Stashed changes
     state: present
   become: true
   when: pg_ssl

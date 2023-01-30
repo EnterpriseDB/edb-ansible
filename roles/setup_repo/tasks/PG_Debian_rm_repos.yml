@@ -1,13 +1,13 @@
 ---
 - name: Remove PG Debian keys
-  apt_key:
+  ansible.builtin.apt_key:
     url: "{{ pg_deb_keys }}"
     state: absent
   when: pg_type == 'PG'
   become: true
 
 - name: Remove PG Debian repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ pg_deb_repo_url }}"
     state: absent
     filename: "pgdg.list"
@@ -15,7 +15,7 @@
   become: true
 
 - name: Uninstall apt-transport-https
-  package:
+  ansible.builtin.package:
     name: apt-transport-https
     state: absent
   become: true

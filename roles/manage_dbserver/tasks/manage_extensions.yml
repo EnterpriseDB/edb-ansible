@@ -2,18 +2,18 @@
 - name: Check if the host is a standby node
   import_tasks: check_database_is_standby.yml
   vars:
-    host_is_standby: False
+    host_is_standby: false
 
 - name: Manage postgres extensions
   community.postgresql.postgresql_ext:
     name: "{{ line_item.name }}"
     port: "{{ pg_port }}"
     db: "{{ line_item.database }}"
-    cascade: yes
+    cascade: true
     state: "{{ line_item.state | default('present') }}"
     login_user: "{{ pg_owner }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-  become: yes
+  become: true
   become_user: "{{ pg_owner }}"
   with_items: "{{ pg_extensions }}"
   loop_control:

@@ -1,7 +1,7 @@
 ---
 - name: Prepare standby list
   set_fact:
-    _standbys_list: "{{ _standbys_list|default([]) + [ node.inventory_hostname ] }}"
+    _standbys_list: "{{ _standbys_list | default([]) + [node.inventory_hostname] }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node
@@ -12,13 +12,13 @@
 
 - name: Set _synchronous_standby_names
   set_fact:
-    _synchronous_standby_names: "{{ ' ' + _synchronous_standbys|default([])|length|string() + '(' + _standbys_list| map('to_json') | join(',') + ')' }}"
+    _synchronous_standby_names: "{{ ' ' + _synchronous_standbys | default([]) | length | string() + '(' + _standbys_list | map('to_json') | join(',') + ')' }}"
   when:
     - synchronous_standby_names|length < 1
 
 - name: Add standby quorum string
   set_fact:
-    synchronous_standby_names: "{{ standby_quorum_type + _synchronous_standby_names  }}"
+    synchronous_standby_names: "{{ standby_quorum_type + _synchronous_standby_names }}"
   when:
     - synchronous_standby_names|length < 1
     - standby_quorum_type|length > 0

@@ -1,4 +1,10 @@
 ---
+- name: Update the ca-certificates package
+  ansible.builtin.package:
+    name: ca-certificates
+    state: present
+  become: true
+
 - name: Install gpg
   ansible.builtin.package:
     name: gpg
@@ -12,26 +18,34 @@
   become: true
 
 - name: Install apt-transport-https
-  apt:
+  ansible.builtin.apt:
     name: apt-transport-https
     update_cache: true
     state: present
   become: true
 
 - name: Add PG Debian keys
-  apt_key:
+  ansible.builtin.apt_key:
     url: "{{ pg_deb_keys }}"
     state: present
   when: pg_type == 'PG'
   become: true
 
 - name: Add PG Debian repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ pg_deb_repo_url }}"
     state: present
     filename: "pgdg"
   when: pg_type == 'PG'
   become: true
+
+- name: Add additional Debian keys
+  ansible.builtin.apt_key:
+    url: "{{ item.key }}"
+    state: present
+  become: true
+  loop: "{{ apt_additional_repo_keys }}"
+  when: apt_additional_repo_keys | length > 0
 
 - name: Add additional Debian repositories
   ansible.builtin.apt_repository:

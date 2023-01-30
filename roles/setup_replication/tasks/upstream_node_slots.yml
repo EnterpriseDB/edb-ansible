@@ -7,7 +7,7 @@
     pg_pgpass_values:
       - user: "{{ pg_replication_user }}"
         password: "{{ pg_replication_user_password }}"
-        create: yes
+        create: true
   no_log: "{{ disable_logging }}"
   run_once: true
 

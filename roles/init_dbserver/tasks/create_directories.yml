@@ -6,7 +6,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
 
 - name: Ensure postgres default data directory exists
   ansible.builtin.file:
@@ -15,7 +15,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
 
 - name: Ensure postgres log directory exists
   file:
@@ -24,7 +24,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
   when: pg_log|length > 0 and pg_data not in pg_log
 
 - name: Ensure postgres wal directory exists
@@ -34,7 +34,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
   when: pg_wal|length > 0 and pg_data not in pg_wal
 
 - name: Ensure postgres local wal archive directory exists
@@ -44,7 +44,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
-  become: yes
+  become: true
   when: pg_local_wal_archive_dir|length > 0
 
 - name: Create unix socket domain directories
@@ -57,7 +57,7 @@
   with_items: "{{ pg_unix_socket_directories }}"
   loop_control:
     loop_var: line_item
-  become: yes
+  become: true
   when: pg_unix_socket_directories|length > 0
 
 - name: Check if we have symlink for default data directory location
@@ -72,7 +72,7 @@
   when:
     - pg_default_data != pg_data
     - not sym.stat.islnk
-  become: yes
+  become: true
 
 - name: Ensure pg_data has symlink to default if pg_data is not default
   file:
@@ -82,4 +82,4 @@
     group: "{{ pg_group }}"
     state: link
   when: pg_default_data != pg_data
-  become: yes
+  become: true
