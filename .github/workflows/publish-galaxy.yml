@@ -50,7 +50,6 @@ jobs:
         run: make build
 
       - name: publish hypersql devops galaxy
-        uses: ansible/ansible-publish-action@v1.0.0
-        with:
-          api_key: ${{ secrets.galaxy_api_key }}
-          src_path: /home/runner/work/pg-ansible/pg-ansible/dist/hypersql_devops-postgres-${{ steps.new_version.outputs.text }}.tar.gz
+        run: make publish
+        env:
+          API_KEY: ${{ secrets.galaxy_api_key }}
