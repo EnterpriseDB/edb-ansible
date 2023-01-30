@@ -31,7 +31,6 @@ _value:
   elements: dict
 """
 
-from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 
 

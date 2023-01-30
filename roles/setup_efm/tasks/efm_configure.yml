@@ -18,19 +18,19 @@
 - name: Prepare the necessary parameters when not use_hostname
   ansible.builtin.set_fact:
     efm_node_parameters:
-      - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-      - { name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:{{ efm_port }}"}
-      - { name: application.name, value: "{{ inventory_hostname }}" }
-      - { name: is.witness, value: "{{ efm_witness }}" }
+      - {name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+      - {name: bind.address, value: "{{ hostvars[inventory_hostname].private_ip }}:{{ efm_port }}"}
+      - {name: application.name, value: "{{ inventory_hostname }}"}
+      - {name: is.witness, value: "{{ efm_witness }}"}
   when: not use_hostname|bool
 
 - name: Prepare the necessary parameters when use_hostname
   ansible.builtin.set_fact:
     efm_node_parameters:
-      - { name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
-      - { name: bind.address, value: "{{ inventory_hostname }}:{{ efm_port }}"}
-      - { name: application.name, value: "{{ inventory_hostname }}" }
-      - { name: is.witness, value: "{{ efm_witness }}" }
+      - {name: db.password.encrypted, value: "{{ pass_opt.stdout }}"}
+      - {name: bind.address, value: "{{ inventory_hostname }}:{{ efm_port }}"}
+      - {name: application.name, value: "{{ inventory_hostname }}"}
+      - {name: is.witness, value: "{{ efm_witness }}"}
   when: use_hostname|bool
 
 - name: Initialize efm_lb_parameters

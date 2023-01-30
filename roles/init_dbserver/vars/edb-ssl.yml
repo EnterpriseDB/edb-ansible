@@ -7,11 +7,11 @@ cert_org_unit: "EDB Postgres Enterprise Manager"
 cert_email: "support@enterprisedb.com"
 
 pg_ssl_postgres_conf_params:
-  - { name: "ssl", value: "on" }
-  - { name: "ssl_ca_file", value: "{{ pg_data }}/root.crt" }
-  - { name: "ssl_key_file", value: "{{ pg_data }}/server.key" }
-  - { name: "ssl_cert_file", value: "{{ pg_data }}/server.crt" }
-  - { name: "ssl_crl_file", value: "{{ pg_data }}/root.crl" }
+  - {name: "ssl", value: "on"}
+  - {name: "ssl_ca_file", value: "{{ pg_data }}/root.crt"}
+  - {name: "ssl_key_file", value: "{{ pg_data }}/server.key"}
+  - {name: "ssl_cert_file", value: "{{ pg_data }}/server.crt"}
+  - {name: "ssl_crl_file", value: "{{ pg_data }}/root.crl"}
 
 # pg_ssl_ip_addresses:
 #  - { contype: "host", source: "127.0.0.1/32", state: absent }

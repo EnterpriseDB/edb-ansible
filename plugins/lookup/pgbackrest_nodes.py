@@ -136,5 +136,3 @@ class LookupModule(LookupBase):
                             counter += 1
 
         return pgbr_nodes
-
-

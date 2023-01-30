@@ -34,7 +34,7 @@
   with_items:
     - "{{ etcd_certificates }}"
   when: etcd_certificates | length > 0
- 
+
 - name: Create SSL directory {{ etcd_ssl_dir }}
   ansible.builtin.file:
     path: "{{ etcd_ssl_dir }}"

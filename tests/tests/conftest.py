@@ -163,6 +163,19 @@ def get_pg_unix_socket_dir():
         elif os_family() == 'Debian':
             return '/var/run/edb-as'
 
+def get_pg_bin_dir():
+    pg_type = get_pg_type()
+    pg_version = get_pg_version()
+    if pg_type == 'PG':
+        if os_family() == 'RedHat':
+            return '/usr/pgsql-%s/bin' % pg_version
+        elif os_family() == 'Debian':
+            return '/usr/lib/postgresql/%s/bin' % pg_version
+    elif pg_type == 'EPAS':
+        if os_family() == 'RedHat':
+            return '/usr/edb/as%s/bin' % pg_version
+        elif os_family() == 'Debian':
+            return '/usr/lib/edb-as/%s/bin' % pg_version
 
 def get_pg_profile_dir():
     pg_type = get_pg_type()

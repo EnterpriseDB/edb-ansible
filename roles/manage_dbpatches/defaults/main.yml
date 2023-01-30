@@ -27,7 +27,8 @@ efm_json_output: ""
 efm_switchover_output: ""
 
 prefer_standby_as_primary: ""
-sleep_between_sync_checks: "3" # in seconds
+# in seconds
+sleep_between_sync_checks: "3"
 
 efm_cluster_name: "{{ pg_instance_name }}"
 efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
