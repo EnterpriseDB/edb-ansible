@@ -32,34 +32,34 @@ efm_port: 7800
 efm_admin_port: 7809
 
 efm_default_parameters:
-  - { name: db.user, value: "{{ pg_efm_user }}"}
-  - { name: db.port, value: "{{ pg_port }}"}
-  - { name: db.database, value: "{{ pg_efm_database }}"}
-  - { name: db.service.owner, value: "{{ pg_owner }}"}
-  - { name: db.service.name, value: "{{ pg_service }}"}
-  - { name: db.bin, value: "{{ pg_bin_path }}"}
-  - { name: db.recovery.dir, value: "{{ pg_data }}"}
-  - { name: db.data.dir, value: "{{ pg_data }}"}
-  - { name: user.email, value: "unknown@gmail.com"}
-  - { name: auto.allow.hosts, value: true}
-  - { name: stable.nodes.file, value: true}
-  - { name: local.period, value: "3" }
-  - { name: local.timeout, value: "5" }
-  - { name: local.timeout.final, value: "5" }
-  - { name: remote.timeout, value: "5" }
-  - { name: node.timeout, value: "5" }
-  - { name: admin.port, value: "{{ efm_admin_port }}" }
+  - {name: db.user, value: "{{ pg_efm_user }}"}
+  - {name: db.port, value: "{{ pg_port }}"}
+  - {name: db.database, value: "{{ pg_efm_database }}"}
+  - {name: db.service.owner, value: "{{ pg_owner }}"}
+  - {name: db.service.name, value: "{{ pg_service }}"}
+  - {name: db.bin, value: "{{ pg_bin_path }}"}
+  - {name: db.recovery.dir, value: "{{ pg_data }}"}
+  - {name: db.data.dir, value: "{{ pg_data }}"}
+  - {name: user.email, value: "unknown@gmail.com"}
+  - {name: auto.allow.hosts, value: true}
+  - {name: stable.nodes.file, value: true}
+  - {name: local.period, value: "3"}
+  - {name: local.timeout, value: "5"}
+  - {name: local.timeout.final, value: "5"}
+  - {name: remote.timeout, value: "5"}
+  - {name: node.timeout, value: "5"}
+  - {name: admin.port, value: "{{ efm_admin_port }}"}
 
 efm_physical_slot_param:
-  - { name: update.physical.slots.period, value: "5" }
+  - {name: update.physical.slots.period, value: "5"}
 
 efm_cascaded_replica_param:
-  - { name: promotable, value: false }
-  - { name: auto.reconfigure, value: false }
+  - {name: promotable, value: false}
+  - {name: auto.reconfigure, value: false}
 
 efm_eager_failover_params:
-  - { name: primary.shutdown.as.failure, value: true }
-  - { name: enable.stop.cluster, value: false }
+  - {name: primary.shutdown.as.failure, value: true}
+  - {name: enable.stop.cluster, value: false}
 
 # example of efm_custom_parameters:
 # efm_parameters:

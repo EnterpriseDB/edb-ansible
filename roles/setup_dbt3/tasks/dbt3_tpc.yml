@@ -5,7 +5,7 @@
       The Ansible variable 'tpcfile' must be set to a locally downloaded copy
       of the TPC supplied TPC-H Tools from:
       https://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp
-  when: tpcfile == ""
+  when: tpcfile | length < 1
 
 - name: Copy and unarchive TPC-H Tools to remote host
   ansible.builtin.unarchive:

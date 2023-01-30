@@ -184,7 +184,7 @@ class LookupModule(LookupBase):
                     )
             # etcd case
             if (group in ['primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
-                'barmanserver', 'witness', 'proxy', 'pgbackrestserver',]):
+                'barmanserver', 'witness', 'proxy', 'pgbackrestserver']):
                 # etcd can be deployed on BDR nodes, proxy nodes and barman
                 # nodes. The etcd hostvar must be set to true.
                 if 'etcd' in hostvars and hostvars.get('etcd'):

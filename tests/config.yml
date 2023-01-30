@@ -406,4 +406,6 @@ cases:
     os:
     - centos7
     - rocky8
+    - debian10
+    - ubuntu20
     - oraclelinux7

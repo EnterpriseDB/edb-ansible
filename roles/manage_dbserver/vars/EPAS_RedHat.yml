@@ -10,10 +10,10 @@ pg_unix_socket_directories:
   - "/var/run/edb/as{{ pg_version }}"
 
 pg_extensions:
-  - { "name": "edb_wait_states", "database": "edb" }
-  - { "name": "edb_wait_states", "database": "postgres" }
-  - { "name": "pg_stat_statements", "database": "edb" }
-  - { "name": "pg_stat_statements", "database": "postgres" }
+  - {"name": "edb_wait_states", "database": "edb"}
+  - {"name": "edb_wait_states", "database": "postgres"}
+  - {"name": "pg_stat_statements", "database": "edb"}
+  - {"name": "pg_stat_statements", "database": "postgres"}
 
 shell_profile_path: "{{ pg_user_home }}/.enterprisedb_profile"
 shell_profile_owner: "enterprisedb"

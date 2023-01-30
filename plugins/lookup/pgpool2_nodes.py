@@ -41,8 +41,6 @@ class LookupModule(LookupBase):
             return []
 
         myvars = getattr(self._templar, '_available_variables', {})
-        # Inventory hostname
-        inventory_hostname= variables['inventory_hostname']
 
         primary_private_ip = terms[0] if len(terms) > 0 else None
 
@@ -64,8 +62,8 @@ class LookupModule(LookupBase):
                     ansible_host=hostvars['ansible_host'],
                     private_ip=hostvars['private_ip'],
                     hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
-                    inventory_hostname=hostvars['inventory_hostname'],
-                    primary_private_ip=hostvars.get('primary_private_ip', None),
+                    inventory_hostname = hostvars['inventory_hostname'],
+                    primary_private_ip = hostvars.get('primary_private_ip', None),
                 )
             )
             node_id += 1
