@@ -30,8 +30,6 @@
 - name: Install patroni with packages packages using pip3
   ansible.builtin.pip:
     name:
-      - python-etcd
-      - psycopg2
       - idna
       - patroni
     umask: "0022"

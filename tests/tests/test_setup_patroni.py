@@ -11,6 +11,7 @@ from conftest import (
     get_pg_bin_dir
 )
 
+
 def test_setup_patroni_user():
     pg_user = 'postgres'
     pg_group = 'postgres'
@@ -19,7 +20,7 @@ def test_setup_patroni_user():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     pg_bin_dir = get_pg_bin_dir()
     
@@ -31,6 +32,7 @@ def test_setup_patroni_user():
     assert len(result) > 0, \
         "repuser was not succesfully created"
 
+
 def test_setup_patroni_slots():
     pg_user = 'postgres'
     pg_group = 'postgres'
@@ -39,7 +41,7 @@ def test_setup_patroni_slots():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     pg_bin_dir = get_pg_bin_dir()
     
@@ -50,6 +52,7 @@ def test_setup_patroni_slots():
 
     assert len(result) > 0, \
         "Replication did not create replication slots"
+
 
 def test_setup_patroni_stat_replication():
     pg_user = 'postgres'
@@ -63,12 +66,13 @@ def test_setup_patroni_stat_replication():
     pg_bin_dir = get_pg_bin_dir()
     
     with host.sudo(pg_user):
-        query = "Select application_name from pg_stat_replication"
-        cmd = host.run('%s/psql -At -h %s -c "%s" postgres' % (pg_bin_dir, socket_dir, query))
+        query = 'Select application_name from pg_stat_replication'
+        cmd = host.run("%s/psql -At -h %s -c '%s' postgres" % (pg_bin_dir, socket_dir, query))
         result = cmd.stdout.strip().split('\n')
 
     assert len(result) == rep_count, \
         "Replication was not successful on master"
+
 
 def test_setup_patroni_stat_wal_receiver():
     pg_user = 'postgres'

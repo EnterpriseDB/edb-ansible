@@ -1,9 +1,7 @@
 ---
 pg_wal: ""
-
 pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
-
 pg_encoding: ""
 
 # log directory and filename
@@ -15,7 +13,7 @@ patroni_bin_dir: "/usr/local/bin"
 
 # postgres service
 pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}-patroni"
-pg_systemd_global_unit_file: "/lib/systemd/system/edb-as-{{ pg_version }}-patroni.service"
+pg_systemd_global_unit_file: "/lib/systemd/system/edb-as{{ pg_version }}-patroni.service"
 
 # required & optional directories
 pg_user_home: "/var/lib/edb-as"

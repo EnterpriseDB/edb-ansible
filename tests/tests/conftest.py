@@ -26,6 +26,7 @@ EDB_SSH_CONFIG = os.getenv('EDB_SSH_CONFIG', '../.ssh/ssh_config')
 # Globale variable used as a cache
 HOSTS = None
 
+
 def load_ansible_vars():
     """
     Loading Ansible variables from the vars.json file
@@ -163,6 +164,7 @@ def get_pg_unix_socket_dir():
         elif os_family() == 'Debian':
             return '/var/run/edb-as'
 
+
 def get_pg_bin_dir():
     pg_type = get_pg_type()
     pg_version = get_pg_version()
@@ -176,6 +178,7 @@ def get_pg_bin_dir():
             return '/usr/edb/as%s/bin' % pg_version
         elif os_family() == 'Debian':
             return '/usr/lib/edb-as/%s/bin' % pg_version
+
 
 def get_pg_profile_dir():
     pg_type = get_pg_type()
