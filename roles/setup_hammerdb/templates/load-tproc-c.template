@@ -1,7 +1,0 @@
-#!/bin/sh
-(cd ${HOME}/HammerDB-{{ hammerdb_version }} && \
-./hammerdbcli << !
-source ${HOME}/loader.tcl
-!
-)
-echo "load complete"

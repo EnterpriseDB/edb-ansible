@@ -3,10 +3,5 @@
   "pg_data": "/opt/pgdata",
   "pg_wal": "/opt/pgwal",
   "hammerdb": "/root/HammerDB-4.6",
-  "hammerdb_version": "4.6",
-  "load-tproc-c": "/usr/local/bin/load-tproc-c",
-  "run-tproc-c": "/usr/local/bin/run-tproc-c",
-  "max_connections": "300",
-  "max_wal_size": "50GB",
-  "tshirt_size": "small"
+  "hammerdb_version": "4.6"
 }

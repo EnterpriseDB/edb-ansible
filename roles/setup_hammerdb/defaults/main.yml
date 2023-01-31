@@ -1,19 +1,9 @@
 ---
 
-tshirt_size: "medium"
 use_patroni: false
-
-ssh_port: 22
-
 supported_os:
   - CentOS8
   - RHEL8
   - Rocky8
   - Debian10
   - Ubuntu20
-
-supported_tshirt_size:
-  - small
-  - medium
-  - large
-  - xl
