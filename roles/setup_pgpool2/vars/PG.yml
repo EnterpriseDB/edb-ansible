@@ -8,7 +8,8 @@ pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 
 # Systemd unit file
-pgpool2_systemd_unit_file: "/etc/systemd/system/pgpool-II.service.d/pgpool-II.conf"
+pgpool2_systemd_unit_file: "/usr/lib/systemd/system/pgpool-II.service"
+pgpool2_systemd_conf_file: "/etc/sysconfig/pgpool-II"
 pcp_configuration_file: "/etc/pgpool-II/pcp.conf"
 pgpool2_pid_file_name: "/var/run/pgpool-II/pgpool.pid"
 pgpool2_logdir: "/var/log/pgpool-II"

@@ -1,4 +1,5 @@
 ---
+pg_major_version: "{{ pg_version | int }}"
 pg_postgres_conf_params: []
 pg_hba_ip_addresses: []
 pg_slots: []

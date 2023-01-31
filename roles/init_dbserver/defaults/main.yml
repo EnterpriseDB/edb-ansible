@@ -27,7 +27,7 @@ pg_log_filename: "postgresql-%a.log"
 pg_service: "postgresql-{{ pg_major_version }}"
 
 # locale
-pg_locale: "en_US.UTF-8"
+pg_locale: "en_US.utf8"
 
 # required & optional directories
 pg_user_home: "/var/lib/pgsql"

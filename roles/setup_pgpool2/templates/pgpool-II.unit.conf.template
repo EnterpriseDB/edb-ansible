@@ -1,9 +1,9 @@
-[Service]
-User={{ pgpool2_user }}
+# Options for pgpool
 
-EnvironmentFile=-/etc/sysconfig/pgpool-II
+# -n: don't run in daemon mode. does not detach control tty
+# -d: debug mode. lots of debug information will be printed
 
-ExecStart=
-ExecStart={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} $OPTS
-ExecStop=
-ExecStop={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} -m fast stop
+#OPTS=" -d -n"
+OPTS=" -n"
+
+STOP_OPTS=" -m fast"

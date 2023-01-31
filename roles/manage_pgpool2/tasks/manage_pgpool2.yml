@@ -43,7 +43,7 @@
   when:
     - pgpool2_users|length > 0
 
-- name: Reload pgpoolII service
+- name: Reload pgpool-II service
   systemd:
     name: "{{ pgpool2_service_name }}"
     state: reloaded
