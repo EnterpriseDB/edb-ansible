@@ -80,8 +80,8 @@ GROUP_ROLES = {
     'dbt2_client': [
         'setup_dbt2_client',
     ],
-    'hammerdbserver': [
-        'setup_hammerdbserver'
+    'hammerdb': [
+        'setup_hammerdb',
     ],
     'witness': [
         'setup_repo',

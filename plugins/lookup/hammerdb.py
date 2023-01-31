@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = """
-    name: hammerdb_server
+    name: hammerdb
     author: Mark Wong
     short_description: Lookup HammerDB server, based on its private_ip
     description:
@@ -12,12 +12,12 @@ DOCUMENTATION = """
         description: Private IP of the HammerDB server.
         required: False
       default:
-        description: hammerdb_server_private_ip of the current node.
+        description: hammerdb_private_ip of the current node.
 """
 
 EXAMPLES = """
 - name: Show HammerDB server informations
-  debug: msg="{{ lookup('hammerdb_server') }}"
+  debug: msg="{{ lookup('hammerdb') }}"
 """
 
 RETURN = """
@@ -40,29 +40,29 @@ class LookupModule(LookupBase):
 
         # If no terms, we'll used the current HammerDB server private IP
         if len(terms) == 0:
-            if 'hammerdb_server_private_ip' not in myvars['hostvars'][inventory_hostname]:
-                # hammerdb_server_private_ip not set, return None
+            if 'hammerdb_private_ip' not in myvars['hostvars'][inventory_hostname]:
+                # hammerdb_private_ip not set, return None
                 return []
-            hammerdb_server_private_ip = myvars['hostvars'][inventory_hostname]['hammerdb_server_private_ip']
+            hammerdb_private_ip = myvars['hostvars'][inventory_hostname]['hammerdb_private_ip']
         else:
-            hammerdb_server_private_ip = terms[0]
+            hammerdb_private_ip = terms[0]
 
-        # If no hammerdbserver found in the inventory file, just return None
-        if 'hammerdbserver' not in variables['groups']:
+        # If no hammerdb found in the inventory file, just return None
+        if 'hammerdb' not in variables['groups']:
             return []
-        if len(variables['groups']['hammerdbserver']) == 0:
+        if len(variables['groups']['hammerdb']) == 0:
             return []
 
         # Lookup for hammerdb servers with a matching private_ip
-        for host in variables['groups']['hammerdbserver']:
+        for host in variables['groups']['hammerdb']:
             hostvars = myvars['hostvars'][host]
 
-            if hostvars['private_ip'] != hammerdb_server_private_ip:
+            if hostvars['private_ip'] != hammerdb_private_ip:
                 continue
 
             return [
                 dict(
-                    node_type='hammerdbserver',
+                    node_type='hammerdb',
                     ansible_host=hostvars['ansible_host'],
                     hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
                     private_ip=hostvars['private_ip'],

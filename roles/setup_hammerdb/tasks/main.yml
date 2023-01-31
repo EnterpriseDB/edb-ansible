@@ -7,7 +7,14 @@
   become: true
   failed_when: false
 
-- name: Include HammerDB installation
-  ansible.builtin.include_role:
-    name: setup_hammerdbserver
-    tasks_from: install_hammerdb
+- name: Download HammerDB
+  ansible.builtin.get_url:
+    url: "{{ hammerdb_url }}/v{{ hammerdb_version }}/{{ hammerdb_filename }}"
+    dest: "{{ ansible_user_dir }}/{{ hammerdb_filename }}"
+    mode: '0644'
+
+- name: Install HammerDB
+  ansible.builtin.unarchive:
+    src: "{{ ansible_user_dir }}/{{ hammerdb_filename }}"
+    dest: "{{ ansible_user_dir }}"
+    remote_src: true
