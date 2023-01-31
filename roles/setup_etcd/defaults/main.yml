@@ -11,7 +11,7 @@ etcd_group: "{{ pg_group }}"
 
 use_hostname: true
 
-etcd_version: "3.5.6"
+etcd_version: "3.5.7"
 etcd_service: "etcd-{{ etcd_version }}"
 etcd_download_url: "https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}"
 etcd_checksum_url: "sha256:https://github.com/coreos/etcd/releases/download/v{{ etcd_version }}/SHA256SUMS"

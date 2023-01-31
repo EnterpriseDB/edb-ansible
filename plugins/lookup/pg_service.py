@@ -36,7 +36,7 @@ class LookupModule(LookupBase):
 
         elif ansible_os_family == 'Debian':
             if pg_type == 'EPAS':
-                p = 'edb-as%s-%s'
+                p = 'edb-as@%s-%s'
             elif pg_type == 'PG':
                 p = 'postgresql@%s-%s'
             return [p % (pg_version, pg_instance_name)]
