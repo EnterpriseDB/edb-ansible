@@ -29,6 +29,12 @@
     state: absent
   become: true
 
+- name: Remove postgres default data directory if exists
+  file:
+    path: "{{ pg_default_data }}"
+    state: absent
+  become: true
+
 - name: Remove postgres log directory if exists
   file:
     path: "{{ pg_log }}"

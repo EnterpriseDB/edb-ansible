@@ -132,6 +132,16 @@
   template:
     backup: true
     dest: "{{ pgpool2_systemd_unit_file }}"
+    src: ./templates/pgpool-II.unit.service.template
+    mode: 0644
+  when:
+    - pg_type == 'PG'
+  become: true
+
+- name: Generate pgpoolII systemd conf file
+  template:
+    backup: true
+    dest: "{{ pgpool2_systemd_conf_file }}"
     src: ./templates/pgpool-II.unit.conf.template
     mode: 0644
   when:

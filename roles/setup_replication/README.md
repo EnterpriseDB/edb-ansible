@@ -35,7 +35,8 @@ Operating Systems supported are: CentOS7 and RHEL7
 The rest of the variables can be configured and are available in the:
 
   * [roles/setup_replication/defaults/main.yml](./defaults/main.yml)
-  * [roles/setup_replication/vars/PG.yml](./vars/PG.yml)
+  * [roles/setup_replication/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_replication/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## Dependencies
 

@@ -1,0 +1,11 @@
+[Service]
+User={{ pgpool2_user }}
+
+EnvironmentFile=-/etc/sysconfig/pgpool-II
+
+ExecStart=
+ExecStart={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} $OPTS
+ExecStop=
+ExecStop={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} -m fast stop
+ExecReload=
+ExecReload={{ pgpool2_bin_path }}/pgpool -f {{ pgpool2_configuration_file }} reload
