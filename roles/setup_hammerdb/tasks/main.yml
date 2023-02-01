@@ -18,3 +18,17 @@
     src: "{{ ansible_user_dir }}/{{ hammerdb_filename }}"
     dest: "{{ ansible_user_dir }}"
     remote_src: true
+
+- name: Install Oracle Instant Client Repository
+  ansible.builtin.package:
+    name:
+      - "{{ oracle_instant_client_repo_pkg }}"
+  when: ansible_facts["distribution"] == "OracleLinux"
+
+- name: Install Oracle Instant Client Packages
+  ansible.builtin.package:
+    name:
+      - oracle-instantclient-basic
+      - oracle-instantclient-sqlplus
+      - oracle-instantclient-tools
+  when: ansible_facts["distribution"] == "OracleLinux"
