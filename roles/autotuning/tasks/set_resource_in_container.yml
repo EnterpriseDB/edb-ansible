@@ -3,14 +3,14 @@
 - name: Ensure memory limit
   ansible.builtin.shell: |
     if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes` != $((0x7FFFFFFFFFFFF000)) ]; then 
-      cat /sys/fs/cgroup/memory/memory.limit_in_bytes;
+      echo -n $((`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`/1024/1024))
     fi
   register: _cgroup_memory_limit
   become: true
 
 - name: Set Total memory in container
   ansible.builtin.set_fact:
-    sys_memtotal_mb: "{{ (_cgroup_memory_limit.stdout_lines / 1024 / 1024) | int }}"
+    sys_memtotal_mb: "{{ (_cgroup_memory_limit.stdout_lines) | int }}"
   when: _cgroup_memory_limit.stdout_lines | length > 0
   become: true
 
