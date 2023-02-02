@@ -16,7 +16,7 @@
 - name: Update database packages
   ansible.builtin.package:
     name: "{{ pg_package_list }}"
-    state: latest
+    state: present
   when: >
     ('primary' in group_names or 'standby' in group_names)
      and pg_package_list | length > 0
@@ -24,7 +24,7 @@
 - name: Update other packages packages
   ansible.builtin.package:
     name: "{{ user_package_list }}"
-    state: latest
+    state: present
   when: user_package_list | length > 0
 
 - name: Start efm pg services
