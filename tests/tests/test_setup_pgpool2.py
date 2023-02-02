@@ -1,5 +1,5 @@
 import pytest
-from conftest import get_pg_type, get_pgpool2, get_primary, load_ansible_vars
+from conftest import get_pg_type, get_pg_version, get_pgpool2, get_primary, load_ansible_vars
 
 
 def test_setup_pgpool2_PG():
@@ -17,7 +17,8 @@ def test_setup_pgpool_PG_packages():
     if get_pg_type() != "PG":
         pytest.skip()
     host = get_pgpool2()[0]
-    packages = ["pgpool-II", "openssl"]
+    pg_version = get_pg_version()
+    packages = ["pgpool-II-pg%s" % pg_version, "openssl"]
 
     for package in packages:
         assert host.package(package).is_installed, "Package %s not installed" % packages
@@ -92,3 +93,25 @@ def test_setup_pgpool_loadbalance():
         result = cmd.stdout.strip()
 
     assert result == "on", "Load Balance is not enabled."
+
+def test_setup_pgpool_watchdog():
+    ansible_vars = load_ansible_vars()
+    pgpool2_user = ansible_vars["pgpool2_users"][0]["name"]
+    pgpool2_password = ansible_vars["pgpool2_users"][0]["pass"]
+    pgpool2_port = ansible_vars["pgpool2_port"]
+
+    pg_user = "postgres"
+
+    pgpool2_address = get_pgpool2()[0]
+    address = str(pgpool2_address).strip("<>").split("//")[1]
+    host = get_primary()
+
+    with host.sudo(pg_user):
+        query = "PGPOOL SHOW use_watchdog;"
+        cmd = host.run(
+            "PGPASSWORD=%s psql -At -U %s -h %s -p %s -c '%s' postgres"
+            % (pgpool2_password, pgpool2_user, address, pgpool2_port, query)
+        )
+        result = cmd.stdout.strip()
+    
+    assert result == "on", "Watchdog is not enabled."

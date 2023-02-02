@@ -24,3 +24,11 @@ all:
           ansible_host: {{ inventory_vars['pool1_ip'] }}
           private_ip: {{ inventory_vars['pool1_ip'] }}
           primary_private_ip: {{ inventory_vars['primary1_ip'] }}
+        pool2:
+          ansible_host: {{ inventory_vars['pool2_ip'] }}
+          private_ip: {{ inventory_vars['pool2_ip'] }}
+          primary_private_ip: {{ inventory_vars['primary1_ip'] }}
+        pool3:
+          ansible_host: {{ inventory_vars['pool3_ip'] }}
+          private_ip: {{ inventory_vars['pool3_ip'] }}
+          primary_private_ip: {{ inventory_vars['primary1_ip'] }}
