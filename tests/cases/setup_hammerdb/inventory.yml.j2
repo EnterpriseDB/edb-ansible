@@ -1,12 +1,7 @@
 ---
 all:
   children:
-    primary:
-      hosts:
-        primary1:
-          ansible_host: {{ inventory_vars['primary1_ip'] }}
-          private_ip: {{ inventory_vars['primary1_ip'] }}
-    hammerdbserver:
+    hammerdb:
       hosts:
         hammerdb1:
           ansible_host: {{ inventory_vars['hammerdb1_ip'] }}

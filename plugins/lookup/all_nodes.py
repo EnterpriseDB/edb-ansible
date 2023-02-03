@@ -35,7 +35,7 @@ class LookupModule(LookupBase):
 
         allowed_groups = [
             'primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
-            'barmanserver', 'dbt2_driver', 'dbt2_client', 'hammerdbserver',
+            'barmanserver', 'dbt2_driver', 'dbt2_client', 'hammerdb',
             'witness', 'proxy', 'pgbackrestserver',
         ]
         for group, nodes in variables['groups'].items():

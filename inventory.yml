@@ -43,7 +43,7 @@ all:
           barman: true
           barman_server_private_ip: xxx.xxx.xxx.xxx
           barman_backup_method: postgres
-    hammerdbserver:
+    hammerdb:
       hosts:
         hammerdb1:
           ansible_host: xxx.xxx.xxx.xxx
