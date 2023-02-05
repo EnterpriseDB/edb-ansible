@@ -11,7 +11,7 @@ core_dump_directory: "/var/coredumps"
 
 install_edb_postgres_tuner: true
 edb_tuner_package: "edb-{{ 'as' if pg_type == 'EPAS' else 'pg' }}\
-                   {{ pg_version }}-postgres-tuner{{ pg_tuner_version }}"
+                   {{ pg_version }}-postgres-tuner{{ '-' if ansible_os_family == 'Debian' }}{{ pg_tuner_version }}"
 install_bdr_packages: false
 epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
 epas_service: "edb-as@{{ pg_version }}-main"
