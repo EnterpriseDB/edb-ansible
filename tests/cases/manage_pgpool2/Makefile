@@ -8,6 +8,10 @@ build-rocky8:
 	docker compose up primary1-rocky8 -d
 	docker compose up pool1-rocky8 -d
 
+build-almalinux8:
+	docker compose up primary1-almalinux8 -d
+	docker compose up pool1-almalinux8 -d
+
 build-oraclelinux7:
 	docker compose up primary1-oraclelinux7 -d
 	docker compose up pool1-oraclelinux7 -d

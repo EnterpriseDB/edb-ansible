@@ -6,6 +6,9 @@ build-centos7:
 build-rocky8:
 	docker compose up primary1-rocky8 -d
 
+build-almalinux8:
+	docker compose up primary1-almalinux8 -d
+
 build-debian9:
 	docker compose up primary1-debian9 -d
 
