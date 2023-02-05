@@ -141,7 +141,7 @@ def get_witness():
 
 
 def get_hammerdb():
-    return get_hosts('hammerdbserver')
+    return get_hosts('hammerdb')
 
 
 def get_dbt2_driver():

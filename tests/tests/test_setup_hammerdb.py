@@ -3,70 +3,29 @@ import os
 
 from conftest import (
     load_ansible_vars,
-    get_hosts,
-    get_os,
-    get_pg_version,
-    get_pg_type,
-    get_pg_unix_socket_dir,
-    get_primary,
-    get_hammerdb
+    get_os_version,
+    get_hammerdb,
+    os_family,
 )
 
-def test_setup_hammerdb_load_tproc_c():
+def test_setup_hammerdb_dir():
     ansible_vars = load_ansible_vars()
-    load_tproc_c = ansible_vars['load-tproc-c']
+    hammerdb = ansible_vars['hammerdb']
     host = get_hammerdb()[0]
     
-    assert host.file(load_tproc_c).exists, \
-        "Load-TProc-C wasn't sucessfully installed"
+    assert host.file(hammerdb).exists, \
+        "HammerDB wasn't sucessfully installed"
 
-def test_setup_hammerdb_run_tproc_c():
+def test_setup_hammerdb_install_file():
     ansible_vars = load_ansible_vars()
-    run_tproc_c = ansible_vars['run-tproc-c']
+    hammerdb_version = ansible_vars['hammerdb_version']
     host = get_hammerdb()[0]
+
+    if os_family() == 'RedHat':
+        ext = 'RHEL%s' % get_os_version()
+    else:
+        ext = 'Linux'
     
-    assert host.file(run_tproc_c).exists, \
-        "Run-TProc-C wasn't sucessfully installed"
-
-def test_setup_hammerdb_max_connections():
-    ansible_vars = load_ansible_vars()
-    pg_user = 'postgres'
-    pg_group = 'postgres'
-    max_connections = ansible_vars['max_connections']
-
-
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
-
-    host = get_primary()
-    socket_dir = get_pg_unix_socket_dir()
-    with host.sudo(pg_user):
-        query = "Show max_connections"
-        cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
-        result = cmd.stdout.strip()
-    
-    assert result == max_connections, \
-        "Max connections was not significantly configured."
-
-def test_setup_hammerdb_max_wal_size():
-    ansible_vars = load_ansible_vars()
-    pg_user = 'postgres'
-    pg_group = 'postgres'
-    max_wal_size = ansible_vars['max_wal_size']
-
-
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
-
-    host = get_primary()
-    socket_dir = get_pg_unix_socket_dir()
-    with host.sudo(pg_user):
-        query = "Show max_wal_size"
-        cmd = host.run('psql -At -h %s -c "%s" postgres' % (socket_dir, query))
-        result = cmd.stdout.strip()
-    
-    assert result == max_wal_size, \
-        "Max wal size was not significantly configured."
+    assert host.file('HammerDB-%s-%s.tar.gz' % (hammerdb_version, ext)).exists, \
+        "HammerDB install file wasn't downloaded"
 
