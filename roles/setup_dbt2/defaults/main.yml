@@ -17,10 +17,7 @@ pg_superuser_password: ""
 pg_user_home: ""
 
 supported_os:
-  - CentOS7
   - CentOS8
-  - RedHat7
   - RedHat8
   - Rocky8
   - AlmaLinux8
-  - OracleLinux7

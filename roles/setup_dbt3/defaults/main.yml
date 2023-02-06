@@ -6,9 +6,7 @@ have_tpcfile: true
 tpcfile: ""
 
 supported_os:
-  - CentOS7
   - CentOS8
-  - RedHat7
   - RedHat8
   - Rocky8
   - AlmaLinux8
