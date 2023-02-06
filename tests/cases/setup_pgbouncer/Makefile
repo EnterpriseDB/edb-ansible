@@ -8,6 +8,10 @@ build-rocky8:
 	docker compose up primary1-rocky8 -d
 	docker compose up pooler1-rocky8 -d
 
+build-almalinux8:
+	docker compose up primary1-almalinux8 -d
+	docker compose up pooler1-almalinux8 -d
+
 build-debian10:
 	docker compose up primary1-debian10 -d
 	docker compose up pooler1-debian10 -d

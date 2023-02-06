@@ -32,7 +32,7 @@ class PgTypeChecker(argparse.Action):
 
 
 class OSChecker(argparse.Action):
-    available_os = ['centos7', 'rocky8', 'debian9', 'debian10', 'ubuntu20',
+    available_os = ['centos7', 'rocky8', 'almalinux8', 'debian9', 'debian10', 'ubuntu20',
                     'oraclelinux7']
 
     def __call__(self, parser, namespace, values, option_string=None):

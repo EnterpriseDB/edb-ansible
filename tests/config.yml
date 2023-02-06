@@ -14,6 +14,7 @@ cases:
     - centos7
     - oraclelinux7
     - rocky8
+    - almalinux8
     - debian9
     - debian10
     - ubuntu20
@@ -31,6 +32,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian9
     - debian10
     - ubuntu20
@@ -49,6 +51,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian9
     - debian10
     - ubuntu20
@@ -67,6 +70,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian9
     - debian10
     - ubuntu20
@@ -85,6 +89,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian9
     - debian10
     - ubuntu20
@@ -103,6 +108,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian9
     - debian10
     - ubuntu20
@@ -121,6 +127,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - oraclelinux7
     - debian10
     - ubuntu20
@@ -138,6 +145,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - oraclelinux7
     - debian10
     - ubuntu20
@@ -155,6 +163,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - oraclelinux7
     - ubuntu20
     - debian10
@@ -172,6 +181,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - oraclelinux7
     - ubuntu20
     - debian10
@@ -189,6 +199,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian10
     - oraclelinux7
     - ubuntu20
@@ -206,6 +217,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian10
     - oraclelinux7
     - ubuntu20
@@ -223,6 +235,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian10
     - oraclelinux7
     - ubuntu20
@@ -240,6 +253,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian10
     - oraclelinux7
     - ubuntu20
@@ -256,6 +270,7 @@ cases:
     - EPAS
     os:
     - rocky8
+    - almalinux8
     - debian10
     - ubuntu20
   setup_dbt2_driver:
@@ -271,6 +286,7 @@ cases:
     - EPAS
     os:
     - rocky8
+    - almalinux8
     - centos7
   setup_dbt2_client:
     pg_version:
@@ -285,6 +301,7 @@ cases:
     - EPAS
     os:
     - rocky8
+    - almalinux8
     - centos7
   setup_dbt2:
     pg_version:
@@ -299,6 +316,7 @@ cases:
     - EPAS
     os:
     - rocky8
+    - almalinux8
     - centos7
   setup_dbt3:
     pg_version:
@@ -313,6 +331,7 @@ cases:
       - EPAS
     os:
       - rocky8
+      - almalinux8
       - centos7
   setup_dbt7:
     pg_version:
@@ -327,6 +346,7 @@ cases:
       - EPAS
     os:
       - rocky8
+      - almalinux8
       - centos7
   manage_dbpatches:
     pg_version:
@@ -343,6 +363,7 @@ cases:
     - centos7
     - oraclelinux7
     - rocky8
+    - almalinux8
     - debian9
     - debian10
     - ubuntu20
@@ -359,6 +380,7 @@ cases:
     - EPAS
     os:
     - centos7
+    - almalinux8
     - oraclelinux7
   setup_pgbackrest:
     pg_version:
@@ -371,6 +393,7 @@ cases:
     - EPAS
     os:
     - rocky8
+    - almalinux8
     - centos7
     - debian10
     - ubuntu20
@@ -385,6 +408,7 @@ cases:
     - EPAS
     os:
     - rocky8
+    - almalinux8
     - centos7
     - debian10
     - ubuntu20
@@ -402,6 +426,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian10
     - ubuntu20
     - oraclelinux7
@@ -419,6 +444,7 @@ cases:
     os:
     - centos7
     - rocky8
+    - almalinux8
     - debian10
     - ubuntu20
     - oraclelinux7

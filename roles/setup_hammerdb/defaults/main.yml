@@ -12,6 +12,7 @@ supported_os:
   - CentOS8
   - RHEL8
   - Rocky8
+  - AlmaLinux8
   - Debian10
   - Ubuntu20
 use_patroni: false
