@@ -1,13 +1,4 @@
 ---
-- name: Remove PG/EDB repos and epel-release packages
-  ansible.builtin.package:
-    name:
-      - pgdg-redhat-repo
-      - epel-release
-      - edb-repo
-    state: removed
-  become: true
-
 - name: Remove repo file
   ansible.builtin.file:
     path: "{{ item_file }}"
@@ -19,6 +10,15 @@
     - "/etc/yum.repos.d/enterprisedb-enterprise.repo"
   loop_control:
     loop_var: item_file
+  become: true
+
+- name: Remove PG/EDB repos and epel-release packages
+  ansible.builtin.package:
+    name:
+      - pgdg-redhat-repo
+      - epel-release
+      - edb-repo
+    state: removed
   become: true
 
 - name: Remove additional Redhat repositories
