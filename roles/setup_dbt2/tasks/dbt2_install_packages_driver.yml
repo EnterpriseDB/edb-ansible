@@ -1,5 +1,6 @@
 ---
-- name: Install packages for DBT-2 Driver
+# centos7 does not have dnf enabled
+- name: Install packages for DBT-2 Driver for EL8
   ansible.builtin.dnf:
     name:
       - 'https://github.com/osdldbt/dbttools-packaging/releases/download/v{{ dbttools_version }}/dbttools-{{ dbttools_version }}-1.el8.x86_64.rpm'
@@ -10,7 +11,39 @@
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-plpgsql-{{ dbt2_version }}-1.el8.x86_64.rpm'
     state: present
     disable_gpg_check: true
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
+  become: true
+
+- name: Download DBT-2 packages for EL7
+  ansible.builtin.get_url:
+    url: "https://github.com/osdldbt/dbt2-packaging/archive/refs/tags/v{{ dbt2_version }}.tar.gz"
+    dest: "/usr/local/share/dbt2-packaging-v{{ dbt2_version }}.tar.gz"
+    mode: '0644'
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
+  become: true
+
+- name: Install DBT-2 packages for EL7
+  ansible.builtin.unarchive:
+    src: "/usr/local/share/dbt2-packaging-v{{ dbt2_version }}.tar.gz"
+    dest: "/usr/local/bin"
+    remote_src: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
+  become: true
+
+- name: Download DBTtools packages for EL7
+  ansible.builtin.get_url:
+    url: "https://github.com/osdldbt/dbttools/archive/refs/tags/v{{ dbttools_version }}.tar.gz"
+    dest: "/usr/local/share/dbttools-v{{ dbttools_version }}.tar.gz"
+    mode: '0644'
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
+  become: true
+
+- name: Install DBTtools packages for EL7
+  ansible.builtin.unarchive:
+    src: "/usr/local/share/dbttools-v{{ dbttools_version }}.tar.gz"
+    dest: "/usr/local/bin"
+    remote_src: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
   become: true
 
 - name: Download stackcollapse-perf.pl
@@ -27,7 +60,7 @@
     mode: '0755'
   become: true
 
-- name: Install additional supporting packages
+- name: Install additional supporting packages for EL8
   ansible.builtin.package:
     name:
       - perf
@@ -36,5 +69,18 @@
       - rsync
       - tmux
     state: present
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
+  become: true
+
+# centos7 does not have python3-docutils pacakge
+- name: Install additional supporting packages for EL7
+  ansible.builtin.package:
+    name:
+      - perf
+      - postgresql
+      - python-docutils
+      - rsync
+      - tmux
+    state: present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
   become: true

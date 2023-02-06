@@ -7,7 +7,6 @@
       - patch
       - perf
       - psmisc
-      - python3-docutils
       - R-core
       - sysstat
       - tmux
@@ -15,11 +14,41 @@
   when: ansible_os_family == "RedHat"
   become: true
 
-- name: Install packages for DBT-3 Database
+- name: Install python3-docutils package for EL8
+  ansible.builtin.package:
+    name:
+      - python3-docutils
+    state: present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
+
+- name: Install python-docutils package for EL7
+  ansible.builtin.package:
+    name:
+      - python-docutils
+    state: present
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
+
+- name: Install packages for DBT-3 Database for EL8
   ansible.builtin.dnf:
     name:
       - 'https://github.com/osdldbt/dbt3-packaging/releases/download/v{{ dbt3_version }}/dbt3-{{ dbt3_version }}-1.el8.x86_64.rpm'
     state: present
     disable_gpg_check: true
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
+  become: true
+
+- name: Download package for DBT-3 Database for EL7
+  ansible.builtin.get_url:
+    url: "https://github.com/osdldbt/dbt3/archive/refs/tags/v{{ dbt3_version }}.tar.gz"
+    dest: "/usr/local/share/dbt3-v{{ dbt3_version }}.tar.gz"
+    mode: '0644'
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
+  become: true
+
+- name: Install package for DBT-3 Database for EL7
+  ansible.builtin.unarchive:
+    src: "/usr/local/share/dbt3-v{{ dbt3_version }}.tar.gz"
+    dest: "/usr/local/bin"
+    remote_src: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
   become: true

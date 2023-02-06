@@ -1,5 +1,5 @@
 ---
-- name: Install packages for DBT-2 Client
+- name: Install packages for DBT-2 Client for EL8
   ansible.builtin.dnf:
     name:
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-client-{{ dbt2_version }}-1.el8.x86_64.rpm'
@@ -8,7 +8,23 @@
       - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-plpgsql-{{ dbt2_version }}-1.el8.x86_64.rpm'
     state: present
     disable_gpg_check: true
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
+  become: true
+
+- name: Download dbt2 packages for EL7
+  ansible.builtin.get_url:
+    url: "https://github.com/osdldbt/dbt2-packaging/archive/refs/tags/v{{ dbt2_version }}.tar.gz"
+    dest: "/usr/local/share/dbt2-packaging-v{{ dbt2_version }}.tar.gz"
+    mode: '0644'
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
+  become: true
+
+- name: Install dbt2 packages for EL7
+  ansible.builtin.unarchive:
+    src: "/usr/local/share/dbt2-packaging-v{{ dbt2_version }}.tar.gz"
+    dest: "/usr/local/bin"
+    remote_src: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
   become: true
 
 - name: Install additional supporting packages
