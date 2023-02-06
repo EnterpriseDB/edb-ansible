@@ -10,6 +10,7 @@ post-build:
 
 centos7: export EDB_OS=centos7
 rocky8: export EDB_OS=rocky8
+almalinux8: export EDB_OS=almalinux8
 debian9: export EDB_OS=debian9
 debian10: export EDB_OS=debian10
 ubuntu20: export EDB_OS=ubuntu20
@@ -17,6 +18,7 @@ oraclelinux7: export EDB_OS=oraclelinux7
 
 centos7: build-centos7 post-build ansible-tester-up
 rocky8: build-rocky8 post-build ansible-tester-up
+almalinux8: build-almalinux8 post-build ansible-tester-up
 debian9: build-debian9 post-build ansible-tester-up
 debian10: build-debian10 post-build ansible-tester-up
 ubuntu20: build-ubuntu20 post-build ansible-tester-up

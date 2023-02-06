@@ -4,3 +4,11 @@
     name: "{{ pgbouncer_package_name }}"
     state: present
   become: true
+
+- name: Install openssl package
+  ansible.builtin.package:
+    name: "openssl"
+    state: present
+  when:
+    - pgbouncer_ssl
+  become: true

@@ -17,10 +17,10 @@
 - name: Check if Database Engine is supported
   ansible.builtin.fail:
     msg: "Database Engine = {{ pg_type }} {{ pg_version }}
-          is not supported on RHEL8/CentOS8/Rocky8."
+          is not supported on RHEL8/CentOS8/Rocky8/AlmaLinux8."
   when: >
     pg_type == 'EPAS' and
-    ( pg_version|int < 12 and os in ['RedHat8','CentOS8', 'Rocky8'] or
+    ( pg_version|int < 12 and os in ['RedHat8','CentOS8', 'Rocky8', 'AlmaLinux8'] or
       pg_version|int < 11 and os in ['Ubuntu18', 'Debian9'] or
       pg_version|int < 13 and os in ['Ubuntu20']  or
       pg_version|int < 12 and os in ['Debian10'] )

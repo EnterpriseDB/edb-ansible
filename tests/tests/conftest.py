@@ -84,6 +84,7 @@ def get_pg_version():
 
 def os_family():
     if (get_os().startswith('centos') or get_os().startswith('rocky')
+        or get_os().startswith('almalinux')
         or get_os().startswith('oraclelinux')):
         return 'RedHat'
     elif (get_os().startswith('debian') or get_os().startswith('ubuntu')):
