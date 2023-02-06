@@ -14,17 +14,17 @@
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
   become: true
 
-- name: Download DBT-2 packages for EL7
+- name: Download packages for DBT-2 Database for EL7
   ansible.builtin.get_url:
-    url: "https://github.com/osdldbt/dbt2-packaging/archive/refs/tags/v{{ dbt2_version }}.tar.gz"
-    dest: "/usr/local/share/dbt2-packaging-v{{ dbt2_version }}.tar.gz"
+    url: "https://github.com/osdldbt/dbt2/archive/refs/tags/v{{ dbt2_version }}.tar.gz"
+    dest: "/usr/local/share/dbt2-v{{ dbt2_version }}.tar.gz"
     mode: '0644'
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
   become: true
 
-- name: Install DBT-2 packages for EL7
+- name: Install packages for DBT-2 Database for EL7
   ansible.builtin.unarchive:
-    src: "/usr/local/share/dbt2-packaging-v{{ dbt2_version }}.tar.gz"
+    src: "/usr/local/share/dbt2-v{{ dbt2_version }}.tar.gz"
     dest: "/usr/local/bin"
     remote_src: true
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '7'
