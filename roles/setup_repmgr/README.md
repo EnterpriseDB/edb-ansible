@@ -133,17 +133,12 @@ Below is an example of how to include the `setup_repmgr` role:
 ```
 
 ## Database engines supported
+### Supported OS
+- CentOS7
+- CentOS8
 
-### Community PostgreSQL
-
-| Distribution                      |               14 |
-| --------------------------------- |:----------------:|
-| CentOS 7                          |:white_check_mark:|
-| CentOS 8                          |:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
-
-- :white_check_mark: - Tested and supported
-- :x: - Not supported
+### Supported PostgreSQL Version
+- 14.0 - 14.6
 
 ## Playbook execution examples
 

@@ -255,6 +255,15 @@ All the variables are available at:
 - [roles/manage_dbserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
 - [roles/manage_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
+## Database engines supported
+
+### Supported OS
+- CentOS7
+- CentOS8
+
+### Supported PostgreSQL Version
+- 14.0 - 14.6
+
 ## License
 
 BSD

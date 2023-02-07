@@ -185,6 +185,19 @@ All the variables are available at:
   * [roles/setup_pgpool2/defaults/main.yml](./defaults/main.yml)
   * [roles/setup_pgpool2/vars/PG.yml](./vars/PG.yml)
 
+## Database engines supported
+### Supported OS
+- CentOS7
+- CentOS8
+
+### Supported PostgreSQL Version
+- 14.0 - 14.6
+
+## pgpool-II supported
+
+- RedHat
+  * pgpool-II : 4.3
+
 ## License
 
 BSD

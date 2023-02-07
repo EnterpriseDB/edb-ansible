@@ -12,4 +12,5 @@ epel_repo: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible
 epel_gpg_key_8: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8"
 
 apt_additional_repos: []
+apt_additional_repo_keys:
 yum_additional_repos: []

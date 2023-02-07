@@ -165,6 +165,17 @@ All the variables are available at:
 
 - [roles/setup_barmanserver/defaults/main.yml](./defaults/main.yml)
 
+## Database engines supported
+### Supported OS
+- CentOS7
+- CentOS8
+
+### Supported PostgreSQL Version
+- 14.0 - 14.6
+
+## Barman supported
+- 3.2.0
+
 ## License
 
 BSD

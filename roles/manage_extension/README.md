@@ -102,26 +102,18 @@ installing extension :
 
 ## Database engines supported
 
-### Community PostgreSQL
+### Supported OS
+- CentOS7
+- CentOS8
 
-| Distribution                      |               14 |
-| --------------------------------- |:----------------:|
-| CentOS 7                          |:white_check_mark:|
-| CentOS 8                          |:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|
-
-- :white_check_mark: - Tested and supported
-- :x: - Not supported
+### Supported PostgreSQL Version
+- 14.0 - 14.6
 
 ## PostgreSQL extension supported
 
-| PostgreSQL Engine      |     postgis |
-| ---------------------- |:-----------:|
-| RedHat - PG v14        |          3.2|
-
-| PostgreSQL Engine      |     pgaudit |
-| ---------------------- |:-----------:|
-| Debian - PG v14        |          1.6|
+- RedHat
+  * PostGIS : 3.2
+  * pgAudit : 1.6
 
 ## Playbook execution examples
 ```bash

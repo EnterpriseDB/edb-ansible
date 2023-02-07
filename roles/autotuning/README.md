@@ -108,6 +108,14 @@ Below is an example of how to include the `autotuning` role:
     - role: autotuning
 ```
 
+## Database engines supported
+### Supported OS
+- CentOS7
+- CentOS8
+
+### Supported PostgreSQL Version
+- 14.0 - 14.6
+
 ## License
 
 BSD

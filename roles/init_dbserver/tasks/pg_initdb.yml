@@ -19,7 +19,6 @@
         {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
       when: ansible_os_family == 'RedHat'
       become: true
-      become_method: su
       become_user: "{{ pg_owner }}"
 
     - name: Initialize database postgres service in Debian
@@ -27,7 +26,6 @@
         {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
       when: ansible_os_family == 'Debian'
       become: true
-      become_method: su
       become_user: "{{ pg_owner }}"
 
     - name: Copy the postgresql.conf.template to the server

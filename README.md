@@ -205,21 +205,12 @@ ansible-playbook playbook.yml \
 
 ## Database engines supported
 
-### PostgreSQL
+### Supported OS
+- CentOS7
+- CentOS8
 
-| Distribution                      |         10         |         11         |         12         |         13         |         14         |
-| --------------------------------- | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| CentOS 7                          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 7                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Oracle Linux 7                    | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| RockyLinux 8                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Red Hat Linux 8                   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 20.04 LTS (Focal) - x86_64 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 9 (Stretch) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 10 (Buster) - x86_64       | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-
-- :white_check_mark: - Tested and supported
-- :x: - Not tested and not supported
+### Supported PostgreSQL Version
+- 14.0 - 14.6
 
 ## License
 
