@@ -1,5 +1,7 @@
 ---
+pg_major_version: "{{ pg_version | int }}"
 barman_package: "barman-3.2.0-1"
+python2_barman_package: "python2-barman-3.2.0-1"
 barman_cli_package: "barman-cli-3.2.0-1"
 
 barman_user: "barman"

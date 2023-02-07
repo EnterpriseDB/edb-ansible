@@ -1,10 +1,15 @@
 ---
 - name: Set package names for RedHat distribution
   set_fact:
-    _barman_package: >-
-      {{ barman_package }}.*el{{ os[-1:] }}
-    _barman_cli_package: >-
-      {{ barman_cli_package }}.*el{{ os[-1:] }}
+    _barman_package: "https://dl.2ndquadrant.com/default/release/browse/rpm/packages/ol/\
+      {{ ansible_distribution_major_version }}/x86_64/{{ pg_major_version }}/\
+      {{ barman_package }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
+    _python2_barman_package: "https://dl.2ndquadrant.com/default/release/browse/rpm/packages/ol/\
+      {{ ansible_distribution_major_version }}/x86_64/{{ pg_major_version }}/\
+      {{ python2_barman_package }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
+    _barman_cli_package: "https://dl.2ndquadrant.com/default/release/browse/rpm/packages/ol/\
+      {{ ansible_distribution_major_version }}/x86_64/{{ pg_major_version }}/\
+      {{ barman_cli_package }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
   when:
     - ansible_os_family == 'RedHat'
 
@@ -23,8 +28,9 @@
   become: true
 
 - name: Install Barman packages on EL
-  package:
+  yum:
     name:
+      - "{{ _python2_barman_package }}"
       - "{{ _barman_package }}"
       - "{{ _barman_cli_package }}"
     state: present
