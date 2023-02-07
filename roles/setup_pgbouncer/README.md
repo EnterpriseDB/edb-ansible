@@ -316,6 +316,17 @@ All the variables are available at:
 
 - [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
 
+## Database engines supported
+### Supported OS
+- CentOS7
+- CentOS8
+
+### Supported PostgreSQL Version
+- 14.0 - 14.6
+
+## pgBoucner supported
+- 1.7
+
 ## License
 
 BSD

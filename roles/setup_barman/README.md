@@ -233,6 +233,18 @@ server).
 
 `barman recover --no-get-wal` requires `recovery_options=get-wal` to be set.
 
+
+## Database engines supported
+### Supported OS
+- CentOS7
+- CentOS8
+
+### Supported PostgreSQL Version
+- 14.0 - 14.6
+
+## Barman supported
+- 3.2.0
+
 ## License
 
 BSD
