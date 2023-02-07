@@ -41,33 +41,33 @@
 - name: Add pgpool2 nodes in watchdog configuration
   ansible.builtin.set_fact:
     pgpool2_watchdog_configuration: >-
-      {{ pgpool2_watchdog_configuration }} + [
+      {{ pgpool2_watchdog_configuration + [
         {
-          'key': 'hostname{{ ansible_loop.index0 }}',
-          'value': '{{ node_item }}',
+          'key': 'hostname' + ansible_loop.index0 | string,
+          'value': node_item | string,
           'quoted': true
         },
         {
-          'key': 'pgpool_port{{ ansible_loop.index0 }}',
-          'value': '{{ pgpool2_port }}',
+          'key': 'pgpool_port' + ansible_loop.index0 | string,
+          'value': pgpool2_port | string,
           'quoted': false
         },
         {
-          'key': 'wd_port{{ ansible_loop.index0 }}',
-          'value': '{{ pgpool2_wd_port }}',
+          'key': 'wd_port' + ansible_loop.index0 | string,
+          'value': pgpool2_wd_port | string,
           'quoted': false
         },
         {
-          'key': 'heartbeat_hostname{{ ansible_loop.index0 }}',
-          'value': '{{ node_item }}',
+          'key': 'heartbeat_hostname' + ansible_loop.index0 | string,
+          'value': node_item | string,
           'quoted': true
         },
         {
-          'key': 'heartbeat_port{{ ansible_loop.index0 }}',
-          'value': '{{ pgpool2_wd_heartbeat_port }}',
+          'key': 'heartbeat_port' + ansible_loop.index0 | string,
+          'value': pgpool2_wd_heartbeat_port | string,
           'quoted': false
         }
-      ]
+      ] }}
   loop: "{{ pgpool2_node_list }}"
   loop_control:
     extended: true
