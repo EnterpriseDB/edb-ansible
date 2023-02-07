@@ -2,7 +2,7 @@
 - name: Update the ca-certificates package
   ansible.builtin.package:
     name: ca-certificates
-    state: present
+    state: latest
   become: true
 
 - name: Download EDB GPG key for EL8
