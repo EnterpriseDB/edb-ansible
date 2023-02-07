@@ -49,7 +49,7 @@
 
     - name: Open Watchdog heartbeat TCP, UDP port {{ pgpool2_wd_heartbeat_port | default('') }}
       ansible.posix.firewalld:
-        port: "{{ open_port }}/tcp"
+        port: "{{ open_port }}"
         permanent: true
         state: enabled
         immediate: true

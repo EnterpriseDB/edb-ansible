@@ -15,7 +15,7 @@
 
 - name: Install pgpoolII package on RedHat
   ansible.builtin.set_fact:
-    pgpool2_package_name: "https://www.pgpool.net/yum/rpms/4.3/redhat/rhel-\
+    pgpool2_package_name: "https://www.pgpool.net/yum/rpms/{{ pgpool2_version }}/redhat/rhel-\
       {{ ansible_distribution_major_version }}-{{ ansible_architecture }}/\
       pgpool-II-pg14-4.3.3-1pgdg.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
     state: present
