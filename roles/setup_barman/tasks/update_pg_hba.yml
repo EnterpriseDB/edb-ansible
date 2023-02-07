@@ -20,20 +20,20 @@
 - name: Add HBA rule for barman replication
   ansible.builtin.set_fact:
     hba_entries: >-
-      {{ hba_entries }} + [
+      {{ hba_entries + [
         {
           'users': 'barman',
           'databases': 'replication',
           'contype': 'hostssl',
-          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
+          'source': hostvars[inventory_hostname].barman_server_private_ip + '/32' | string
         },
         {
           'users': 'barman',
           'databases': 'replication',
           'contype': 'host',
-          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
+          'source': hostvars[inventory_hostname].barman_server_private_ip + '/32' | string
         }
-      ]
+      ] }}
   when:
     - hostvars[inventory_hostname].barman_server_private_ip is defined
     - barman_backup_method == 'postgres'
