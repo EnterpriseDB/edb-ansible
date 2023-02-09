@@ -23,10 +23,8 @@
     {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} stop
   when: ansible_module_running_in_container
   become: true
-  become_method: su
   become_user: "{{ pg_owner }}"
   ignore_errors: true
-
 
 - name: Remove postgreSQL
   package:
@@ -45,7 +43,7 @@
 
 - name: Check PostgreSQL other versions
   command: echo {{ version }}
-  loop: "{{ supported_pg_major_version }}"
+  loop: "{{ supported_pg_version }}"
   loop_control:
     loop_var: version
   when: ansible_facts.packages[ 'postgresql-' ~ version|int ] is defined
@@ -70,12 +68,3 @@
   when:
     - os in ['Ubuntu18','Debian9', 'Debian10']
   become: true
-
-- name: Remove sslutils
-  ansible.builtin.package:
-    name:
-      - postgresql-{{ pg_major_version }}-sslutils
-    state: absent
-    update_cache: true
-  become: true
-  when: pg_ssl

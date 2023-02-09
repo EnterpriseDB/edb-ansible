@@ -39,13 +39,19 @@
   become: true
   when: pg_major_version|int >= 14
 
-- name: Install Postgres
+- name: Install Required Package
   package:
     name:
       - libxslt
       - libicu
       - ca-certificates
       - glibc-common
+    state: present
+  become: true
+
+- name: Install Postgres
+  package:
+    name:
       - postgresql{{ pg_major_version }}-libs
       - postgresql{{ pg_major_version }}
       - postgresql{{ pg_major_version }}-server

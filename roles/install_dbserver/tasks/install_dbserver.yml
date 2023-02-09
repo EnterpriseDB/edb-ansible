@@ -7,6 +7,12 @@
 - name: Get facts on current container
   community.docker.current_container_facts:
 
+- name: Reference common variables
+  include_vars: "common.yml"
+
+- name: Reference pg_type variables
+  include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
 - name: Remove Postgres packages
   include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_install.yml"
   when:

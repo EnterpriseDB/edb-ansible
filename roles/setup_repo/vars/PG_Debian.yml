@@ -1,0 +1,3 @@
+---
+pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"

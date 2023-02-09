@@ -45,7 +45,6 @@ def test_install_dbserver_pg_debian():
         "python3-psycopg2",
         "postgresql-%s" % pg_version,
         "postgresql-server-dev-%s" % pg_version,
-        "postgresql-%s-sslutils" % pg_version,
     ]
     if get_os() in ["debian9", "debian10"]:
         packages += ["python-psycopg2", "python-ipaddress"]

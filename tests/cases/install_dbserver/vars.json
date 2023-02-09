@@ -1,1 +1,8 @@
-{}
+{
+    "pg_version": 14.5,
+    "force_install": true,
+    "rpm_install": true,
+    "deb_install": true,
+    "pg_ssl": true,
+    "enable_core_dump": true
+}
