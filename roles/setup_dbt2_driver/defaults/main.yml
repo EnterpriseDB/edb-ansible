@@ -1,13 +1,10 @@
 ---
 ssh_targets: []
 supported_os:
-  - CentOS7
   - CentOS8
-  - RedHat7
   - RedHat8
   - Rocky8
   - AlmaLinux8
-  - OracleLinux7
 
 dbt2_version: "0.48.7"
 dbttools_version: "0.3.1"
