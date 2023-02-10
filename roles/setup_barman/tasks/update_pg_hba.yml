@@ -2,25 +2,25 @@
 - name: Initialize the hba_entries variable
   ansible.builtin.set_fact:
     hba_entries: >-
-      [
+      {{ hba_entries | default([]) + [
         {
           'users': 'barman',
           'databases': 'postgres',
           'contype': 'hostssl',
-          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
+          'source': hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") + '/32' | string
         },
         {
           'users': 'barman',
           'databases': 'postgres',
           'contype': 'host',
-          'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
+          'source': hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") + '/32' | string
         }
-      ]
+      ] }}
 
 - name: Add HBA rule for barman replication
   ansible.builtin.set_fact:
     hba_entries: >-
-      {{ hba_entries + [
+      {{ hba_entries | default([]) + [
         {
           'users': 'barman',
           'databases': 'replication',
