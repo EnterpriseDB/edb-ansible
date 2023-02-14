@@ -94,6 +94,16 @@ Example:
 pg_locale: "C.utf8"
 ```
 
+### `pg_port`
+
+Using this parameters user can set the PostgreSQL port.
+
+Example:
+
+```yaml
+pg_port: "5433"
+```
+
 The rest of the variables can be configured and are available in the:
 
 - [roles/init_dbserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)

@@ -1,17 +1,9 @@
 ---
-pg_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/postgresql/{{ pg_major_version }}/{{ pg_instance_name }}"
 
 # required & optional directories
 pg_user_home: "/var/lib/postgresql"
 pg_bin_path: "/usr/lib/postgresql/{{ pg_major_version }}/bin"
-
-# unix socket domain directories
-pg_unix_socket_directories:
-  - "/var/run/postgresql"
-
-# postgres port
-pg_port: 5432
 
 # postgres service
 pg_service: "postgresql@{{ pg_major_version }}-{{ pg_instance_name }}.service"
@@ -19,16 +11,3 @@ pg_service: "postgresql@{{ pg_major_version }}-{{ pg_instance_name }}.service"
 pg_locale: "C.UTF-8"
 pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale={{ pg_locale }} --auth-local=peer --user={{ pg_owner }}"
 pg_initdb: "{{ pg_bin_path }}/initdb"
-
-# postgres database
-pg_database: "postgres"
-
-# postgres user
-pg_owner: "postgres"
-pg_group: "postgres"
-
-# postgres superuser
-pg_superuser: "postgres"
-
-pg_shared_libraries_list:
-  - "$libdir/pg_stat_statements"

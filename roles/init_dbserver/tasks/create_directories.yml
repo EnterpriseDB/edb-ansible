@@ -1,4 +1,14 @@
 ---
+- name: Ensure User home directory exsits
+  file:
+    path: "{{ pg_user_home }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: directory
+    recurse: true
+  become: true
+
 - name: Ensure postgres data directory exists
   file:
     path: "{{ pg_data }}"

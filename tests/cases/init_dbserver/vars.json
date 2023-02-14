@@ -1,5 +1,24 @@
 {
-  "use_hostname": false,
+  "pg_owner": "hypersql",
+  "pg_group": "hypersql",
+  "pg_port": 5433,
+  
   "pg_data": "/opt/pgdata",
-  "pg_wal": "/opt/pgwal"
+  "pg_wal": "/opt/pgwal",
+  "pg_local_wal_archive_dir": "/opt/pgarchive",
+  "pg_log": "/opt/pglog",
+  
+  "pg_superuser": "test",
+  "pg_superuser_passowrd": "passowrd",
+
+  "pg_unix_socket_directories": [ "/opt/socket" ],
+  "pg_init_conf_params":
+  [
+    {
+      "name": "max_wal_size",
+      "value": "1GB"
+    }
+  ],
+
+  "ansible_module_running_in_container": false
 }
