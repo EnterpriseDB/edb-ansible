@@ -11,4 +11,4 @@
 # Entry point of the init_dbserver role
 - name: Include the init_dbserver.yml
   include_tasks: init_dbserver.yml
-  when: "'init_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+  when: "'init_dbserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"

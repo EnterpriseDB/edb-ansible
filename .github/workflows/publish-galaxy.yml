@@ -1,10 +1,10 @@
-name: publish-hypersql-devops-galaxy
+name: publish-tmax-opensql-galaxy
 
 on:                                 
   workflow_call:
     secrets:
       galaxy_api_key:
-        description: 'API KEY of hypersql devops galaxy'
+        description: 'API KEY of tmax-opensql galaxy'
         required: true
 
 jobs:
@@ -24,13 +24,13 @@ jobs:
         # https://github.com/ansible/galaxy/issues/2302#issuecomment-1143132088
         run: python3 -m pip install https://github.com/WATonomous/ansible/archive/galaxy_timeout.tar.gz
         
-      - name: Install hypersql_devops.postgres collection
-        run: ansible-galaxy collection install --api-key ${{ secrets.galaxy_api_key }} hypersql_devops.postgres
+      - name: Install tmax_opensql.postgres collection
+        run: ansible-galaxy collection install --api-key ${{ secrets.galaxy_api_key }} tmax_opensql.postgres
       
       - name: Set old_version
         id: old_version
         run: |
-          echo "OLD_VERSION=$(ansible-galaxy collection list hypersql_devops.postgres | grep hypersql_devops.postgres | awk '{print $2}')" >> $GITHUB_OUTPUT
+          echo "OLD_VERSION=$(ansible-galaxy collection list tmax_opensql.postgres | grep tmax_opensql.postgres | awk '{print $2}')" >> $GITHUB_OUTPUT
 
       - name: Set new_version
         id: new_version
@@ -49,7 +49,7 @@ jobs:
       - name: Build
         run: make build
 
-      - name: publish hypersql devops galaxy
+      - name: publish tmax opensql galaxy
         run: make publish
         env:
           API_KEY: ${{ secrets.galaxy_api_key }}

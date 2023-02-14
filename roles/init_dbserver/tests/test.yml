@@ -2,4 +2,4 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - hypersql_devops.postgres.install
+    - tmax_opensql.postgres.install

@@ -12,12 +12,12 @@ build_for_test:
 	ansible-galaxy collection build --output-path $(DIST_FOR_TEST) $(DIR)
 
 publish:
-	ansible-galaxy collection publish --api-key $(API_KEY) $(DIST)/hypersql_devops-postgres-$(VERSION).tar.gz
+	ansible-galaxy collection publish --api-key $(API_KEY) $(DIST)/tmax_opensql-postgres-$(VERSION).tar.gz
 
 clean:
 	rm -f $(DIR)/galaxy.yml
-	rm -f $(DIST)/hypersql_devops-postgres-$(VERSION).tar.gz 
+	rm -f $(DIST)/tmax_opensql-postgres-$(VERSION).tar.gz 
 
 clean_for_test:
 	rm -f $(DIR)/galaxy.yml
-	rm -f $(DIST_FOR_TEST)/hypersql_devops-postgres-$(VERSION).tar.gz
+	rm -f $(DIST_FOR_TEST)/tmax_opensql-postgres-$(VERSION).tar.gz

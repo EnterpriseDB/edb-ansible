@@ -23,7 +23,7 @@
 
 - name: Set the variable tuned_disk_elevator
   set_fact:
-    tuned_disk_elevator: "{{ lookup('hypersql_devops.postgres.tuned_disk_elevator') }}"
+    tuned_disk_elevator: "{{ lookup('tmax_opensql.postgres.tuned_disk_elevator') }}"
 
 - name: Ensure the tuned profile directory exists
   file:

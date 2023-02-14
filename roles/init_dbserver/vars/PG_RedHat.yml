@@ -2,12 +2,11 @@
 pg_default_data: "/var/lib/pgsql/{{ pg_major_version }}/data"
 
 # postgres service
-pg_service: "{{ lookup('hypersql_devops.postgres.pg_service') }}.service"
+pg_service: "{{ lookup('tmax_opensql.postgres.pg_service') }}.service"
 pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_major_version }}.service"
 
 # required & optional directories
 pg_user_home: "/var/lib/pgsql"
 pg_bin_path: "/usr/pgsql-{{ pg_major_version }}/bin"
-pg_locale: "en_US.utf8"
 pg_initdb: "{{ pg_bin_path }}/initdb"
 pg_initdb_options: "-k --encoding=UTF-8 --locale={{ pg_locale }} --username={{ pg_owner }}"

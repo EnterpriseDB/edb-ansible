@@ -1,6 +1,6 @@
 # Common
 
-This is a role that contains common utility tasks shared by roles in **hypersql_devops.postgres**. Some tasks are collection independent, but most of them are very much dependent. Also, if the role is activated by "roles" option in playbook, it will fail (deliberately) because this role is meant to be just a group of individual tasks.
+This is a role that contains common utility tasks shared by roles in **tmax_opensql.postgres**. Some tasks are collection independent, but most of them are very much dependent. Also, if the role is activated by "roles" option in playbook, it will fail (deliberately) because this role is meant to be just a group of individual tasks.
 
 ## Requirements
 

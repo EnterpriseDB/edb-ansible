@@ -2,38 +2,42 @@
 # default empty rpm repo
 # port constants
 pg_major_version: "{{ pg_version | int }}"
-
-disable_logging: true
-
-force_replication: false
-use_replication_slots: true
-use_hostname: false
-update_etc_file: true
-enable_core_dump: false
-
 pg_instance_name: main
 
+force_replication: false
+
+# postgres data dir
+pg_data: "{{ pg_user_home + '/' + pg_major_version + '/data' if ansible_os_family == 'RedHat' else \
+      pg_user_home + '/' + pg_major_version  + '/' + pg_instance_name if ansible_os_family == 'Debian' }}"
+
+# postgres user(os)
+pg_owner: "postgres"
+pg_group: "postgres"
+
+# postgres port
+pg_port: 5432
+
+pg_wal: ""
 pg_local_wal_archive_dir: ""
 
-synchronous_standby_names: ""
-standby_quorum_type: "any"
+# log directory and filename
+pg_log: "/var/log/postgres"
+pg_log_filename: "postgresql-%a.log"
 
-pass_dir: "~/.pgpassfile"
+# postgres superuser
+pg_superuser: "postgres"
+pg_superuser_password: ""
 
-primary_private_ip: ""
-primary_public_ip: ""
-primary_host_name: ""
-standby_names: []
-pg_allow_ip_addresses: []
-standby_physical_slots: []
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+pg_locale: "{{ 'en_US.utf8' if ansible_os_family == 'RedHat' else 'C.UTF-8' if ansible_os_family == 'Debian' }}"
+pg_ssl: true
+
+use_hostname: false
+
+update_etc_file: true
 etc_hosts_lists: []
-upstream_public_ip: ""
-upstream_hostname: ""
 
-# Local path to SSL server key and certificate to be sent to the server
-# if empty, they are generated
-pg_remote_ssl_src: false
-pg_ssl_key_file: ""
-pg_ssl_cert_file: ""
-pg_ssl_ca_file: ""
-pg_ssl_crl_file: ""
+disable_logging: true

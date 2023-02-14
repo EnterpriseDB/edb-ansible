@@ -3,8 +3,8 @@ cert_common_name: "PEM"
 cert_country: "KR"
 cert_state: "Seongnam"
 cert_city: "Bundang"
-cert_org_unit: "HyperSQL Manager"
-cert_email: "hypersql_tech@tmax.co.kr"
+cert_org_unit: "OpenSQL Manager"
+cert_email: "opensql_tech@tmax.co.kr"
 
 pg_ssl_postgres_conf_params:
   - { name: "ssl", value: "on" }

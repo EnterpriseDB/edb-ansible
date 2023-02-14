@@ -22,8 +22,8 @@ The only dependencies required for this ansible galaxy role are:
 1. Ansible
 2. `community.general` Ansible Module - Utilized when creating aditional
    users during a Postgres Install. Only on primary nodes.
-3. `hypersql_devops.postgres` -> `setup_repo` - for repository installation
-4. `hypersql_devops.postgres` -> `install_dbserver` - for installation of
+3. `tmax_opensql.postgres` -> `setup_repo` - for repository installation
+4. `tmax_opensql.postgres` -> `install_dbserver` - for installation of
    PostgreSQL binaries.
 
 ## Role variables
@@ -154,7 +154,7 @@ Below is an example of how to include the `init_dbserver` role:
   gather_facts: true
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

@@ -7,7 +7,7 @@ This role is for setting up pgBackRest backups on Postgres nodes.
 Following are the requirements of this role.
 
 1. Ansible
-2. `hypersql_devops.postgres` -> `setup_repo` role for setting the repository on
+2. `tmax_opensql.postgres` -> `setup_repo` role for setting the repository on
    the systems.
 
 ## Role Variables
@@ -183,7 +183,7 @@ Below is an example of how to include the `setup_pgbackrest` role:
   gather_facts: true
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -193,7 +193,7 @@ Below is an example of how to include the `setup_pgbackrest` role:
 
   roles:
     - setup_pgbackrest
-      when: "'setup_pgbackrest' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbackrest' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.

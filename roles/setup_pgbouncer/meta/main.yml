@@ -46,7 +46,5 @@ galaxy_info:
     - postgresql
     - postgres
     - pgbouncer
-    - edb
-    - edbinitialize
 
 dependencies: []

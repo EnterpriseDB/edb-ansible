@@ -16,7 +16,7 @@ Following are the dependencies and requirement of this role.
 
 This role requires the following variables to be defined:
 
-- pg_type (available: PG, HyperSQL)
+- pg_type (available: PG)
 - pg_version (available: 14)
 
 This role allows users to pass following variables which helps managing day to

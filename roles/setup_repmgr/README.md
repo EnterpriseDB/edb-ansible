@@ -16,13 +16,13 @@ The requirements for this Ansible Role are:
 
 1. Ansible >= 2.9
 2. `community.general`
-3. `hypersql_devops.postgres` -> `setup_repo` - for installing the PG
+3. `tmax_opensql.postgres` -> `setup_repo` - for installing the PG
    repository
-4. `hypersql_devops.postgres` -> `install_dbserver` - for installing the PG
+4. `tmax_opensql.postgres` -> `install_dbserver` - for installing the PG
    binaries
-5. `hypersql_devops.postgres` -> `init_dbserver` - for initializing the PG
+5. `tmax_opensql.postgres` -> `init_dbserver` - for initializing the PG
    data directory and configuring a primary node.
-6. `hypersql_devops.postgres` -> `setup_replication` - for creating the standby.
+6. `tmax_opensql.postgres` -> `setup_replication` - for creating the standby.
 
 ## Role variables
 
@@ -116,7 +116,7 @@ Below is an example of how to include the `setup_repmgr` role:
   gather_facts: yes
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

@@ -1,7 +1,6 @@
 ---
 available_pg_types:
   - PG
-  - HyperSQL
 available_pg_versions:
   - 14.0
   - 14.1

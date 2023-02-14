@@ -1,11 +1,11 @@
-namespace: "hypersql_devops"
+namespace: "tmax_opensql"
 name: "postgres"
 version: "x.y.z"
 readme: "README.md"
 authors:
   - "Sung Woo Chang"
   - "Sang Myeung Lee"
-description: This Ansible Galaxy Role sets up and configures the repositories from which packages will be retrieved for HyperSQL installations.
+description: This Ansible Galaxy Role sets up and configures the repositories from which packages will be retrieved for OpenSQL installations.
 license:
   - "BSD-3-Clause"
 license_file: ""
@@ -14,7 +14,7 @@ tags:
   - postgresql
   - postgres
   - repo
-  - hypersql
+  - opensql
 repository: "https://github.com/hypersql/pg-ansible"
 documentation: "https://github.com/hypersql/pg-ansible/blob/master/README.md"
 homepage: "https://github.com/hypersql/pg-ansible"

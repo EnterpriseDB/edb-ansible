@@ -40,7 +40,6 @@ galaxy_info:
     - database
     - postgresql
     - postgres
-    - edb
     - performances
     - tuning
 

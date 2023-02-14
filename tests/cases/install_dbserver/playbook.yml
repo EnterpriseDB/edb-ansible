@@ -5,7 +5,7 @@
   gather_facts: true
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -14,6 +14,6 @@
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_repo' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: install_dbserver
-      when: "'install_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'install_dbserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"

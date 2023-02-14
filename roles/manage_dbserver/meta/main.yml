@@ -42,7 +42,5 @@ galaxy_info:
     - database
     - postgresql
     - postgres
-    - edb
-    - edbinitialize
 
 dependencies: []

@@ -49,8 +49,8 @@
     _pgpool2_node_list: []
     _pgpool2_ip_list: []
     _pgpool2_primary_inventory_hostname: ""
-    _pg_cluster_nodes: "{{ lookup('hypersql_devops.postgres.pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
-    _pgpool2_nodes: "{{ lookup('hypersql_devops.postgres.pgpool2_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
+    _pg_cluster_nodes: "{{ lookup('tmax_opensql.postgres.pg_sr_cluster_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
+    _pgpool2_nodes: "{{ lookup('tmax_opensql.postgres.pgpool2_nodes', hostvars[inventory_hostname].primary_private_ip, wantlist=True) }}"
 
 - name: Set _pgpool2_current_node when not use_hostname
   set_fact:

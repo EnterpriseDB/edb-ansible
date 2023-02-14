@@ -25,6 +25,8 @@ pg_log_filename: "postgresql-%a.log"
 pg_superuser: "postgres"
 pg_superuser_password: ""
 
+pg_locale: "{{ 'en_US.utf8' if ansible_os_family == 'RedHat' else 'C.UTF-8' if ansible_os_family == 'Debian' }}"
+
 # unix socket domain directories
 pg_unix_socket_directories:
   - "/var/run/postgresql"

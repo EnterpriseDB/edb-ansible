@@ -5,7 +5,7 @@ This Ansible Role install and manage PostgreSQL Extension
 ## Requirements
 
 1. Ansible
-2. `hypersql_devops.postgres` -> `setup_repo` - for Installing the PG repository
+2. `tmax_opensql.postgres` -> `setup_repo` - for Installing the PG repository
 
 ## Role variables
 
@@ -84,7 +84,7 @@ installing extension :
   gather_facts: yes
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

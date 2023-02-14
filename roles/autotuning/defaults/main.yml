@@ -5,11 +5,4 @@ tuned_profile: "postgres"
 tuned_configuration_dir: "/etc/tuned"
 ssd_disk: false
 
-supported_os:
-  - Debian10
-  - CentOS7
-  - CentOS8
-  - RedHat7
-  - RedHat8
-  - Rocky8
-  - OracleLinux7
+pg_max_connections: ""

@@ -1,6 +1,6 @@
 {
-  "pg_owner": "hypersql",
-  "pg_group": "hypersql",
+  "pg_owner": "opensql",
+  "pg_group": "opensql",
   "pg_port": 5433,
   
   "pg_data": "/opt/pgdata",

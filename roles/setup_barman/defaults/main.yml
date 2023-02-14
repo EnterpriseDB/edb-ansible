@@ -11,4 +11,4 @@ update_etc_file: true
 # SSH listening port
 ssh_port: 22
 
-pass_dir: "~/.hypersql"
+pass_dir: "~/.pgpassfile"

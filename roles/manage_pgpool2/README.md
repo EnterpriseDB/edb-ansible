@@ -7,7 +7,7 @@ This role is for managing PgpoolII configuration parameters and user list.
 Following are the dependencies and requirement of this role.
 
 1. Ansible
-2. `hypersql_devops.postgres` -> `setup_pgpool2` - role for setting up PgpoolII
+2. `tmax_opensql.postgres` -> `setup_pgpool2` - role for setting up PgpoolII
    on the systems.
 
 ## Role Variables
@@ -137,7 +137,7 @@ Below is an example of how to include the `manage_pgpool2` role:
   gather_facts: true
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

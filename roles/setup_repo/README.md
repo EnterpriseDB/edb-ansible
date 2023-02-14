@@ -124,7 +124,7 @@ setting up repositories access to PostgreSQL packages in version 14:
   gather_facts: yes
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
