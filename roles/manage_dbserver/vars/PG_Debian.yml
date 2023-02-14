@@ -1,7 +1,6 @@
 ---
-pg_user_home: "/usr/lib/postgresql"
+pg_user_home: "/var/lib/postgresql"
 pg_instance_name: "main"
-pg_data: "{{ pg_user_home }}/{{ pg_major_version }}/{{ pg_instance_name }}"
 shell_profile_content: |
   # PostgreSQL shell environment
   export PGDATA={{ pg_data }}

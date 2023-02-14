@@ -13,6 +13,10 @@
     {
       "name": "shared_buffers",
       "value": "256MB"
+    },
+    {
+      "name": "shared_preload_libraries",
+      "value": "pgaudit, postgis"
     }
   ],
   "pg_databases": [

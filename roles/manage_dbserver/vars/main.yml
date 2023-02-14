@@ -1,11 +1,7 @@
 ---
-pg_port: "5432"
-pg_owner: "postgres"
-pg_group: "postgres"
+pg_major_version: "{{ pg_version | int }}"
 
 pg_database: "postgres"
-pg_unix_socket_directories:
-  - "/var/run/postgresql"
 
 shell_profile_path: "{{ pg_user_home }}/.pgsql_profile"
 shell_profile_owner: "{{ pg_owner }}"
