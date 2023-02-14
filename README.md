@@ -164,7 +164,7 @@ playbook:
       when: "'autotuning' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
 ```
 
-You can customize the above example to install HyperSQL Package by selecting which roles you would like to execute.
+You can customize the above example to install Tmax OpenSQL Package by selecting which roles you would like to execute.
 
 ## Default user and passwords
 
@@ -182,7 +182,7 @@ accounts:
 
 ## Playbook examples
 
-Examples of utilizing the playbooks for installing HyperSQL Package are provided and located within the `playbook-examples` directory.
+Examples of utilizing the playbooks for installing Tmax OpenSQL Package are provided and located within the `playbook-examples` directory.
 
 ## SSH port configuration
 
