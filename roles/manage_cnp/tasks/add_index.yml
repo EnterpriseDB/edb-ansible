@@ -1,0 +1,26 @@
+---
+- name: Validate cnpg_namespace
+  ansible.builtin.fail:
+    fail: msg="The variable 'cnpg_namespace' is not defined and empty"
+  when: (cnpg_namespace is defined) and (cnpg_namespace | length < 1)
+
+- name: Validate pod_name
+  ansible.builtin.fail:
+    fail: msg="The variable 'pod_name' is not defined and empty"
+  when: (pod_name is defined) and (pod_name | length < 1)
+
+- name: Validate db_name
+  ansible.builtin.fail:
+    fail: msg="The variable 'db_name' is not defined and empty"
+  when: (db_name is defined) and (db_name | length < 1)
+
+- name: Validate add_index_sql
+  ansible.builtin.fail:
+    fail: msg="The variable 'add_index_sql' is not defined and empty"
+  when: (add_index_sql is defined) and (add_index_sql | length < 1)
+
+- name: Add an Index
+  kubernetes.core.k8s_exec:
+    namespace: "{{ cnpg_namespace }}"
+    pod: "{{ pod_name }}"
+    command: psql -d "{{ db_name }}" -c "{{ add_index_sql }}"
