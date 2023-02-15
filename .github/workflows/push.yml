@@ -91,6 +91,15 @@ jobs:
       - run: sudo pip3 install ansible-core
       - run: make
       - run: ANSIBLE_CORE_VERSION=2.12 EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/manage_pgbouncer rocky8
+  setup-repmgr:
+    runs-on: ubuntu-20.04
+    name: Execute setup_repmgr tests for PostgreSQL 14 on RockyLinux8
+    steps:
+      - uses: actions/checkout@v2
+      - run: sudo apt install python3-pip -y
+      - run: sudo pip3 install ansible-core
+      - run: make
+      - run: ANSIBLE_CORE_VERSION=2.12 EDB_PG_TYPE=PG EDB_PG_VERSION=14 EDB_ENABLE_REPO=false make -C tests/cases/setup_repmgr rocky8
   setup-dbt2-driver:
     runs-on: ubuntu-20.04
     name: Execute setup_dbt2_driver tests for PostgreSQL 14 on RockyLinux8

@@ -1,0 +1,103 @@
+---
+- name: Set the os variable
+  ansible.builtin.set_fact:
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  ansible.builtin.fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  ansible.builtin.fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+- name: Reference variables
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
+- name: Set repmgr_cluster_nodes
+  ansible.builtin.set_fact:
+    repmgr_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.repmgr_nodes', wantlist=True) }}"
+
+- name: Set repmgr_node_info
+  ansible.builtin.set_fact:
+    repmgr_node_info: "{{ item }}"
+  loop: "{{ repmgr_cluster_nodes }}"
+  when: "item.inventory_hostname == inventory_hostname"
+
+- name: Set repmgr_primary_info
+  ansible.builtin.set_fact:
+    repmgr_primary_info: "{{ item }}"
+  loop: "{{ repmgr_cluster_nodes }}"
+  when: "item.node_type == 'primary'"
+  run_once: true
+
+- name: Include linux_update_etc_hosts.yml
+  ansible.builtin.include_tasks: linux_update_etc_hosts.yml
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
+
+- name: Include repmgr_install.yml
+  ansible.builtin.include_tasks: repmgr_install.yml
+
+- name: Include repmgr_configure_spl.yml
+  ansible.builtin.include_tasks: repmgr_configure_spl.yml
+
+- name: Include repmgr_setup_db_user.yml
+  ansible.builtin.include_tasks: repmgr_setup_db_user.yml
+  when: "('primary' in group_names) or ('witness' in group_names)"
+
+- name: Include repmgr_update_pgpass.yml
+  ansible.builtin.include_tasks: repmgr_update_pgpass.yml
+
+- name: Include repmgr_setup_db.yml
+  ansible.builtin.include_tasks: repmgr_setup_db.yml
+  when: "('primary' in group_names) or ('witness' in group_names)"
+
+- name: Include repmgr_prepare_hba.yml
+  ansible.builtin.include_tasks: repmgr_prepare_hba.yml
+
+- name: Include repmgr_hba.yml
+  ansible.builtin.include_tasks: repmgr_hba.yml
+
+- name: Include repmgr_configure.yml
+  ansible.builtin.include_tasks: repmgr_configure.yml
+
+- name: Register the repmgr primary node
+  ansible.builtin.include_tasks: repmgr_register_node.yml
+  when: "'primary' in group_names"
+  vars:
+    repmgr_role: primary
+
+- name: Register the repmgr standby nodes
+  ansible.builtin.include_tasks: repmgr_register_node.yml
+  when: "'standby' in group_names"
+  vars:
+    repmgr_role: standby
+
+- name: Register the repmgr witness nodes
+  ansible.builtin.include_tasks: repmgr_register_node.yml
+  when: "'witness' in group_names"
+  vars:
+    repmgr_role: witness
+
+- name: Include generate_ssh_keys.yml
+  ansible.builtin.include_tasks: generate_ssh_keys.yml
+
+- name: Include exchange_ssh_keys.yml
+  ansible.builtin.include_tasks: exchange_ssh_keys.yml
+  loop: "{{ repmgr_cluster_nodes }}"
+  loop_control:
+    loop_var: remote_node
+  when: "remote_node.inventory_hostname != inventory_hostname"
+  vars:
+    local_node: "{{ repmgr_node_info }}"
+
+- name: Include repmgr_sudoers.yml
+  ansible.builtin.include_tasks: repmgr_sudoers.yml
+
+- name: Include repmgr_setup_systemd.yml
+  ansible.builtin.include_tasks: repmgr_setup_systemd.yml
