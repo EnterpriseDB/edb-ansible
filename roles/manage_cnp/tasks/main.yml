@@ -1,8 +1,59 @@
 ---
 # tasks file for role: manage_cnp
 # Options"
-# add-db, add-schema, add-role, add-table, add-index, add-view, add-trigger, add-sequence, add-type, add-procedure, add-function
-# drop-db, drop-schema, drop-role, drop-table, drop-index, drop-view, drop-trigger, drop-sequence, drop-type, drop-procedure, drop-function
+# add-db, add-schema, add-role
+# drop-db, drop-schema, drop-role
+- name: cnp_task not defined in 'supported_tasks' list
+  ansible.builtin.debug:
+    msg: cnp_task - "{{ cnp_task }}" is not in supported_tasks list "{{ supported_tasks }}"
+  when: cnp_task not in supported_tasks
+
+- name: cnp_task not defined in 'supported_tasks' list
+  ansible.builtin.fail:
+  when: cnp_task not in supported_tasks
+
+- name: Validate cnpg_namespace
+  ansible.builtin.fail:
+    fail: msg="The variable cnpg_namespace is not defined and empty"
+  when:
+    - cnpg_namespace is not defined
+    - cnpg_namespace | length < 1
+
+- name: Validate pod_name
+  ansible.builtin.fail:
+    fail: msg="The variable 'pod_name' is not defined and empty"
+  when:
+    - pod_name is not defined
+    - pod_name | length < 1
+
+- name: Validate db_name
+  ansible.builtin.fail:
+    fail: msg="The variable 'db_name' is not defined and empty"
+  when:
+    - db_name is not defined
+    - db_name | length < 1
+
+- name: Validate db_role
+  ansible.builtin.fail:
+    fail: msg="The variable 'db_role' is not defined and empty"
+  when:
+    - db_role is not defined
+    - db_role | length < 1
+
+- name: Validate db_role_password
+  ansible.builtin.fail:
+    fail: msg="The variable 'db_role_password' is not defined and empty"
+  when:
+    - db_role_password is not defined
+    - db_role_password | length < 1
+
+- name: Validate add_db_sql
+  ansible.builtin.fail:
+    fail: msg="The variable 'add_db_sql' is not defined and empty"
+  when:
+    - add_db_sql is not defined
+    - add_db_sql | length < 1
+
 - name: Add a Database
   ansible.builtin.include_tasks: add_db.yml
   when: cnp_task == "add-db"
@@ -15,77 +66,13 @@
   ansible.builtin.include_tasks: add_role.yml
   when: cnp_task == "add-role"
 
-- name: Add a Table
-  ansible.builtin.include_tasks: add_table.yml
-  when: cnp_task == "add-table"
-
-- name: Add a Index
-  ansible.builtin.include_tasks: add_index.yml
-  when: cnp_task == "add-index"
-
-- name: Add a View
-  ansible.builtin.include_tasks: add_view.yml
-  when: cnp_task == "add-view"
-
-- name: Add a Trigger
-  ansible.builtin.include_tasks: add_trigger.yml
-  when: cnp_task == "add-trigger"
-
-- name: Add a Sequence
-  ansible.builtin.include_tasks: add_sequence.yml
-  when: cnp_task == "add-sequence"
-
-- name: Add a Type
-  ansible.builtin.include_tasks: add_type.yml
-  when: cnp_task == "add-type"
-
-- name: Add a Procedure
-  ansible.builtin.include_tasks: add_procedure.yml
-  when: cnp_task == "add-procedure"
-
-- name: Drop a Procedure
-  ansible.builtin.include_tasks: drop_procedure.yml
-  when: cnp_task == "drop-procedure"
-
-- name: Add a Function
-  ansible.builtin.include_tasks: add_function.yml
-  when: cnp_task == "add-function"
-
-- name: Drop a Function
-  ansible.builtin.include_tasks: drop_function.yml
-  when: cnp_task == "drop-function"
-
-- name: Drop a Type
-  ansible.builtin.include_tasks: drop_type.yml
-  when: cnp_task == "drop-type"
-
-- name: Drop a Sequence
-  ansible.builtin.include_tasks: drop_sequence.yml
-  when: cnp_task == "drop-sequence"
-
-- name: Drop a Trigger
-  ansible.builtin.include_tasks: drop_trigger.yml
-  when: cnp_task == "drop-trigger"
-
-- name: Drop a View
-  ansible.builtin.include_tasks: drop_view.yml
-  when: cnp_task == "drop-view"
-
-- name: Drop a Index
-  ansible.builtin.include_tasks: drop_index.yml
-  when: cnp_task == "drop-index"
-
-- name: Drop a Table
-  ansible.builtin.include_tasks: drop_table.yml
-  when: cnp_task == "drop-table"
-
 - name: Drop a Role
   ansible.builtin.include_tasks: drop_role.yml
   when: cnp_task == "drop-role"
 
-- name: Drop a Database
-  ansible.builtin.include_tasks: drop_db.yml
-  when: cnp_task == "drop-db"
+- name: Drop a Schema
+  ansible.builtin.include_tasks: drop_schema.yml
+  when: cnp_task == "drop-schema"
 
 - name: Drop a Database
   ansible.builtin.include_tasks: drop_db.yml
