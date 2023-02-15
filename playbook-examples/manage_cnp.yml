@@ -14,9 +14,25 @@
     # Options"
     # add-db, add-table, add-index, add-view
     # drop-db, drop-table, drop-index, drop-view
-    - cnp_task: "drop-db"
+    - cnp_task: "add-db"
+    # CloudNativePG Namespace
+    - cnpg_namespace: "default"
+    # CloudNativePG Pod Name
+    - pod_name: "cnp-sandbox-1"
+    # Databases
+    - db_name: "edb"
+    # Schemas
+    - schema_name: "edb_schema"
+    # Roles
+    - db_role: "edb_role"
+    - db_role_password: "admin"
 
   roles:
+    - role: manage_cnp
+      when: 
+        - cnp_task is not defined
+        - cnp_task | length < 1
+
     - role: manage_cnp
       include_tasks: add_db.yml
       when: cnp_task == "add-db"

@@ -16,9 +16,7 @@ The only dependencies required for this ansible galaxy role are:
      Installed with commands:
      `pip install openshift pyyaml kubernetes`
      `pip install pyhelm`
-  5. `kubernetes.core.helm_repository` - Ansible Module - Required for Helm.
-  6. `community.kubernetes.helm` - Ansible Module - Required for Helm.
-  7. `kubernetes.core.k8s` - Ansible Module - Required for Kubernetes.
+  5. `kubernetes.core.k8s` - Ansible Module - Required for Kubernetes.
 
 ## Role variables
 
@@ -43,8 +41,8 @@ Below is an example of how to include the `manage_cnp` role:
 
   vars:
     # Options"
-    # add-db, add-schema, add-role, add-table, add-index, add-view, add-trigger, add-sequence, add-type, add-procedure, add-function
-    # drop-db, drop-schema, drop-role, drop-table, drop-index, drop-view, drop-trigger, drop-sequence, drop-type, drop-procedure, drop-function
+    # add-db, add-schema, add-role
+    # drop-db, drop-schema, drop-role
     - cnp_task: "add-db"
 
   roles:

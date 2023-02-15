@@ -10,10 +10,27 @@
   hosts: localhost
   gather_facts: false
 
+  collections:
+    - edb_devops.edb_postgres
+
   vars:
-    cnp_task: "add-db"
+    # Options"
+    # add-db, add-schema, add-role
+    # drop-db, drop-schema, drop-role
+    - cnp_task: drop-db
+    # CloudNativePG Namespace
+    - cnpg_namespace: default
+    # CloudNativePG Pod Name
+    - pod_name: cluster-example-1
+    # Databases
+    - db_name: edb
+    # Schemas
+    - schema_name: edb_schema
+    # Roles
+    - db_role: edb_role
+    - db_role_password: admin
 
   roles:
     - role: manage_cnp
-      include_tasks: add_db.yml
-      when: cnp_task: == "add-db"
+      when: 
+        - cnp_task is defined
