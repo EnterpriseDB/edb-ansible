@@ -1,0 +1,58 @@
+---
+pg_version: 14
+pg_instance_name: main
+disable_logging: true
+use_hostname: true
+update_etc_file: true
+use_patroni: false
+
+# Database name used by repmgr
+pg_repmgr_dbname: repmgr
+# Database username used by repmgr
+pg_repmgr_user: repmgr
+# Password of the database user, will be generated if empty
+pg_repmgr_user_password: ""
+# Replication user created by setup_replication
+pg_replication_user: repuser
+
+# Repmgr log level
+repmgr_log_level: INFO
+# Repmgr log facility
+repmgr_log_facility: STDERR
+# Repmgr log file path when using STDERR
+repmgr_log_file: /var/log/repmgr/repmgr.log
+
+# Repmgr failover mode, could be 'automatic' for automatic failover, or
+# 'manual'
+repmgr_failover: automatic
+# Number of connection attemps in case of failure before triggering an
+# automatic failover.
+repmgr_reconnect_attempts: 3
+# Interval of time, in seconds, between each reconnect attemps
+repmgr_reconnect_interval: 5
+
+# SSH port
+ssh_port: 22
+
+etc_hosts_lists: []
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
+  - Rocky8
+  - OracleLinux7
+
+supported_pg_type:
+  - PG
+
+supported_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14

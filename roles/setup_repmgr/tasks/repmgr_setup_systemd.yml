@@ -1,0 +1,34 @@
+- name: Ensure /etc/systemd/system/"repmgrd_service".service.d exists
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ repmgrd_service }}.service.d"
+    state: directory
+    mode: "0755"
+  become: true
+  when: ansible_os_family == 'RedHat'
+
+- name: Write /etc/systemd/system/"repmgrd_service".service.d/override.conf
+  ansible.builtin.template:
+    src: override.conf.j2
+    dest: "/etc/systemd/system/{{ repmgrd_service }}.service.d/override.conf"
+    mode: "0600"
+    owner: root
+    group: root
+  become: true
+  when: ansible_os_family == 'RedHat'
+
+- name: "Write /etc/default/repmgrd"
+  ansible.builtin.template:
+    src: default.repmgrd.j2
+    dest: /etc/default/repmgrd
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  when: ansible_os_family == 'Debian'
+
+- name: Enable and start repmgrd
+  ansible.builtin.systemd:
+    name: "{{ repmgrd_service }}"
+    state: restarted
+    daemon_reload: true
+  become: true

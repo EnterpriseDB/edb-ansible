@@ -1,0 +1,45 @@
+- name: Prepare HBA non ssl list
+  ansible.builtin.set_fact:
+    repmgr_allow_ip_addresses: >-
+      {{ repmgr_allow_ip_addresses | default([]) + [
+        {
+          "contype": "host",
+          "users": pg_repmgr_user,
+          "source": node.private_ip + "/32",
+          "databases": pg_repmgr_dbname
+          },
+        {
+          "contype": "host",
+          "users": pg_repmgr_user,
+          "source": "127.0.0.1/32",
+          "databases": pg_repmgr_dbname
+          }
+      ] }}
+  when: not pg_ssl
+  loop: "{{ repmgr_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Prepare HBA ssl list
+  ansible.builtin.set_fact:
+    repmgr_allow_ip_addresses: >-
+      {{ repmgr_allow_ip_addresses | default([]) + [
+        {
+          "users": pg_repmgr_user,
+          "source": node.private_ip + "/32",
+          "databases": pg_repmgr_dbname
+          },
+        {
+          "users": pg_repmgr_user,
+          "source": "127.0.0.1/32",
+          "databases": pg_repmgr_dbname
+          }
+      ] }}
+  when: pg_ssl
+  loop: "{{ repmgr_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"

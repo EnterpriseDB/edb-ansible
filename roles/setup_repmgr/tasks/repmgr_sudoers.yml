@@ -1,0 +1,8 @@
+- name: Write /etc/sudoers.d/repmgr.conf
+  ansible.builtin.template:
+    src: sudoers.d.repmgr.conf.j2
+    dest: /etc/sudoers.d/repmgr
+    mode: "0600"
+    owner: root
+    group: root
+  become: true
