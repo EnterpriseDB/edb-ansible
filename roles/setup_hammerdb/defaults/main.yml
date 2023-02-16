@@ -10,6 +10,18 @@ hammerdb_user: "hammerdb"
 hammerdb_group: "hammerdb"
 oracle_instant_client_repo_pkg: "oracle-instantclient-release-el\
                            {{ ansible_facts[\"distribution_major_version\"] }}"
+oracle_instant_client_rpm: "https://download.oracle.com/otn_software/linux/\
+                            instantclient/219000/\
+                            oracle-instantclient-basic-21.9.0.0.0-1.\
+                            el8.x86_64.rpm"
+oracle_instant_client_sqlplus_rpm: "https://download.oracle.com/otn_software/\
+                                    linux/instantclient/219000/\
+                                    oracle-instantclient-sqlplus-21.9.0.0.0-1.\
+                                    el8.x86_64.rpm"
+oracle_instant_client_tools_rpm: "https://download.oracle.com/otn_software/\
+                                  linux/instantclient/219000/\
+                                  oracle-instantclient-tools-21.9.0.0.0-1.\
+                                  el8.x86_64.rpm"
 supported_os:
   - CentOS8
   - RHEL8

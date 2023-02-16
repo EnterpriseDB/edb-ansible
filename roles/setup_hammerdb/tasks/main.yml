@@ -44,10 +44,21 @@
       - "{{ oracle_instant_client_repo_pkg }}"
   when: ansible_facts["distribution"] == "OracleLinux"
 
-- name: Install Oracle Instant Client Packages
+- name: Install Oracle Instant Client Packages (repo)
   ansible.builtin.package:
     name:
       - oracle-instantclient-basic
       - oracle-instantclient-sqlplus
       - oracle-instantclient-tools
   when: ansible_facts["distribution"] == "OracleLinux"
+
+- name: Install Oracle Instant Client Packages (url)
+  ansible.builtin.package:
+    name:
+      - "{{ oracle_instant_client_rpm }}"
+      - "{{ oracle_instant_client_sqlplus_rpm }} "
+      - "{{ oracle_instant_client_tools_rpm }} "
+    disable_gpg_check: true
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version == "8"
