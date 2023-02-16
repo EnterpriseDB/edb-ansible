@@ -1,5 +1,20 @@
 ---
 
+- name: Create hammerdb system group {{ hammerdb_group }}
+  ansible.builtin.group:
+    name: "{{ hammerdb_group }}"
+    state: present
+  become: true
+
+- name: Create hammerdb system user {{ hammerdb_user }}
+  ansible.builtin.user:
+    name: "{{ hammerdb_user }}"
+    system: true
+    group: "{{ hammerdb_user }}"
+    state: present
+    create_home: true
+  become: true
+
 - name: Install packages required for installing HammerDB
   ansible.builtin.package:
     name:
@@ -10,14 +25,18 @@
 - name: Download HammerDB
   ansible.builtin.get_url:
     url: "{{ hammerdb_url }}/v{{ hammerdb_version }}/{{ hammerdb_filename }}"
-    dest: "{{ ansible_user_dir }}/{{ hammerdb_filename }}"
+    dest: "/home/{{ hammerdb_user }}/{{ hammerdb_filename }}"
     mode: '0644'
+  become: true
+  become_user: "{{ hammerdb_user }}"
 
 - name: Install HammerDB
   ansible.builtin.unarchive:
-    src: "{{ ansible_user_dir }}/{{ hammerdb_filename }}"
-    dest: "{{ ansible_user_dir }}"
+    src: "/home/{{ hammerdb_user }}/{{ hammerdb_filename }}"
+    dest: "/home/{{ hammerdb_user }}"
     remote_src: true
+  become: true
+  become_user: "{{ hammerdb_user }}"
 
 - name: Install Oracle Instant Client Repository
   ansible.builtin.package:
