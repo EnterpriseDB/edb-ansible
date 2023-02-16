@@ -10,7 +10,7 @@
   ansible.builtin.user:
     name: "{{ hammerdb_user }}"
     system: true
-    group: "{{ hammerdb_user }}"
+    group: "{{ hammerdb_group }}"
     state: present
     create_home: true
   become: true
