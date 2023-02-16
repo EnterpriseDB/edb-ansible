@@ -7,6 +7,15 @@ This role is for installing HammerDB.
 Following are the requirements of this role.
   1. Ansible
 
+## Role variables
+
+When executing the role via ansible these are the required variables:
+
+  * ***hammerdb_user***
+
+  The operating system user that will be created.  HammerDB is intalled into
+  this user's home directory.
+
 ## License
 
 BSD
