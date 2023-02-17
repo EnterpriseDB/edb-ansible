@@ -1,7 +1,2 @@
 ---
-pg_owner: postgres
-pg_port: 5432
-pg_bin_path: "/usr/pgsql-{{ pg_major_version }}/bin"
-pg_database: "postgres"
-pg_unix_socket_directories:
-  - "/var/run/postgresql"
+pg_bin_path: "/usr/lib/postgresql/{{ pg_major_version }}/bin"

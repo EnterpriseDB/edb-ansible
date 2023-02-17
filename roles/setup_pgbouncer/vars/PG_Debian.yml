@@ -6,21 +6,5 @@ pgbouncer_package_name: "pgbouncer"
 # PgBouncer service name
 pgbouncer_service_name: "pgbouncer"
 
-# PgBouncer system user & group
-pgbouncer_user: "pgbouncer"
-pgbouncer_group: "pgbouncer"
-
-# PgBouncer authentication part
-pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
-
-# PID file
-pgbouncer_pid_file: "/var/run/pgbouncer/pgbouncer.pid"
-# Configuration file
-pgbouncer_config_file: "/etc/pgbouncer/pgbouncer.ini"
-# Log file
-pgbouncer_log_file: "/var/log/pgbouncer/pgbouncer.log"
-# Databases configuration file
-pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
-
 # SSL dir
 pgbouncer_ssl_dir: "/etc/pgbouncer/ssl"

@@ -45,7 +45,7 @@
 
 - name: Reload the pg service in container
   ansible.builtin.command: >
-    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} relaod
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} reload
   when:
     - pg_postgres_conf_params|length > 0
     - params.changed
@@ -53,7 +53,6 @@
     - not params_restart_required
     - ansible_module_running_in_container
   become: true
-  become_method: su
   become_user: "{{ pg_owner }}"
 
 - name: Restart the pg service
@@ -79,7 +78,6 @@
     - params_restart_required
     - ansible_module_running_in_container
   become: true
-  become_method: su
   become_user: "{{ pg_owner }}"
 
 - name: Reset the restart_required

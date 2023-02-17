@@ -1,0 +1,26 @@
+---
+pg_major_version: "{{ pg_version | int }}"
+
+# SSH port
+ssh_port: 22
+
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+  
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+
+supported_pg_type:
+  - PG
+
+supported_pg_version:
+  - 14.0
+  - 14.1
+  - 14.2
+  - 14.3
+  - 14.4
+  - 14.5
+  - 14.6

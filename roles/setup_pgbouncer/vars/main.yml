@@ -1,0 +1,36 @@
+---
+# Enable SSL
+pgbouncer_ssl: true
+pgbouncer_ssl_csr_dn:
+  CN: "pgbouncer-server.fqdn"
+  O: ""
+  OU: ""
+  L: ""
+  ST: ""
+  C: ""
+  EMAIL: "example@mail.com"
+
+available_pool_mode:
+  - transaction
+  - session
+  - query
+
+available_auth_type:
+  - pam
+  - hba
+  - cert
+  - md5
+  - scram-sha-256
+  - plain
+  - trust
+  - any
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+
+supported_pgbouncer_version:
+  - 1.6
+  - 1.7

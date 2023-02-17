@@ -47,3 +47,12 @@
   become: true
   when:
     - update_spl
+    - not ansible_module_running_in_container
+
+- name: Restart the pg service in container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} restart
+  when:
+    - ansible_module_running_in_container
+  become: true
+  become_user: "{{ pg_owner }}"

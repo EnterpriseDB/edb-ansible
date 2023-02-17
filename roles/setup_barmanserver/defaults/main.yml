@@ -1,29 +1,14 @@
 ---
-pg_major_version: "{{ pg_version | int }}"
-barman_package: "barman-3.2.0-1"
-python2_barman_package: "python2-barman-3.2.0-1"
-barman_cli_package: "barman-cli-3.2.0-1"
-
 barman_user: "barman"
 barman_group: "barman"
 barman_configuration_file: "/etc/barman.conf"
 barman_configuration_files_directory: "/etc/barman.d"
 barman_home: "/var/lib/barman"
-barman_default_home: "/var/lib/barman"
 barman_lock_directory: "/var/run/barman"
 barman_log_file: "/var/log/barman/barman.log"
 barman_log_level: "INFO"
 barman_compression: "gzip"
+
 etc_hosts_lists: []
 use_hostname: true
 update_etc_file: true
-
-supported_os:
-  - Debian10
-  - CentOS7
-  - CentOS8
-  - RHEL7
-  - RHEL8
-  - Rocky8
-  - OracleLinux7
-  - Ubuntu20

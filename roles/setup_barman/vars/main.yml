@@ -1,0 +1,15 @@
+---
+barman_cli_package: "barman-cli-3.2.0-1"
+
+barman_user: "barman"
+barman_home: "/var/lib/barman"
+
+# SSH listening port
+ssh_port: 22
+
+pass_dir: "~/.pgpassfile"
+
+pg_database: "postgres"
+
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
