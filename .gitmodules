@@ -1,9 +1,9 @@
 [submodule "git-config"]
 	path = git-config
-	url = https://github.com/hypersql/git-config.git
+	url = https://github.com/tmaxopensql/git-config.git
 	ignore = dirty
 
 [submodule "playbook-examples"]
 	path = playbook-examples
-	url = https://github.com/hypersql/playbook-examples
+	url = https://github.com/tmaxopensql/playbook-examples
 	ignore = dirty

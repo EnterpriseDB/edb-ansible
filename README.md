@@ -68,7 +68,7 @@ By default the location of your installed collection is:
 Use the command below to install **tmax_opensql.postgres**:
 
 ```bash
-git clone https://github.com/hypersql/pg-ansible.git
+git clone https://github.com/tmaxopensql/pg-ansible.git
 cd pg-ansible
 make install
 ```
