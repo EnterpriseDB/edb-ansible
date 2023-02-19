@@ -36,7 +36,7 @@
     path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0600
+    mode: '0600'
     line: "{{ _local_ssh_public_key }}"
     create: true
   delegate_to: "{{ remote_node.inventory_hostname }}"
@@ -47,7 +47,7 @@
     path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0600
+    mode: '0600'
     line: "{{ _remote_server_ssh_public_key }}"
     create: true
 
