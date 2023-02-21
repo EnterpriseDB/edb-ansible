@@ -1,0 +1,6 @@
+---
+- name: Remove a manifest
+  kubernetes.core.k8s:
+    namespace: "{{ cnpg_namespace }}"
+    state: absent
+    src: ../files/configure_memory.yml
