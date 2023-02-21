@@ -1,7 +1,54 @@
 ---
-- name:
+- name: Get repo list on RedHat
+  ansible.builtin.command: yum repolist
+  when: ansible_os_family == 'RedHat'
+  become: true
+  register: yum_repolist
 
+- name: Get repo list on Debian
+  ansible.builtin.shell: grep -rhE ^deb /etc/apt/sources.list*
+  args:
+    executable: /bin/bash
+  when: ansible_os_family == 'Debian'
+  become: true
+  register: apt_sources
 
-- name: Validate cnp_task exist in supported_tasks list
-  ansible.builtin.fail:
-    msg: "fail"
+- name: Check for EDB Repo on RedHat
+  ansible.builtin.assert:
+    that:
+      - "'EnterpriseDB RPMs' in yum_repolist.stdout"
+    fail_msg: "Access to the EDB package repository is not configured"
+    success_msg: "Access to the EDB package repository has been configured successfully"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_edb_repo|bool
+
+- name: Check for PGDG Repo on RedHat
+  ansible.builtin.assert:
+    that:
+      - "'PostgreSQL common RPMs for RHEL' in yum_repolist.stdout"
+    fail_msg: "Access to the PGDG package repository is not configured"
+    success_msg: "Access to the PGDG package repository has been configured successfully"
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+
+- name: Check for EDB Repo on Debian
+  ansible.builtin.assert:
+    that:
+      - "'apt.enterprisedb.com' in apt_sources.stdout"
+    fail_msg: "Access to the EDB package repository is not configured"
+    success_msg: "Access to the EDB package repository has been configured successfully"
+  when:
+    - ansible_os_family == 'Debian'
+    - enable_edb_repo|bool
+
+- name: Check for PGDG Repo on Debian
+  ansible.builtin.assert:
+    that:
+      - "'apt.postgresql.org' in apt_sources.stdout"
+    fail_msg: "Access to the PGDG package repository is not configured"
+    success_msg: "Access to the PGDG package repository has been configured successfully"
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
