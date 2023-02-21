@@ -35,5 +35,8 @@
         database: "{{ pg_efm_database }}"
         privileges: execute
         schema: pg_catalog
-        objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause()
+        objects: pg_current_wal_lsn(),pg_last_wal_replay_lsn(),pg_wal_replay_resume(),pg_wal_replay_pause(),pg_reload_conf()
         type: function
+    pg_grant_roles:
+      - role: pg_read_all_stats
+        user: "{{ pg_efm_user }}"
