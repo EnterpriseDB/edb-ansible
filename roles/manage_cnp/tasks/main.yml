@@ -80,6 +80,11 @@
   loop: "{{ cnp_task }}"
   when: '"apply-manifest" in cnp_task'
 
+- name: Apply scale manifest
+  ansible.builtin.include_tasks: apply_scale_manifest.yml
+  loop: "{{ cnp_task }}"
+  when: '"scale-replicas" in cnp_task'
+
 - name: Configure memory with manifest file
   ansible.builtin.include_tasks: configure_memory.yml
   loop: "{{ cnp_task }}"

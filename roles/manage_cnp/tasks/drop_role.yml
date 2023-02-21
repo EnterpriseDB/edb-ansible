@@ -3,4 +3,4 @@
   kubernetes.core.k8s_exec:
     namespace: "{{ cnpg_namespace }}"
     pod: "{{ pod_name }}"
-    command: psql -d "{{ db_name }}" -c "{{ drop_role_sql }}"
+    command: psql -c "{{ drop_role_sql }}"
