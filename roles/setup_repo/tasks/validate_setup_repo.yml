@@ -1,0 +1,7 @@
+---
+- name:
+
+
+- name: Validate cnp_task exist in supported_tasks list
+  ansible.builtin.fail:
+    msg: "fail"
