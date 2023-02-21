@@ -3,4 +3,4 @@
   kubernetes.core.k8s_exec:
     namespace: "{{ cnpg_namespace }}"
     pod: "{{ pod_name }}"
-    command: psql -d "{{ db_name }}" -c "{{ add_role_sql }}"
+    command: psql -c "{{ add_role_sql }}"

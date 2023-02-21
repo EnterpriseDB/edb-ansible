@@ -34,6 +34,10 @@ drop_role_sql: DROP ROLE {{ db_role }};
 execute_sql_script: DROP DATABASE {{ db_name }};
 # Manifest filename
 manifest_filename: configure_memory.yml
+# Scale Replicas Number
+scale_replicas_to: 5
+# Scale Manifest filename
+scale_manifest_filename: roles/manage_cnp/files/cluster-example.yml
 # Supported Tasks
 supported_tasks:
   - add-db
@@ -41,6 +45,7 @@ supported_tasks:
   - add-role
   - execute-sql-script
   - apply-manifest
+  - scale-replicas
   - remove-manifest
   - configure-memory
   - configure-pg-hba
