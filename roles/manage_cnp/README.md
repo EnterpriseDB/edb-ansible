@@ -45,16 +45,45 @@ Below is an example of how to include the `manage_cnp` role:
   hosts: localhost
   gather_facts: false
 
-  vars:
-    # Options"
-    # add-db, add-schema, add-role
-    # drop-db, drop-schema, drop-role
-    - cnp_task: "add-db"
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      ansible.builtin.set_fact:
+        # Options"
+        # add-db, add-schema, add-role
+        # drop-db, drop-schema, drop-role
+        # execute-sql-script
+        # apply-manifest, remove-manifest
+        # configure-memory, configure-pg-hba
+        cnp_task: 
+        - drop-role
+        # CloudNativePG Namespace
+        cnpg_namespace: default
+        # CloudNativePG Cluster Name
+        cluster_name: cluster-example
+        # CloudNativePG Pod Name
+        pod_name: cluster-example-2
+        # Databases
+        db_name: edb
+        # Schemas
+        schema_name: edb_schema
+        # Roles
+        db_role: edb_role
+        db_role_password: admin
+        # SQL Script
+        sql_script: DROP DATABASE {{ db_name }};
+        # Manifest Filename
+        manifest_filename: configure_memory.yml
+        # Scale Replicas Number
+        scale_replicas_to: 3
+        # Scale Manifest Filename
+        scale_manifest_filename: roles/manage_cnp/files/cluster-example.yml
 
   roles:
     - role: manage_cnp
-      include_tasks: add_db.yml
-      when: "add-db" in cnp_task
+      when: cnp_task is defined
 ```
 
 ## Get credentials for Kubernetes Cluster

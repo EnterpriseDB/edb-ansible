@@ -3,114 +3,91 @@
 # Options"
 # add-db, add-schema, add-role
 # drop-db, drop-schema, drop-role
-#- name: cnp_task not defined in 'supported_tasks' list
-#  ansible.builtin.fail:
-#    msg: cnp_task - "{{ cnp_task }}" is not in supported_tasks list "{{ supported_tasks }}"
-#  when: cnp_task not in supported_tasks
 - name: Validate cnp_task exist in supported_tasks list
   ansible.builtin.fail:
-    #fail: msg="One of the defined cnp_task does not exist in the supported_tasks list"
     msg: "cnp_task - {{ cnp_task | difference(supported_tasks) }} is not defined in supported_tasks"
   when: cnp_task | difference(supported_tasks)
 
 - name: Validate cnpg_namespace
   ansible.builtin.fail:
-    fail: msg="The variable cnpg_namespace is not defined"
     msg: "The variable cnpg_namespace is not defined"
   when:
     - cnpg_namespace is not defined
 
 - name: Validate pod_name
   ansible.builtin.fail:
-    fail: msg="The variable 'pod_name' is not defined"
     msg: "The variable pod_name is not defined"
   when:
     - pod_name is not defined
 
 - name: Validate db_name
   ansible.builtin.fail:
-    fail: msg="The variable 'db_name' is not defined"
     msg: "The variable db_name is not defined"
   when:
     - db_name is not defined
 
 - name: Validate db_role
   ansible.builtin.fail:
-    fail: msg="The variable 'db_role' is not defined"
     msg: "The variable db_role is not defined"
   when:
     - db_role is not defined
 
 - name: Validate db_role_password
   ansible.builtin.fail:
-    fail: msg="The variable 'db_role_password' is not defined"
     msg: "The variable db_role_password is not defined"
   when:
     - db_role_password is not defined
 
 - name: Validate add_db_sql variable
   ansible.builtin.fail:
-    fail: msg="The variable 'add_db_sql' is not defined"
     msg: "The variable add_db_sql is not defined"
   when:
     - add_db_sql is not defined
 
 - name: Add a Database
   ansible.builtin.include_tasks: add_db.yml
-  loop: "{{ cnp_task }}"
   when: '"add-db" in cnp_task'
 
 - name: Add a Schema
   ansible.builtin.include_tasks: add_schema.yml
-  loop: "{{ cnp_task }}"
   when: '"add-schema" in cnp_task'
 
 - name: Add a Role
   ansible.builtin.include_tasks: add_role.yml
-  loop: "{{ cnp_task }}"
   when: '"add-role" in cnp_task'
 
 - name: Execute SQL Script
   ansible.builtin.include_tasks: execute_sql_script.yml
-  loop: "{{ cnp_task }}"
   when: '"execute-sql-script" in cnp_task'
 
 - name: Apply manifest
   ansible.builtin.include_tasks: apply_manifest.yml
-  loop: "{{ cnp_task }}"
   when: '"apply-manifest" in cnp_task'
 
 - name: Apply scale manifest
   ansible.builtin.include_tasks: apply_scale_manifest.yml
-  loop: "{{ cnp_task }}"
   when: '"scale-replicas" in cnp_task'
 
 - name: Configure memory with manifest file
   ansible.builtin.include_tasks: configure_memory.yml
-  loop: "{{ cnp_task }}"
   when: '"configure-memory" in cnp_task'
 
 - name: Configure PG HBA with manifest file
   ansible.builtin.include_tasks: configure_pg_hba.yml
-  loop: "{{ cnp_task }}"
   when: '"configure-pg-hba" in cnp_task'
 
 - name: Remove manifest
   ansible.builtin.include_tasks: remove_manifest.yml
-  loop: "{{ cnp_task }}"
   when: '"remove-manifest" in cnp_task'
 
 - name: Drop a Role
   ansible.builtin.include_tasks: drop_role.yml
-  loop: "{{ cnp_task }}"
   when: '"drop-role" in cnp_task'
 
 - name: Drop a Schema
   ansible.builtin.include_tasks: drop_schema.yml
-  loop: "{{ cnp_task }}"
   when: '"drop-schema" in cnp_task'
 
 - name: Drop a Database
   ansible.builtin.include_tasks: drop_db.yml
-  loop: "{{ cnp_task }}"
   when: '"drop-db" in cnp_task'
