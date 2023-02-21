@@ -2,6 +2,17 @@
 - name: Reference Postgres variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Check pg_postgres_params parameter
+  ansible.builtin.fail:
+    msg: It is not available set pg_postgres_conf_params to name "shared_preload_libraries".
+  when:
+    - pg_postgres_conf_params|length > 0
+    - line_item.name == "shared_preload_libraries"
+  with_items: "{{ pg_postgres_conf_params }}"
+  loop_control:
+    loop_var: line_item
+  no_log: "{{ disable_logging }}"
+
 - name: Check user defined parameters and update
   community.postgresql.postgresql_set:
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -10,7 +21,8 @@
     login_user: "{{ pg_owner }}"
     name: "{{ line_item.name }}"
     value: "{{ line_item.value }}"
-  when: pg_postgres_conf_params|length > 0
+  when:
+    - pg_postgres_conf_params|length > 0
   with_items: "{{ pg_postgres_conf_params }}"
   become: true
   become_user: "{{ pg_owner }}"

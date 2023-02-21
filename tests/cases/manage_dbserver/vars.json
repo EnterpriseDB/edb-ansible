@@ -9,14 +9,27 @@
       "name": "test_user"
     }
   ],
+  "pg_shared_preload_libraries": [
+      {
+        "value": "moddatetime",
+        "state": "present"
+      },
+      {
+        "value": "pg_stat_statements",
+        "state": "absent"
+      },
+      {
+        "value": "btree_gist"
+      },
+      {
+        "value": "moddatetime",
+        "state": "absent"
+      }
+  ],
   "pg_postgres_conf_params": [
     {
       "name": "shared_buffers",
       "value": "256MB"
-    },
-    {
-      "name": "shared_preload_libraries",
-      "value": "pgaudit, postgis"
     }
   ],
   "pg_databases": [

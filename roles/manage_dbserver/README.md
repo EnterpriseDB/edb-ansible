@@ -25,6 +25,7 @@ day tasks:
 ### `pg_postgres_conf_params`
 
 Using this parameters user can set the database parameters.
+This parameter cannot set name to "shared_preload_libraries". It must use 'pg_shared_preload_libraries'.
 
 Example:
 
@@ -32,6 +33,20 @@ Example:
 pg_postgres_conf_params:
   - name: listen_addresses
     value: "*"
+```
+
+### `pg_shared_preload_libraries`
+
+With this parameter, added and deleted in the pg_shared_preload_libraries parameter.
+
+Example:
+
+```yaml
+pg_shared_preload_libraries:
+  - value: postgis
+    state: present
+  - value: pg_stat_statement
+    state: absent
 ```
 
 ### `pg_hba_ip_addresses`

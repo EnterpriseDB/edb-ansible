@@ -5,6 +5,19 @@
 - name: Get facts on current container
   community.docker.current_container_facts:
 
+- name: Include Postgres update configuration tasks
+  block:
+    - name: Import manage_pgpass task
+      import_tasks: manage_pgpass.yml
+    - name: Import manage_postgres_params task
+      import_tasks: manage_postgres_params.yml
+    - name: Import manage_shared_preload_libraries task
+      import_tasks: manage_shared_preload_libraries.yml
+    - name: Import manage_slots task
+      import_tasks: manage_slots.yml
+    - name: Import manage_hba_conf task
+      import_tasks: manage_hba_conf.yml
+
 - name: Include manage dbserver tasks
   block:
     - name: Import manage_users
@@ -15,7 +28,7 @@
       import_tasks: manage_extensions.yml
     - name: Import manage_privilieges task
       import_tasks: manage_privileges.yml
-    - name: Import  task
+    - name: Import manage_tablespaces task
       import_tasks: manage_tablespaces.yml
 
 - name: Execute SQL scripts and query
@@ -26,17 +39,6 @@
       import_tasks: execute_sql_scripts.yml
     - name: Import execute_query task
       import_tasks: execute_query.yml
-
-- name: Include Postgres update configuration tasks
-  block:
-    - name: Import manage_pgpass task
-      import_tasks: manage_pgpass.yml
-    - name: Import manage_slots task
-      import_tasks: manage_slots.yml
-    - name: Import manage_postgres_params task
-      import_tasks: manage_postgres_params.yml
-    - name: Import manage_hba_conf task
-      import_tasks: manage_hba_conf.yml
 
 - name: Include shell profile creation task
   import_tasks: manage_profile.yml
