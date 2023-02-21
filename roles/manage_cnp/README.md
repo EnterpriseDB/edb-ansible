@@ -20,7 +20,13 @@ The only dependencies required for this ansible galaxy role are:
 
 ## Role variables
 
-The 'cnp_task' must be defined with a value in order to indicate which task in the role will be executed.
+'cnp_task' must be defined with a value in order to indicate which task in the role will be executed.
+The options are:
+- add-db, add-schema, add-role
+- drop-db, drop-schema, drop-role
+- execute-sql-script
+- apply-manifest, remove-manifest
+- configure-memory, configure-pg-hba
 
 
 ## Dependencies
@@ -48,7 +54,7 @@ Below is an example of how to include the `manage_cnp` role:
   roles:
     - role: manage_cnp
       include_tasks: add_db.yml
-      when: cnp_task == "add-db"
+      when: "add-db" in cnp_task
 ```
 
 ## Get credentials for Kubernetes Cluster

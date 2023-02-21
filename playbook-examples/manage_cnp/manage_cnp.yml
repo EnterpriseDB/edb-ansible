@@ -13,24 +13,36 @@
   collections:
     - edb_devops.edb_postgres
 
-  vars:
-    # Options"
-    # add-db, add-schema, add-role
-    # drop-db, drop-schema, drop-role
-    - cnp_task: drop-db
-    # CloudNativePG Namespace
-    - cnpg_namespace: default
-    # CloudNativePG Pod Name
-    - pod_name: cluster-example-1
-    # Databases
-    - db_name: edb
-    # Schemas
-    - schema_name: edb_schema
-    # Roles
-    - db_role: edb_role
-    - db_role_password: admin
+  pre_tasks:
+    - name: Initialize the user defined variables
+      ansible.builtin.set_fact:
+        # Options"
+        # add-db, add-schema, add-role
+        # drop-db, drop-schema, drop-role
+        # execute-sql-script
+        # apply-manifest, remove-manifest
+        # configure-memory, configure-pg-hba
+        cnp_task: 
+        - configure-memory
+        - configure-pg-hba
+        # CloudNativePG Namespace
+        cnpg_namespace: default
+        # CloudNativePG Cluster Name
+        cluster_name: cluster-example
+        # CloudNativePG Pod Name
+        pod_name: cluster-example-2
+        # Databases
+        db_name: edb
+        # Schemas
+        schema_name: edb_schema
+        # Roles
+        db_role: edb_role
+        db_role_password: admin
+        # SQL Script
+        sql_script: DROP DATABASE {{ db_name }};
+        # Manifest Filename
+        manifest_filename: configure_memory.yml
 
   roles:
     - role: manage_cnp
-      when: 
-        - cnp_task is defined
+      when: cnp_task is defined

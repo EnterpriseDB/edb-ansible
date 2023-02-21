@@ -1,4 +1,10 @@
 ---
+- name: Drop Database if exists
+  kubernetes.core.k8s_exec:
+    namespace: "{{ cnpg_namespace }}"
+    pod: "{{ pod_name }}"
+    command: psql -c "{{ drop_db_sql }}"
+
 - name: Add a Database if it does not exist
   kubernetes.core.k8s_exec:
     namespace: "{{ cnpg_namespace }}"

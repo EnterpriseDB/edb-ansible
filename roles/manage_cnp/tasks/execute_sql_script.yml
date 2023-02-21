@@ -1,0 +1,6 @@
+---
+- name: Execute a SQL Script
+  kubernetes.core.k8s_exec:
+    namespace: "{{ cnpg_namespace }}"
+    pod: "{{ pod_name }}"
+    command: psql -c "{{ execute_sql_script }}"

@@ -1,0 +1,22 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgresql-resources
+spec:
+
+  instances: 3
+
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+
+  resources:
+    requests:
+      memory: "1024Mi"
+      cpu: 1
+    limits:
+      memory: "1024Mi"
+      cpu: 1
+
+  storage:
+    size: 1Gi

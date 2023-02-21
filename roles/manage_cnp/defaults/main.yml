@@ -6,6 +6,8 @@
 host: localhost
 # CloudNativePG Namespace
 cnpg_namespace: default
+# CloudNativePG Cluster Name
+cluster_name: cluster-example
 # CloudNativePG Pod Name
 pod_name: cluster-example-1
 # Databases
@@ -18,7 +20,7 @@ db_role_password: my_role_password
 # SQL Statements
 # Databases
 add_db_sql: CREATE DATABASE {{ db_name }};
-drop_db_sql: DROP DATABASE {{ db_name }};
+drop_db_sql: DROP DATABASE IF EXISTS {{ db_name }};
 # Roles
 add_role_sql: CREATE ROLE {{ db_role }} LOGIN PASSWORD '{{ db_role_password  }}';
 drop_role_sql: DROP ROLE {{ db_role }};
@@ -28,11 +30,20 @@ drop_schema_sql: DROP SCHEMA {{ schema_name }};
 # Roles
 add_role_sql: CREATE ROLE {{ db_role }} LOGIN PASSWORD '{{ db_role_password  }}';
 drop_role_sql: DROP ROLE {{ db_role }};
+# SQL Script
+execute_sql_script: DROP DATABASE {{ db_name }};
+# Manifest filename
+manifest_filename: configure_memory.yml
 # Supported Tasks
 supported_tasks:
   - add-db
   - add-schema
   - add-role
+  - execute-sql-script
+  - apply-manifest
+  - remove-manifest
+  - configure-memory
+  - configure-pg-hba
   - drop-role
   - drop-schema
   - drop-db

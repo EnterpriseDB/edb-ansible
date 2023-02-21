@@ -1,0 +1,6 @@
+---
+- name: Configure PG HBA with manifest file
+  kubernetes.core.k8s:
+    namespace: "{{ cnpg_namespace }}"
+    state: present
+    src: ../files/configure_pg_hba.yml

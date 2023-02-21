@@ -1,0 +1,6 @@
+---
+- name: Apply a manifest
+  kubernetes.core.k8s:
+    namespace: "{{ cnpg_namespace }}"
+    state: present
+    src: ../files/configure_memory.yml
