@@ -2,7 +2,7 @@
 
 [![Version on Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=ansible-galalxy&prefix=v&url=https://galaxy.ansible.com/api/v2/collections/tmax_opensql/postgres/&query=latest_version.version)](https://galaxy.ansible.com/tmax_opensql/postgres)
 
-This repository is for hosting an Ansible Galaxy Collection **tmax_opensql.postgres** which helps users easily deploy OpenSQL package for PostgreSQL.
+This repository is for hosting an Ansible Galaxy Collection **hypersql_devops.postgres** which helps users easily deploy Tmax OpenSQL package for PostgreSQL.
 
 _The ansible playbook must be executed under an account that has full
 privileges._
@@ -167,7 +167,7 @@ playbook:
       when: "'autotuning' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
 ```
 
-You can customize the above example to install OpenSQL Package by selecting which roles you would like to execute.
+You can customize the above example to install Tmax OpenSQL Package by selecting which roles you would like to execute.
 
 ## Default user and passwords
 
@@ -185,7 +185,7 @@ accounts:
 
 ## Playbook examples
 
-Examples of utilizing the playbooks for installing OpenSQL Package are provided and located within the `playbook-examples` directory.
+Examples of utilizing the playbooks for installing Tmax OpenSQL Package are provided and located within the `playbook-examples` directory.
 
 ## SSH port configuration
 
