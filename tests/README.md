@@ -3,7 +3,7 @@
 ## Introduction
 
 This folder contains the necessary software infrastructure required to execute
-the non-regression test cases of the **hypersql_devops.postgres** Ansible Collection.
+the non-regression test cases of the **tmax_opensql.postgres** Ansible Collection.
 
 The tests are grouped by a common subject into multiple _test cases_. This
 common subject could be related to a specific Role we want to test, or a
@@ -171,8 +171,8 @@ without using the `test-runner.py` script. This can be done with the following
 command lines:
 
 ```shell
-export HYPERSQL_PG_TYPE=<pg-type>
-export HYPERSQL_PG_VERSION=<pg-version>
+export OPENSQL_PG_TYPE=<pg-type>
+export OPENSQL_PG_VERSION=<pg-version>
 make -C cases/<test-case> <os>
 ```
 
@@ -180,8 +180,8 @@ Below is an example of running the tests for test case `init_dbserver`, in
 version 14.6 of PostgreSQL, on RockyLinux8:
 
 ```shell
-export HYPERSQL_PG_TYPE=PG
-export HYPERSQL_PG_VERSION=14.6
+export OPENSQL_PG_TYPE=PG
+export OPENSQL_PG_VERSION=14.6
 make -C cases/init_dbserver rocky8
 ```
 

@@ -71,8 +71,8 @@
 # Set the max_connections value to: GREATEST(4 x CPU cores, 100)
 - name: Set the variable pg_max_connections
   set_fact:
-    pg_max_connections: >-
-      {{ pg_max_connections | default([sys_nvcpus | int * 4, 100] | max) }}
+    pg_max_connections: "{{ [sys_nvcpus | int * 4, 100] | max }}"
+    when: pg_max_connections is not defined
 
 # Set the shared buffers value
 - name: Set the variable pg_shared_buffers_mb

@@ -1,10 +1,16 @@
 ---
-- name: Install certificated
+- name: Install Required Package
   package:
     name:
       - ca-certificates
       - python3-pycurl
       - python3-psycopg2
+    state: present
+  become: true
+
+- name: Install Postgres
+  package:
+    name:
       - postgresql-client-{{ pg_major_version }}
       - postgresql-{{ pg_major_version }}
       - postgresql-server-dev-{{ pg_major_version }}
@@ -33,11 +39,3 @@
   changed_when: drop_cluster.rc == 0
   failed_when: drop_cluster.rc != 0
   become: true
-
-- name: Install sslutils
-  ansible.builtin.package:
-    name:
-      - postgresql-{{ pg_major_version }}-sslutils
-    state: present
-  become: true
-  when: pg_ssl

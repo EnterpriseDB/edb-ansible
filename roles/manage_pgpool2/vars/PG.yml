@@ -5,3 +5,21 @@ pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 pgpool2_bin_path: "/usr/bin"
 pcp_configuration_file: "/etc/pgpool-II/pcp.conf"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+
+supported_pg_version:
+  - 14.0
+  - 14.1
+  - 14.2
+  - 14.3
+  - 14.4
+  - 14.5
+  - 14.6
+
+supported_pgpool2_version:
+  - 4.3

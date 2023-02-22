@@ -13,7 +13,7 @@ jobs:
   publish-galaxy:
     uses: ./.github/workflows/publish-galaxy.yml
     secrets:
-      galaxy_api_key: ${{ secrets.HYPERSQL_GALAXY_API_KEY }}
+      galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
   trigger-gh-page-deploy:
     needs: publish-galaxy
     runs-on: ubuntu-latest

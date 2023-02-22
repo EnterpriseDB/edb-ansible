@@ -4,12 +4,16 @@ pgbouncer_databases_list: []
 # User names & passwords list
 pgbouncer_auth_user_list: []
 
-supported_os:
-  - CentOS7
-  - CentOS8
-  - RHEL7
-  - RHEL8
-  - Rocky8
-  - Debian10
-  - OracleLinux7
-  - Ubuntu20
+pg_port: 5432
+
+# PgBouncer system user & group
+pgbouncer_user: "pgbouncer"
+pgbouncer_group: "pgbouncer"
+
+# Databases configuration file
+pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"
+# Authentication file path
+pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
+# PID file
+pgbouncer_pid_file: "{{ '/run/pgbouncer/pgbouncer.pid' if ansible_os_family == 'RedHat' else \
+      '/var/run/pgbouncer/pgbouncer.pid' if ansible_os_family == 'Debian' }}"

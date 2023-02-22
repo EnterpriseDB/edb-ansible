@@ -2,4 +2,4 @@
 # Entry point of the setup_barmanserver role
 - name: Include the setup_barmanserver.yml
   include_tasks: setup_barmanserver.yml
-  when: "'setup_barmanserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+  when: "'setup_barmanserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"

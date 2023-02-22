@@ -1,74 +1,39 @@
 ---
 pg_major_version: "{{ pg_version | int }}"
 
-pg_instance_name: main
 pg_ssl: true
-pg_remote_ssl_src: false
 
-disable_logging: true
-use_replication_slots: true
-use_hostname: false
-update_etc_file: true
-enable_core_dump: false
-
-pass_dir: "~/.pg"
-
-pg_wal: ""
-pg_local_wal_archive_dir: ""
-pg_data: "/var/lib/pgsql/{{ pg_major_version }}/data"
-pg_default_data: "/var/lib/pgsql/{{ pg_major_version }}/data"
-pg_encoding: ""
-
-# log directory and filename
-pg_log: "/var/log/postgres"
-pg_log_filename: "postgresql-%a.log"
-
-# postgres service
-pg_service: "postgresql-{{ pg_major_version }}"
-
-# locale
-pg_locale: "en_US.utf8"
-
-# required & optional directories
-pg_user_home: "/var/lib/pgsql"
-pg_bin_path: "/usr/pgsql-{{ pg_major_version }}/bin"
-pg_initdb: "{{ pg_bin_path }}/postgresql-{{ pg_major_version }}-setup initdb"
-pg_initdb_options: "-k --encoding=UTF-8 --locale={{ pg_locale }}"
-
-# unix socket domain directories
-pg_unix_socket_directories:
-  - "/var/run/postgresql"
-
-# initial configuration for starting postgres
-# example:
-# pg_init_conf_params:
-# - name: "port"
-#   value: "5432"
-pg_init_conf_params: []
-# postgres port
-pg_port: 5432
-
-# postgres database
-pg_database: "postgres"
+# postgres data dir
+pg_data: "{{ pg_user_home + '/' + pg_major_version + '/data' if ansible_os_family == 'RedHat' else \
+      pg_user_home + '/' + pg_major_version  + '/' + pg_instance_name if ansible_os_family == 'Debian' }}"
 
 # postgres user(os)
 pg_owner: "postgres"
 pg_group: "postgres"
 
+# postgres port
+pg_port: 5432
+
+pg_wal: ""
+pg_local_wal_archive_dir: ""
+
+# log directory and filename
+pg_log: "/var/log/postgres"
+pg_log_filename: "postgresql-%a.log"
+
 # postgres superuser
 pg_superuser: "postgres"
 pg_superuser_password: ""
-pg_random_password: true
 
-# Local path to SSL server key and certificate to be sent to the server
-# if empty, they are generated
-pg_ssl_key_file: ""
-pg_ssl_cert_file: ""
-pg_ssl_ca_file: ""
-pg_ssl_crl_file: ""
+pg_locale: "{{ 'en_US.utf8' if ansible_os_family == 'RedHat' else 'C.UTF-8' if ansible_os_family == 'Debian' }}"
 
-# Input variables
-input_user: ""
-input_password: ""
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
 
+use_hostname: false
+
+update_etc_file: true
 etc_hosts_lists: []
+
+disable_logging: true

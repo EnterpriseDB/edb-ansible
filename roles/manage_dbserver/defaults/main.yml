@@ -1,6 +1,6 @@
 ---
-pg_major_version: "{{ pg_version | int }}"
 pg_postgres_conf_params: []
+pg_shared_preload_libraries: []
 pg_hba_ip_addresses: []
 pg_slots: []
 pg_extensions: []
@@ -13,5 +13,16 @@ pg_pgpass_values: []
 pg_users: []
 pg_databases: []
 pg_tablespaces: []
+
+# postgres data dir
+pg_data: "{{ pg_user_home + '/' + pg_major_version + '/data' if ansible_os_family == 'RedHat' else \
+     pg_user_home + '/' + pg_major_version  + '/' + pg_instance_name if ansible_os_family == 'Debian' }}"
+
+pg_port: "5432"
+pg_owner: "postgres"
+pg_group: "postgres"
+
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
 
 disable_logging: true

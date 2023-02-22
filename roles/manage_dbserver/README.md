@@ -16,7 +16,7 @@ Following are the dependencies and requirement of this role.
 
 This role requires the following variables to be defined:
 
-- pg_type (available: PG, HyperSQL)
+- pg_type (available: PG)
 - pg_version (available: 14)
 
 This role allows users to pass following variables which helps managing day to
@@ -25,6 +25,7 @@ day tasks:
 ### `pg_postgres_conf_params`
 
 Using this parameters user can set the database parameters.
+This parameter cannot set name to "shared_preload_libraries". It must use 'pg_shared_preload_libraries'.
 
 Example:
 
@@ -32,6 +33,20 @@ Example:
 pg_postgres_conf_params:
   - name: listen_addresses
     value: "*"
+```
+
+### `pg_shared_preload_libraries`
+
+With this parameter, added and deleted in the pg_shared_preload_libraries parameter.
+
+Example:
+
+```yaml
+pg_shared_preload_libraries:
+  - value: postgis
+    state: present
+  - value: pg_stat_statement
+    state: absent
 ```
 
 ### `pg_hba_ip_addresses`

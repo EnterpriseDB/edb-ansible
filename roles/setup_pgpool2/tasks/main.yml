@@ -11,4 +11,4 @@
 # Entry point of the setup_pgpool2 role
 - name: Include the setup_pgpool2.yml
   include_tasks: setup_pgpool2.yml
-  when: "'setup_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+  when: "'setup_pgpool2' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"

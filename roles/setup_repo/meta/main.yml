@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: setup_repo
-  author: HyperSQL
+  author: OpenSQL
   description: Installation of Postgres to CentOS or RHEL repos
   company: "Tmax"
   license: BSD-3-Clause
@@ -19,8 +19,6 @@ galaxy_info:
     - database
     - postgresql
     - postgres
-    - edb
-    - epas
     - repo
 
 dependencies: []

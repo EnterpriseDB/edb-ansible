@@ -16,14 +16,14 @@
   block:
     - name: Initialize database postgres service in RedHat
       ansible.builtin.command: >
-        {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
+        {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_data }}
       when: ansible_os_family == 'RedHat'
       become: true
       become_user: "{{ pg_owner }}"
 
     - name: Initialize database postgres service in Debian
       ansible.builtin.command: >
-        {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_default_data }}
+        {{ pg_initdb }} {{ pg_initdb_options }} -D {{ pg_data }}
       when: ansible_os_family == 'Debian'
       become: true
       become_user: "{{ pg_owner }}"
@@ -51,5 +51,4 @@
     {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} start
   when: ansible_module_running_in_container
   become: true
-  become_method: su
   become_user: "{{ pg_owner }}"

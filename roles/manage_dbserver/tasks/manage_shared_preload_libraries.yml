@@ -1,0 +1,88 @@
+---
+- name: Check shared_preload_libraries parameter
+  community.postgresql.postgresql_query:
+    query: "SHOW shared_preload_libraries"
+    db: "{{ pg_database }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+  register: _query_result
+
+- name: Set preload libraries
+  set_fact:
+    _libraries: "{{ _query_result.query_result[0].shared_preload_libraries | split(',') }}"
+
+- name: Union of values declared by libraries and users
+  set_fact:
+    _libraries: "{{ _libraries | default([]) | union(line_item.value.split(',') | list) }}"
+  when:
+    - pg_shared_preload_libraries|length > 0
+    - line_item.state|default('present') == 'present'
+  with_items: "{{ pg_shared_preload_libraries }}"
+  loop_control:
+    loop_var: line_item
+  no_log: "{{ disable_logging }}"
+
+- name: Subtract libraries from the value declared by the user
+  set_fact:
+    _libraries: "{{ _libraries | default([]) | difference(line_item.value.split(',') | list) }}"
+  when:
+    - pg_shared_preload_libraries|length > 0
+    - line_item.state|default('present') == 'absent'
+  with_items: "{{ pg_shared_preload_libraries }}"
+  loop_control:
+    loop_var: line_item
+  no_log: "{{ disable_logging }}"
+
+- name: Set shared_preload_libraries line
+  set_fact:
+    _libraries_line: "{{ _libraries_line | default('') }}{% if _libraries_line is defined %}, {% endif %}{{ line_item }}"
+  when:
+    - pg_shared_preload_libraries|length > 0
+    - _libraries|length > 0
+  with_items: "{{ _libraries }}"
+  loop_control:
+    loop_var: line_item
+  no_log: "{{ disable_logging }}"
+
+- name: Check user defined "shared_preload_libraries" and update
+  lineinfile:
+    path: "{{ pg_data }}/postgresql.auto.conf"
+    line: >-
+      shared_preload_libraries = '{{ _libraries_line }}'
+    regexp: '^shared_preload_libraries ='
+    state: "present"
+  when:
+    - pg_shared_preload_libraries|length > 0
+    - _libraries_line|length > 0
+  become: true
+  register: params
+
+- name: Restart the pg service
+  systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: true
+    state: restarted
+  become: true
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - not ansible_module_running_in_container
+
+- name: Restart the pg service in container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} restart
+  when:
+    - pg_postgres_conf_params|length > 0
+    - params.changed
+    - ansible_module_running_in_container
+  become: true
+  become_user: "{{ pg_owner }}"
+
+- name: Reset the restart_required
+  set_fact:
+    _query_result: ""
+    _libraries: []
+    _libraries_line: ""
+  when:
+    - params_restart_required is defined

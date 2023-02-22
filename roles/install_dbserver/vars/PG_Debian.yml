@@ -1,0 +1,4 @@
+---
+pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
+deb_cluster_name: "main"
+pg_service: "postgresql@{{ pg_major_version }}-{{ deb_cluster_name }}.service"

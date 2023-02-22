@@ -3,6 +3,10 @@
 pgbouncer_listen_port: 6432
 pgbouncer_listen_addr: "*"
 
+# PgBouncer system user & group
+pgbouncer_user: "pgbouncer"
+pgbouncer_group: "pgbouncer"
+
 # Pool size and maximum  number of client connections
 pgbouncer_default_pool_size: 20
 pgbouncer_max_client_conn: 100
@@ -23,6 +27,9 @@ pgbouncer_stats_users: "pgbouncer_stats"
 # PgBouncer authentication part
 pgbouncer_auth_type: "scram-sha-256"
 
+# PgBouncer authentication part
+pgbouncer_auth_file: "/etc/pgbouncer/userlist.txt"
+
 # User authentication with auth_query
 # pgbouncer_auth_user: "pgbouncer"
 # pgbouncer_auth_query: "SELECT usename, passwd FROM pg_shadow WHERE usename = $1"
@@ -32,42 +39,12 @@ pgbouncer_systemd_unit_file: "/etc/systemd/system/pgbouncer.service.d/pgbouncer.
 pgbouncer_syslog: 0
 pgbouncer_syslog_ident: "pgbouncer"
 
-# Enable SSL
-pgbouncer_ssl: true
-pgbouncer_ssl_csr_dn:
-  CN: "pgbouncer-server.fqdn"
-  O: ""
-  OU: ""
-  L: ""
-  ST: ""
-  C: ""
-  EMAIL: "example@mail.com"
-
-available_pool_mode:
-  - transaction
-  - session
-  - query
-
-available_auth_type:
-  - pam
-  - hba
-  - cert
-  - md5
-  - scram-sha-256
-  - plain
-  - trust
-  - any
-
-supported_os:
-  - CentOS7
-  - CentOS8
-  - RHEL7
-  - RHEL8
-  - Rocky8
-  - Debian10
-  - OracleLinux7
-  - Ubuntu20
-
-supported_pgbouncer_version:
-  - 1.6
-  - 1.7
+# Configuration file
+pgbouncer_config_file: "/etc/pgbouncer/pgbouncer.ini"
+# PID file
+pgbouncer_pid_file: "{{ '/run/pgbouncer/pgbouncer.pid' if ansible_os_family == 'RedHat' else \
+      '/var/run/pgbouncer/pgbouncer.pid' if ansible_os_family == 'Debian' }}"
+# Log file
+pgbouncer_log_file: "/var/log/pgbouncer/pgbouncer.log"
+# Databases configuration file
+pgbouncer_databases_file: "/etc/pgbouncer/databases.ini"

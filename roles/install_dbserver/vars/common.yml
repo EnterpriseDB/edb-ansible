@@ -1,0 +1,9 @@
+---
+core_dump_directory: "/var/coredumps"
+sysctl_params:
+  - {
+    "name": "kernel.core_pattern",
+    "value": "/var/coredumps/core-%e-%p",
+    "state": "present",
+  }
+  - { "name": "fs.suid_dumpable", "value": "2", "state": "present" }

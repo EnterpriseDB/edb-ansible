@@ -45,7 +45,5 @@ galaxy_info:
     - pgpool
     - pooler
     - connection
-    - edb
-    - edbinitialize
 
 dependencies: []

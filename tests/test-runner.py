@@ -226,9 +226,9 @@ def exec_test_case(case_name, pg_type, pg_version, os_type):
     env = os.environ.copy()
     env.update(
         {
-            "HYPERSQL_PG_VERSION": pg_version,
-            "HYPERSQL_PG_TYPE": pg_type,
-            "HYPERSQL_OS_TYPE": os_type,
+            "OPENSQL_PG_VERSION": pg_version,
+            "OPENSQL_PG_TYPE": pg_type,
+            "OPENSQL_OS_TYPE": os_type,
             "CASE_NAME": case_name,
         }
     )

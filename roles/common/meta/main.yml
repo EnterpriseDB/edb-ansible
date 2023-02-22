@@ -1,6 +1,6 @@
 galaxy_info:
   author: Sung Woo Chang
-  description: Collection of common tasks used by roles in hypersql_devops.postgres collection
+  description: Collection of common tasks used by roles in tmax_opensql.postgres collection
   company: TmaxTibero
 
   # If the issue tracker for your role is not on github, uncomment the

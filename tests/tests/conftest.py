@@ -6,19 +6,19 @@ import yaml
 
 # Path to the file containing ansible variables for the role:
 # <role_name>/vars.json
-HYPERSQL_ANSIBLE_VARS = os.getenv("HYPERSQL_ANSIBLE_VARS")
+OPENSQL_ANSIBLE_VARS = os.getenv("OPENSQL_ANSIBLE_VARS")
 # Operating system name of the containers
-HYPERSQL_OS_TYPE = os.getenv("HYPERSQL_OS_TYPE", "rocky8")
+OPENSQL_OS_TYPE = os.getenv("OPENSQL_OS_TYPE", "rocky8")
 # Path to the ansible inventory file: <role_name>/inventory.yml
-HYPERSQL_INVENTORY = os.getenv("HYPERSQL_INVENTORY")
+OPENSQL_INVENTORY = os.getenv("OPENSQL_INVENTORY")
 # Postgres version
-HYPERSQL_PG_VERSION = os.getenv("HYPERSQL_PG_VERSION").split('.')[0]
+OPENSQL_PG_VERSION = os.getenv("OPENSQL_PG_VERSION").split('.')[0]
 # Postgres type
-HYPERSQL_PG_TYPE = os.getenv("HYPERSQL_PG_TYPE")
+OPENSQL_PG_TYPE = os.getenv("OPENSQL_PG_TYPE")
 # SSH parameters
-HYPERSQL_SSH_USER = os.getenv("HYPERSQL_SSH_USER", "root")
-HYPERSQL_SSH_KEY = os.getenv("HYPERSQL_SSH_KEY", "../.ssh/id_rsa")
-HYPERSQL_SSH_CONFIG = os.getenv("HYPERSQL_SSH_CONFIG", "../.ssh/ssh_config")
+OPENSQL_SSH_USER = os.getenv("OPENSQL_SSH_USER", "root")
+OPENSQL_SSH_KEY = os.getenv("OPENSQL_SSH_KEY", "../.ssh/id_rsa")
+OPENSQL_SSH_CONFIG = os.getenv("OPENSQL_SSH_CONFIG", "../.ssh/ssh_config")
 # Globale variable used as a cache
 HOSTS = None
 
@@ -27,7 +27,7 @@ def load_ansible_vars():
     """
     Loading Ansible variables from the vars.json file
     """
-    with open(HYPERSQL_ANSIBLE_VARS, "r") as f:
+    with open(OPENSQL_ANSIBLE_VARS, "r") as f:
         return json.loads(f.read())
 
 
@@ -36,7 +36,7 @@ def load_inventory():
     Loading data from the inventory file
     """
     # Read the inventory file
-    with open(HYPERSQL_INVENTORY, "r") as f:
+    with open(OPENSQL_INVENTORY, "r") as f:
         return yaml.load(f.read(), Loader=yaml.Loader)
 
 
@@ -57,9 +57,9 @@ def get_hosts(group_name):
     for host, attrs in children[group_name]["hosts"].items():
         nodes.append(
             testinfra.get_host(
-                "paramiko://%s@%s:22" % (HYPERSQL_SSH_USER, attrs["ansible_host"]),
-                ssh_identity_file=HYPERSQL_SSH_KEY,
-                ssh_config=HYPERSQL_SSH_CONFIG,
+                "paramiko://%s@%s:22" % (OPENSQL_SSH_USER, attrs["ansible_host"]),
+                ssh_identity_file=OPENSQL_SSH_KEY,
+                ssh_config=OPENSQL_SSH_CONFIG,
             )
         )
     HOSTS = nodes
@@ -67,11 +67,11 @@ def get_hosts(group_name):
 
 
 def get_os():
-    return HYPERSQL_OS_TYPE
+    return OPENSQL_OS_TYPE
 
 
 def get_pg_version():
-    return HYPERSQL_PG_VERSION
+    return OPENSQL_PG_VERSION
 
 
 def os_family():
@@ -88,7 +88,7 @@ def os_family():
 
 
 def get_pg_type():
-    return HYPERSQL_PG_TYPE
+    return OPENSQL_PG_TYPE
 
 
 def get_primary():

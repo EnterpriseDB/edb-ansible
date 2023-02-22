@@ -1,19 +1,20 @@
 # PG Ansible
 
-[![Version on Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=ansible-galalxy&prefix=v&url=https://galaxy.ansible.com/api/v2/collections/hypersql_devops/postgres/&query=latest_version.version)](https://galaxy.ansible.com/hypersql_devops/postgres)
+[![Version on Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=ansible-galalxy&prefix=v&url=https://galaxy.ansible.com/api/v2/collections/tmax_opensql/postgres/&query=latest_version.version)](https://galaxy.ansible.com/tmax_opensql/postgres)
 
 This repository is for hosting an Ansible Galaxy Collection **hypersql_devops.postgres** which helps users easily deploy Tmax OpenSQL package for PostgreSQL.
 
 _The ansible playbook must be executed under an account that has full
 privileges._
 
-The following table describes the roles included in **hypersql_devops.postgres** collection.
+The following table describes the roles included in **tmax_opensql.postgres** collection.
 
 | Role name                                                        | Description                                                                                                                                                                                            |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [autotuning](roles/autotuning/README.md)                         | The autotuning role configures the system and Postgres instances for optimal performances. Most of the configuration values are calculated automatically from available resources found on the system. |
 | [init_dbserver](roles/init_dbserver/README.md)                   | Initialize the PostgreSQL cluster (data) directory.                                                                                                                                                    |
 | [install_dbserver](roles/install_dbserver/README.md)             | Install PostgreSQL database server packages.                                                                                                                                                           |
+| [manage_extension](roles/manage_extension/README.md)               | Manage PostgreSQL Extension Packages.                                                                                                                                                    |
 | [manage_dbserver](roles/manage_dbserver/README.md)               | Manage PostgreSQL clusters and covers common tasks.                                                                                                                                                    |
 | [manage_pgbouncer](roles/manage_pgbouncer/README.md)             | Manage PgBouncer pools list and users.                                                                                                                                                                 |
 | [manage_pgpool2](roles/manage_pgpool2/README.md)                 | Manage Pgpool-II settings and users.                                                                                                                                                                   |
@@ -42,17 +43,17 @@ For correctly installed and configuration of the cluster following are requireme
 
 To install Ansible: **[Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)**
 
-**hypersql_devops.postgres** can be installed in the following approaches:
+**tmax_opensql.postgres** can be installed in the following approaches:
 
 ### Installing from Ansible Galaxy
 
-Use the command below to install **hypersql_devops.postgres**:
+Use the command below to install **tmax_opensql.postgres**:
 
 ```bash
-ansible-galaxy collection install hypersql_devops.postgres --force
+ansible-galaxy collection install tmax_opensql.postgres --force
 ```
 
-This approach automatically makes the **hypersql_devops.postgres** collection available to
+This approach automatically makes the **tmax_opensql.postgres** collection available to
 your playbooks.
 
 A message indicating where the collection is installed will be displayed by
@@ -64,15 +65,15 @@ By default the location of your installed collection is:
 
 ### Cloning the source code from the repository GitHub
 
-Use the command below to install **hypersql_devops.postgres**:
+Use the command below to install **tmax_opensql.postgres**:
 
 ```bash
-git clone https://github.com/hypersql/pg-ansible.git
+git clone https://github.com/tmaxopensql/pg-ansible.git
 cd pg-ansible
 make install
 ```
 
-This approach automatically makes the **hypersql_devops.postgres** collection available to
+This approach automatically makes the **tmax_opensql.postgres** collection available to
 your playbooks.
 
 A message indicating where the collection is installed will be displayed by
@@ -124,7 +125,7 @@ playbook:
   gather_facts: yes
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables
@@ -135,33 +136,35 @@ playbook:
 
   roles:
     - role: setup_repo
-      when: "'setup_repo' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_repo' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: install_dbserver
-      when: "'install_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'install_dbserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
-      when: "'init_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'init_dbserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
+    - role: manage_extension
+      when: "'manage_extension' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: setup_replication
-      when: "'setup_replication' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_replication' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: setup_pgpool2
-      when: "'setup_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgpool2' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: manage_pgpool2
-      when: "'manage_pgpool2' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'manage_pgpool2' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: manage_dbserver
-      when: "'manage_dbserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'manage_dbserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: setup_pgbackrest
-      when: "'setup_pgbackrest' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbackrest' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: setup_pgbackrestserver
-      when: "'setup_pgbackrestserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbackrestserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: setup_pgbouncer
-      when: "'setup_pgbouncer' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_pgbouncer' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: manage_pgbouncer
-      when: "'manage_pgbouncer' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'manage_pgbouncer' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: setup_barmanserver
-      when: "'setup_barmanserver' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_barmanserver' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: setup_barman
-      when: "'setup_barman' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'setup_barman' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
     - role: autotuning
-      when: "'autotuning' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+      when: "'autotuning' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"
 ```
 
 You can customize the above example to install Tmax OpenSQL Package by selecting which roles you would like to execute.

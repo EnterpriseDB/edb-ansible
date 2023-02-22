@@ -1,5 +1,4 @@
 ---
-pg_major_version: "{{ pg_version | int }}"
 pg_instance_name: main
 disable_logging: true
 use_hostname: false
@@ -30,30 +29,13 @@ repmgr_reconnect_attempts: 3
 # Interval of time, in seconds, between each reconnect attemps
 repmgr_reconnect_interval: 5
 
-# SSH port
-ssh_port: 22
-
 etc_hosts_lists: []
 
-supported_os:
-  - CentOS7
-  - CentOS8
-  - RedHat7
-  - RedHat8
-  - Ubuntu20
-  - Debian9
-  - Debian10
-  - Rocky8
-  - OracleLinux7
-
-supported_pg_type:
-  - PG
-
-supported_pg_version:
-  - 14.0
-  - 14.1
-  - 14.2
-  - 14.3
-  - 14.4
-  - 14.5
-  - 14.6
+# Database variables
+pg_data: "{{ pg_user_home + '/' + pg_major_version + '/data' if ansible_os_family == 'RedHat' else \
+      pg_user_home + '/' + pg_major_version  + '/' + pg_instance_name if ansible_os_family == 'Debian' }}"
+pg_ssl: true
+pg_owner: "postgres"
+pg_group: "postgres"
+pg_port: 5432
+pg_service: "postgresql-{{ pg_major_version }}"

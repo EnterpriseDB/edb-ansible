@@ -35,7 +35,7 @@
 
 - name: Gather the cluste_nodes information
   set_fact:
-    pg_cluster_nodes: "{{ lookup('hypersql_devops.postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+    pg_cluster_nodes: "{{ lookup('tmax_opensql.postgres.pg_sr_cluster_nodes', wantlist=True) }}"
 
 - name: Get the primary information
   set_fact:
@@ -52,7 +52,7 @@
 
 - name: Prepare synchronous_standby_names
   set_fact:
-    _synchronous_standbys: "{{ _synchronous_standbys|default([]) + [ node.inventory_hostname ] }}"
+    _synchronous_standbys: "{{ _synchronous_standbys | default([]) + [node.inventory_hostname] }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node

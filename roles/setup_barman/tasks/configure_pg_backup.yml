@@ -1,7 +1,7 @@
 ---
 - name: Get Barman server informations
   set_fact:
-    _barman_server_info: "{{ lookup('hypersql_devops.postgres.barman_server', wantlist=True) }}"
+    _barman_server_info: "{{ lookup('tmax_opensql.postgres.barman_server', wantlist=True) }}"
 
 - name: Set _barman_host when not using hostname
   set_fact:

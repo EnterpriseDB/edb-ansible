@@ -15,7 +15,7 @@ Following are the dependencies and requirement of this role.
 When executing the role via ansible these are the required variables:
 
 - pg_version (available: 14)
-- pg_type (available: PG, HyperSQL)
+- pg_type (available: PG)
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: _How to include the `autotuning` role in your Playbook_
@@ -95,7 +95,7 @@ Below is an example of how to include the `autotuning` role:
   gather_facts: yes
 
   collections:
-    - hypersql_devops.postgres
+    - tmax_opensql.postgres
 
   pre_tasks:
     - name: Initialize the user defined variables

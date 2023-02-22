@@ -45,6 +45,7 @@
   when:
     - use_hostname|bool
     - update_etc_file|bool
+    - not ansible_module_running_in_container | default(false)
 
 - name: Check and configure the node as primary or pemserver
   become: true

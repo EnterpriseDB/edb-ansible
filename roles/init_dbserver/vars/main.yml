@@ -1,29 +1,29 @@
 ---
-pg_wal: ""
-pg_encoding: ""
+# Local path to SSL server key and certificate to be sent to the server
+# if empty, they are generated
+pg_remote_ssl_src: false
+pg_ssl_key_file: ""
+pg_ssl_cert_file: ""
+pg_ssl_ca_file: ""
+pg_ssl_crl_file: ""
 
-# log directory and filename
-pg_log: "/var/log/postgres"
-pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
+enable_core_dump: false
 
-# postgres service
-pg_service: "{{ lookup('hypersql_devops.postgres.pg_service') }}"
+# initial configuration for starting postgres
+# example:
+# pg_init_conf_params:
+# - name: "port"
+#   value: "5432"
+pg_init_conf_params: []
 
-# unix socket domain directories
-pg_unix_socket_directories:
-  - "/var/run/postgresql"
+use_replication_slots: true
 
-# postgres port
-pg_port: 5432
+pg_instance_name: main
+
+# postgres superuser
+pg_random_password: true
+pg_shared_libraries_list:
+  - "$libdir/pg_stat_statements"
 
 # postgres database
 pg_database: "postgres"
-
-# postgres user
-pg_owner: "postgres"
-pg_group: "postgres"
-
-# postgres superuser
-pg_superuser: "postgres"
-pg_shared_libraries_list:
-  - "$libdir/pg_stat_statements"

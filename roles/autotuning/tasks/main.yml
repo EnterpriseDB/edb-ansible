@@ -12,4 +12,4 @@
 # Entry point of the autotuning role
 - name: Include the autotuning.yml
   include_tasks: autotuning.yml
-  when: "'autotuning' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+  when: "'autotuning' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"

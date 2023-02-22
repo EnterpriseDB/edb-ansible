@@ -1,0 +1,28 @@
+---
+# Local path to SSL server key and certificate to be sent to the server
+# if empty, they are generated
+pg_remote_ssl_src: false
+pg_ssl_key_file: ""
+pg_ssl_cert_file: ""
+pg_ssl_ca_file: ""
+pg_ssl_crl_file: ""
+
+pass_dir: "~/.pgpassfile"
+
+enable_core_dump: false
+
+use_replication_slots: true
+
+pg_database: "postgres"
+
+synchronous_standby_names: ""
+standby_quorum_type: "any"
+
+primary_private_ip: ""
+primary_public_ip: ""
+primary_host_name: ""
+standby_names: []
+pg_allow_ip_addresses: []
+standby_physical_slots: []
+upstream_public_ip: ""
+upstream_hostname: ""

@@ -11,4 +11,4 @@
 # Entry point of the setup_repo role
 - name: Include the setup_repo.yml
   ansible.builtin.include_tasks: setup_repo.yml
-  when: "'setup_repo' in lookup('hypersql_devops.postgres.supported_roles', wantlist=True)"
+  when: "'setup_repo' in lookup('tmax_opensql.postgres.supported_roles', wantlist=True)"

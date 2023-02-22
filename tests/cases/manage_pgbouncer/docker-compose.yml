@@ -6,9 +6,9 @@ services:
       context: ../../docker
       dockerfile: Dockerfile.ansible-tester
     environment:
-      - HYPERSQL_PG_TYPE
-      - HYPERSQL_PG_VERSION
-      - HYPERSQL_OS_TYPE
+      - OPENSQL_PG_TYPE
+      - OPENSQL_PG_VERSION
+      - OPENSQL_OS_TYPE
       - CASE_NAME
     volumes:
       - ../..:/workspace

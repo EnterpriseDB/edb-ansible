@@ -44,8 +44,8 @@
     url: "{{ item.key }}"
     state: present
   become: true
-  loop: "{{ apt_additional_repo_keys }}"
-  when: apt_additional_repo_keys | length > 0
+  loop: "{{ apt_additional_keys }}"
+  when: apt_additional_keys | length > 0
 
 - name: Add additional Debian repositories
   ansible.builtin.apt_repository:

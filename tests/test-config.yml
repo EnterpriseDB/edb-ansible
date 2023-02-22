@@ -1,7 +1,6 @@
 ---
 available_pg_types:
   - PG
-  - HyperSQL
 available_pg_versions:
   - 14.0
   - 14.1
@@ -23,6 +22,7 @@ available_roles:
   - install_dbserver
   - manage_dbserver
   - manage_extension
+  - manage_pgbouncer
   - manage_pgpool2
   - setup_barman
   - setup_barmanserver

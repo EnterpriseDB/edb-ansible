@@ -18,3 +18,60 @@ pgpool2_ssl_dir: "/etc/pgpool-II/ssl"
 pgpool2_bin_path: "/usr/bin"
 
 pgpool2_node_id_file: "/etc/pgpool-II/pgpool_node_id"
+
+pgpool2_listen_addresses: '*'
+pgpool2_pcp_port: 9898
+pgpool2_wd_port: 9000
+pgpool2_wd_heartbeat_port: 9694
+
+# Default user to login from pgpool
+pg_pgpool_database: "postgres"
+pg_pgpool_user: "pgpool"
+pg_pgpool_user_password: ""
+input_password: ""
+
+# pcp admin user
+pcp_admin_user: "pcpadmin"
+pcp_admin_user_password: ""
+
+# Postgres user that pgpool2 will use to check Postgres nodes roles in load
+# balance mode
+pgpool2_sr_check_user: "pgpool2"
+# If empty or not defined, a random password will be generated
+pgpool2_sr_check_password: ""
+
+# health check mdoe
+pgpool2_health_check_user: "pgpool2"
+# If empty or not defined, a random password will be generated
+pgpool2_health_check_password: ""
+
+pgpool2_user_map: []
+
+pgpool2_ssl_csr_dn:
+  CN: "pgpool-server.fqdn"
+  O: ""
+  OU: ""
+  L: ""
+  ST: ""
+  C: ""
+  EMAIL: "example@mail.com"
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RHEL7
+  - RHEL8
+
+supported_pg_version:
+  - 14.0
+  - 14.1
+  - 14.2
+  - 14.3
+  - 14.4
+  - 14.5
+  - 14.6
+  - 14.6
+  - 14.7
+
+supported_pgpool2_version:
+  - 4.3
