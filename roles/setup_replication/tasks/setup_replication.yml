@@ -52,7 +52,7 @@
 
 - name: Prepare synchronous_standby_names
   set_fact:
-    _synchronous_standbys: "{{ _synchronous_standbys|default([]) + [ node.inventory_hostname ] }}"
+    _synchronous_standbys: "{{ _synchronous_standbys | default([]) + [node.inventory_hostname] }}"
   loop: "{{ pg_cluster_nodes }}"
   loop_control:
     loop_var: node

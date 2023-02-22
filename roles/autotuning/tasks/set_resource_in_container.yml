@@ -28,8 +28,8 @@
   ansible.builtin.set_fact:
     sys_memtotal_mb: "{{ _cgroup_memory_limit.stdout | int }}"
   when:
-    - _cgroup_memory_limit.stdout_lines | length > 0
     - _cgroup_memory_file.stat.exists
+    - _cgroup_memory_limit.stdout_lines | length > 0
   become: true
 
 # base: "cpu cores" of /proc/cpuinfo
@@ -38,12 +38,14 @@
     set -o pipefail && cat /proc/cpuinfo | grep "processor" | wc -l
   become: true
   register: _siblings_core
+  changed_when: _siblings_core.rc == 0
 
 # ansible_processor_nproc is number of vcpus available to the scheduler
 # https://docs.ansible.com/ansible/latest/porting_guides/porting_guide_2.10.html
 - name: Set the variable sys_nvcpus by cpu_set ratio
   set_fact:
-    sys_nvcpus: "{{ [sys_nvcpus | int * ( ansible_processor_nproc | int / _siblings_core.stdout | int ), 1] | max }}"
+    sys_nvcpus: "{{ [sys_nvcpus | int * (ansible_processor_nproc | int / _siblings_core.stdout | int), 1] | max }}"
+  when: _siblings_core is defined
 
 # https://kernel.googlesource.com/pub/scm/linux/kernel/git/glommer/memcg/+/cpu_stat/Documentation/cgroups/cpu.txt
 # docker's --cpus option is made by changing cpu.cfs_quota_us
@@ -57,17 +59,27 @@
   when: _cgroup_cpu_quota.stat.exists
 
 - name: Set the variable sys_nvcpus by CFS ratio
+  when:
+    - _cgroup_cpu_quota.stat.exists and _cgroup_cpu_period.stat.exists
+    - _cfs_quota is defined
+    - _cfs_quota.stdout != "-1"
   block:
     - name: Check CFS period
       ansible.builtin.command: >
         cat /sys/fs/cgroup/cpu/cpu.cfs_period_us
       become: true
       register: _cfs_period
+      changed_when: _cfs_period.rc == 0
     - name: Set the variable sys_nvcpus by CFS scheduler ratio
       ansible.builtin.set_fact:
-        sys_nvcpus: "{{ [( sys_nvcpus | float * _cfs_quota.stdout | float / _cfs_period.stdout | float ) | int, 1] | max }}"
-  when:
-    - _cfs_quota.stdout != "-1"
-    - _cgroup_cpu_quota.stat.exists and _cgroup_cpu_period.stat.exists
+        sys_nvcpus: "{{ [(sys_nvcpus | float * _cfs_quota.stdout | float / _cfs_period.stdout | float) | int, 1] | max }}"
+
+- name: Reset the restart_required
+  set_fact:
+    _cgroup_memory_file: ""
+    _cgroup_cpu_quota: ""
+    _cgroup_cpu_period: ""
+    _siblings_core: ""
+    _cfs_quota: ""
 
 # TODO : If ansible machine is local, It is needed caculate groups share weights

@@ -2,12 +2,12 @@
   "pg_owner": "opensql",
   "pg_group": "opensql",
   "pg_port": 5433,
-  
+
   "pg_data": "/opt/pgdata",
   "pg_wal": "/opt/pgwal",
   "pg_local_wal_archive_dir": "/opt/pgarchive",
   "pg_log": "/opt/pglog",
-  
+
   "pg_superuser": "test",
   "pg_superuser_passowrd": "passowrd",
 
@@ -18,7 +18,5 @@
       "name": "max_wal_size",
       "value": "1GB"
     }
-  ],
-
-  "ansible_module_running_in_container": false
+  ]
 }

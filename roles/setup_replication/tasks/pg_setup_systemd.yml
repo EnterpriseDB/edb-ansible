@@ -18,7 +18,7 @@
   when: ansible_module_running_in_container
   become: true
   become_user: "{{ pg_owner }}"
-  ignore_errors: true
+  failed_when: false
 
 - name: Copy global systemd unit file to /etc/systemd/system
   ansible.builtin.copy:

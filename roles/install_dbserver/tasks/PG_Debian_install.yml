@@ -7,7 +7,7 @@
       - python3-psycopg2
     state: present
   become: true
-  
+
 - name: Install Postgres
   package:
     name:

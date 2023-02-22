@@ -14,7 +14,7 @@
 
 - name: Union of values declared by libraries and users
   set_fact:
-    _libraries: "{{ _libraries | default([]) | union(line_item.value.split(',')|list) }}"
+    _libraries: "{{ _libraries | default([]) | union(line_item.value.split(',') | list) }}"
   when:
     - pg_shared_preload_libraries|length > 0
     - line_item.state|default('present') == 'present'
@@ -25,7 +25,7 @@
 
 - name: Subtract libraries from the value declared by the user
   set_fact:
-    _libraries: "{{ _libraries | default([]) | difference(line_item.value.split(',')|list) }}"
+    _libraries: "{{ _libraries | default([]) | difference(line_item.value.split(',') | list) }}"
   when:
     - pg_shared_preload_libraries|length > 0
     - line_item.state|default('present') == 'absent'
@@ -36,7 +36,7 @@
 
 - name: Set shared_preload_libraries line
   set_fact:
-    _libraries_line: "{{ _libraries_line|default('') }}{% if _libraries_line is defined  %}, {% endif %}{{ line_item }}"
+    _libraries_line: "{{ _libraries_line | default('') }}{% if _libraries_line is defined %}, {% endif %}{{ line_item }}"
   when:
     - pg_shared_preload_libraries|length > 0
     - _libraries|length > 0

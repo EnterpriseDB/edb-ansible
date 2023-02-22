@@ -2,7 +2,7 @@
 - name: Get upstream node info
   set_fact:
     upstream_inventory_hostname: "{{ node.inventory_hostname }}"
-    upstream_hostname: "{{ node.inventory_hostname if use_hostname|bool else '' }}"
+    upstream_hostname: "{{ node.inventory_hostname if use_hostname | bool else '' }}"
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
     - node.private_ip == hostvars[inventory_hostname].upstream_node_private_ip

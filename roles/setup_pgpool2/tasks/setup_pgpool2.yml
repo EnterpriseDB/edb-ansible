@@ -105,14 +105,14 @@
 
 - name: Build the list of pgpool2 IPs
   set_fact:
-    _pgpool2_ip_list: "{{ _pgpool2_ip_list + [ server.private_ip ] }}"
+    _pgpool2_ip_list: "{{ _pgpool2_ip_list + [server.private_ip] }}"
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
     loop_var: server
 
 - name: Build the list of pgpool2 nodes when not use_hostname
   set_fact:
-    _pgpool2_node_list: "{{ _pgpool2_node_list + [ server.private_ip ] }}"
+    _pgpool2_node_list: "{{ _pgpool2_node_list + [server.private_ip] }}"
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
     loop_var: server
@@ -121,7 +121,7 @@
 
 - name: Build the list of pgpool2 nodes when use_hostname
   set_fact:
-    _pgpool2_node_list: "{{ _pgpool2_node_list + [ server.private_ip ] }}"
+    _pgpool2_node_list: "{{ _pgpool2_node_list + [server.private_ip] }}"
   loop: "{{ _pgpool2_nodes }}"
   loop_control:
     loop_var: server

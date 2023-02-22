@@ -1,12 +1,8 @@
 ---
-- name: Set the os variable
-  set_fact:
-    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
-
-- name: Check support for Operating System
-  fail:
-    msg: "Operating System = {{ os }} not supported."
-  when: os not in supported_os
+- name: Check Operating System,  PostgreSQL Type, PostgreSQL Version
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: check_version.yml
 
 - name: Get facts on current container
   community.docker.current_container_facts:

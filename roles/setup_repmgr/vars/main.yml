@@ -6,7 +6,7 @@ ssh_port: 22
 
 pg_unix_socket_directories:
   - "/var/run/postgresql"
-  
+
 supported_os:
   - CentOS7
   - CentOS8
