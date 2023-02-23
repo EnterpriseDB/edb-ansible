@@ -1,7 +1,7 @@
 ---
 - name: Ensure cgroup memory file
   ansible.builtin.stat:
-    path: cat /sys/fs/cgroup/memory/memory.limit_in_bytes
+    path: /sys/fs/cgroup/memory/memory.limit_in_bytes
   register: _cgroup_memory_file
 
 - name: Ensure cgroup cfs quota file
@@ -40,11 +40,9 @@
   register: _siblings_core
   changed_when: _siblings_core.rc == 0
 
-# ansible_processor_nproc is number of vcpus available to the scheduler
-# https://docs.ansible.com/ansible/latest/porting_guides/porting_guide_2.10.html
 - name: Set the variable sys_nvcpus by cpu_set ratio
   set_fact:
-    sys_nvcpus: "{{ [sys_nvcpus | int * (ansible_processor_nproc | int / _siblings_core.stdout | int), 1] | max }}"
+    sys_nvcpus: "{{ [sys_nvcpus | int * (ansible_processor_vcpus | int / _siblings_core.stdout | int), 1] | max }}"
   when: _siblings_core is defined
 
 # https://kernel.googlesource.com/pub/scm/linux/kernel/git/glommer/memcg/+/cpu_stat/Documentation/cgroups/cpu.txt

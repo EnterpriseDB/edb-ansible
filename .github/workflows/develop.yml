@@ -1,7 +1,7 @@
 name: Develop branch action
 
-on:                                                                              
-  workflow_dispatch:                                                             
+on:
+  workflow_dispatch:
   push:
     paths:
       - "VERSION"
@@ -11,11 +11,11 @@ on:
 jobs:
   pull_request_main:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+
       - name: Pull Request
         run: >
           gh pr create -B master -H develop
