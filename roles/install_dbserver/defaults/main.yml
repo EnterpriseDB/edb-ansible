@@ -9,7 +9,7 @@ pg_owner: "{{ 'enterprisedb' if pg_type == 'EPAS' else 'postgres' }}"
 enable_core_dump: false
 core_dump_directory: "/var/coredumps"
 
-install_edb_postgres_tuner: true
+install_edb_postgres_tuner: false
 edb_tuner_package: "edb-{{ 'as' if pg_type == 'EPAS' else 'pg' }}\
                    {{ pg_version }}-postgres-tuner{{ '-' if ansible_os_family == 'Debian' }}{{ pg_tuner_version }}"
 install_bdr_packages: false
