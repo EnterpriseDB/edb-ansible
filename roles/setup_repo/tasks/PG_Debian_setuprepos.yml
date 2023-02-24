@@ -56,6 +56,7 @@
     update_cache: true
     state: present
   become: true
+  when: enable_edb_repo|bool or enable_pgdg_repo|bool
 
 - name: Add EDB Debian 9 repo
   ansible.builtin.apt_repository:
@@ -70,7 +71,9 @@
   ansible.builtin.apt_key:
     url: "{{ pg_deb_keys }}"
     state: present
-  when: pg_type == 'PG'
+  when:
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
   become: true
 
 - name: Add PG Debian repo
@@ -78,7 +81,9 @@
     repo: "{{ pg_deb_repo_url }}"
     state: present
     filename: "pgdg"
-  when: pg_type == 'PG'
+  when:
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
   become: true
 
 - name: Add additional Debian repositories
