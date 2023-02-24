@@ -21,6 +21,7 @@
   when:
     - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
+    - enable_pgdg_repo|bool
   become: true
 
 - name: Download EPEL GPG key for EL8
@@ -29,13 +30,16 @@
     state: present
   when:
     - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
   become: true
 
 - name: Install EPEL repo for EL7
   ansible.builtin.package:
     name: "{{ epel_repo_7 }}"
     state: present
-  when: ansible_distribution_major_version == '7'
+  when:
+    - ansible_distribution_major_version == '7'
+    - enable_epel_repo|bool
   become: true
 
 - name: Install PG repo for EL7
@@ -46,25 +50,32 @@
   when:
     - ansible_distribution_major_version == '7'
     - pg_type == 'PG'
+    - enable_pgdg_repo|bool
 
 - name: Install dnf-plugins-core for EL8
   ansible.builtin.package:
     name: dnf-plugins-core
     state: present
   become: true
-  when: ansible_distribution_major_version == '8'
+  when:
+    - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
 
 - name: Enable powertools for EL8
   ansible.builtin.command: >
     dnf config-manager --set-enabled powertools
   become: true
-  when: ansible_distribution_major_version == '8'
+  when:
+    - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
 
 - name: Install EPEL repo for EL8
   ansible.builtin.package:
     name: "{{ epel_repo_8 }}"
     state: present
-  when: ansible_distribution_major_version == '8'
+  when:
+    - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
   become: true
 
 - name: Install PG repo for EL8
@@ -75,6 +86,7 @@
   when:
     - ansible_distribution_major_version == '8'
     - pg_type == 'PG'
+    - enable_pgdg_repo|bool
 
 - name: Install EPAS repo for RedHat
   ansible.builtin.package:
