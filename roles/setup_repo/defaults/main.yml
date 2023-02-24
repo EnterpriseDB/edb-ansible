@@ -13,6 +13,11 @@ repo_password: ""
 tpa_subscription_token: ""
 install_bdr_packages: false
 
+# set to false only if you are using local repositories and do not need the PGDG and/or EPEL repositories.
+# setting to false will result in failure to download required packages if access to local repos is not available
+enable_pgdg_repo: true
+enable_epel_repo: true
+
 # EDB RPM Repo
 edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
 edb_gpg_key_8: "https://yum.enterprisedb.com/ENTERPRISEDB-GPG-KEY"
@@ -72,3 +77,4 @@ supported_pg_version:
   - 12
   - 13
   - 14
+  - 15
