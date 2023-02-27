@@ -1,0 +1,96 @@
+---
+# test repuser was created correctly
+- name: Run postgres query to check if repuser was created correctly
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = 'repuser' and userepl = 't'"
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  delegate_to: "{{ primary_inventory_hostname }}"
+  register: repuser_query_result
+
+- name: Check if repuser was created correctly
+  ansible.builtin.assert:
+    that:
+      - repuser_query_result.query_result[0]['usename'] == 'repuser'
+      - repuser_query_result.query_result[0]['userepl']|bool
+    fail_msg: "repuser was not succesfully created"
+    success_msg: "repuser was succesfully created"
+  run_once: true
+
+# test if replication slots were created correctly
+# get number of standby nodes in cluster
+- name: Get the standby information
+  ansible.builtin.set_fact:
+    standby_node_info: "{{ pg_cluster_nodes | selectattr('node_type', 'equalto', 'standby') | default([]) | list }}"
+
+- name: Run postgres query to check if replication slots were created correctly
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_replication_slots"
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  delegate_to: "{{ primary_inventory_hostname }}"
+  register: repslots_query_result
+
+- name: Check if repuser was created correctly
+  ansible.builtin.assert:
+    that:
+      - repslots_query_result.query_result|length == standby_node_info|length
+    fail_msg: "Replication did not create replication slots"
+    success_msg: "Replication created replication slots successfully"
+  run_once: true
+
+# test if pg_stat_replication gives correct results
+- name: Run postgres query to check if replication slots were created correctly
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select application_name from pg_stat_replication"
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  delegate_to: "{{ primary_inventory_hostname }}"
+  register: pg_stat_query_result
+
+- name: Check if repuser was created correctly
+  ansible.builtin.assert:
+    that:
+      - pg_stat_query_result.query_result|length == standby_node_info|length
+    fail_msg: "Replication did not create replication slots"
+    success_msg: "Replication created replication slots successfully"
+  run_once: true
+
+# test if replication was successful on standby's
+- name: Run postgres query to check if replication slots were created correctly
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select slot_name from pg_stat_wal_receiver"
+  become_user: "{{ pg_owner }}"
+  when: "'standby' in group_names"
+  register: rep_slots_query_result
+
+- name: Check if replication slots were created correctly
+  ansible.builtin.assert:
+    that:
+      - rep_slots_query_result.query_result[0]['slot_name'] == inventory_hostname
+    fail_msg: "Replication was not successful on standby(s)"
+    success_msg: "Replication was successful on standby(s)"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    repuser_query_result: null
+    repslots_query_result: null
+    pg_stat_query_result: null
+    rep_slots_query_result: null
+    standby_node_info: null

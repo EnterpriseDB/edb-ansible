@@ -1,0 +1,110 @@
+---
+- name: Stat to pg_data
+  ansible.builtin.stat:
+    path: "{{ pg_data }}"
+  register: data_check
+
+- name: Stat to pg_data/pg_wal
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/pg_wal"
+  register: data_wal_check
+
+- name: Stat to pg_wal
+  ansible.builtin.stat:
+    path: "{{ pg_wal }}"
+  register: wal_check
+
+- name: Check that pg_data was configured correctly
+  ansible.builtin.assert:
+    that:
+      - data_check.stat['gr_name'] == pg_group
+      - data_check.stat['pw_name'] == pg_owner
+      - data_check.stat['isdir']|bool
+    fail_msg: "The directory {{ pg_data }} is not configured correctly."
+    success_msg: "The directory {{ pg_data }} is configured correctly."
+
+- name: Check that pg_wal was configured correctly
+  ansible.builtin.assert:
+    that:
+      - wal_check.stat['gr_name'] == pg_group
+      - wal_check.stat['pw_name'] == pg_owner
+      - wal_check.stat['isdir']|bool
+      - data_wal_check.stat['islnk']|bool
+      - data_wal_check.stat['lnk_source'] == pg_wal
+    fail_msg: "The directory {{ pg_wal }} is not configured correctly."
+    success_msg: "The directory {{ pg_wal }} is configured correctly."
+
+# check if service pg_service is running
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Set full service name for pg_service
+  ansible.builtin.set_fact:
+    check_pg_service: "{{ pg_service }}.service"
+
+- name: Check if service pg_service is running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[check_pg_service]['state'] == 'running'
+    fail_msg: "The service {{ pg_service }} is not running."
+    success_msg: "The service {{ pg_service }} is running."
+
+- name: Check if service pg_service is running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[check_pg_service]['status'] == 'enabled'
+    fail_msg: "The service {{ pg_service }} is not enabled."
+    success_msg: "The service {{ pg_service }} is enabled."
+
+# check if sockets are listening
+- name: Get stat info for pg_unix_socket_directories
+  ansible.builtin.stat:
+    path: "{{ pg_unix_socket_directories[0] }}/.s.PGSQL.{{ pg_port }}"
+  register: unix_stat
+
+- name: Check that port is listening
+  ansible.builtin.wait_for:
+    port: "{{ pg_port }}"
+    state: started
+    msg: "Port {{ pg_port }} is not listening."
+
+- name: Check if service pg_service is running
+  ansible.builtin.assert:
+    that:
+      - unix_stat.stat['issock']|bool
+    fail_msg: "The socket {{ pg_unix_socket_directories[0] }} is not enabled."
+    success_msg: "The socket {{ pg_unix_socket_directories[0] }} is enabled."
+
+# check if pg_settings data_directory is linked to pg_data
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "SELECT setting FROM pg_settings WHERE name = 'data_directory'"
+  become_user: "{{ pg_owner }}"
+  register: query_result
+
+- name: Get stat info for data_directory
+  ansible.builtin.stat:
+    path: "{{ query_result.query_result[0].setting }}"
+  register: data_dir_stat
+
+- name: Check that the data_directory result is linked to pg_data
+  ansible.builtin.assert:
+    that:
+      - data_dir_stat.stat['islnk']|bool
+      - data_dir_stat.stat['lnk_target'] == pg_data
+    fail_msg: "Postgres data_directory is not linked to {{ pg_data }}"
+    success_msg: "Postgres data_directory is linked to {{ pg_data }}"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    data_check: null
+    data_wal_check: null
+    wal_check: null
+    check_pg_service: null
+    data_dir_stat: null
+    query_result: null
+    unix_stat: null

@@ -34,6 +34,7 @@
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
+    - not validate_only|bool
   become: true
 
 - name: Force cleanup based on force_initdb
@@ -41,15 +42,19 @@
   when:
     - force_initdb is defined
     - force_initdb
+    - not validate_only|bool
 
 - name: Update /etc/hosts based on use_hostname
   ansible.builtin.import_tasks: linux_update_etc_hosts.yml
   when:
     - use_hostname|bool
     - update_etc_file|bool
+    - not validate_only|bool
   become: true
 
 - name: Check and configure the node as primary or pemserver
+  when:
+    - not validate_only|bool
   become: true
   block:
     - name: Create require directories
@@ -64,6 +69,7 @@
 - name: Configure ssl based on pg_ssl parameter
   when:
     - pg_ssl
+    - not validate_only|bool
   become: true
   block:
     - name: Send pg_ssl_file if defined
@@ -72,3 +78,8 @@
       ansible.builtin.import_tasks: pg_ssl_check.yml
     - name: Configure SSL if not exists
       ansible.builtin.import_tasks: pg_ssl_config.yml
+
+- name: Import validate tasks
+  ansible.builtin.import_tasks: validate_init_dbserver.yml
+  when:
+    - validate_only|bool or use_validation|bool

@@ -52,3 +52,8 @@
   when:
     - ansible_os_family == 'Debian'
     - pg_type == 'PG'
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    yum_repolist: null
+    apt_sources: null

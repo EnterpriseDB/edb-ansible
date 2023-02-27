@@ -171,3 +171,7 @@
   loop: "{{ package_list }}"
   loop_control:
     loop_var: package
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    package_list: null

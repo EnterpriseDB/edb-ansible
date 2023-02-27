@@ -18,7 +18,7 @@ def test_setup_replication_user():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
@@ -37,7 +37,7 @@ def test_setup_replication_slots():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
     
     with host.sudo(pg_user):
