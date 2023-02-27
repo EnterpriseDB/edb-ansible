@@ -2,6 +2,7 @@
 pg_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/edb-as/{{ pg_version }}/{{ pg_instance_name }}"
 pg_log: "/var/log/edb"
+pg_deb_drop_cluster: "/usr/bin/epas_dropcluster"
 pg_wal: ""
 pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
 
