@@ -2,6 +2,7 @@
 pg_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
 pg_default_data: "/var/lib/postgresql/{{ pg_version }}/{{ pg_instance_name }}"
 pg_log: "/var/log/postgres"
+pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 pg_wal: ""
 pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
 
