@@ -35,7 +35,7 @@
   ansible.builtin.set_fact:
     package_list: >-
       {{ package_list | default([]) + [
-        'edb-as' + pg_version + '-server' | string, 'edb-as' + pg_version + '-server-core' | string, 
+        'edb-as' + pg_version + '-server' | string, 'edb-as' + pg_version + '-server-core' | string,
         'edb-as' + pg_version + '-server-contrib' | string, 'edb-as' + pg_version + '-server-libs' | string,
         'edb-as' + pg_version + '-server-client' | string, 'edb-as' + pg_version + '-server-sslutils' | string,
         'edb-as' + pg_version + '-server-indexadvisor' | string, 'edb-as' + pg_version + '-server-sqlprofiler' | string,
@@ -123,7 +123,7 @@
   ansible.builtin.set_fact:
     package_list: >-
       {{ package_list | default([]) + [
-        'python3-pip', 'python3-psycopg2', 'edb-as' + pg_version + '-server' | string, 
+        'python3-pip', 'python3-psycopg2', 'edb-as' + pg_version + '-server' | string,
         'edb-as' + pg_version + '-server-core' | string, 'edb-as' + pg_version + '-server-client' | string,
         'edb-as' + pg_version + '-server-sslutils' | string, 'edb-as' + pg_version + '-server-indexadvisor' | string,
         'edb-as' + pg_version + '-server-sqlprofiler' | string, 'edb-as' + pg_version + '-server-sqlprotect' | string
