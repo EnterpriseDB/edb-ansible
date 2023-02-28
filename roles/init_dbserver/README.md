@@ -83,6 +83,25 @@ Example:
 ```yaml
 pg_local_wal_archive_dir: "/var/lib/pgsql/14/archive"
 ```
+### pg_owner_id
+
+Using this parameters user can change the uid of postgresql's systemuser.
+
+Example:
+
+```yaml
+pg_owner_id: 10001
+```
+
+### pg_group_id
+
+Using this parameters user can change the uid of postgresql's systemuser.
+
+Example:
+
+```yaml
+pg_group_id: 10002
+```
 
 ### `pg_locale`
 

@@ -16,6 +16,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
+    recurse: true
   become: true
 
 - name: Ensure postgres default data directory exists
@@ -34,6 +35,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
+    recurse: true
   become: true
   when: pg_log|length > 0 and pg_data not in pg_log
 
@@ -44,6 +46,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
+    recurse: true
   become: true
   when: pg_wal|length > 0 and pg_data not in pg_wal
 
@@ -54,6 +57,7 @@
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
+    recurse: true
   become: true
   when: pg_local_wal_archive_dir|length > 0
 
@@ -64,6 +68,7 @@
     group: "{{ pg_group }}"
     mode: 02775
     state: directory
+    recurse: true
   with_items: "{{ pg_unix_socket_directories }}"
   loop_control:
     loop_var: line_item

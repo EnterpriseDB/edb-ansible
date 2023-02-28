@@ -2,7 +2,7 @@
 
 [![Version on Galaxy](https://img.shields.io/badge/dynamic/json?style=flat&label=ansible-galalxy&prefix=v&url=https://galaxy.ansible.com/api/v2/collections/tmax_opensql/postgres/&query=latest_version.version)](https://galaxy.ansible.com/tmax_opensql/postgres)
 
-This repository is for hosting an Ansible Galaxy Collection **hypersql_devops.postgres** which helps users easily deploy Tmax OpenSQL package for PostgreSQL.
+This repository is for hosting an Ansible Galaxy Collection **tmax_opensql.postgres** which helps users easily deploy Tmax OpenSQL package for PostgreSQL.
 
 _The ansible playbook must be executed under an account that has full
 privileges._

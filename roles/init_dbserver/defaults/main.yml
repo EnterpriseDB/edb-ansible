@@ -10,6 +10,8 @@ pg_data: "{{ pg_user_home + '/' + pg_major_version + '/data' if ansible_os_famil
 # postgres user(os)
 pg_owner: "postgres"
 pg_group: "postgres"
+pg_owner_id: "{{ omit }}"
+pg_group_id: "{{ omit }}"
 
 # postgres port
 pg_port: 5432
