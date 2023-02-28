@@ -15,10 +15,11 @@
     create_home: true
   become: true
 
-- name: Install packages required for installing HammerDB
+- name: Install packages required for installing and running HammerDB
   ansible.builtin.package:
     name:
       - curl
+      - libpq
   become: true
   failed_when: false
 
