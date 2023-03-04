@@ -91,3 +91,23 @@
 - name: Drop a Database
   ansible.builtin.include_tasks: drop_db.yml
   when: '"drop-db" in cnp_task'
+
+- name: Get Cluster SuperUser Secret
+  ansible.builtin.include_tasks: get_superuser_secret.yml
+  when: '"get-superuser-secret" in cnp_task'
+
+- name: Add Service to Expose Postgres Port Externally
+  ansible.builtin.include_tasks: expose_postgres_externally.yml
+  when: '"add-postgres-expose-service" in cnp_task'
+
+- name: Drop Service to Expose Postgres Port Externally
+  ansible.builtin.include_tasks: drop_expose_postgres_externally.yml
+  when: '"drop-postgres-expose-service" in cnp_task'
+
+- name: Add Service to Expose Grafana Deployment Externally
+  ansible.builtin.include_tasks: expose_grafana_externally.yml
+  when: '"add-grafana-expose-service" in cnp_task'
+
+- name: Drop Service to Expose Grafana Port Externally
+  ansible.builtin.include_tasks: drop_expose_grafana_externally.yml
+  when: '"drop-grafana-expose-service" in cnp_task'
