@@ -1,0 +1,10 @@
+# Example of a Basic PostgreSQL cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnp-sandbox
+spec:
+  instances: 3
+
+  storage:
+    size: 1Gi

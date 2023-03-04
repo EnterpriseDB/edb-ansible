@@ -38,6 +38,24 @@ manifest_filename: configure_memory.yml
 scale_replicas_to: 5
 # Scale Manifest filename
 scale_manifest_filename: roles/manage_cnp/files/cluster-example.yml
+# CloudNativePG SuperUser Name
+cluster_superuser_name: cnp-sandbox-superuser
+# CloudNativePG Read Write Service Name
+cluster_rw_service_name: cnp-sandbox-rw
+# CloudNativePG External Ingress Service Name
+cluster_external_ingress_service_name: cnp-sandbox-external-ingress
+# Cluster External Source Port
+cluster_external_ingress_source_port: 5432
+# Cluster External Target Port
+cluster_external_ingress_target_port: 5432
+# CloudNativePG Grafana Deployment Name
+cluster_grafana_deployment_name: cnpg-sandbox-grafana
+# Grafana External Ingress Service Name
+cluster_grafana_external_ingress_service_name: grafana-external-ingress
+# Cluster Grafana External Source Port
+cluster_grafana_external_ingress_source_port: 3000
+# Cluster Grafana External Target Port
+cluster_grafana_external_ingress_target_port: 3000
 # Supported Tasks
 supported_tasks:
   - add-db
@@ -52,3 +70,8 @@ supported_tasks:
   - drop-role
   - drop-schema
   - drop-db
+  - get-superuser-secret
+  - add-postgres-expose-service
+  - drop-postgres-expose-service
+  - add-grafana-expose-service
+  - drop-grafana-expose-service
