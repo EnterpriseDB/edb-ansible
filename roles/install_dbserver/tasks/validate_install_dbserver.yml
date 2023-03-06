@@ -29,7 +29,8 @@
       ] }}
   when:
     - pg_type == 'PG'
-    - os in ['Rocky8', 'AlmaLinux8']
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
 
 - name: Set package list for EPAS RedHat
   ansible.builtin.set_fact:
@@ -53,7 +54,8 @@
       ] }}
   when:
     - pg_type == 'EPAS'
-    - os in ['Centos7', 'OracleLinux7']
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
 
 - name: Add EL8 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:
@@ -63,7 +65,8 @@
       ] }}
   when:
     - pg_type == 'EPAS'
-    - os in ['Rocky8', 'AlmaLinux8']
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
 
 - name: Add pg_version > 10 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:

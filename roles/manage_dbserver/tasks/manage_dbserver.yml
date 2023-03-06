@@ -1,5 +1,4 @@
 ---
-
 - name: Reference Postgres variables
   ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
@@ -36,3 +35,8 @@
 
 - name: Include .psqlrc file creation task
   ansible.builtin.import_tasks: manage_psqlrc.yml
+
+- name: Include validation tasks
+  ansible.builtin.import_tasks: validate_manage_dbserver.yml
+  when:
+    - validate_only|bool or use_validation|bool

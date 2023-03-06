@@ -39,7 +39,7 @@
   delegate_to: "{{ primary_inventory_hostname }}"
   register: repslots_query_result
 
-- name: Check if repuser was created correctly
+- name: Check if replication slots were created correctly
   ansible.builtin.assert:
     that:
       - repslots_query_result.query_result|length == standby_node_info|length
@@ -48,7 +48,7 @@
   run_once: true
 
 # test if pg_stat_replication gives correct results
-- name: Run postgres query to check if replication slots were created correctly
+- name: Run postgres query to check if pg_stat_replication application names were created correctly
   community.postgresql.postgresql_query:
     db: "{{ pg_database }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -60,7 +60,7 @@
   delegate_to: "{{ primary_inventory_hostname }}"
   register: pg_stat_query_result
 
-- name: Check if repuser was created correctly
+- name: Check if pg_stat_replication shows replication slots correctly
   ansible.builtin.assert:
     that:
       - pg_stat_query_result.query_result|length == standby_node_info|length
@@ -69,7 +69,7 @@
   run_once: true
 
 # test if replication was successful on standby's
-- name: Run postgres query to check if replication slots were created correctly
+- name: Run postgres query to check if replication was successful on standby(s)
   community.postgresql.postgresql_query:
     db: "{{ pg_database }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
@@ -80,7 +80,7 @@
   when: "'standby' in group_names"
   register: rep_slots_query_result
 
-- name: Check if replication slots were created correctly
+- name: Check if replication was successful on standby(s)
   ansible.builtin.assert:
     that:
       - rep_slots_query_result.query_result[0]['slot_name'] == inventory_hostname
