@@ -1,0 +1,7 @@
+---
+- name: Restart a Cluster Pod
+  shell: kubectl cnpg restart -n {{ cnpg_namespace }} {{ cluster_name }} {{ pod_name_to_restart }}
+  register: restartpod
+
+- name: Display the results of the pod restart
+  debug: var=restartpod.stdout_lines

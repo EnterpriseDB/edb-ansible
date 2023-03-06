@@ -1,3 +1,0 @@
----
-- name: Drop Cluster Postgres External Service
-  shell: kubectl delete service -n default {{ cluster_external_ingress_service_name }}

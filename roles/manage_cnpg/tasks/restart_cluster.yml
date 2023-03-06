@@ -1,0 +1,7 @@
+---
+- name: Restart a Cluster
+  shell: kubectl cnpg restart -n {{ cnpg_namespace }} {{ cluster_name }}
+  register: restartcluster
+
+- name: Display the results of the cluster restart
+  debug: var=restartcluster.stdout_lines

@@ -1,0 +1,7 @@
+---
+- name: Set Cluster to Maintenance Mode in a specific namespace
+  shell: kubectl cnpg maintenance -n {{ cnpg_namespace }} set
+  register: setmaintenancemode 
+
+- name: Display the results of the setting the cluster to maintenance mode
+  debug: var=setmaintenancemode.stdout_lines
