@@ -1,0 +1,3 @@
+---
+- name: Expose Grafana Deployment as an External Service
+  shell: kubectl expose -n {{ cnpg_namespace }} deploy/{{ cluster_grafana_deployment_name }} --target-port={{ cluster_grafana_external_ingress_target_port }} --port={{ cluster_grafana_external_ingress_source_port }} --name {{ cluster_grafana_external_ingress_service_name }} --type LoadBalancer

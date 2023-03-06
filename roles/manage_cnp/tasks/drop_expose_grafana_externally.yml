@@ -1,3 +1,0 @@
----
-- name: Drop Grafana External Service
-  shell: kubectl delete service -n default {{ cluster_grafana_external_ingress_service_name }}

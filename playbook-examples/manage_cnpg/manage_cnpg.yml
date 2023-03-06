@@ -25,19 +25,21 @@
         # scale-replicas
         # get-superuser-secret, add-postgres-expose-service, drop-postgres-expose-service
         # add-grafana-expose-service, drop-grafana-expose-service
-        cnp_task: 
+        # promote-pod
+        cnpg_task: 
         #- drop-schema
         #- drop-role
         #- drop-schema
         #- add-db
         #- add-role
         #- drop-db
-        #- scale-replicas
+        - scale-replicas
         - get-superuser-secret
         #- add-postgres-expose-service
         #- add-grafana-expose-service
-        - drop-postgres-expose-service
-        - drop-grafana-expose-service
+        #- drop-postgres-expose-service
+        #- drop-grafana-expose-service
+        - promote-pod
         # CloudNativePG Namespace
         cnpg_namespace: default
         # CloudNativePG Cluster Name
@@ -56,10 +58,10 @@
         # Manifest Filename
         manifest_filename: configure_memory.yml
         # Scale Replicas Number
-        scale_replicas_to: 3
+        scale_replicas_to: 5
         # Scale Manifest Filename
-        #scale_manifest_filename: roles/manage_cnp/files/cluster-example.yml
-        scale_manifest_filename: roles/manage_cnp/files/cnp-sandbox.yml
+        #scale_manifest_filename: roles/manage_cnpg/files/cluster-example.yml
+        scale_manifest_filename: roles/manage_cnpg/files/cnp-sandbox.yml
         # Cluster SuperUser Name
         cluster_superuser_name: cnp-sandbox-superuser
         # Cluster Read Write Service Name
@@ -78,7 +80,9 @@
         cluster_grafana_external_ingress_source_port: 3000
         # Cluster Grafana External Target Port
         cluster_grafana_external_ingress_target_port: 3000
+        # Pod to promote
+        pod_to_promote: 1
 
   roles:
-    - role: manage_cnp
-      when: cnp_task is defined
+    - role: manage_cnpg
+      when: cnpg_task is defined

@@ -1,0 +1,3 @@
+---
+- name: Apply the scale manifest
+  shell: kubectl scale -n {{ cnpg_namespace }} --replicas="{{ scale_replicas_to }}" -f "{{ scale_manifest_filename }}"

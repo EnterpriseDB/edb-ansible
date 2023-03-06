@@ -1,5 +1,5 @@
 ---
-# defaults file for manage_cnp
+# defaults file for manage_cnpg
 # configuration variable for which
 # task for execute within role
 # Variables
@@ -37,7 +37,7 @@ manifest_filename: configure_memory.yml
 # Scale Replicas Number
 scale_replicas_to: 5
 # Scale Manifest filename
-scale_manifest_filename: roles/manage_cnp/files/cluster-example.yml
+scale_manifest_filename: roles/manage_cnpg/files/cluster-example.yml
 # CloudNativePG SuperUser Name
 cluster_superuser_name: cnp-sandbox-superuser
 # CloudNativePG Read Write Service Name
@@ -56,6 +56,10 @@ cluster_grafana_external_ingress_service_name: grafana-external-ingress
 cluster_grafana_external_ingress_source_port: 3000
 # Cluster Grafana External Target Port
 cluster_grafana_external_ingress_target_port: 3000
+# Pod to promote
+pod_to_promote: 1
+# CloudNativePG Pod Name to Restart
+pod_name_to_restart: cluster-example-2
 # Supported Tasks
 supported_tasks:
   - add-db
@@ -75,3 +79,10 @@ supported_tasks:
   - drop-postgres-expose-service
   - add-grafana-expose-service
   - drop-grafana-expose-service
+  - promote-pod
+  - reload-cluster
+  - restart-cluster
+  - restart-pod
+  - maintenance-set
+  - maintenance-unset
+  - status-cluster

@@ -1,0 +1,7 @@
+---
+- name: Un-Set Cluster to Maintenance Mode in a specific namespace
+  shell: kubectl cnpg maintenance -n {{ cnpg_namespace }} unset
+  register: unsetmaintenancemode 
+
+- name: Display the results of the unsetting the cluster maintenance mode process
+  debug: var=unsetmaintenancemode.stdout_lines
