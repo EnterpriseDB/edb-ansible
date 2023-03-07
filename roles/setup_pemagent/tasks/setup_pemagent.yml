@@ -22,12 +22,6 @@
   when: pg_version|int not in supported_pg_version
   no_log: "{{ disable_logging }}"
 
-- name: Check if Database Engine is currently supported
-  ansible.builtin.fail:
-    msg: "Database Engine = {{ pg_type }} {{ pg_version }} is not supported"
-  when: >
-    pg_type == 'EPAS' and pg_version|int == 15
-
 - name: Set the node_hostvars variable
   ansible.builtin.set_fact:
     node_hostvars: "{{ hostvars[inventory_hostname] }}"
