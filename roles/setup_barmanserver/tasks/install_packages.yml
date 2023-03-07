@@ -33,6 +33,8 @@
       - "{{ _python2_barman_package }}"
       - "{{ _barman_package }}"
       - "{{ _barman_cli_package }}"
+      - libselinux-python
+      - policycoreutils-python
     state: present
   when:
     - ansible_os_family == 'RedHat'
@@ -44,6 +46,8 @@
       - barman
       - barman-cli
       - barman-cli-cloud
+      - libselinux-python
+      - policycoreutils-python
     state: present
   when:
     - ansible_os_family == 'Debian'

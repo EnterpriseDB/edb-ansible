@@ -4,13 +4,13 @@
     hba_entries: >-
       [
         {
-          'users': 'barman',
+          'users': '{{ barman_pg_user }}',
           'databases': 'postgres',
           'contype': 'hostssl',
           'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
         },
         {
-          'users': 'barman',
+          'users': '{{ barman_pg_user }}',
           'databases': 'postgres',
           'contype': 'host',
           'source': '{{ hostvars[inventory_hostname].barman_server_private_ip | default("127.0.0.1") }}/32'
@@ -22,13 +22,13 @@
     hba_entries: >-
       {{ hba_entries }} + [
         {
-          'users': 'barman',
+          'users': '{{ barman_pg_user }}',
           'databases': 'replication',
           'contype': 'hostssl',
           'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
         },
         {
-          'users': 'barman',
+          'users': '{{ barman_pg_user }}',
           'databases': 'replication',
           'contype': 'host',
           'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
