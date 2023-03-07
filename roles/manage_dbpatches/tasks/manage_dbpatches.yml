@@ -9,12 +9,6 @@
     fail_msg: "Operating System = {{ os }} not supported."
     success_msg: "Operating System = {{ os }} is supported."
 
-- name: Check if Database Engine is currently supported
-  ansible.builtin.fail:
-    msg: "Database Engine = {{ pg_type }} {{ pg_version }} is not supported"
-  when: >
-    pg_type == 'EPAS' and pg_version|int == 15
-
 - name: Check supported versions for Database engine
   ansible.builtin.assert:
     that: pg_version|int in supported_pg_version
