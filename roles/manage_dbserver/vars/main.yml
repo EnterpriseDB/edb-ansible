@@ -14,3 +14,11 @@ psqlrc_group: "{{ pg_group }}"
 psqlrc_mode: "0600"
 psqlrc_content: |
   -- psql configuration
+
+multi_param_list:
+  - local_preload_libraries
+  - session_preload_libraries
+  - shared_preload_libraries
+  - listen_addresses
+  - unix_socket_directories
+  - synchronous_standby_names

@@ -1,4 +1,13 @@
 ---
+- name: Check required variables for this role
+  include_role:
+    name: common
+    tasks_from: check_required_variables
+  vars:
+    required_variables:
+      - pg_type
+      - pg_version
+
 # Entry point of the setup_barman role
 - name: Include the setup_barman.yml
   include_tasks: setup_barman.yml

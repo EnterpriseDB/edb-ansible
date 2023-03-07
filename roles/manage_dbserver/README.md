@@ -25,7 +25,6 @@ day tasks:
 ### `pg_postgres_conf_params`
 
 Using this parameters user can set the database parameters.
-This parameter cannot set name to "shared_preload_libraries". It must use 'pg_shared_preload_libraries'.
 
 Example:
 
@@ -35,18 +34,26 @@ pg_postgres_conf_params:
     value: "*"
 ```
 
-### `pg_shared_preload_libraries`
+### `pg_multi_params`
 
-With this parameter, added and deleted in the pg_shared_preload_libraries parameter.
+With this parameter, added and deleted in the "comma(,) seprated parameter".
+For supported multi parameters, refer to vars.
+
+- [roles/manage_dbserver/vars/main.yml](./vars/main.yml)
 
 Example:
 
 ```yaml
-pg_shared_preload_libraries:
-  - value: postgis
+pg_multi_params:
+  - name: "shared_preload_libraries"
+    value: "postgis"
     state: present
-  - value: pg_stat_statement
+  - name: "shared_preload_libraries"
+    value: "pg_stat_statement"
     state: absent
+    reset: true
+  - name: "unix_socket_directories"
+    value: "/opt/pgwal"
 ```
 
 ### `pg_hba_ip_addresses`

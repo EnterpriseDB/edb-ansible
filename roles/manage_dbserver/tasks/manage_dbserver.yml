@@ -11,8 +11,8 @@
       import_tasks: manage_pgpass.yml
     - name: Import manage_postgres_params task
       import_tasks: manage_postgres_params.yml
-    - name: Import manage_shared_preload_libraries task
-      import_tasks: manage_shared_preload_libraries.yml
+    - name: Import manage_multi_params task
+      import_tasks: manage_multi_params.yml
     - name: Import manage_slots task
       import_tasks: manage_slots.yml
     - name: Import manage_hba_conf task
