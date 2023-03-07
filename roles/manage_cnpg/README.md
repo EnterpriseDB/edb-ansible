@@ -65,7 +65,7 @@ Below is an example of how to include the `manage_cnpg` role:
         # execute-sql-script
         # apply-manifest, remove-manifest
         # configure-memory, configure-pg-hba
-        cnp_task: 
+        cnpg_task: 
         - drop-role
         # CloudNativePG Namespace
         cnpg_namespace: default
@@ -91,7 +91,7 @@ Below is an example of how to include the `manage_cnpg` role:
 
   roles:
     - role: manage_cnpg
-      when: cnp_task is defined
+      when: cnpg_task is defined
 ```
 
 ## Get credentials for Kubernetes Cluster

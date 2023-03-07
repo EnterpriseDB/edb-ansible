@@ -1,7 +1,7 @@
 ---
 - name: Promote a Cluster Pod
-  shell: kubectl cnpg promote -n {{ cnpg_namespace }} {{ cluster_name }} {{ pod_to_promote }}
+  ansible.builtin.shell: kubectl cnpg promote -n {{ cnpg_namespace }} {{ cluster_name }} {{ pod_to_promote }}
   register: promotepod
 
 - name: Display the results of the pod promotion
-  debug: var=promotepod.stdout_lines
+  ansible.builtin.debug: var=promotepod.stdout_lines

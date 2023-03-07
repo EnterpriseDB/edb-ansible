@@ -26,6 +26,8 @@
         # get-superuser-secret, add-postgres-expose-service, drop-postgres-expose-service
         # add-grafana-expose-service, drop-grafana-expose-service
         # promote-pod
+        # reload-cluster, restart-cluster, restart-pod
+        # maintenance-set, maintenance-unset, status-cluster
         cnpg_task: 
         #- drop-schema
         #- drop-role
@@ -33,13 +35,19 @@
         #- add-db
         #- add-role
         #- drop-db
-        - scale-replicas
-        - get-superuser-secret
+        #- scale-replicas
+        #- get-superuser-secret
         #- add-postgres-expose-service
         #- add-grafana-expose-service
         #- drop-postgres-expose-service
         #- drop-grafana-expose-service
-        - promote-pod
+        #- promote-pod
+        #- reload-cluster
+        #- restart-cluster
+        #- restart-pod
+        #- maintenance-set
+        #- maintenance-unset
+        - status-cluster
         # CloudNativePG Namespace
         cnpg_namespace: default
         # CloudNativePG Cluster Name
@@ -82,6 +90,8 @@
         cluster_grafana_external_ingress_target_port: 3000
         # Pod to promote
         pod_to_promote: 1
+        # CloudNativePG Pod Name to Restart
+        pod_name_to_restart: cnp-sandbox-2
 
   roles:
     - role: manage_cnpg
