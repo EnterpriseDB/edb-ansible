@@ -1,6 +1,6 @@
 ---
 pg_postgres_conf_params: []
-pg_shared_preload_libraries: []
+pg_multi_params: []
 pg_hba_ip_addresses: []
 pg_slots: []
 pg_extensions: []

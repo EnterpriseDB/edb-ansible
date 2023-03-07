@@ -1,0 +1,48 @@
+---
+- name: Check multi parameters
+  fail:
+    msg: "{{ param.name }} is not multi parameter."
+  with_items: "{{ pg_multi_params }}"
+  loop_control:
+    loop_var: param
+  when:
+    - pg_multi_params|length > 0
+    - param.name not in multi_param_list
+
+- name: Set multi parameters
+  include_tasks: update_multi_params.yml
+  loop: "{{ pg_multi_params }}"
+  loop_control:
+    loop_var: param
+  when: pg_multi_params|length > 0
+
+- name: Reset temporary multi paramters
+  set_fact:
+    _tmp_multi_list: []
+
+- name: Restart the pg service
+  systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: true
+    state: restarted
+  become: true
+  when:
+    - params_restart_required is defined
+    - params_restart_required
+    - not ansible_module_running_in_container
+
+- name: Restart the pg service in container
+  ansible.builtin.command: >
+    {{ pg_bin_path }}/pg_ctl -D {{ pg_default_data }} restart
+  when:
+    - params_restart_required is defined
+    - params_restart_required
+    - ansible_module_running_in_container
+  become: true
+  become_user: "{{ pg_owner }}"
+
+- name: Reset the restart_required
+  set_fact:
+    params_restart_required: false
+  when:
+    - params_restart_required is defined

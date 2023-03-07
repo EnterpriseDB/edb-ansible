@@ -1,20 +1,36 @@
 ---
 - name: Ensure User home directory exsits
-  file:
+  ansible.builtin.file:
     path: "{{ pg_user_home }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
     state: directory
+  become: true
+
+- name: Ensure User home directory's file privilege
+  ansible.builtin.file:
+    path: "{{ pg_user_home }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    state: directory
     recurse: true
   become: true
 
 - name: Ensure postgres data directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_data }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
+    state: directory
+  become: true
+
+- name: Ensure postgres data directory's file privilege
+  ansible.builtin.file:
+    path: "{{ pg_data }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
     state: directory
     recurse: true
   become: true
@@ -29,44 +45,83 @@
   become: true
 
 - name: Ensure postgres log directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_log }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
+    state: directory
+  become: true
+  when: pg_log|length > 0 and pg_data not in pg_log
+
+- name: Ensure postgres log directory's file privilege
+  ansible.builtin.file:
+    path: "{{ pg_log }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
     state: directory
     recurse: true
   become: true
   when: pg_log|length > 0 and pg_data not in pg_log
 
 - name: Ensure postgres wal directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_wal }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
+    state: directory
+  become: true
+  when: pg_wal|length > 0 and pg_data not in pg_wal
+
+- name: Ensure postgres wal directory's file privilege
+  ansible.builtin.file:
+    path: "{{ pg_wal }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
     state: directory
     recurse: true
   become: true
   when: pg_wal|length > 0 and pg_data not in pg_wal
 
 - name: Ensure postgres local wal archive directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ pg_local_wal_archive_dir }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 0700
+    state: directory
+  become: true
+  when: pg_local_wal_archive_dir|length > 0
+
+- name: Ensure postgres local wal archive directory's file privilege
+  ansible.builtin.file:
+    path: "{{ pg_local_wal_archive_dir }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
     state: directory
     recurse: true
   become: true
   when: pg_local_wal_archive_dir|length > 0
 
 - name: Create unix socket domain directories
-  file:
+  ansible.builtin.file:
     path: "{{ line_item }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: 02775
+    state: directory
+  with_items: "{{ pg_unix_socket_directories }}"
+  loop_control:
+    loop_var: line_item
+  become: true
+  when: pg_unix_socket_directories|length > 0
+
+- name: Create unix socket domain directories's file privilege
+  ansible.builtin.file:
+    path: "{{ line_item }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
     state: directory
     recurse: true
   with_items: "{{ pg_unix_socket_directories }}"

@@ -1,0 +1,80 @@
+---
+- name: Check temporary multi param list
+  set_fact:
+    _param_values: "{{ _tmp_multi_list[param.name] }}"
+  changed_when: param.name in _tmp_multi_list
+  when:
+   - _tmp_multi_list is defined
+   - param.name in _tmp_multi_list
+  register: multi_exist
+
+- name: Check {{ param.name }} parameter
+  community.postgresql.postgresql_query:
+    query: "SHOW {{ param.name }}"
+    db: "{{ pg_database }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+  register: _query_result
+  when: multi_exist is not changed
+
+- name: Set param value split
+  set_fact:
+    _param_values: "{{ _query_result.query_result[0][param.name] | split(',') | map('replace', ' ', '') | list  }}"
+  when:
+    - _query_result|length > 0
+    - multi_exist is not changed
+
+- name: Union of values declared by user defined
+  set_fact:
+    _param_values: "{{ _param_values | default([]) | union(param.value.split(',') | list) }}"
+  when: param.state|default('present') == 'present'
+  no_log: "{{ disable_logging }}"
+
+- name: Subtract of values declared by the user defined
+  set_fact:
+    _param_values: "{{ _param_values | default([]) | difference(param.value.split(',') | list) }}"
+  when: param.state|default('present') == 'absent'
+  no_log: "{{ disable_logging }}"
+
+- name: Reset force by user defined
+  set_fact:
+    _param_values: "{{ param.value.split(',') | list }}"
+  when: param.reset|default(false)
+
+- name: Set temporary multi param list
+  set_fact:
+    _tmp_multi_list: "{{ _tmp_multi_list|default([])|combine({ param.name: _param_values}) }}"
+
+- name: Set {{ param.name }} line
+  set_fact:
+    _values_line: "{{ _values_line | default('') }}{% if _values_line| default ('') | length > 0 %}, {% endif %}{{ line_item }}"
+  when: _param_values|length > 0
+  with_items: "{{ _param_values }}"
+  loop_control:
+    loop_var: line_item
+  no_log: "{{ disable_logging }}"
+
+- name: Check user defined {{ param.value }} and update
+  lineinfile:
+    path: "{{ pg_data }}/postgresql.auto.conf"
+    line: >-
+      {{ param.name }} = '{{ _values_line }}'
+    regexp: '^{{ param.name }} ='
+    state: "present"
+  when:
+    - _values_line|length > 0
+  become: true
+  register: _param_modified
+
+- name: Register the restart requirements
+  set_fact:
+    params_restart_required: true
+  when: _param_modified.changed
+
+- name: Reset the local value
+  set_fact:
+    _query_result: []
+    _param_values: []
+    _values_line: ""
+    _param_modified: []
