@@ -1,7 +1,7 @@
 ---
 - name: Reload a Cluster
-  shell: kubectl cnpg reload -n {{ cnpg_namespace }} {{ cluster_name }}
+  ansible.builtin.shell: kubectl cnpg reload -n {{ cnpg_namespace }} {{ cluster_name }}
   register: reloadcluster
 
 - name: Display the results of the cluster reload
-  debug: var=reloadcluster.stdout_lines
+  ansible.builtin.debug: var=reloadcluster.stdout_lines

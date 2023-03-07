@@ -1,7 +1,7 @@
 ---
 - name: Status of a Cluster in a specific namespace
-  shell: kubectl cnpg -n {{ cnpg_namespace }} status {{ cluster_name }}
+  ansible.builtin.shell: kubectl cnpg -n {{ cnpg_namespace }} status {{ cluster_name }}
   register: clusterstatus
 
 - name: Display the status of the cluster
-  debug: var=clusterstatus.stdout_lines
+  ansible.builtin.debug: var=clusterstatus.stdout_lines
