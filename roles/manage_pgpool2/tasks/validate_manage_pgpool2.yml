@@ -1,0 +1,65 @@
+---
+# test pcp user
+- name: Set pcp_command for RedHat
+  ansible.builtin.set_fact:
+    pcp_command: 'pcp_node_info'
+  when:
+    - ansible_os_family == 'RedHat' or (ansible_os_family == 'Debian' and pg_type == 'PG')
+
+- name: Set pcp_command for Debian
+  ansible.builtin.set_fact:
+    pcp_command: "{{ pgpool2_bin_path }}/pcp_node_count"
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+
+# test pcp node count
+
+- name: Debug
+  ansible.builtin.debug:
+    msg: "{{ pcp_command_output }}"
+
+# test pgpool_users creation
+- name: Run postgres query to check if pgpool2_users were created correctly
+  community.postgresql.postgresql_query:
+    db: "{{ pg_pgpool_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = %s"
+    positional_args:
+      - '{{ user.name }}'
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  loop: "{{ pgpool2_users }}"
+  loop_control:
+    loop_var: user
+  run_once: true
+  register: pgpool_users_query_result
+  when: pgpool2_users|length > 0
+
+- name: Isolate desired value from query result
+  ansible.builtin.set_fact:
+    pgpool_users_query_names: "{{ pgpool_users_query_result.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='usename') }}"
+    pgpool_users_names: "{{ pgpool2_users | map(attribute='name') }}"
+  when:
+    - pgpool2_users|length > 0
+
+- name: Check if pgpool2_users were created correctly
+  ansible.builtin.assert:
+    that:
+      - pgpool_users_names|difference(pgpool_users_query_names)|length == 0
+    fail_msg: "User(s) {{ pgpool_users_names|difference(pgpool_users_query_names) }} was/were not created correctly."
+    success_msg: "User(s) {{ pgpool_users_names | join(', ') }} was/were created successfully."
+  when: pgpool2_users|length > 0
+  run_once: true
+
+- name: Fail
+  ansible.builtin.fail:
+    msg: "Fail"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pgpool_users_query_result: null
+    pgpool_users_query_names: null
+    pgpool_users_names: null

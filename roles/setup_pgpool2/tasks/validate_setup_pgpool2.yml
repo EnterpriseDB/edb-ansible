@@ -1,0 +1,92 @@
+---
+- name: Install psycopg2 package
+  ansible.builtin.package:
+    name: python3-psycopg2
+    state: present
+  become: true
+
+# test if service is running
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Set pgpool2 service name for checking service_facts
+  ansible.builtin.set_fact:
+    check_pgpool2_service: "{{ pgpool2_service_name }}.service"
+
+- name: Check if service pgpool2_service_name is running and enabled
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[check_pgpool2_service]['state'] == 'running'
+      - ansible_facts.services[check_pgpool2_service]['status'] == 'enabled'
+    fail_msg: "The service {{ pgpool2_service_name }} is not running."
+    success_msg: "The service {{ pgpool2_service_name }} is running."
+
+# test openssl and pgpool2 packages
+- name: Set packages to check for PG RedHat
+  ansible.builtin.set_fact:
+    pgpool2_packages_check: "{{ pgpool2_packages_check | default([]) + ['pgpool-II'] }}"
+  when:
+    - pg_type == 'PG'
+    - ansible_os_family == 'RedHat'
+
+- name: Set packages to check for PG Debian
+  ansible.builtin.set_fact:
+    pgpool2_packages_check: "{{ pgpool2_packages_check | default([]) + ['pgpool2'] }}"
+  when:
+    - pg_type == 'PG'
+    - ansible_os_family == 'Debian'
+
+- name: Set packages to check for EPAS
+  ansible.builtin.set_fact:
+    pgpool2_packages_check: "{{ pgpool2_packages_check | default([]) + ['edb-pgpool' + pgpool2_version | string | replace('.', '')] }}"
+  when:
+    - pg_type == 'EPAS'
+
+- name: Set packages to check for if pgpool2_ssl is true
+  ansible.builtin.set_fact:
+    pgpool2_packages_check: "{{ pgpool2_packages_check | default([]) + ['openssl'] }}"
+  when:
+    - pgpool2_ssl|bool
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all required pgpool2 packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ pgpool2_packages_check }}"
+  loop_control:
+    loop_var: package
+
+# test if pgpool user was created
+- name: Run postgres query to check if pg_pgpool_user were created correctly
+  community.postgresql.postgresql_query:
+    db: "{{ pg_pgpool_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = %s"
+    positional_args:
+      - '{{ pg_pgpool_user }}'
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  run_once: true
+  register: pgpool_user_query_result
+
+- name: Check if pg_pgpool_user is in query results
+  ansible.builtin.assert:
+    that:
+      - pgpool_user_query_result.query_result[0]['usename'] == pg_pgpool_user
+    fail_msg: "User {{ pg_pgpool_user }} was not created correctly."
+    success_msg: "User {{ pg_pgpool_user }} was created correctly."
+
+# test if load balancing is on when pgpool2_load_balancing is true
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pgpool2_packages_check: null
+    pgpool_user_query_result: null

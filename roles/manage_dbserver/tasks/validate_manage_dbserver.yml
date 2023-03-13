@@ -14,6 +14,7 @@
   ansible.builtin.stat:
     path: "{{ pg_user_home }}/.pgpass"
   register: pgpass_stat
+  become_user: "{{ pg_owner }}"
 
 - name: Check if .psqlrc file was created properly
   ansible.builtin.assert:
@@ -33,14 +34,15 @@
     fail_msg: "Shell profile file {{ shell_profile_path }} was not created properly"
     success_msg: "Shell profile file {{ shell_profile_path }} was created successfully"
 
-- name: Check if .pgpass file was created properly
+- name: Check if .pgpass file was created properly if at all
   ansible.builtin.assert:
     that:
-      - pgpass_stat.stat['exists']|bool
       - pgpass_stat.stat['pw_name'] == pg_owner
       - pgpass_stat.stat['gr_name'] == pg_group
     fail_msg: "pgpass file {{ pg_user_home }}/.pgpass was not created properly"
     success_msg: "pgpass file {{ pg_user_home }}/.pgpass was created successfully"
+  when:
+    - pgpass_stat.stat['exists']|bool
 
 # test manage_dbserver created user
 - name: Run postgres query to check if pg_users were created correctly
@@ -64,7 +66,7 @@
     pg_users_query_names: "{{ pg_users_query_result.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='usename') }}"
     pg_users_names: "{{ pg_users | map(attribute='name') }}"
   when:
-    - pg_users_query_result is defined
+    - pg_users|length > 0
 
 - name: Check if pg_users were created correctly
   ansible.builtin.assert:
@@ -121,7 +123,7 @@
   ansible.builtin.set_fact:
     conf_query_res: "{{ conf_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten }}"
   when:
-    - conf_query is defined
+    - pg_postgres_conf_params|length > 0
 
 - name: Check if pg_postgres_conf_params were updated correctly
   ansible.builtin.assert:
@@ -159,7 +161,7 @@
     pg_slots_query_names: "{{ slot_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='slot_name') }}"
     pg_slots_names: "{{ pg_slots | map(attribute='name') }}"
   when:
-    - slot_query is defined
+    - pg_slots|length > 0
 
 - name: Check if pg_slots were added
   ansible.builtin.assert:
@@ -193,7 +195,7 @@
     ext_query_names: "{{ ext_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='extname') }}"
     ext_names: "{{ pg_extensions | map(attribute='name') }}"
   when:
-    - ext_query is defined
+    - pg_extensions|length > 0
 
 - name: Check if pg_postgres_conf_params were updated correctly
   ansible.builtin.assert:
@@ -228,7 +230,7 @@
     pg_roles_query_names: "{{ role_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='rolname') }}"
     pg_roles_names: "{{ pg_grant_roles | map(attribute='role') }}"
   when:
-    - role_query is defined
+    - pg_grant_roles|length > 0
 
 - name: Check if pg_postgres_conf_params were updated correctly
   ansible.builtin.assert:

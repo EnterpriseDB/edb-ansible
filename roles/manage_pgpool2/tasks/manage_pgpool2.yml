@@ -33,6 +33,7 @@
   ansible.builtin.include_tasks: pgpool2_manage_configuration.yml
   when:
     - pgpool2_configuration|length > 0
+    - not validate_only|bool
   vars:
     pgpool2_configuration_lines: "{{ pgpool2_configuration }}"
 
@@ -40,15 +41,23 @@
   ansible.builtin.include_tasks: pgpool2_manage_users.yml
   when:
     - pgpool2_users|length > 0
+    - not validate_only|bool
 
 - name: Reload pgpoolII service
   ansible.builtin.systemd:
     name: "{{ pgpool2_service_name }}"
     state: reloaded
   when:
-    - pgpool2_user|length > 0 or pgpool2_configuration|length > 0
+    - pgpool2_users|length > 0 or pgpool2_configuration|length > 0
+    - not validate_only|bool
 
 - name: Include the pcp_manage_users
   ansible.builtin.include_tasks: pcp_manage_users.yml
   when:
     - pcp_users|length > 0
+    - not validate_only|bool
+
+- name: Include the validation tasks validate_manage_pgpool2
+  ansible.builtin.include_tasks: validate_manage_pgpool2.yml
+  when:
+    - validate_only|bool or use_validation|bool

@@ -3,6 +3,7 @@
   ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 
 - name: Include manage dbserver tasks
+  when: not validate_only|bool
   block:
     - name: Import manage_tablespaces
       ansible.builtin.import_tasks: manage_tablespaces.yml
@@ -20,6 +21,7 @@
       ansible.builtin.import_tasks: execute_sql_scripts.yml
 
 - name: Include Postgres update configuration tasks
+  when: not validate_only|bool
   block:
     - name: Import manage_pgpass
       ansible.builtin.import_tasks: manage_pgpass.yml
@@ -32,9 +34,11 @@
 
 - name: Include shell profile creation task
   ansible.builtin.import_tasks: manage_profile.yml
+  when: not validate_only|bool
 
 - name: Include .psqlrc file creation task
   ansible.builtin.import_tasks: manage_psqlrc.yml
+  when: not validate_only|bool
 
 - name: Include validation tasks
   ansible.builtin.import_tasks: validate_manage_dbserver.yml
