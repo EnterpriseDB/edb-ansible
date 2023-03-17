@@ -1,22 +1,36 @@
 ---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
 - name: Stop EFM service
   ansible.builtin.systemd:
     name: "{{ efm_service }}"
     state: stopped
+    enabled: false
   when:
     - ansible_facts.services[efm_service + '.service'] is defined
     - ansible_facts.services[efm_service + '.service']['state'] != 'running'
   become: true
 
+- name: Stop EFM API Node State service
+  ansible.builtin.systemd:
+    name: efm-api-node-state
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[efm-api-node-state.service] is defined
+    - ansible_facts.services[efm-api-node-state.service]['state'] != 'running'
+  become: true
+
 - name: Remove EFM properties File
   ansible.builtin.file:
-    path: /etc/edb/efm-{{ efm_version }}/efm.properties
+    path: "{{ efm_properties }}"
     state: absent
   become: true
 
 - name: Remove EFM nodes File
   ansible.builtin.file:
-    path: /etc/edb/efm-{{ efm_version }}/efm.nodes
+    path: "{{ efm_node_file }}"
     state: absent
   become: true
 
@@ -32,6 +46,58 @@
     state: absent
   become: true
 
+- name: Remove service file
+  ansible.builtin.file:
+    path: "{{ efm_service_file }}"
+    state: absent
+  become: true
+
+- name: Remove efm_bin_path
+  ansible.builtin.file:
+    path: "{{ efm_bin_path }}"
+    state: absent
+  become: true
+
+- name: Remove /etc/edb/efm-api-node-state/config.toml
+  ansible.builtin.file:
+    path: /etc/edb/efm-api-node-state/config.toml
+    state: absent
+  when: efm_api_node_state|bool
+  become: true
+
+- name: Remove pgpoolII package
+  ansible.builtin.package:
+    name: "{{ pgpool2_package_name }}"
+    state: absent
+  when:
+    - efm_pgpool2_integration
+    - "'witness' not in group_names"
+  become: true
+
+- name: Remove pgpool-II-pcp package on RedHat
+  ansible.builtin.package:
+    name: "pgpool-II-pcp"
+    state: absent
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+    - efm_pgpool2_integration
+    - "'witness' not in group_names"
+  become: true
+
+- name: Remove dependent packages on Debian
+  ansible.builtin.package:
+    name:
+      - libpgpool2
+      - postgresql-client-common
+    state: absent
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+    - efm_pgpool2_integration
+    - "'witness' not in group_names"
+  become: true
+
 - name: Remove EFM and dependencies
   ansible.builtin.package:
     name: "{{ efm_packages_redhat }}"
@@ -45,3 +111,13 @@
     state: absent
   when: ansible_os_family == 'Debian'
   become: true
+
+- name: Remove efm-api-node-state package
+  ansible.builtin.package:
+    name: "{{ efm_api_download_url }}/{{ efm_api_node_state_rpm }}"
+    state: absent
+  become: true
+  when:
+    - ansible_distribution_major_version == '7'
+    - ansible_os_family == 'RedHat'
+    - efm_api_node_state
