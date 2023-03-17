@@ -32,10 +32,10 @@
     - ansible_facts.services['firewalld.service'].status == 'enabled'
   become: true
 
-#- name: Force cleanup based on force_initdb/replication
-#  ansible.builtin.include_tasks: rm_replication.yml
-#  when: (force_initdb is defined and force_initdb)
-#      or (force_replication is defined and force_replication)
+- name: Force cleanup based on force_initdb/replication
+  ansible.builtin.include_tasks: rm_replication.yml
+  when: (force_initdb is defined and force_initdb)
+      or (force_replication is defined and force_replication)
 
 - name: Gather the cluster_nodes information
   ansible.builtin.set_fact:
