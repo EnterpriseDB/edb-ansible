@@ -8,8 +8,8 @@
     state: stopped
     enabled: false
   when:
-    - ansible_facts.services[efm_service] is defined
-    - ansible_facts.services[efm_service].state == 'running'
+    - ansible_facts.services[efm_service + '.service'] is defined
+    - ansible_facts.services[efm_service + '.service'].state == 'running'
   become: true
 
 - name: Stop pg service if running
@@ -18,8 +18,8 @@
     state: stopped
     enabled: false
   when:
-    - ansible_facts.services[pg_service] is defined
-    - ansible_facts.services[pg_service].state == 'running'
+    - ansible_facts.services[pg_service + '.service'] is defined
+    - ansible_facts.services[pg_service + '.service'].state == 'running'
   become: true
 
 - name: Remove configuration directory on Debian family
@@ -64,3 +64,29 @@
     state: absent
   become: true
   when: pg_local_wal_archive_dir|length > 0
+
+- name: Create unix socket domain directories
+  ansible.builtin.file:
+    path: "{{ line_item }}"
+    state: absent
+  with_items: "{{ pg_unix_socket_directories }}"
+  loop_control:
+    loop_var: line_item
+  become: true
+  when: pg_unix_socket_directories|length > 0
+
+- name: Remove systemd configuration file on RedHat
+  ansible.builtin.file:
+    path: "{{ pg_systemd_global_unit_file }}"
+    state: absent
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
+
+- name: Remove systemd unit file on RedHat
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ pg_service }}.service"
+    state: absent
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
