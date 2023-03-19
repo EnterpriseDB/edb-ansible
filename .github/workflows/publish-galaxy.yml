@@ -1,6 +1,6 @@
 name: publish-tmax-opensql-galaxy
 
-on:                                 
+on:
   workflow_call:
     secrets:
       galaxy_api_key:
@@ -13,43 +13,55 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
+
       - name: Install Package
         uses: ConorMacBride/install-package@v1.1.0
         with:
           apt: ansible python3
-      
+
       - name: Install Custom module galaxy_timeout
         # solution of galaxy collection install time out
         # https://github.com/ansible/galaxy/issues/2302#issuecomment-1143132088
         run: python3 -m pip install https://github.com/WATonomous/ansible/archive/galaxy_timeout.tar.gz
-        
+
       - name: Install tmax_opensql.postgres collection
         run: ansible-galaxy collection install --api-key ${{ secrets.galaxy_api_key }} tmax_opensql.postgres
-      
+
+      - name: Get Current Release
+        id: get_current_release
+        uses: pozetroninc/github-action-get-latest-release@master
+        env:
+            GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - name: Set Current Release tag name
+        run: |
+          # Remove 'v' from tag name
+          CURRENT_TAG_NAME=$(echo "${{ steps.get_current_release.outputs.release }}" | cut -d'-' -f1 | sed 's/^v//')
+          if [ -z $CURRENT_TAG_NAME ]; then
+            echo "CURRENT_TAG_NAME=0.0.0" >> $GITHUB_ENV
+          else
+            echo "CURRENT_TAG_NAME=$(echo "${{ steps.get_current_release.outputs.release }}" | cut -d'-' -f1 | sed 's/^v//')" >> $GITHUB_ENV
+          fi
+
       - name: Set old_version
         id: old_version
         run: |
           echo "OLD_VERSION=$(ansible-galaxy collection list tmax_opensql.postgres | grep tmax_opensql.postgres | awk '{print $2}')" >> $GITHUB_OUTPUT
 
-      - name: Set new_version
-        id: new_version
-        uses: pCYSl5EDgo/cat@master
-        with:
-          path: VERSION
-          trim: true
-
       - name: Compare Version
         uses: jackbilestech/semver-compare@1.0.4
         with:
-          head: ${{ steps.new_version.outputs.text }}
+          head: ${{ env.CURRENT_TAG_NAME }} #X.Y.Z
           base: ${{ steps.old_version.outputs.OLD_VERSION }}
           operator: '>'
 
       - name: Build
-        run: make build
+        run: make build -e VERSION=${{ env.CURRENT_TAG_NAME }}
 
       - name: publish tmax opensql galaxy
-        run: make publish
+        run: make publish -e VERSION=${{ env.CURRENT_TAG_NAME }}
         env:
           API_KEY: ${{ secrets.galaxy_api_key }}

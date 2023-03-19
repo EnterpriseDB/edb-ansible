@@ -9,21 +9,24 @@
       "name": "test_user"
     }
   ],
-  "pg_shared_preload_libraries": [
+  "pg_multi_params": [
       {
-        "value": "moddatetime",
+        "name": "listen_addresses",
+        "value": "192.168.0.5",
         "state": "present"
       },
       {
-        "value": "pg_stat_statements",
-        "state": "absent"
+        "name": "unix_socket_directories",
+        "value": "/opt/pgwal"
       },
       {
-        "value": "btree_gist"
+        "name": "shared_preload_libraries",
+        "value": "btree_gist",
+        "reset": "true"
       },
       {
-        "value": "moddatetime",
-        "state": "absent"
+        "name": "session_preload_libraries",
+        "value": "moddatetime"
       }
   ],
   "pg_postgres_conf_params": [

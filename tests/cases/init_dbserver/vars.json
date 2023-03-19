@@ -18,5 +18,7 @@
       "name": "max_wal_size",
       "value": "1GB"
     }
-  ]
+  ],
+  "pg_group_id": 1008,
+  "pg_owner_id": 1008
 }
