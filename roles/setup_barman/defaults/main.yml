@@ -9,5 +9,9 @@ barman_pg_user: "barman"
 barman: true
 barman_server_private_ip: ""
 
+pg_owner: postgres
+pg_group: postgres
+pg_port: 5432
+
 etc_hosts_lists: []
 update_etc_file: true
