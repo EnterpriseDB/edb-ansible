@@ -1,13 +1,8 @@
-name: After pull request closed action
+name: custom-github-action
 
 on:
-  workflow_dispatch:
-  pull_request_target:
-    types: [closed]
-    paths:
-      - "VERSION"
-    branches:
-      - master
+  release:
+    types: [published]
 
 jobs:
   publish-galaxy:

@@ -20,7 +20,7 @@
 - name: Add HBA rule for barman replication
   set_fact:
     hba_entries: >-
-      {{ hba_entries }} + [
+      {{ hba_entries + [
         {
           'users': '{{ barman_pg_user }}',
           'databases': 'replication',
@@ -33,7 +33,7 @@
           'contype': 'host',
           'source': '{{ hostvars[inventory_hostname].barman_server_private_ip }}/32'
         }
-      ]
+      ] }}
   when:
     - hostvars[inventory_hostname].barman_server_private_ip is defined
     - barman_backup_method == 'postgres'

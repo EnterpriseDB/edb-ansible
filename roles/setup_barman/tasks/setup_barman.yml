@@ -4,6 +4,9 @@
     name: common
     tasks_from: check_version.yml
 
+- name: Get facts on current container
+  community.docker.current_container_facts:
+
 - name: Reference pg_type variables
   include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 

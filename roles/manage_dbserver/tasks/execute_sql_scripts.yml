@@ -1,7 +1,7 @@
 ---
 - name: Execute sql scripts
   community.postgresql.postgresql_query:
-    path: "{{ line_item.file_path }}"
+    path_to_script: "{{ line_item.file_path }}"
     db: "{{ line_item.db }}"
     port: "{{ pg_port }}"
     login_user: "{{ pg_owner }}"
