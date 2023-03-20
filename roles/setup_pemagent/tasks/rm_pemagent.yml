@@ -5,19 +5,19 @@
 - name: Stop pemagent
   ansible.builtin.systemd:
     name: "{{ pem_agent_service }}"
-    daemon_reload: true
     state: stopped
+    enabled: false
   when:
-    - ansible_facts.services[pem_agent_service] is defined
-    - ansible_facts.services[pem_agent_service].state == 'running'
+    - ansible_facts.services[pem_agent_service + '.service'] is defined
+    - ansible_facts.services[pem_agent_service + '.service'].state == 'running'
   become: true
   no_log: "{{ disable_logging }}"
 
 - name: Stop the {{ pg_backup_api_service }}
   ansible.builtin.systemd:
     name: "{{ pg_backup_api_service }}"
-    daemon_reload: true
     state: stopped
+    enabled: false
   become: true
   no_log: "{{ disable_logging }}"
 
@@ -30,7 +30,23 @@
     - "{{ pem_agent_bin_path }}/../etc/agent.cfg"
     - "/var/log/pem/worker.log"
     - "{{ pem_agent_bin_path }}/../etc/.agentregistered"
-    - "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}registered"
+    - "{{ pem_agent_bin_path }}/../etc/.{{ inventory_hostname }}-{{ pg_port }}-registered"
     - "{{ pem_agent_bin_path }}/../etc/.barmanregistered"
   become: true
   no_log: "{{ disable_logging }}"
+
+- name: Remove required packages for PEM agent
+  ansible.builtin.package:
+    name: "{{ pem_agent_package }}"
+    state: absent
+  no_log: "{{ disable_logging }}"
+  become: true
+
+- name: Remove required packages for PEM agent
+  ansible.builtin.package:
+    name: "{{ pg_backup_api_package }}"
+    state: absent
+  become: true
+  no_log: "{{ disable_logging }}"
+  when: >
+      pem_server_version_int|int >= 840 or enable_pemagent_monitor_barman
