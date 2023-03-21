@@ -34,7 +34,7 @@
 
 - name: Remove configuration directory on Debian family
   ansible.builtin.file:
-    path: /etc/postgresql/{{ pg_version }}/{{ pg_instance_name }}/
+    path: "/etc/postgresql/{{ pg_version }}/{{ pg_instance_name }}/"
     state: absent
   when:
     - "ansible_os_family == 'Debian'"
@@ -42,7 +42,7 @@
 
 - name: Remove configuration directory on Debian family
   ansible.builtin.file:
-    path: /etc/edb-as/{{ pg_version }}/{{ pg_instance_name }}/
+    path: "/etc/edb-as/{{ pg_version }}/{{ pg_instance_name }}/"
     state: absent
   when:
     - "ansible_os_family == 'Debian'"
@@ -52,6 +52,9 @@
   ansible.builtin.file:
     path: "{{ pg_data }}"
     state: absent
+  when:
+    - force_data is defined
+    - force_data
   become: true
 
 - name: Remove Postgres log directory if exists
@@ -66,7 +69,10 @@
     path: "{{ pg_wal }}"
     state: absent
   become: true
-  when: pg_wal|length > 0
+  when:
+    - pg_wal|length > 0
+    - force_wal is defined
+    - force_wal
 
 - name: Remove postgres default data directory if exists
   ansible.builtin.file:
