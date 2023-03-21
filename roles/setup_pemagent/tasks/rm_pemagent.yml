@@ -19,13 +19,16 @@
     state: stopped
     enabled: false
   become: true
+  when:
+    - ansible_facts.services[pg_backup_api_service + '.service'] is defined
+    - ansible_facts.services[pg_backup_api_service + '.service'].state == 'running'
   no_log: "{{ disable_logging }}"
 
 - name: Remove pem files and directory
   ansible.builtin.file:
-    path: /root/.pem
+    path: "{{ item }}"
     state: absent
-  with_items:
+  loop:
     - "/root/.pem"
     - "{{ pem_agent_bin_path }}/../etc/agent.cfg"
     - "/var/log/pem/worker.log"
