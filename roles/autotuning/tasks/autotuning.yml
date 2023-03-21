@@ -7,6 +7,13 @@
 - name: Get facts on current container
   community.docker.current_container_facts:
 
+- name: Check support for tuned_configuration_dir
+  fail:
+    msg: It is invalid tuned_configuration_dir '{{ tuned_configuration_dir }}'
+  when:
+    - tuned_configuration_dir not in supported_tuned_configuration_dir
+    - not ansible_module_running_in_container
+
 - name: Include the tuned package installation tasks
   include_tasks: install_tuned.yml
   when: not ansible_module_running_in_container

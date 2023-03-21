@@ -72,7 +72,7 @@
 - name: Set the variable pg_max_connections
   set_fact:
     pg_max_connections: "{{ [sys_nvcpus | int * 4, 100] | max }}"
-    when: pg_max_connections is not defined
+  when: pg_max_connections | length < 1
 
 # Set the shared buffers value
 - name: Set the variable pg_shared_buffers_mb
