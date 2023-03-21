@@ -1,0 +1,53 @@
+---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Stop PgBouncer service
+  ansible.builtin.systemd:
+    name: "{{ pgbouncer_service_name }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[pgbouncer_service_name + '.service'] is defined
+    - ansible_facts.services[pgbouncer_service_name + '.service'].state == 'running'
+  become: true
+
+- name: Remove PgBouncer system user {{ pgbouncer_user }}
+  ansible.builtin.user:
+    name: "{{ pgbouncer_user }}"
+    group: "{{ pgbouncer_group }}"
+    state: absent
+    remove: true
+    force: true
+  become: true
+
+- name: Remove PgBouncer system group {{ pgbouncer_group }}
+  ansible.builtin.group:
+    name: "{{ pgbouncer_group }}"
+    state: absent
+  become: true
+
+- name: Remove PgBouncer files and directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ pgbouncer_config_file | dirname }}"
+    - "{{ pgbouncer_systemd_unit_file | dirname }}"
+    - "{{ pgbouncer_pid_file | dirname }}"
+    - "{{ pgbouncer_log_file | dirname }}"
+  become: true
+
+- name: Remove PgBouncer package
+  ansible.builtin.package:
+    name: "{{ pgbouncer_package_name }}"
+    state: absent
+  become: true
+
+- name: Remove openssl package
+  ansible.builtin.package:
+    name: "openssl"
+    state: absent
+  when:
+    - pgbouncer_ssl
+  become: true

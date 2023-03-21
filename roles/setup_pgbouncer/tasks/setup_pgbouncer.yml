@@ -24,6 +24,12 @@
          Available authentication types are {{ available_auth_type }}"
   when: pgbouncer_auth_type not in available_auth_type
 
+- name: Remove pgbouncer install and configuration based on force_pgbouncer
+  ansible.builtin.include_tasks: rm_pgbouncer_install_config.yml
+  when:
+    - force_pgbouncer is defined
+    - force_pgbouncer
+
 - name: Include the pgbouncer_install
   ansible.builtin.include_tasks: pgbouncer_install.yml
 
