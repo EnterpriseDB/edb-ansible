@@ -1,0 +1,85 @@
+---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Stop pgpool2 service
+  ansible.builtin.systemd:
+    name: "{{ pgpool2_service_name }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[pgpool2_service_name + '.service'] is defined
+    - ansible_facts.services[pgpool2_service_name + '.service'].state == 'running'
+  become: true
+
+- name: Remove pgpoolII system user {{ pgpool2_user }}
+  ansible.builtin.user:
+    name: "{{ pgpool2_user }}"
+    group: "{{ pgpool2_group }}"
+    state: absent
+    remove: true
+    force: true
+  become: true
+
+- name: Remove pgpoolII system group {{ pgpool2_group }}
+  ansible.builtin.group:
+    name: "{{ pgpool2_group }}"
+    state: absent
+  become: true
+
+- name: Remove pgpoolII files and directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ pgpool2_configuration_file | dirname }}"
+    - "{{ pgpool2_logdir }}"
+    - "{{ pgpool2_systemd_config_file | dirname }}"
+    - "{{ pgpool2_pid_file_name | dirname }}"
+  become: true
+
+- name: Remove optional pgpoolII directory
+  ansible.builtin.file:
+    path: "{{ pgpool2_logdir }}"
+    state: absent
+  when: pgpool2_logdir is defined
+
+- name: Remove optional pgpoolII directory
+  ansible.builtin.file:
+    path: "{{ pgpool2_pid_file_name | dirname }}"
+    state: absent
+  when: pgpool2_pid_file_name is defined
+
+- name: Remove pgpoolII package
+  ansible.builtin.package:
+    name: "{{ pgpool2_package_name }}"
+    state: absent
+  become: true
+
+- name: Remove openssl package
+  ansible.builtin.package:
+    name: "openssl"
+    state: absent
+  when:
+    - pgpool2_ssl
+  become: true
+
+- name: Remove pgpool-II-pcp package on RedHat
+  ansible.builtin.package:
+    name: "pgpool-II-pcp"
+    state: absent
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+  become: true
+
+- name: Remove dependent packages on Debian
+  ansible.builtin.package:
+    name:
+      - libpgpool2
+      - postgresql-client-common
+    state: absent
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+  become: true
