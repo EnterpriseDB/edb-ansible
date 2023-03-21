@@ -44,8 +44,8 @@
     state: absent
   become: true
   when:
-    - force_rm_data is defined
-    - force_rm_data
+    - force_rm_pg_data is defined
+    - force_rm_pg_data
 
 - name: Remove postgres log directory if exists
   ansible.builtin.file:
@@ -61,8 +61,8 @@
   become: true
   when:
     - pg_wal|length > 0
-    - force_rm_wal is defined
-    - force_rm_wal
+    - force_rm_pg_wal is defined
+    - force_rm_pg_wal
 
 - name: Remove postgres local wal archive directory if exists
   ansible.builtin.file:

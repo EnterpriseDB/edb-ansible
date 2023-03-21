@@ -53,8 +53,8 @@
     path: "{{ pg_data }}"
     state: absent
   when:
-    - force_rm_data is defined
-    - force_rm_data
+    - force_rm_pg_data is defined
+    - force_rm_pg_data
   become: true
 
 - name: Remove Postgres log directory if exists
@@ -71,8 +71,8 @@
   become: true
   when:
     - pg_wal|length > 0
-    - force_rm_wal is defined
-    - force_rm_wal
+    - force_rm_pg_wal is defined
+    - force_rm_pg_wal
 
 - name: Remove postgres default data directory if exists
   ansible.builtin.file:
