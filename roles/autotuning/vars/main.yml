@@ -5,3 +5,8 @@ pg_owner: "postgres"
 pg_service: "{{ lookup('tmax_opensql.postgres.pg_service') }}"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
+
+tuned_configuration_dir: "/etc/tuned"
+supported_tuned_configuration_dir:
+  - "/etc/tuned"
+  - "/usr/lib/tuned"

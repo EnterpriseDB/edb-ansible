@@ -2,7 +2,6 @@
 pg_major_version: "{{ pg_version | int }}"
 pg_instance_name: main
 tuned_profile: "postgres"
-tuned_configuration_dir: "/etc/tuned"
 ssd_disk: false
 
 pg_max_connections: ""
