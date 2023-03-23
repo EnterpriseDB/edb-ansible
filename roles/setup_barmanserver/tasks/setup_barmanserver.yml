@@ -8,6 +8,12 @@
     msg: "Operating System = {{ os }} not supported."
   when: os not in supported_os
 
+- name: Remove the barmanserver install/config based on force_barmanserver
+  ansible.builtin.include_tasks: rm_barmanserver_install_config.yml
+  when:
+    - force_barmanserver is defined
+    - force_barmanserver
+
 - name: Include the package installation tasks
   ansible.builtin.include_tasks: install_packages.yml
 
