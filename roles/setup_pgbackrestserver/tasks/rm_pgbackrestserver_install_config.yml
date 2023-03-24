@@ -1,0 +1,100 @@
+---
+- name: Remove pgBackRest system user {{ pgbackrest_user }}
+  ansible.builtin.user:
+    name: "{{ pgbackrest_user }}"
+    group: "{{ pgbackrest_group }}"
+    state: absent
+    remove: true
+    force: true
+  become: true
+
+- name: Remove pgBackRest system group {{ pgbackrest_group }}
+  ansible.builtin.group:
+    name: "{{ pgbackrest_group }}"
+    state: absent
+  become: true
+
+- name: Remove pgBackRest files and directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ pgbackrest_lock_path }}"
+    - "{{ pgbackrest_configuration_file }}"
+  become: true
+
+- name: Remove pgBackRest package
+  ansible.builtin.package:
+    name: "{{ pgbackrest_package_name }}"
+    state: absent
+  become: true
+
+# add repo facts for RHEL
+- name: Set repo facts for RH os
+  ansible.builtin.set_fact:
+    pg_gpg_key_8: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
+    pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+    pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+
+# add repo facts for Debian
+- name: Set repo facts for Debian
+  ansible.builtin.set_fact:
+    pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+    pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+
+# Remove PG repo for RHEL
+- name: Remove PGDG GPG key for EL8
+  ansible.builtin.rpm_key:
+    key: "{{ pg_gpg_key_8 }}"
+    state: absent
+  when:
+    - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+  become: true
+
+- name: Remove PG repo for EL7
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_7 }}"
+    state: absent
+  become: true
+  when:
+    - ansible_distribution_major_version == '7'
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+
+- name: Remove PG repo for EL8
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_8 }}"
+    state: absent
+  become: true
+  when:
+    - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+
+# Remove PG repo for Debian EPAS
+- name: Remove PG Debian keys
+  ansible.builtin.apt_key:
+    url: "{{ pg_deb_keys }}"
+    state: present
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+  become: true
+
+- name: Remove PG Debian repo
+  ansible.builtin.apt_repository:
+    repo: "{{ pg_deb_repo_url }}"
+    state: absent
+    filename: "pgdg"
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+  become: true

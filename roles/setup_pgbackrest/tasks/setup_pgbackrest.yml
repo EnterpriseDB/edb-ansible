@@ -33,6 +33,13 @@
     - name: Update etc/hosts
       ansible.builtin.import_tasks: linux_update_etc_hosts.yml
 
+- name: Remove pgbackrest install/config based on force_pgbackrest/force_initdb/force_replication
+  ansible.builtin.include_tasks: rm_pgbackrest_install_config.yml
+  when: >
+    ((force_pgbackrest is defined and force_pgbackrest)
+     or (force_initdb is defined and force_initdb)
+      or (force_replication is defined and force_replication))
+
 - name: Incluse pgBackRest install
   ansible.builtin.include_tasks: pgbackrest_install_PG.yml
   when: pg_type == 'PG'
