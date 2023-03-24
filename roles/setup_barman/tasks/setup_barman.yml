@@ -34,6 +34,14 @@
 - name: Reference barman server variables
   ansible.builtin.include_vars: "{{ role_path }}/../setup_barmanserver/defaults/main.yml"
 
+- name: Remove barman install and configuration based on force_initdb/force_replication/force_pemserver/force_barman
+  ansible.builtin.include_tasks: rm_barman_install_config.yml
+  when: >
+      ((force_barman is defined and force_barman)
+       or (force_initdb is defined and force_initdb)
+        or (force_replication is defined and force_replication)
+         or (force_pemserver is defined and force_pemserver))
+
 - name: Update /etc/hosts based on use_hostname
   when:
     - use_hostname|bool
