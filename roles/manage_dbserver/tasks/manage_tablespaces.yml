@@ -4,42 +4,41 @@
   vars:
     host_is_standby: false
 
-- name: Manage tablespaces
-  when: not host_is_standby
-  block:
-    - name: Ensure tablespace directories exists
-      file:
-        path: "{{ line_item.location }}"
-        owner: "{{ pg_owner }}"
-        group: "{{ pg_group }}"
-        mode: 0700
-        state: "{{ 'absent' if line_item.state is defined and line_item.state == 'absent' else 'directory' }}"
-      no_log: "{{ disable_logging }}"
-      become: true
-      with_items: "{{ pg_tablespaces }}"
-      loop_control:
-        loop_var: line_item
-      when:
-        - pg_tablespaces|length > 0
-    - name: Manage optional user defined tablespaces
-      community.postgresql.postgresql_tablespace:
-        tablespace: "{{ line_item.name }}"
-        location: "{{ line_item.location }}"
-        owner: "{{ line_item.owner | default(pg_owner) }}"
-        rename_to: "{{ line_item.rename_to | default(omit) }}"
-        session_role: "{{ line_item.session_role | default(omit) }}"
-        set: "{{ line_item.tablespace_option | default(omit) }}"
-        trust_input: "{{ line_item.trust_input | default('true') }}"
-        port: "{{ pg_port }}"
-        db: "{{ line_item.db | default(pg_database) }}"
-        state: "{{ line_item.state | default('present') }}"
-        login_user: "{{ pg_owner }}"
-        login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-      no_log: "{{ disable_logging }}"
-      become: true
-      become_user: "{{ pg_owner }}"
-      with_items: "{{ pg_tablespaces }}"
-      loop_control:
-        loop_var: line_item
-      when:
-        - pg_tablespaces|length > 0
+- name: Ensure tablespace directories exists
+  file:
+    path: "{{ line_item.location }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: 0700
+    state: "{{ 'absent' if line_item.state is defined and line_item.state == 'absent' else 'directory' }}"
+  no_log: "{{ disable_logging }}"
+  become: true
+  with_items: "{{ pg_tablespaces }}"
+  loop_control:
+    loop_var: line_item
+  when:
+    - pg_tablespaces|length > 0
+
+- name: Manage optional user defined tablespaces
+  community.postgresql.postgresql_tablespace:
+    tablespace: "{{ line_item.name }}"
+    location: "{{ line_item.location }}"
+    owner: "{{ line_item.owner | default(pg_owner) }}"
+    rename_to: "{{ line_item.rename_to | default(omit) }}"
+    session_role: "{{ line_item.session_role | default(omit) }}"
+    set: "{{ line_item.tablespace_option | default(omit) }}"
+    trust_input: "{{ line_item.trust_input | default('true') }}"
+    port: "{{ pg_port }}"
+    db: "{{ line_item.db | default(pg_database) }}"
+    state: "{{ line_item.state | default('present') }}"
+    login_user: "{{ pg_owner }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+  no_log: "{{ disable_logging }}"
+  become: true
+  become_user: "{{ pg_owner }}"
+  with_items: "{{ pg_tablespaces }}"
+  loop_control:
+    loop_var: line_item
+  when:
+    - not host_is_standby
+    - pg_tablespaces|length > 0
