@@ -1,0 +1,19 @@
+name: create-new-release
+
+# To use this workflow, you need to add "GIT_ACCESS_TOKEN" secret to your repository
+# The secret should contain PAT with admin permission to the repository this workflow is added
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  use_release_automation_workflow:
+    if: github.event.pull_request.merged == true
+    uses: tmaxopensql/release-automation/.github/workflows/generate_release.yml@main
+    with:
+      RELEASE_NOTE: ${{ github.event.pull_request.body }}
+    secrets:
+      GIT_ACCESS_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
