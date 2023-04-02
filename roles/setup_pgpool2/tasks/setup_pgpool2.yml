@@ -126,6 +126,12 @@
   when:
     - use_hostname|bool
 
+- name: Remove pgpool2 install and configuration based on force_pgpool2
+  ansible.builtin.include_tasks: rm_pgpool2_install_config.yml
+  when:
+    - force_pgpool2 is defined
+    - force_pgpool2
+
 - name: Include the pgpool2_install
   ansible.builtin.include_tasks: pgpool2_install.yml
   when: not validate_only|bool

@@ -28,10 +28,8 @@ efm_version: "4.5"
 efm_bin_path: "/usr/edb/efm-{{ efm_version }}/bin"
 efm_cluster_name: "{{ pg_instance_name }}"
 
-pem_agent_package:
-  - edb-pem-agent
-pg_backup_api_package:
-  - pg-backup-api
+pem_agent_package: "edb-pem-agent"
+pg_backup_api_package: "pg-backup-api"
 
 pem_agent_service: pemagent
 pg_backup_api_service: pg-backup-api
