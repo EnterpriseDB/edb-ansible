@@ -24,14 +24,14 @@ def test_manage_pgbouncer_test_db():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgbouncer_address= get_pgbouncer()[0]
+    pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
 
     with host.sudo(pg_user):
         query = "SHOW databases"
         cmd = host.run(
-            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s' #  noqa
+            'PGPASSWORD=%s psql -At -U %s -h %s -p %s -c "%s" pgbouncer | grep %s'
             % (pgbouncer_password, pgbouncer_user, address, pgbouncer_port,
                query, test_db)
         )
@@ -84,7 +84,7 @@ def test_manage_pgbouncer_auth_file():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgbouncer_address= get_pgbouncer()[0]
+    pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
 
@@ -113,7 +113,7 @@ def test_manage_pgbouncer_users():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgbouncer_address= get_pgbouncer()[0]
+    pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
 

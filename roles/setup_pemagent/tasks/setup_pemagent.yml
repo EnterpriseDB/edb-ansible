@@ -76,7 +76,7 @@
       ((force_pemserver is defined and force_pemserver)
        or (force_initdb is defined and force_initdb)
        or (force_pemagent is defined and force_pemagent))
-       and not pem_agent_remote
+       and not pem_agent_remote and not validate_only|bool
   become: true
   no_log: "{{ disable_logging }}"
 
@@ -85,11 +85,14 @@
   when:
     - pem_server_exists
     - node_ssh_to_pemserver
+    - not validate_only|bool
   no_log: "{{ disable_logging }}"
 
 - name: Create pemagent user on primary
   ansible.builtin.import_tasks: pem_agent_user.yml
-  when: group_names | select('search','primary') | list | count > 0
+  when:
+    - group_names | select('search','primary') | list | count > 0
+    - not validate_only|bool
   no_log: "{{ disable_logging }}"
 
 - name: Update /etc/hosts based on use_hostname
@@ -106,12 +109,15 @@
   # We limit the number of worker for this task to avoid any concurrency issue
   # while updating PEM server HBA file.
   throttle: 2
-  when: node_ssh_to_pemserver
+  when:
+    - node_ssh_to_pemserver
+    - not validate_only|bool
   no_log: "{{ disable_logging }}"
 
 - name: Install and configure pemagent on nodes
   when:
     - not pem_agent_remote
+    - not validate_only|bool
   become: true
   no_log: "{{ disable_logging }}"
   block:
@@ -128,6 +134,8 @@
      group_names | select('search','standby') | list | count > 0
      or
      force_register_db) and not pem_agent_remote
+     and
+     not validate_only|bool
   become: true
   no_log: "{{ disable_logging }}"
 
@@ -138,7 +146,7 @@
      or
      group_names | select('search','standby') | list | count > 0
      or
-     force_register_db) and pem_agent_remote
+     force_register_db) and pem_agent_remote and not validate_only|bool
   become: true
   no_log: "{{ disable_logging }}"
 
@@ -148,7 +156,12 @@
   when:
     - (node_ssh_to_pemserver and pem_server_version_int|int >= 840) or enable_pemagent_monitor_barman
     - group_names | select('search', 'barmanserver') | list | count > 0
+    - not validate_only|bool
   no_log: "{{ disable_logging }}"
+
+- name: Include the validate_setup_pemagent tasks
+  ansible.builtin.import_tasks: validate_setup_pemagent.yml
+  when: validate_only|bool or use_validation|bool
 
 - name: Reset the variables
   ansible.builtin.set_fact:

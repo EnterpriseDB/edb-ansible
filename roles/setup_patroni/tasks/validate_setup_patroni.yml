@@ -1,1 +1,110 @@
 ---
+- name: Prepare primary_private_ip
+  ansible.builtin.set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:
+    - node.node_type == 'primary'
+  no_log: "{{ disable_logging }}"
+  run_once: true
+
+- name: Prepare standby_list
+  ansible.builtin.set_fact:
+    patroni_standby_list: "{{ patroni_standby_list | default([]) + [node.inventory_hostname] }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when:
+    - node.node_type == 'standby'
+  no_log: "{{ disable_logging }}"
+  run_once: true
+
+# validate patroni user
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = 'repuser' and userepl = 't'"
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ primary_private_ip }}"
+  run_once: true
+  register: patroni_repuser_query_result
+  when: patroni_standby_list|length > 0
+
+- name: Check that repuser was setup correctly
+  ansible.builtin.assert:
+    that:
+      - patroni_repuser_query_result.query_result[0]['usename'] == 'repuser'
+    fail_msg: "Replication was not successful on standby's"
+    success_msg: "Replication was successful on standby's"
+  run_once: true
+  when: patroni_standby_list|length > 0
+
+# validate patroni slots
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_replication_slots"
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ primary_private_ip }}"
+  run_once: true
+  register: patroni_slots_query_result
+  when: patroni_standby_list|length > 0
+
+- name: Check that replication created replication slots
+  ansible.builtin.assert:
+    that:
+      - patroni_wal_query_result.query_result|length == patroni_standby_list|length
+    fail_msg: "Replication did not create replication slots"
+    success_msg: "Replication correctly created replication slots"
+  run_once: true
+  when: patroni_standby_list|length > 0
+
+# validate patroni stat replication
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: 'Select application_name from pg_stat_replication'
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ primary_private_ip }}"
+  run_once: true
+  when: patroni_standby_list|length > 0
+  register: patroni_stat_query_result
+
+- name: Check that replication was successful on primary
+  ansible.builtin.assert:
+    that:
+      - patroni_stat_query_result.query_result|length == patroni_standby_list|length
+    fail_msg: "Replication was not successful on primary"
+    success_msg: "Replication was successful on primary"
+  when: patroni_standby_list|length > 0
+
+# validate patroni wal receiver - on standby's
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select slot_name from pg_stat_wal_receiver"
+  become_user: "{{ pg_owner }}"
+  register: patroni_wal_query_result
+  when: "'standby' in group_names"
+
+- name: Check that the data_directory result is linked to pg_data
+  ansible.builtin.assert:
+    that:
+      - patroni_wal_query_result.query_result[0]['slot_name'] ==
+    fail_msg: "Replication was not successful on standby's"
+    success_msg: "Replication was successful on standby's"
+  when: "'standby' in group_names"

@@ -8,16 +8,16 @@
 
 - name: Set pcp_command for Debian
   ansible.builtin.set_fact:
-    pcp_command: "{{ pgpool2_bin_path }}/pcp_node_count"
+    pcp_command: "{{ pgpool2_bin_path }}/pcp_node_info"
   when:
     - ansible_os_family == 'Debian'
     - pg_type == 'EPAS'
 
 # test pcp node count
 
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ pcp_command_output }}"
+#- name: Debug
+#  ansible.builtin.debug:
+#    msg: "{{ pcp_command_output }}"
 
 # test pgpool_users creation
 - name: Run postgres query to check if pgpool2_users were created correctly
@@ -54,9 +54,9 @@
   when: pgpool2_users|length > 0
   run_once: true
 
-- name: Fail
-  ansible.builtin.fail:
-    msg: "Fail"
+#- name: Fail
+#  ansible.builtin.fail:
+#    msg: "Fail"
 
 - name: Reset variables
   ansible.builtin.set_fact:

@@ -41,24 +41,35 @@
   when:
     - use_hostname|bool
     - update_etc_file|bool
+    - not validate_only|bool
   block:
     - name: Update /etc/hosts
       ansible.builtin.import_tasks: linux_update_etc_hosts.yml
 
 - name: Include the define_node_variables tasks
   ansible.builtin.include_tasks: define_node_variables.yml
+  when: not validate_only|bool
 
 - name: Include the create_user installation tasks
   ansible.builtin.include_tasks: create_user.yml
+  when: not validate_only|bool
 
 - name: Include the package installation tasks
   ansible.builtin.include_tasks: "pgbackrest_install_{{ pg_type }}.yml"
+  when: not validate_only|bool
 
 - name: Include the create_directories installation tasks
   ansible.builtin.include_tasks: create_directories.yml
+  when: not validate_only|bool
 
 - name: Include the SSH key generation tasks
   ansible.builtin.include_tasks: generate_ssh_keys.yml
+  when: not validate_only|bool
 
 - name: Include the generate_config installation tasks
   ansible.builtin.include_tasks: generate_config.yml
+  when: not validate_only|bool
+
+- name: Include the validate setup_pgbackrestserver tasks
+  ansible.builtin.include_tasks: validate_setup_pgbackrestserver.yml
+  when: validate_only|bool or use_validation|bool

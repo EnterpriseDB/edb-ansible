@@ -1,1 +1,94 @@
 ---
+# validate pemserver pemagent
+- name: Run postgres query to check if pemagent user exists
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = 'agent1'"
+  become: true
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  register: pemagent_query_res
+
+- name: Check if pemagent user has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - pemagent_query_res.query_result[0]['usename'] == 'agent1'
+    fail_msg: "pemagent user agent1 was not created successfully"
+    success_msg: "pemagent user agent1 was created successfully"
+  run_once: true
+
+# validate pemserver pemadmin
+- name: Run postgres query to check if pemadmin user exists
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = 'pemadmin'"
+  become: true
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  register: pemadmin_query_res
+
+- name: Check if pemadmin user has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - pemadmin_query_res.query_result[0]['usename'] == 'pemadmin'
+    fail_msg: "pemadmin user was not created successfully"
+    success_msg: "pemadmin user was created successfully"
+  run_once: true
+
+# validate pemagent service
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Check if service pg_service is running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services['pemagent.service']['state'] == 'running'
+    fail_msg: "The service 'pemagent' is not running."
+    success_msg: "The service 'pemagent' is running."
+
+# validate pemserver packages
+- name: Gather package facts
+  ansible.builtin.package_facts:
+
+- name: Check that all required packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages['edb-pem-agent'] }} is defined"
+    fail_msg: "Package 'edb-pem-agent' has not been installed."
+    success_msg: "Package 'edb-pem-agent' has been installed."
+
+# validate pem database
+- name: Run command to check if PEM database was created
+  ansible.builtin.shell:
+    cmd: psql -At -h {{ pg_unix_socket_directories[0] }} -c 'r"\list"' postgres | grep pem
+  become: true
+  become_user: "{{ pg_owner }}"
+  register: pem_db_res
+
+- name: Debug
+  ansible.builtin.debug:
+    msg: "{{ pem_db_res }}"
+
+#- name: Check that PEM database was successfully created
+#  ansible.builtin.assert:
+#    that:
+#      -
+#    fail_msg: "PEM database was not successfully created"
+#    success_msg: "PEM database was succesfully created"
+
+# validate pemserver socket
+- name: Check that pemserver is listening
+  ansible.builtin.wait_for:
+    host: 0.0.0.0
+    port: 8443
+    msg: "PEM web interface is not listening on 0.0.0.0:8443"
+  become: true
+
+# validate pem web interface
+# is this test safe??

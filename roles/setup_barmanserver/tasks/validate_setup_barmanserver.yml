@@ -1,1 +1,52 @@
 ---
+# validate barman packages
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all required barman packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[item] }} is defined"
+    fail_msg: "Package {{ item }} has not been installed."
+    success_msg: "Package {{ item }} has been installed."
+  loop:
+    - barman
+    - barman-cli
+
+# validate barman server configuration files
+- name: Stat to barman configuration file
+  ansible.builtin.stat:
+    path: "{{ barman_configuration_file }}"
+  register: barman_config_check
+
+- name: Check that barman_configuration_file was configured correctly
+  ansible.builtin.assert:
+    that:
+      - barman_config_check.stat['exists']
+    fail_msg: "The file {{ barman_configuration_file }} is not configured correctly."
+    success_msg: "The file {{ barman_configuration_file }} is configured correctly."
+
+# validate barman sudo user
+- name: Run command to check backup server was configured properly
+  ansible.builtin.shell: barman -h
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: "{{ barman_user }}"
+  run_once: true
+  register: barman_sudo_user_res
+
+- name: Check if barman user has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - barman_sudo_user_res.stdout_lines is search('usage')
+      - barman_sudo_user_res.stdout_lines is search('positional arguments')
+    fail_msg: "{{ barman_user }} was not configured as sudo user correctly."
+    success_msg: "{{ barman_user }} was configured as sudo user correctly."
+  run_once: true
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    barman_config_check: null
+    barman_sudo_user_res: null

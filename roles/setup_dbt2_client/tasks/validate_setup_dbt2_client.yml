@@ -1,1 +1,41 @@
 ---
+# validate dbt2 client packages
+- name: Set dbt2 package name
+  ansible.builtin.set_fact:
+    dbt2_client_package_list: ['dbt2-client', 'dbt2-db', 'dbt2-pgsql-plpgsql', 'dbt2-scripts']
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all DBT2 packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[item] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ dbt2_client_package_list }}"
+
+# validate dbt2 client sudo user
+- name: Run command to check DBT-2 client sudo user was configured properly
+  ansible.builtin.shell:
+    cmd: cat /etc/security/limits.conf | grep {{ pg_owner }}
+  become: true
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  register: dbt2_client_sudo_res
+
+- name: Check if DBT-2 client sudo user has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - dbt2_client_sudo_res.stdout_lines is search('{{ pg_owner }}')
+    fail_msg: "{{ pg_owner }} was not configured as sudo user correctly."
+    success_msg: "{{ pg_owner }} was configured as sudo user correctly."
+  run_once: true
+
+# reset variables
+- name: Reset variables
+  ansible.builtin.set_fact:
+    dbt2_client_package_list: null
+    user_query_result: null
+    dbt2_client_sudo_res: null

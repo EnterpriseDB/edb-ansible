@@ -42,62 +42,86 @@
 
 - name: Include repmgr_install.yml
   ansible.builtin.include_tasks: repmgr_install.yml
+  when: not validate_only|bool
 
 - name: Include repmgr_configure_spl.yml
   ansible.builtin.include_tasks: repmgr_configure_spl.yml
+  when: not validate_only|bool
 
 - name: Include repmgr_setup_db_user.yml
   ansible.builtin.include_tasks: repmgr_setup_db_user.yml
-  when: "('primary' in group_names) or ('witness' in group_names)"
+  when:
+    - "('primary' in group_names) or ('witness' in group_names)"
+    - not validate_only|bool
 
 - name: Include repmgr_update_pgpass.yml
   ansible.builtin.include_tasks: repmgr_update_pgpass.yml
 
 - name: Include repmgr_setup_db.yml
   ansible.builtin.include_tasks: repmgr_setup_db.yml
-  when: "('primary' in group_names) or ('witness' in group_names)"
+  when:
+    - "('primary' in group_names) or ('witness' in group_names)"
+    - not validate_only|bool
 
 - name: Include repmgr_prepare_hba.yml
   ansible.builtin.include_tasks: repmgr_prepare_hba.yml
+  when: not validate_only|bool
 
 - name: Include repmgr_hba.yml
   ansible.builtin.include_tasks: repmgr_hba.yml
+  when: not validate_only|bool
 
 - name: Include repmgr_configure.yml
   ansible.builtin.include_tasks: repmgr_configure.yml
+  when: not validate_only|bool
 
 - name: Register the repmgr primary node
   ansible.builtin.include_tasks: repmgr_register_node.yml
-  when: "'primary' in group_names"
+  when:
+    - "'primary' in group_names"
+    - not validate_only|bool
   vars:
     repmgr_role: primary
 
 - name: Register the repmgr standby nodes
   ansible.builtin.include_tasks: repmgr_register_node.yml
-  when: "'standby' in group_names"
+  when:
+    - "'standby' in group_names"
+    - not validate_only|bool
   vars:
     repmgr_role: standby
 
 - name: Register the repmgr witness nodes
   ansible.builtin.include_tasks: repmgr_register_node.yml
-  when: "'witness' in group_names"
+  when:
+    - "'witness' in group_names"
+    - not validate_only|bool
   vars:
     repmgr_role: witness
 
 - name: Include generate_ssh_keys.yml
   ansible.builtin.include_tasks: generate_ssh_keys.yml
+  when: not validate_only|bool
 
 - name: Include exchange_ssh_keys.yml
   ansible.builtin.include_tasks: exchange_ssh_keys.yml
   loop: "{{ repmgr_cluster_nodes }}"
   loop_control:
     loop_var: remote_node
-  when: "remote_node.inventory_hostname != inventory_hostname"
+  when:
+    - "remote_node.inventory_hostname != inventory_hostname"
+    - not validate_only|bool
   vars:
     local_node: "{{ repmgr_node_info }}"
 
 - name: Include repmgr_sudoers.yml
   ansible.builtin.include_tasks: repmgr_sudoers.yml
+  when: not validate_only|bool
 
 - name: Include repmgr_setup_systemd.yml
   ansible.builtin.include_tasks: repmgr_setup_systemd.yml
+  when: not validate_only|bool
+
+- name: Include the validate_setup_repmgr tasks
+  ansible.builtin.include_tasks: validate_setup_repmgr.yml
+  when: validate_only|bool or use_validation|bool

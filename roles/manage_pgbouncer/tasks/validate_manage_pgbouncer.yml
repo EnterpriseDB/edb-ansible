@@ -1,1 +1,33 @@
 ---
+- name: Get pgbouncer cluster node informations
+  ansible.builtin.set_fact:
+    pgbouncer_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary private IP and primary hostname
+  ansible.builtin.set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+  when: node.node_type == 'primary'
+  loop: "{{ pgbouncer_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"
+
+# validate test db
+#- name: Run command to check pgbouncer databases
+#  ansible.builtin.shell:
+#  become: true
+#  become_user: "{{ pg_owner }}"
+#  run_once: true
+#  delegate_to: "{{ primary_private_ip }}"
+#  when: pgbouncer_databases_list|length > 0
+#  register: pgbouncer_db_res
+
+# validate manage pgbouncer pid file
+
+# validate manage pgbouncer auth file
+
+# validate manage pgbouncer users
+
+#- name: Reset variables
+#  ansible.builtin.set_fact:
+#    pgbouncer_db_res: null

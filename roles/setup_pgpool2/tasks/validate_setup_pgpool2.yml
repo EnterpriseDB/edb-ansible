@@ -85,8 +85,82 @@
     success_msg: "User {{ pg_pgpool_user }} was created correctly."
 
 # test if load balancing is on when pgpool2_load_balancing is true
+- name: Generate test user
+  ansible.builtin.set_fact:
+    pgpool2_test_user: "test_user"
+    pgpool2_test_user_password: ""
+
+- name: Generate the pgpool2_test_user_password
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pgpool2_test_user }}"
+    input_password: "{{ pgpool2_test_user_password }}"
+  no_log: "{{ disable_logging }}"
+  run_once: true
+  when: pgpool2_test_user_password|length < 1
+
+- name: Set pgpool2_test_user_password
+  ansible.builtin.set_fact:
+    pgpool2_test_user_password: "{{ input_password }}"
+  when: pgpool2_test_user_password|length < 1
+  run_once: true
+
+- name: Add pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_pgpool2
+    tasks_from: pcp_manage_users
+  vars:
+    pcp_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+  no_log: "{{ disable_logging }}"
+  when: pgpool2_test_user_password|length > 1
+
+- name: Set current node IP address
+  ansible.builtin.set_fact:
+    pgpool2_current_node: "{{ hostvars[inventory_hostname].private_ip }}"
+
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_pgpool_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "-At -U %s -h %s -p %s -c 'PGPOOL SHOW load_balance_mode' postgres"
+    positional_args:
+      - '{{ pgpool2_test_user }}'
+      - '{{ pgpool2_current_node | string }}'
+      - '{{ pgpool2_port | string}}'
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  run_once: true
+  register: pgpool_load_balance_query_result
+
+- name: Debug
+  ansible.builtin.debug:
+    msg: "{{ pgpool_load_balance_query_result }}"
+
+- name: Fail
+  ansible.builtin.fail:
+    msg: "Fail here."
+
+- name: Remove pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_pgpool2
+    tasks_from: pcp_manage_users
+  vars:
+    pcp_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        state: 'absent'
+  no_log: "{{ disable_logging }}"
+  when: pgpool2_test_user_password|length > 1
 
 - name: Reset variables
   ansible.builtin.set_fact:
     pgpool2_packages_check: null
     pgpool_user_query_result: null
+    pgpool2_test_user: null
+    pgpool2_test_user_password: null

@@ -59,14 +59,14 @@
   loop_control:
     loop_var: user
   when: pg_users|length > 0
+  run_once: true
   register: pg_users_query_result
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
     pg_users_query_names: "{{ pg_users_query_result.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='usename') }}"
     pg_users_names: "{{ pg_users | map(attribute='name') }}"
-  when:
-    - pg_users|length > 0
+  when: pg_users|length > 0
 
 - name: Check if pg_users were created correctly
   ansible.builtin.assert:
@@ -77,8 +77,6 @@
   when: pg_users|length > 0
   run_once: true
 
-# test manage_dbserver scripts executed properly
-
 # test manage_dbserver hba file
 - name: Run postgres query to check if pg_hba file was correctly found
   community.postgresql.postgresql_query:
@@ -87,6 +85,7 @@
     port: "{{ pg_port }}"
     login_user: "{{ pg_owner }}"
     query: "Show hba_file"
+  become: true
   become_user: "{{ pg_owner }}"
   run_once: true
   register: hba_query_result

@@ -26,6 +26,12 @@
 
 - name: Include the pgbouncer_install
   ansible.builtin.include_tasks: pgbouncer_install.yml
+  when: not validate_only|bool
 
 - name: Include the pgbouncer_setup
   ansible.builtin.include_tasks: pgbouncer_setup.yml
+  when: not validate_only|bool
+
+- name: Include the validate pgbouncer tasks
+  ansible.builtin.include_tasks: validate_setup_pgbouncer.yml
+  when: validate_only|bool or use_validation|bool

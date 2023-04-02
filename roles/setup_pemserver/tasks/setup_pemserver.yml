@@ -48,11 +48,13 @@
   ansible.builtin.import_tasks: rm_pem_server_install.yml
   when: >
       ((force_pemserver is defined and force_pemserver)
-       or (force_initdb is defined and force_initdb))
+       or (force_initdb is defined and force_initdb)) and
+      not validate_only|bool
   become: true
 
 - name: Install and configure pemserver
   become: true
+  when: not validate_only|bool
   block:
     - name: Import pem_server_user
       ansible.builtin.import_tasks: pem_server_user.yml
@@ -65,6 +67,11 @@
 
 - name: Update pem probes and alerts
   ansible.builtin.import_tasks: pem_server_probe_alert.yml
+  when: not validate_only|bool
+
+- name: Inlcude the validate_setup_pemserver tasks
+  ansible.builtin.import_tasks: validate_setup_pemserver.yml
+  when: validate_only|bool or use_validation|bool
 
 - name: Reset the variables
   ansible.builtin.set_fact:

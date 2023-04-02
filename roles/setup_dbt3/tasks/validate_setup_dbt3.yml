@@ -1,1 +1,43 @@
 ---
+# validate dbt3 packages
+- name: Set dbt3 package name
+  ansible.builtin.set_fact:
+    dbt3_package: 'dbt3'
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that DBT3 packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[dbt3_package] }} is defined"
+    fail_msg: "Package {{ dbt3_package }} has not been installed."
+    success_msg: "Package {{ dbt3_package }} has been installed."
+
+# validate dbt3 user
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = %s"
+    positional_args:
+      - '{{ pg_owner }}'
+  become_user: "{{ pg_owner }}"
+  register: user_query_result
+
+- name: Check if DBT3 postgres user was successfully created
+  ansible.builtin.assert:
+    that:
+      - user_query_result.query_result[0]['usename'] == pg_owner
+    fail_msg: "DBT3 postgres user was not successfully created."
+    success_msg: "DBT3 postgres user was successfully created."
+  run_once: true
+
+# reset variables
+- name: Reset variables
+  ansible.builtin.set_fact:
+    dbt3_package: null
+    user_query_result: null

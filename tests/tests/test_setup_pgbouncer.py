@@ -11,6 +11,7 @@ from conftest import (
     os_family
 )
 
+
 def test_setup_pgbouncer_service():
     host = get_pgbouncer()[0]
     service = 'pgbouncer'
@@ -26,6 +27,7 @@ def test_setup_pgbouncer_service():
 
     assert host.service(service).is_enabled, \
         "pgbouncer service not enabled"
+
 
 def test_setup_pgbouncer_packages():
     host = get_pgbouncer()[0]
@@ -43,6 +45,7 @@ def test_setup_pgbouncer_packages():
         assert host.package(package).is_installed, \
             "Package %s not installed" % packages
 
+
 def test_setup_pgbouncer_test_user():
     ansible_vars = load_ansible_vars()
     pgbouncer_user = ansible_vars['pgbouncer_auth_user_list'][0]['username']
@@ -56,7 +59,7 @@ def test_setup_pgbouncer_test_user():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgbouncer_address= get_pgbouncer()[0]
+    pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
 
@@ -72,6 +75,7 @@ def test_setup_pgbouncer_test_user():
     assert len(result) > 0, \
         "pgbouncer test user was not created sucessfully."
 
+
 def test_setup_pgbouncer_config():
     ansible_vars = load_ansible_vars()
     pgbouncer_user = ansible_vars['pgbouncer_auth_user_list'][0]['username']
@@ -86,7 +90,7 @@ def test_setup_pgbouncer_config():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgbouncer_address= get_pgbouncer()[0]
+    pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
 
@@ -101,6 +105,7 @@ def test_setup_pgbouncer_config():
 
     assert pgbouncer_admin_user in result, \
         "pgbouncer admin user was not configured properly."
+
 
 def test_setup_pgbouncer_port():
     ansible_vars = load_ansible_vars()

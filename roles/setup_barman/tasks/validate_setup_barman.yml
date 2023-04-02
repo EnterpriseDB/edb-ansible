@@ -1,1 +1,156 @@
 ---
+- name: Get Barman server informations
+  ansible.builtin.set_fact:
+    _barman_server_info: "{{ lookup('edb_devops.edb_postgres.barman_server', wantlist=True) }}"
+
+- name: Gather the barman cluster information
+  ansible.builtin.set_fact:
+    cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary private IP and primary hostname
+  ansible.builtin.set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+    primary_inventory_hostname: "{{ node.inventory_hostname }}"
+  when: node.node_type == 'primary'
+  loop: "{{ cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"
+
+- name: Fail if barman server informations are not found
+  ansible.builtin.fail:
+    msg: "Unable to find barman server informations"
+  when:
+    - _barman_server_info|length == 0
+
+- name: Set _barman_server_inventory_hostname
+  ansible.builtin.set_fact:
+    _barman_server_inventory_hostname: "{{ _barman_server_info[0].inventory_hostname }}"
+
+# validate barman backup
+- name: Run command to check backup server was configured properly
+  ansible.builtin.shell: barman list-server
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: "{{ barman_user }}"
+  run_once: true
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
+  register: barman_list_server_res
+
+- name: Check if backup server has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - barman_list_server_res.stdout_lines is search('{{ primary_inventory_hostname }}')
+    fail_msg: "{{ primary_inventory_hostname }} backup server was not configured correctly."
+    success_msg: "{{ primary_inventory_hostname }} backup server was configured correctly."
+  run_once: true
+
+# validate barman home directory
+- name: Run command to check barman home directory
+  ansible.builtin.shell:
+    cmd: barman show-server {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep barman_home
+  become: true
+  become_user: "{{ barman_user }}"
+  run_once: true
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
+  register: barman_show_server_res
+
+- name: Check if barman home directory has been configured correctly
+  ansible.builtin.assert:
+    that:
+      - barman_show_server_res.stdout_lines is search('{{ barman_home }}')
+    fail_msg: "{{ barman_home }} directory was not configured correctly"
+    success_msg: "{{ barman_home }} directory was configured correctly"
+  run_once: true
+
+# validate barman status
+- name: Run command to check backup server was configured properly
+  ansible.builtin.shell:
+    cmd: barman status {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep Active
+  become: true
+  become_user: "{{ barman_user }}"
+  run_once: true
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
+  register: barman_status_res
+
+- name: Check if backup server has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - barman_status_res.stdout_lines is search('True')
+    fail_msg: "{{ primary_inventory_hostname }}-{{ pg_instance_name }} server status is not active"
+    success_msg: "{{ primary_inventory_hostname }}-{{ pg_instance_name }} server status is active"
+  run_once: true
+
+# validate barman user
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "Select * from pg_user where usename = %s"
+    positional_args:
+      - "{{ barman_user }}"
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ primary_private_ip }}"
+  run_once: true
+  register: barman_query_result
+
+- name: Check if barman user is present
+  ansible.builtin.assert:
+    that:
+      - barman_query_result.query_result[0]['usename'] == barman_user
+    fail_msg: "barman user was not created correctly."
+    success_msg: "barman user was created correctly."
+  run_once: true
+
+# validate barman logical wal level
+- name: Run postgres query
+  community.postgresql.postgresql_query:
+    db: "{{ pg_database }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "SELECT setting FROM pg_settings WHERE name = 'wal_level'"
+  become_user: "{{ pg_owner }}"
+  delegate_to: "{{ primary_private_ip }}"
+  run_once: true
+  register: barman_wal_query_result
+
+- name: Check if wal_level is set to logical
+  ansible.builtin.assert:
+    that:
+      - barman_wal_query_result.query_result[0]['setting'] == 'logical'
+    fail_msg: "wal_level should be set to 'logical'"
+    success_msg: "wal_level is correctly set to 'logical'"
+  run_once: true
+
+# validate barman backup
+- name: Run command to check backup server was configured properly
+  ansible.builtin.shell:
+    cmd: barman backup {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep completed
+  become: true
+  become_user: "{{ barman_user }}"
+  run_once: true
+  delegate_to: "{{ _barman_server_inventory_hostname }}"
+  register: barman_backup_res
+
+- name: Check if backup server has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - barman_backup_res.stdout_lines is search('Backup completed')
+    fail_msg: "Backup for {{ primary_inventory_hostname }}-{{ pg_instance_name }}'s server has failed"
+    success_msg: "Backup for {{ primary_inventory_hostname }}-{{ pg_instance_name }}'s server was successful"
+  run_once: true
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    _barman_server_info: null
+    cluster_nodes: null
+    barman_list_server_res: null
+    barman_show_server_res: null
+    barman_status_res: null
+    barman_query_result: null
+    barman_wal_query_result: null
+    barman_backup_res: null

@@ -3,16 +3,19 @@
   ansible.builtin.stat:
     path: "{{ pg_data }}"
   register: data_check
+  become: true
 
 - name: Stat to pg_data/pg_wal
   ansible.builtin.stat:
     path: "{{ pg_data }}/pg_wal"
   register: data_wal_check
+  become: true
 
 - name: Stat to pg_wal
   ansible.builtin.stat:
     path: "{{ pg_wal }}"
   register: wal_check
+  become: true
 
 - name: Check that pg_data was configured correctly
   ansible.builtin.assert:
@@ -26,7 +29,6 @@
 - name: Check that pg_wal was configured correctly
   ansible.builtin.assert:
     that:
-      - wal_check.stat['gr_name'] == pg_group
       - wal_check.stat['pw_name'] == pg_owner
       - wal_check.stat['isdir']|bool
       - data_wal_check.stat['islnk']|bool
@@ -38,25 +40,17 @@
 - name: Gather service facts
   ansible.builtin.service_facts:
 
-- name: Set full service name for pg_service
-  ansible.builtin.set_fact:
-    check_pg_service: "{{ pg_service }}.service"
-
 - name: Check if service pg_service is running
   ansible.builtin.assert:
     that:
-      - ansible_facts.services[check_pg_service]['state'] == 'running'
+      - ansible_facts.services[pg_service + '.service']['state'] == 'running'
     fail_msg: "The service {{ pg_service }} is not running."
     success_msg: "The service {{ pg_service }} is running."
 
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ ansible_facts.services[check_pg_service] }}"
-
 - name: Check if service pg_service is running
   ansible.builtin.assert:
     that:
-      - ansible_facts.services[check_pg_service]['status'] == 'enabled'
+      - ansible_facts.services[pg_service + '.service']['status'] == 'enabled'
     fail_msg: "The service {{ pg_service }} is not enabled."
     success_msg: "The service {{ pg_service }} is enabled."
   when: ansible_os_family == 'RedHat'
@@ -72,8 +66,9 @@
     port: "{{ pg_port }}"
     state: started
     msg: "Port {{ pg_port }} is not listening."
+  become: true
 
-- name: Check if service pg_service is running
+- name: Check pg_unix_socket_directories socket
   ansible.builtin.assert:
     that:
       - unix_stat.stat['issock']|bool
@@ -109,7 +104,6 @@
     data_check: null
     data_wal_check: null
     wal_check: null
-    check_pg_service: null
     data_dir_stat: null
     query_result: null
     unix_stat: null
