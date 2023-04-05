@@ -1,4 +1,9 @@
 ---
+- name: Remove hammerdb install/config based on force_hammerdb
+  ansible.builtin.include_tasks: rm_hammerdb_install_config.yml
+  when:
+    - force_hammerdb is defined
+    - force_hammerdb
 
 - name: Create hammerdb system group {{ hammerdb_group }}
   ansible.builtin.group:

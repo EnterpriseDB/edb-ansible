@@ -2,6 +2,12 @@
 - name: Reference variables
   ansible.builtin.include_vars: "{{ pg_type }}.yml"
 
+- name: Remove DBT-2 install/config based on force_initdb/force_dbt2
+  ansible.builtin.include_tasks: rm_dbt2_install_config.yml
+  when: >
+    ((force_initdb is defined and force_initdb) or
+     (force_dbt2 is defined and force_dbt2))
+
 - name: Include DBT-2 client systems into pg_hba
   ansible.builtin.include_tasks: dbt2_update_pg_hba.yml
   when: not validate_only|bool

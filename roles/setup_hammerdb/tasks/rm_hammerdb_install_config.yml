@@ -1,0 +1,46 @@
+---
+- name: Remove hammerdb system user {{ hammerdb_user }}
+  ansible.builtin.user:
+    name: "{{ hammerdb_user }}"
+    group: "{{ hammerdb_group }}"
+    state: absent
+    remove: true
+    force: true
+  become: true
+
+- name: Remove hammerdb system group {{ hammerdb_group }}
+  ansible.builtin.group:
+    name: "{{ hammerdb_group }}"
+    state: absent
+  become: true
+
+- name: Remove hammerdb files and directory
+  ansible.builtin.file:
+    path: "/home/{{ hammerdb_user }}"
+    state: absent
+  become: true
+
+- name: Remove packages required for installing and running HammerDB
+  ansible.builtin.package:
+    name:
+      - curl
+      - libpq
+    state: absent
+  become: true
+  failed_when: false
+
+- name: Remove Oracle Instant Client Repository
+  ansible.builtin.package:
+    name:
+      - "{{ oracle_instant_client_repo_pkg }}"
+    state: absent
+  when: ansible_facts["distribution"] == "OracleLinux"
+
+- name: Remove Oracle Instant Client Packages (repo)
+  ansible.builtin.package:
+    name:
+      - oracle-instantclient-basic
+      - oracle-instantclient-sqlplus
+      - oracle-instantclient-tools
+    state: absent
+

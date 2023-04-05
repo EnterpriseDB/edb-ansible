@@ -36,6 +36,12 @@
 - name: Reference pg_type variables
   ansible.builtin.include_vars: "{{ role_path }}/../init_dbserver/vars/{{ pg_type }}_{{ ansible_os_family }}.yml"
 
+- name: Remove pgbackrest install/config based on force_pgbackrestserver
+  ansible.builtin.include_tasks: rm_pgbackrestserver_install_config.yml
+  when:
+    - force_pgbackrestserver is defined
+    - force_pgbackrestserver
+
 - name: Update /etc/hosts based on use_hostname
   become: true
   when:
