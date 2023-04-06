@@ -26,6 +26,8 @@
       import_tasks: manage_db.yml
     - name: Import manage_extensions task
       import_tasks: manage_extensions.yml
+    - name: Import manage_roles task
+      import_tasks: manage_roles.yml
     - name: Import manage_privilieges task
       import_tasks: manage_privileges.yml
     - name: Import manage_tablespaces task

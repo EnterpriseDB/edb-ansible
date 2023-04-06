@@ -56,7 +56,7 @@
 - name: Grant execute privileges on system functions to pgpoolII sr user
   include_role:
     name: manage_dbserver
-    tasks_from: manage_privileges
+    tasks_from: manage_roles
     apply:
       delegate_to: "{{ pgpool2_primary_inventory_hostname }}"
   vars:
