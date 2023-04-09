@@ -39,8 +39,10 @@
 
 - name: Include the pgpool2_manage_users
   ansible.builtin.include_tasks: pgpool2_manage_users.yml
+  vars:
+    pgpool2_users: "{{ pgpool2_service_users }}"
   when:
-    - pgpool2_users|length > 0
+    - pgpool2_service_users|length > 0
     - not validate_only|bool
 
 - name: Reload pgpoolII service
@@ -48,7 +50,7 @@
     name: "{{ pgpool2_service_name }}"
     state: reloaded
   when:
-    - pgpool2_users|length > 0 or pgpool2_configuration|length > 0
+    - pgpool2_service_users|length > 0 or pgpool2_configuration|length > 0
     - not validate_only|bool
 
 - name: Include the pcp_manage_users

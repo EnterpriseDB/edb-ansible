@@ -1,65 +1,107 @@
 ---
-# test pcp user
-- name: Set pcp_command for RedHat
+# generate test user
+- name: Generate test user
   ansible.builtin.set_fact:
-    pcp_command: 'pcp_node_info'
-  when:
-    - ansible_os_family == 'RedHat' or (ansible_os_family == 'Debian' and pg_type == 'PG')
+    pgpool2_test_user: "test_user"
+    pgpool2_test_user_password: ""
 
-- name: Set pcp_command for Debian
+- name: Generate the pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pgpool2_test_user }}"
+    input_password: "{{ pgpool2_test_user_password }}"
+  no_log: "{{ disable_logging }}"
+  run_once: true
+  when: pgpool2_test_user_password|length < 1
+
+- name: Set pgpool2_test_pcp_user_password
   ansible.builtin.set_fact:
-    pcp_command: "{{ pgpool2_bin_path }}/pcp_node_info"
+    pgpool2_test_user_password: "{{ input_password }}"
+  when: pgpool2_test_user_password|length < 1
+  run_once: true
+
+- name: Add pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_users
+  vars:
+    pgpool2_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        auth: scram
+  no_log: "{{ disable_logging }}"
   when:
-    - ansible_os_family == 'Debian'
-    - pg_type == 'EPAS'
+    - pgpool2_test_user_password|length > 1
 
-# test pcp node count
+- name: Add pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+    apply:
+      delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  vars:
+    pg_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        pg_database: "{{ pg_pgpool_database }}"
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgpool2_test_user_password|length > 1
 
-#- name: Debug
-#  ansible.builtin.debug:
-#    msg: "{{ pcp_command_output }}"
-
-# test pgpool_users creation
-- name: Run postgres query to check if pgpool2_users were created correctly
+# validate the pcp socket
+- name: Run postgres query
   community.postgresql.postgresql_query:
     db: "{{ pg_pgpool_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = %s"
-    positional_args:
-      - '{{ user.name }}'
+    login_host: 127.0.0.1
+    port: "{{ pgpool2_port }}"
+    login_user: "{{ pgpool2_test_user }}"
+    login_password: "{{ pgpool2_test_user_password }}"
+    query: "PGPOOL SHOW pcp_socket_dir"
   become_user: "{{ pg_owner }}"
-  delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
-  loop: "{{ pgpool2_users }}"
-  loop_control:
-    loop_var: user
+  become: true
   run_once: true
-  register: pgpool_users_query_result
-  when: pgpool2_users|length > 0
+  register: pgpool_pcp_socket_query_result
 
-- name: Isolate desired value from query result
-  ansible.builtin.set_fact:
-    pgpool_users_query_names: "{{ pgpool_users_query_result.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='usename') }}"
-    pgpool_users_names: "{{ pgpool2_users | map(attribute='name') }}"
-  when:
-    - pgpool2_users|length > 0
-
-- name: Check if pgpool2_users were created correctly
+- name: Check if pcp_socket_dir is '/tmp'
   ansible.builtin.assert:
     that:
-      - pgpool_users_names|difference(pgpool_users_query_names)|length == 0
-    fail_msg: "User(s) {{ pgpool_users_names|difference(pgpool_users_query_names) }} was/were not created correctly."
-    success_msg: "User(s) {{ pgpool_users_names | join(', ') }} was/were created successfully."
-  when: pgpool2_users|length > 0
-  run_once: true
+      - pgpool_pcp_socket_query_result.query_result[0]['pcp_socket_dir'] == '/tmp'
+    fail_msg: "pcp socket was not correctly created"
+    success_msg: "pcp socket was correctly created"
 
-#- name: Fail
-#  ansible.builtin.fail:
-#    msg: "Fail"
+- name: Remove pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+    apply:
+      delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  vars:
+    pg_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        pg_database: "{{ pg_pgpool_database }}"
+        state: absent
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgpool2_test_user_password|length > 1
+
+- name: Remove pgpool2_test_user from pgpool2 users
+  ansible.builtin.include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_users
+  vars:
+    pgpool2_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        state: absent
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgpool2_test_user_password|length > 1
 
 - name: Reset variables
   ansible.builtin.set_fact:
-    pgpool_users_query_result: null
-    pgpool_users_query_names: null
-    pgpool_users_names: null
+    pgpool2_test_user: null
+    pgpool2_test_user_password: null
+    pgpool_pcp_socket_query_result: null

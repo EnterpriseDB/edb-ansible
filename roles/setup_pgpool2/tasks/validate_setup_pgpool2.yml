@@ -109,49 +109,73 @@
 
 - name: Add pgpool2_test_user
   ansible.builtin.include_role:
-    name: manage_pgpool2
-    tasks_from: pcp_manage_users
+    name: manage_dbserver
+    tasks_from: manage_users
+    apply:
+      delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
   vars:
-    pcp_users:
+    pg_users:
       - name: "{{ pgpool2_test_user }}"
         pass: "{{ pgpool2_test_user_password }}"
+        pg_database: "{{ pg_pgpool_database }}"
   no_log: "{{ disable_logging }}"
   when: pgpool2_test_user_password|length > 1
 
-- name: Set current node IP address
-  ansible.builtin.set_fact:
-    pgpool2_current_node: "{{ hostvars[inventory_hostname].private_ip }}"
+- name: Add pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_users
+  vars:
+    pgpool2_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        auth: scram
+  no_log: "{{ disable_logging }}"
+  when: pgpool2_test_user_password|length > 1
 
 - name: Run postgres query
   community.postgresql.postgresql_query:
     db: "{{ pg_pgpool_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "-At -U %s -h %s -p %s -c 'PGPOOL SHOW load_balance_mode' postgres"
-    positional_args:
-      - '{{ pgpool2_test_user }}'
-      - '{{ pgpool2_current_node | string }}'
-      - '{{ pgpool2_port | string}}'
+    login_host: 127.0.0.1
+    port: "{{ pgpool2_port }}"
+    login_user: "{{ pgpool2_test_user }}"
+    login_password: "{{ pgpool2_test_user_password }}"
+    query: "PGPOOL SHOW load_balance_mode"
   become_user: "{{ pg_owner }}"
-  delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  become: true
   run_once: true
+  when: pgpool2_load_balancing
   register: pgpool_load_balance_query_result
 
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ pgpool_load_balance_query_result }}"
+- name: Check if load_balance_mode is 'on'
+  ansible.builtin.assert:
+    that:
+      - pgpool_load_balance_query_result.query_result[0]['load_balance_mode'] == 'on'
+    fail_msg: "Load balance is not enabled"
+    success_msg: "Load balance is correctly enabled"
+  when: pgpool2_load_balancing
 
-- name: Fail
-  ansible.builtin.fail:
-    msg: "Fail here."
+- name: Remove pgpool2_test_user from database
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+    apply:
+      delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  vars:
+    pg_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        pg_database: "{{ pg_pgpool_database }}"
+        state: absent
+  no_log: "{{ disable_logging }}"
+  when: pgpool2_test_user_password|length > 1
 
-- name: Remove pgpool2_test_user
+- name: Remove pgpool2_test_user from pgpool2
   ansible.builtin.include_role:
     name: manage_pgpool2
-    tasks_from: pcp_manage_users
+    tasks_from: pgpool2_manage_users
   vars:
-    pcp_users:
+    pgpool2_users:
       - name: "{{ pgpool2_test_user }}"
         pass: "{{ pgpool2_test_user_password }}"
         state: 'absent'
@@ -164,3 +188,4 @@
     pgpool_user_query_result: null
     pgpool2_test_user: null
     pgpool2_test_user_password: null
+    pgpool_load_balance_query_result: null

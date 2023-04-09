@@ -3,6 +3,7 @@ pgpool2_version: 4.3
 # We don't have the choice of the version with community PostgreSQL
 pgpool2_package_name: "pgpool-II"
 pgpool2_configuration_file: "/etc/pgpool-II/pgpool.conf"
+pgpool2_pool_passwd_file: "/etc/pgpool-II/pool_passwd"
 pgpool2_user: "postgres"
 pgpool2_group: "postgres"
 

@@ -58,13 +58,13 @@ attribute to `true`. Default value is `false`.
 The `state` attribute defines if the parameter must be present or not in the
 configuration file. Default value is `present`.
 
-### pgpool2_users
+### pgpool2_service_users
 
 This is the list of PgpoolII user account to managed.
 
 Example:
 ```yaml
-pgpool2_users:
+pgpool2_service_users:
   - name: "my_user1"
     pass: "password"
     auth: scram
@@ -158,7 +158,7 @@ Below is an example of how to include the `manage_pgpool2` role:
           - key: "ssl_ca_cert"
             state: absent
 
-        pgpool2_users:
+        pgpool2_service_users:
           - name: "my_user1"
             pass: "password"
             auth: scram

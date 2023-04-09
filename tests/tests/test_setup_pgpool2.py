@@ -53,8 +53,8 @@ def test_setup_pgpool_packages():
 
 def test_setup_pgpool_test_user():
     ansible_vars = load_ansible_vars()
-    pgpool2_user = ansible_vars['pgpool2_users'][0]['name']
-    pgpool2_password = ansible_vars['pgpool2_users'][0]['pass']
+    pgpool2_user = ansible_vars['pgpool2_service_users'][0]['name']
+    pgpool2_password = ansible_vars['pgpool2_service_users'][0]['pass']
     pgpool2_port = ansible_vars['pgpool2_port']
 
     pg_user = 'postgres'
@@ -82,8 +82,8 @@ def test_setup_pgpool_test_user():
 
 def test_setup_pgpool_users():
     ansible_vars = load_ansible_vars()
-    pgpool2_user = ansible_vars['pgpool2_users'][0]['name']
-    pgpool2_password = ansible_vars['pgpool2_users'][0]['pass']
+    pgpool2_user = ansible_vars['pgpool2_service_users'][0]['name']
+    pgpool2_password = ansible_vars['pgpool2_service_users'][0]['pass']
     pgpool2_port = ansible_vars['pgpool2_port']
 
     pg_user = 'postgres'
@@ -110,8 +110,8 @@ def test_setup_pgpool_users():
 
 def test_setup_pgpool_loadbalance():
     ansible_vars = load_ansible_vars()
-    pgpool2_user = ansible_vars['pgpool2_users'][0]['name']
-    pgpool2_password = ansible_vars['pgpool2_users'][0]['pass']
+    pgpool2_user = ansible_vars['pgpool2_service_users'][0]['name']
+    pgpool2_password = ansible_vars['pgpool2_service_users'][0]['pass']
     pgpool2_port = ansible_vars['pgpool2_port']
 
     pg_user = 'postgres'
