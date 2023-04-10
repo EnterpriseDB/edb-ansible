@@ -30,16 +30,25 @@
     that:
       - pemagent_user_query_result.query_result[0]['usename'] == 'pemagent'
     fail_msg: "Pemagent user was not created correctly."
-    success_msg: "Permagent user was created correctly."
+    success_msg: "Pemagent user was created correctly."
   run_once: true
 
 # validate pem agent id's
-#"Cannot execute SQL 'Select id from pem.agent' None: relation \"pem.agent\" does not exist\nLINE 1: Select id from pem.agent\n
+- name: Get PEM agent informations
+  ansible.builtin.set_fact:
+    pem_agent_info: "{{ lookup('edb_devops.edb_postgres.pem_agents', pem_server_info[0].private_ip, wantlist=True) }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Get PEM agent informations with pem server
+  ansible.builtin.set_fact:
+    pem_agent_info: "{{ pem_agent_info | default([]) + pem_server_info }}"
+  no_log: "{{ disable_logging }}"
+
 - name: Run postgres query
   community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
+    db: "{{ pg_pem_database }}"
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
+    port: "{{ pem_pg_port }}"
     login_user: "{{ pg_owner }}"
     query: "Select id from pem.agent"
   become_user: "{{ pg_owner }}"
@@ -47,7 +56,12 @@
   run_once: true
   register: pemagent_id_query_result
 
-
+- name: Check if pemagent id's were set up correctly
+  ansible.builtin.assert:
+    that:
+      - pemagent_id_query_result.query_result|length == pem_agent_info|length
+    fail_msg: "Pem agents were not created successfully"
+    success_msg: "Pem agents were created successfully"
 
 # validate pemagent service
 - name: Gather service facts
@@ -73,12 +87,9 @@
     fail_msg: "Package 'edb-pem-agent' has not been installed."
     success_msg: "Package 'edb-pem-agent' has been installed."
 
-- name: Fail
-  ansible.builtin.fail:
-    msg: "Fail Here"
-
 - name: Reset variables
   ansible.builtin.set_fact:
     pem_cluster_nodes: null
     pemagent_user_query_result: null
     pemagent_id_query_result: null
+    pem_agent_info: null

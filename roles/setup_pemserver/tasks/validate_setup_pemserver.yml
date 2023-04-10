@@ -59,28 +59,28 @@
 - name: Check that all required packages have been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages['edb-pem-agent'] }} is defined"
-    fail_msg: "Package 'edb-pem-agent' has not been installed."
-    success_msg: "Package 'edb-pem-agent' has been installed."
+      - "{{ ansible_facts.packages[item] }} is defined"
+    fail_msg: "Package {{ item }} has not been installed."
+    success_msg: "Package {{ item }} has been installed."
+  loop: "{{ pem_server_packages }}"
 
 # validate pem database
-- name: Run command to check if PEM database was created
-  ansible.builtin.shell:
-    cmd: psql -At -h {{ pg_unix_socket_directories[0] }} -c 'r"\list"' postgres | grep pem
-  become: true
+- name: Get postgres info
+  community.postgresql.postgresql_info:
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pem_pg_port }}"
+    login_user: "{{ pg_owner }}"
+    filter: databases
   become_user: "{{ pg_owner }}"
-  register: pem_db_res
+  become: true
+  register: pem_db_info_res
 
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ pem_db_res }}"
-
-#- name: Check that PEM database was successfully created
-#  ansible.builtin.assert:
-#    that:
-#      -
-#    fail_msg: "PEM database was not successfully created"
-#    success_msg: "PEM database was succesfully created"
+- name: Check that PEM database was successfully created
+  ansible.builtin.assert:
+    that:
+      - pem_db_info_res.databases.pem is defined
+    fail_msg: "PEM database was not successfully created"
+    success_msg: "PEM database was succesfully created"
 
 # validate pemserver socket
 - name: Check that pemserver is listening
@@ -91,4 +91,10 @@
   become: true
 
 # validate pem web interface
-# is this test safe??
+# "curl --insecure -L -I https://%s:8443/pem | grep HTTP"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pemagent_query_res: null
+    pemadmin_query_res: null
+    pem_db_info_res: null

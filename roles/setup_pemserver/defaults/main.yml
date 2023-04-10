@@ -23,6 +23,7 @@ pem_agent_bin_path: "/usr/edb/pem/agent/bin"
 
 pem_allowed_connections: "0.0.0.0/0"
 pem_server_hba_local_entry: []
+pg_pem_database: "pem"
 # 1: web servce and database, 2: web services, 3: database
 pem_installation_type: "1"
 
