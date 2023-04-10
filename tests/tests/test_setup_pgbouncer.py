@@ -121,7 +121,7 @@ def test_setup_pgbouncer_port():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-    pgbouncer_address= get_pgbouncer()[0]
+    pgbouncer_address = get_pgbouncer()[0]
     address = str(pgbouncer_address).strip("<>").split('//')[1]
     host = get_primary()
 

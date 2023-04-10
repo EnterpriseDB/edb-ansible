@@ -1,17 +1,4 @@
 ---
-- name: Get pgbouncer cluster node information
-  ansible.builtin.set_fact:
-    pgbouncer_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
-
-- name: Get the primary private IP and primary hostname
-  ansible.builtin.set_fact:
-    primary_private_ip: "{{ node.private_ip }}"
-  when: node.node_type == 'primary'
-  loop: "{{ pgbouncer_cluster_nodes }}"
-  loop_control:
-    loop_var: node
-  no_log: "{{ disable_logging }}"
-
 # validate service is running
 - name: Gather service facts
   ansible.builtin.service_facts:
@@ -31,23 +18,41 @@
 - name: Check that all required packages have been installed
   ansible.builtin.assert:
     that:
-      - ansible_facts.packages[pgbouncer_package_name] is defined"
+      - ansible_facts.packages[pgbouncer_package_name] is defined
     fail_msg: "Package {{ pgbouncer_package_name }} has not been installed."
     success_msg: "Package {{ pgbouncer_package_name }} has been installed."
 
-# validate pgbouncer user
-#- name: Run command to check pgbouncer user
-#  ansible.builtin.shell:
-#  become: true
-#  become_user: "{{ pg_owner }}"
-#  run_once: true
-#  delegate_to: "{{ primary_private_ip }}"
-#  register: pgbouncer_user_res
+# validate pgbouncer auth file
+- name: Stat to pgbouncer_auth_file
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_auth_file }}"
+  register: pgbouncer_auth_stat
+  become: true
 
-# validate pgbouncer config
+- name: Check if pgbouncer_auth_file file was created properly
+  ansible.builtin.assert:
+    that:
+      - pgbouncer_auth_stat.stat['exists']|bool
+      - pgbouncer_auth_stat.stat['pw_name'] == pgbouncer_user
+    fail_msg: "pgbouncer auth file {{ pgbouncer_auth_file }} was not created properly"
+    success_msg: "pgbouncer auth file {{ pgbouncer_auth_file }} was created successfully"
 
-# validate pgbouncer port/active sockets
+# validate pgbouncer databases file
+- name: Stat to pgbouncer_databases_file
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_databases_file }}"
+  register: pgbouncer_db_stat
+  become: true
 
-#- name: Reset variables
-#  ansible.builtin.set_fact:
-#    pgbouncer_user_res: null
+- name: Check if pgbouncer_databases_file file was created properly
+  ansible.builtin.assert:
+    that:
+      - pgbouncer_db_stat.stat['exists']|bool
+      - pgbouncer_db_stat.stat['pw_name'] == pgbouncer_user
+    fail_msg: "pgbouncer databases file {{ pgbouncer_databases_file }} was not created properly"
+    success_msg: "pgbouncer databases file {{ pgbouncer_databases_file }} was created successfully"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pgbouncer_auth_stat: null
+    pgbouncer_db_stat: null
