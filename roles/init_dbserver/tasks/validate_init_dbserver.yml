@@ -84,11 +84,11 @@
     login_user: "{{ pg_owner }}"
     query: "SELECT setting FROM pg_settings WHERE name = 'data_directory'"
   become_user: "{{ pg_owner }}"
-  register: query_result
+  register: init_data_query_res
 
 - name: Get stat info for data_directory
   ansible.builtin.stat:
-    path: "{{ query_result.query_result[0].setting }}"
+    path: "{{ init_data_query_res.query_result[0].setting }}"
   register: data_dir_stat
 
 - name: Check that the data_directory result is linked to pg_data
@@ -98,6 +98,8 @@
       - data_dir_stat.stat['lnk_target'] == pg_data
     fail_msg: "Postgres data_directory is not linked to {{ pg_data }}"
     success_msg: "Postgres data_directory is linked to {{ pg_data }}"
+  when:
+    - init_data_query_res.query_result[0].setting != pg_data
 
 - name: Reset variables
   ansible.builtin.set_fact:
@@ -105,5 +107,5 @@
     data_wal_check: null
     wal_check: null
     data_dir_stat: null
-    query_result: null
+    init_data_query_res: null
     unix_stat: null
