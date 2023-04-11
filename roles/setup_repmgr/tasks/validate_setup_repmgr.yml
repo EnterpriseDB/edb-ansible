@@ -18,7 +18,7 @@
 - name: Check that all required packages have been installed on RedHat
   ansible.builtin.assert:
     that:
-      - ansible_facts.packages[repmgr_package_name] is defined"
+      - ansible_facts.packages[repmgr_package_name] is defined
     fail_msg: "Package {{ repmgr_package_name }} has not been installed."
     success_msg: "Package {{ repmgr_package_name }} has been installed."
 
@@ -47,7 +47,7 @@
     cmd: /usr/pgsql-{{ pg_version }}/bin/repmgr -f /etc/repmgr/{{ pg_version }}/repmgr-main.conf node status
   become: true
   become_user: "{{ pg_owner }}"
-  register: repmgr_node_status_res
+  register: repmgr_node_status_res_rh
   when: ansible_os_family == 'RedHat'
 
 - name: Run command to check repmgr node status on Debian
@@ -55,19 +55,28 @@
     cmd: repmgr -f /etc/repmgr.conf node status
   become: true
   become_user: "{{ pg_owner }}"
-  register: repmgr_node_status_res
+  register: repmgr_node_status_res_deb
   when: ansible_os_family == 'Debian'
 
 - name: Debug
   ansible.builtin.debug:
-    msg: "{{ repmgr_node_status_res }}"
+    msg: "{{ repmgr_node_status_res_rh }}"
 
-#- name: Check if repmgr node can check status correctly
-#  ansible.builtin.assert:
-#    that:
-#      - efm_cluster_check_res.stdout_lines|length == efm_cluster_nodes|length
-#    fail_msg: "repmgr command node status failed"
-#    success_msg: "repmgr command node status was successful"
+- name: Check if repmgr node can check status correctly on RedHat
+  ansible.builtin.assert:
+    that:
+      -
+    fail_msg: "repmgr command node status failed"
+    success_msg: "repmgr command node status was successful"
+  when: ansible_os_family == 'RedHat'
+
+- name: Check if repmgr node can check status correctly on Debian
+  ansible.builtin.assert:
+    that:
+      -
+    fail_msg: "repmgr command node status failed"
+    success_msg: "repmgr command node status was successful"
+  when: ansible_os_family == 'Debian'
 
 # validate repmgr node setup
 - name: Run command to check repmgr node check on RedHat
@@ -75,7 +84,7 @@
     cmd: /usr/pgsql-{{ pg_version }}/bin/repmgr -f /etc/repmgr/{{ pg_version }}/repmgr-main.conf node check
   become: true
   become_user: "{{ pg_owner }}"
-  register: repmgr_node_check_res
+  register: repmgr_node_check_res_rh
   when: ansible_os_family == 'RedHat'
 
 - name: Run command to check repmgr node check on Debian
@@ -83,26 +92,33 @@
     cmd: repmgr -f /etc/repmgr.conf node check
   become: true
   become_user: "{{ pg_owner }}"
-  register: repmgr_node_check_res
+  register: repmgr_node_check_res_deb
   when: ansible_os_family == 'Debian'
 
 - name: Debug
   ansible.builtin.debug:
-    msg: "{{ repmgr_node_check_res }}"
+    msg: "{{ repmgr_node_check_res_rh }}"
 
-#- name: Fail
-#  ansible.builtin.fail:
-#    msg: "Fail Here"
+- name: Check if repmgr node can check node correctly on RedHat
+  ansible.builtin.assert:
+    that:
+      -
+    fail_msg: "repmgr command node check failed"
+    success_msg: "repmgr command node check was successful"
+  when: ansible_os_family == 'RedHat'
 
-#- name: Check if repmgr node can check node correctly
-#  ansible.builtin.assert:
-#    that:
-#      - efm_cluster_check_res.stdout_lines|length == efm_cluster_nodes|length
-#    fail_msg: "repmgr command node check failed"
-#    success_msg: "repmgr command node check was successful"
+- name: Check if repmgr node can check node correctly on Debian
+  ansible.builtin.assert:
+    that:
+      -
+    fail_msg: "repmgr command node check failed"
+    success_msg: "repmgr command node check was successful"
+  when: ansible_os_family == 'Debian'
 
 - name: Reset variables
   ansible.builtin.set_fact:
     repmgr_query_res: null
-    repmgr_node_status_res: null
-    repmgr_node_check_res: null
+    repmgr_node_status_res_rh: null
+    repmgr_node_status_res_deb: null
+    repmgr_node_check_res_rh: null
+    repmgr_node_check_res_deb: null
