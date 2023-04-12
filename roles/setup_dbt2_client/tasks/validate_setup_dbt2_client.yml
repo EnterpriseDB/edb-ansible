@@ -12,8 +12,8 @@
   ansible.builtin.assert:
     that:
       - "{{ ansible_facts.packages[item] }} is defined"
-    fail_msg: "Package {{ package }} has not been installed."
-    success_msg: "Package {{ package }} has been installed."
+    fail_msg: "Package {{ item }} has not been installed."
+    success_msg: "Package {{ item }} has been installed."
   loop: "{{ dbt2_client_package_list }}"
 
 # validate dbt2 client sudo user

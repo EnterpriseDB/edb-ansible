@@ -64,7 +64,8 @@
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
-    pg_users_query_names: "{{ pg_users_query_result.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='usename') }}"
+    pg_users_query_names: >-
+      "{{ pg_users_query_result.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='usename') }}"
     pg_users_names: "{{ pg_users | map(attribute='name') }}"
   when: pg_users|length > 0
 
@@ -157,7 +158,8 @@
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
-    pg_slots_query_names: "{{ slot_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='slot_name') }}"
+    pg_slots_query_names: >-
+      "{{ slot_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='slot_name') }}"
     pg_slots_names: "{{ pg_slots | map(attribute='name') }}"
   when:
     - pg_slots|length > 0
@@ -226,7 +228,8 @@
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
-    pg_roles_query_names: "{{ role_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='rolname') }}"
+    pg_roles_query_names: >-
+      "{{ role_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='rolname') }}"
     pg_roles_names: "{{ pg_grant_roles | map(attribute='role') }}"
   when:
     - pg_grant_roles|length > 0
@@ -235,7 +238,7 @@
   ansible.builtin.assert:
     that:
       - pg_roles_names|difference(pg_roles_query_names)|length == 0
-    fail_msg: "Role(s) {{ pg_roles_names|difference(pg_roles_query_names) }} was/were not updated correctly."
+    fail_msg: "Role(s) {{ pg_roles_names | difference(pg_roles_query_names) }} was/were not updated correctly."
     success_msg: "Role(s) {{ pg_roles_names | join(', ') }} was/were updated correctly."
   when: pg_grant_roles|length > 0
   run_once: true
