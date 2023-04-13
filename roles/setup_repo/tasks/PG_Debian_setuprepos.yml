@@ -14,7 +14,7 @@
       {{ edb_auth_conf_url }} login {{ repo_username }} password {{ repo_password }}
     owner: root
     group: root
-    mode: 0600
+    mode: "0600"
   when:
     - os != 'Debian9'
     - enable_edb_repo|bool and repo_token|length < 1
