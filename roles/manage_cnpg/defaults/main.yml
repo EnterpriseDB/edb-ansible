@@ -27,9 +27,6 @@ drop_role_sql: DROP ROLE {{ db_role }};
 # Schemas
 add_schema_sql: CREATE SCHEMA IF NOT EXISTS {{ schema_name }};
 drop_schema_sql: DROP SCHEMA {{ schema_name }};
-# Roles
-add_role_sql: CREATE ROLE {{ db_role }} LOGIN PASSWORD '{{ db_role_password  }}';
-drop_role_sql: DROP ROLE {{ db_role }};
 # SQL Script
 execute_sql_script: DROP DATABASE {{ db_name }};
 # Manifest filename
