@@ -27,9 +27,9 @@
 
 - name: Remove Postgres packages
   ansible.builtin.include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_rm_install.yml"
-  when:
-    - force_install is defined
-    - force_install
+  when: >
+    ((force_install is defined and force_install) or
+     (remove_only is defined and remove_only))
 
 - name: Install and Configure Postgres on RedHat
   ansible.builtin.include_tasks: "{{ pg_type }}_{{ ansible_os_family }}_install.yml"

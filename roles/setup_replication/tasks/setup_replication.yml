@@ -34,8 +34,10 @@
 
 - name: Force cleanup based on force_initdb/replication
   ansible.builtin.include_tasks: rm_replication.yml
-  when: (force_initdb is defined and force_initdb)
-      or (force_replication is defined and force_replication)
+  when: >
+    ((force_initdb is defined and force_initdb) or
+     (force_replication is defined and force_replication) or
+     (remove_only is defined and remove_only))
 
 - name: Gather the cluster_nodes information
   ansible.builtin.set_fact:
