@@ -75,7 +75,8 @@
   when: >
       ((force_pemserver is defined and force_pemserver)
        or (force_initdb is defined and force_initdb)
-       or (force_pemagent is defined and force_pemagent))
+       or (force_pemagent is defined and force_pemagent)
+       or (remove_only is defined and remove_only))
        and not pem_agent_remote
   become: true
   no_log: "{{ disable_logging }}"

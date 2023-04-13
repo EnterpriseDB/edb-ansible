@@ -45,9 +45,9 @@
 
 - name: Cleanup the repos based on force_repo
   ansible.builtin.include_tasks: "PG_{{ ansible_os_family }}_rm_repos.yml"
-  when:
-    - force_repo is defined
-    - force_repo
+  when: >
+     ((force_repo is defined and force_repo) or
+      (remove_only is defined and remove_only))
 
 - name: Install Postgres repositories
   ansible.builtin.include_tasks: "PG_{{ ansible_os_family }}_setuprepos.yml"
