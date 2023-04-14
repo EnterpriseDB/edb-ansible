@@ -20,6 +20,19 @@
   throttle: 1
   when: "repmgr_role in ('primary', 'standby')"
 
+# update standby slot_name
+- name: Update standby slot_name
+  community.postgresql.postgresql_query:
+    db: "{{ pg_repmgr_dbname }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "update repmgr.nodes as n set slot_name=s.slot_name from pg_replication_slots s, pg_stat_replication r where r.pid=s.active_pid and n.node_name=r.application_name and n.type='standby'"
+  become_user: "{{ pg_owner }}"
+  become: true
+  delegate_to: "{{ repmgr_primary_info.private_ip }}"
+  when: "repmgr_role in ('standby')"
+
 - name: Register repmgr witness node
   ansible.builtin.shell: |
     set -o pipefail

@@ -58,14 +58,10 @@
   register: repmgr_node_status_res_deb
   when: ansible_os_family == 'Debian'
 
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ repmgr_node_status_res_rh }}"
-
 - name: Check if repmgr node can check status correctly on RedHat
   ansible.builtin.assert:
     that:
-      -
+      - not repmgr_node_status_res_rh.failed|bool
     fail_msg: "repmgr command node status failed"
     success_msg: "repmgr command node status was successful"
   when: ansible_os_family == 'RedHat'
@@ -73,7 +69,7 @@
 - name: Check if repmgr node can check status correctly on Debian
   ansible.builtin.assert:
     that:
-      -
+      - not repmgr_node_status_res_deb.failed|bool
     fail_msg: "repmgr command node status failed"
     success_msg: "repmgr command node status was successful"
   when: ansible_os_family == 'Debian'
@@ -95,14 +91,10 @@
   register: repmgr_node_check_res_deb
   when: ansible_os_family == 'Debian'
 
-- name: Debug
-  ansible.builtin.debug:
-    msg: "{{ repmgr_node_check_res_rh }}"
-
 - name: Check if repmgr node can check node correctly on RedHat
   ansible.builtin.assert:
     that:
-      -
+      - repmgr_node_check_res_rh.stdout_lines is search('OK')
     fail_msg: "repmgr command node check failed"
     success_msg: "repmgr command node check was successful"
   when: ansible_os_family == 'RedHat'
@@ -110,7 +102,7 @@
 - name: Check if repmgr node can check node correctly on Debian
   ansible.builtin.assert:
     that:
-      -
+      - repmgr_node_check_res_deb.stdout_lines is search('OK')
     fail_msg: "repmgr command node check failed"
     success_msg: "repmgr command node check was successful"
   when: ansible_os_family == 'Debian'
