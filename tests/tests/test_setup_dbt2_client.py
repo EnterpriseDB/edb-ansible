@@ -12,10 +12,7 @@ from conftest import (
 def test_setup_dbt2_client_packages():
     host = get_dbt2_client()[0]
     packages = [
-        'dbt2-client',
-        'dbt2-db',
-        'dbt2-pgsql-plpgsql',
-        'dbt2-scripts'
+        'dbt2-common'
     ]
 
     for package in packages:

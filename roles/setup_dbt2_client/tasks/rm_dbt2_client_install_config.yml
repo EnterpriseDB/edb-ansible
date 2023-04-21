@@ -16,11 +16,7 @@
 
 - name: Remove packages for DBT-2 Client
   ansible.builtin.dnf:
-    name:
-      - 'dbt2-client-{{ dbt2_version }}-1'
-      - 'dbt2-db-{{ dbt2_version }}-1'
-      - 'dbt2-scripts-{{ dbt2_version }}-1'
-      - 'dbt2-pgsql-plpgsql-{{ dbt2_version }}-1'
+    name: 'dbt2-common'
     state: absent
   when: ansible_os_family == "RedHat"
   become: true

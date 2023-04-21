@@ -12,9 +12,8 @@ from conftest import (
 def test_setup_dbt2_driver_packages():
     host = get_dbt2_driver()[0]
     packages = [
-        'dbt2-driver',
-        'dbt2-exec',
-        'dbt2-scripts'
+        'dbttools',
+        'dbt2-common'
     ]
 
     for package in packages:

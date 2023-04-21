@@ -11,12 +11,15 @@ from conftest import (
 
 def test_setup_dbt2_packages():
     host = get_primary()
+    pg_version = get_pg_version()
     packages = [
-        'dbt2-db',
-        'dbt2-pgsql-c_14',
-        'dbt2-pgsql-plpgsql',
-        'dbt2-scripts'
+        'dbt2-common'
     ]
+
+    if pg_version in ['13', '14']:
+        packages.append('dbt2-pg%s-extensions' % pg_version)
+    else:
+        packages.append('dbt2-pgsql-c_%s' % pg_version)
 
     for package in packages:
         assert host.package(package).is_installed, \
