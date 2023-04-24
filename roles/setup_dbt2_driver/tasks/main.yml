@@ -6,7 +6,8 @@
   ansible.builtin.include_tasks: rm_dbt2_driver_install_config.yml
   when: >
     ((force_dbt2 is defined and force_dbt2) or
-    (force_dbt2_driver is defined and force_dbt2_driver))
+    (force_dbt2_driver is defined and force_dbt2_driver) or
+    (remove_only is defined and remove_only))
 
 - name: Include DBT-2 kit driver installation
   ansible.builtin.include_role:

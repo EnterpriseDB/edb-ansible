@@ -48,8 +48,9 @@
   ansible.builtin.import_tasks: rm_pem_server_install.yml
   when: >
       ((force_pemserver is defined and force_pemserver)
-       or (force_initdb is defined and force_initdb)) and
-      not validate_only|bool
+       or (force_initdb is defined and force_initdb)
+        or (remove_only is defined and remove_only)) and
+         not validate_only|bool
   become: true
 
 - name: Install and configure pemserver

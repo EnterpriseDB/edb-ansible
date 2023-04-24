@@ -86,6 +86,7 @@
     (force_efm is defined and force_efm)
     or (force_initdb is defined and force_initdb)
     or (force_replication is defined and force_replication)
+    or (remove_only is defined and remove_only)
 
 - name: Prepare efm_nodes_list based on use_hostname
   ansible.builtin.set_fact:

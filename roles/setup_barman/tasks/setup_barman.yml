@@ -40,7 +40,8 @@
       ((force_barman is defined and force_barman)
        or (force_initdb is defined and force_initdb)
         or (force_replication is defined and force_replication)
-         or (force_pemserver is defined and force_pemserver))
+         or (force_pemserver is defined and force_pemserver)
+          or (remove_only is defined and remove_only))
 
 - name: Update /etc/hosts based on use_hostname
   when:

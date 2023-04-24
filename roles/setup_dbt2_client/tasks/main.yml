@@ -9,7 +9,8 @@
   ansible.builtin.include_tasks: rm_dbt2_client_install_config.yml
   when: >
     ((force_dbt2 is defined and force_dbt2) or
-     (force_dbt2_client is defined and force_dbt2_client))
+     (force_dbt2_client is defined and force_dbt2_client) or
+     (remove_only is defined and remove_only))
 
 - name: Include DBT-2 kit client installation
   ansible.builtin.include_role:
