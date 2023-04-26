@@ -5,13 +5,14 @@
 
 # validate command for configuration validation is successful
 - name: Run command to check if pgbackrest server has been configured correctly
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: pgbackrest --stanza={{ pg_instance_name }} check
   become: true
   become_user: "{{ pgbackrest_user }}"
   delegate_to: "{{ pgbackrest_server_node_info[0].inventory_hostname }}"
   run_once: true
   register: pgbackrest_config_check_res
+  changed_when: pgbackrest_config_check_res.rc == '0'
 
 - name: Check if pgbackrest server has been configured correctly.
   ansible.builtin.assert:
@@ -23,12 +24,13 @@
 
 # validate backup exists on pgbackrest
 - name: Run command to check if backup for pgbackrest cluster was successful
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: pgbackrest --stanza={{ pg_instance_name }} info
   become: true
   become_user: "{{ pgbackrest_user }}"
   run_once: true
   register: pgbackrest_config_info_res
+  changed_when: pgbackrest_config_info_res.rc == '0'
 
 - name: Check if backup for pgbackrest cluster was successful
   ansible.builtin.assert:
@@ -40,12 +42,13 @@
 
 # test archive repo for pgbackrest exists
 - name: Run command to check if pgbackrest archive repo was successfully configured
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: pgbackrest repo-ls
   become: true
   become_user: "{{ pgbackrest_user }}"
   run_once: true
   register: pgbackrest_config_repo_res
+  changed_when: pgbackrest_config_repo_res.rc == '0'
 
 - name: Check if pgbackrest archive repo was successfully configured
   ansible.builtin.assert:

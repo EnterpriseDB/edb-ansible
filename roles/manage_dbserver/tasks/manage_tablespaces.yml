@@ -4,7 +4,7 @@
     path: "{{ line_item.location }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
     state: "{{ 'absent' if line_item.state is defined and line_item.state == 'absent' else 'directory' }}"
   no_log: "{{ disable_logging }}"
   become: true

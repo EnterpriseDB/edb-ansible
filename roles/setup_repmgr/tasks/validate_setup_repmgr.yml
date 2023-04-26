@@ -43,19 +43,21 @@
 
 # validate repmgr node status
 - name: Run command to check repmgr node status on RedHat
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: /usr/pgsql-{{ pg_version }}/bin/repmgr -f /etc/repmgr/{{ pg_version }}/repmgr-main.conf node status
   become: true
   become_user: "{{ pg_owner }}"
   register: repmgr_node_status_res_rh
+  changed_when: repmgr_node_status_res_rh.rc == '0'
   when: ansible_os_family == 'RedHat'
 
 - name: Run command to check repmgr node status on Debian
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: repmgr -f /etc/repmgr.conf node status
   become: true
   become_user: "{{ pg_owner }}"
   register: repmgr_node_status_res_deb
+  changed_when: repmgr_node_status_res_deb.rc == '0'
   when: ansible_os_family == 'Debian'
 
 - name: Check if repmgr node can check status correctly on RedHat
@@ -76,19 +78,21 @@
 
 # validate repmgr node setup
 - name: Run command to check repmgr node check on RedHat
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: /usr/pgsql-{{ pg_version }}/bin/repmgr -f /etc/repmgr/{{ pg_version }}/repmgr-main.conf node check
   become: true
   become_user: "{{ pg_owner }}"
   register: repmgr_node_check_res_rh
+  changed_when: repmgr_node_check_res_rh.rc == '0'
   when: ansible_os_family == 'RedHat'
 
 - name: Run command to check repmgr node check on Debian
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: repmgr -f /etc/repmgr.conf node check
   become: true
   become_user: "{{ pg_owner }}"
   register: repmgr_node_check_res_deb
+  changed_when: repmgr_node_check_res_deb.rc == '0'
   when: ansible_os_family == 'Debian'
 
 - name: Check if repmgr node can check node correctly on RedHat

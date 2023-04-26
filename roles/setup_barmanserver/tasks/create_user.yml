@@ -61,6 +61,7 @@
 
 - name: Apply new SELinux context for custom located barman home directory
   ansible.builtin.command: "restorecon -irv {{ barman_home }}"
+  changed_when: true
   when:
     - selinux_enforcing
     - barman_home_dir.changed or barman_ssh_home_dir.changed

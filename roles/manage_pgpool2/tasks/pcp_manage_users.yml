@@ -12,7 +12,7 @@
     dest: "{{ pcp_configuration_file }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
-    mode: 0600
+    mode: "0600"
     remote_src: true
   when:
     - not pcp_conf.stat.exists

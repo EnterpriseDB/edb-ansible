@@ -53,7 +53,7 @@
     path: "{{ pgbackrest_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
-    mode: 0600
+    mode: "0600"
     line: "{{ _pg_ssh_public_key }}"
     create: true
   delegate_to: "{{ _pgbackrest_server_inventory_hostname }}"
@@ -64,7 +64,7 @@
     path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0600
+    mode: "0600"
     line: "{{ _pgbackrest_server_ssh_public_key }}"
     create: true
 

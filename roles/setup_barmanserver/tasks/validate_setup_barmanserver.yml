@@ -4,6 +4,7 @@
   ansible.builtin.package_facts:
     strategy: "all"
 
+# use hard-coded package names to reduce number of tasks necessary to get all packages based on distro and major version
 - name: Check that all required barman packages have been installed
   ansible.builtin.assert:
     that:
@@ -36,6 +37,7 @@
   become_user: "{{ barman_user }}"
   run_once: true
   register: barman_sudo_user_res
+  changed_when: barman_sudo_user_res.rc == '0'
 
 - name: Check if barman user has been configured correctly.
   ansible.builtin.assert:

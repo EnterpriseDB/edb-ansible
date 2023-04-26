@@ -1,11 +1,10 @@
 ---
-
 - name: Copy global systemd unit file to /etc/systemd/system
   ansible.builtin.copy:
     remote_src: true
     src: "{{ pg_systemd_global_unit_file }}"
     dest: "/etc/systemd/system/{{ pg_service }}.service"
-    mode: 0600
+    mode: "0600"
     owner: root
     group: root
   become: true

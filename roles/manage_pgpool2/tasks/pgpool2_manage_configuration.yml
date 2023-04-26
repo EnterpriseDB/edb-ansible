@@ -16,7 +16,7 @@
     path: "{{ pgpool2_configuration_file }}"
     lines: "{{ _pgpool2_configuration_lines }}"
     create: true
-    mode: 0600
+    mode: "0600"
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
   become: true

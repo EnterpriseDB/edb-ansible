@@ -36,6 +36,10 @@ repmgr_reconnect_attempts: 3
 # Interval of time, in seconds, between each reconnect attemps
 repmgr_reconnect_interval: 5
 
+repmgr_update_slot_query: >-
+  update repmgr.nodes as n set slot_name=s.slot_name from pg_replication_slots s, pg_stat_replication r
+  where r.pid=s.active_pid and n.node_name=r.application_name and n.type='standby'
+
 # SSH port
 ssh_port: 22
 

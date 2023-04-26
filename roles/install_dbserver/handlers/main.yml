@@ -12,9 +12,11 @@
 - name: Drop the default EPAS debian database
   ansible.builtin.shell: >
     {{ epas_deb_drop_cluster }} --stop {{ pg_version }} {{ deb_cluster_name }}
+  changed_when: true
 
 - name: Drop the default PG debian database
   ansible.builtin.shell: >
     {{ pg_deb_drop_cluster }} {{ pg_version }} {{ deb_cluster_name }}
   args:
     executable: /bin/bash
+  changed_when: true

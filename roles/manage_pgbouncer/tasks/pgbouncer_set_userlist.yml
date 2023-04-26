@@ -16,7 +16,7 @@
     path: "{{ pgbouncer_auth_file }}"
     lines: "{{ pgbouncer_auth_user_lines }}"
     create: true
-    mode: 0600
+    mode: "0600"
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
   when: pgbouncer_auth_user_list|length > 0

@@ -10,7 +10,8 @@
   when: >
     ((force_dbt2 is defined and force_dbt2) or
      (force_dbt2_client is defined and force_dbt2_client) or
-     (remove_only is defined and remove_only))
+     (remove_only is defined and remove_only)) and
+     not validate_only|bool
 
 - name: Include DBT-2 kit client installation
   ansible.builtin.include_role:

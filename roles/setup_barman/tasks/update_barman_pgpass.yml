@@ -38,7 +38,7 @@
     path: "{{ barman_home + '/.pgpass' }}"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
-    mode: 0600
+    mode: "0600"
     line: "{{ _pg_host }}:{{ pg_port }}:*:{{ barman_pg_user }}:{{ barman_pg_password }}"
     regexp: "^{{ _pg_host | regex_escape() }}:{{ pg_port }}:\\*:{{ barman_pg_user | regex_escape() }}:.*"
     create: true

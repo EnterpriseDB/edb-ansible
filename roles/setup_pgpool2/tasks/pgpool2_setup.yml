@@ -120,7 +120,7 @@
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
-    mode: 0755
+    mode: "0755"
   become: true
 
 - name: Create pgpoolII logging directory {{ pgpool2_logdir }}
@@ -129,7 +129,7 @@
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
-    mode: 0755
+    mode: "0755"
   when: pgpool2_logdir is defined
   become: true
 
@@ -139,7 +139,7 @@
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
-    mode: 0700
+    mode: "0700"
   when: pgpool2_pid_file_name is defined
   become: true
 
@@ -150,7 +150,7 @@
     dest: "{{ pgpool2_configuration_file }}"
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
-    mode: 0600
+    mode: "0600"
   become: true
 
 - name: Create pgpoolII systemd directory for PG
@@ -159,7 +159,7 @@
     state: directory
     owner: "root"
     group: "root"
-    mode: 0700
+    mode: "0700"
   when:
     - pg_type == 'PG'
   become: true
@@ -170,7 +170,7 @@
     state: directory
     owner: "root"
     group: "root"
-    mode: 0700
+    mode: "0700"
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'Debian'
@@ -181,7 +181,7 @@
     backup: true
     dest: "{{ pgpool2_systemd_config_file }}"
     src: ./templates/pgpool-II.unit.conf.template
-    mode: 0644
+    mode: "0644"
   when:
     - pg_type == 'PG'
   become: true
@@ -192,7 +192,7 @@
     backup: true
     dest: "{{ pgpool2_systemd_config_file }}"
     src: ./templates/pgpool.unit.debian.conf.template
-    mode: 0644
+    mode: "0644"
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'Debian'
@@ -213,7 +213,7 @@
     backup: true
     dest: "{{ pgpool2_start_script }}"
     src: ./templates/edb-pgpool.sh.template
-    mode: 0755
+    mode: "0755"
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'Debian'

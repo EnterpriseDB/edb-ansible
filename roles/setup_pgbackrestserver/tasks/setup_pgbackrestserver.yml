@@ -39,8 +39,9 @@
 - name: Remove pgbackrest install/config based on force_pgbackrestserver
   ansible.builtin.include_tasks: rm_pgbackrestserver_install_config.yml
   when: >
-    ((force_pgbackrestserver is defined and force_pgbackrestserver) or 
-     (remove_only is defined and remove_only))
+    ((force_pgbackrestserver is defined and force_pgbackrestserver) or
+     (remove_only is defined and remove_only)) and
+      not validate_only|bool
 
 - name: Update /etc/hosts based on use_hostname
   become: true

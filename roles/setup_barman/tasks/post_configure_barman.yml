@@ -58,6 +58,7 @@
   become: true
   become_user: barman
   failed_when: false
+  changed_when: true
   when:
     - "'primary' in group_names"
 
@@ -67,6 +68,7 @@
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
   become_user: barman
+  changed_when: true
   when:
     - "'primary' in group_names"
 
@@ -76,6 +78,7 @@
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
   become_user: barman
+  changed_when: true
   when:
     - "'primary' in group_names"
 
@@ -85,5 +88,6 @@
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
   become_user: barman
+  changed_when: true
   when:
     - "'primary' in group_names"

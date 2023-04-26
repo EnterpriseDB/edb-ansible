@@ -37,6 +37,7 @@
   run_once: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   register: barman_list_server_res
+  changed_when: barman_list_server_res.rc == '0'
 
 - name: Check if backup server has been configured correctly.
   ansible.builtin.assert:
@@ -48,13 +49,17 @@
 
 # validate barman home directory
 - name: Run command to check barman home directory
-  ansible.builtin.shell:
-    cmd: barman show-server {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep barman_home
+  ansible.builtin.shell: |
+    set -o pipefail
+    barman show-server {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep barman_home
+  args:
+    executable: /bin/bash
   become: true
   become_user: "{{ barman_user }}"
   run_once: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   register: barman_show_server_res
+  changed_when: barman_show_server_res.rc == '0'
 
 - name: Check if barman home directory has been configured correctly
   ansible.builtin.assert:
@@ -66,13 +71,17 @@
 
 # validate barman status
 - name: Run command to check backup server was configured properly
-  ansible.builtin.shell:
-    cmd: barman status {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep Active
+  ansible.builtin.shell: |
+    set -o pipefail
+    barman status {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep Active
+  args:
+    executable: /bin/bash
   become: true
   become_user: "{{ barman_user }}"
   run_once: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   register: barman_status_res
+  changed_when: barman_status_res.rc == '0'
 
 - name: Check if backup server has been configured correctly.
   ansible.builtin.assert:
@@ -128,13 +137,17 @@
 
 # validate barman backup
 - name: Run command to check backup server was configured properly
-  ansible.builtin.shell:
-    cmd: barman backup {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep completed
+  ansible.builtin.shell: |
+    set -o pipefail
+    barman backup {{ primary_inventory_hostname }}-{{ pg_instance_name }} | grep completed
+  args:
+    executable: /bin/bash
   become: true
   become_user: "{{ barman_user }}"
   run_once: true
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   register: barman_backup_res
+  changed_when: barman_backup_res.rc == '0'
 
 - name: Check if backup server has been configured correctly.
   ansible.builtin.assert:

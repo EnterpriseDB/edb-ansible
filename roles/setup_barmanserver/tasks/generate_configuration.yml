@@ -5,5 +5,5 @@
     dest: "{{ barman_configuration_file }}"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
-    mode: 0600
+    mode: "0600"
   become: true

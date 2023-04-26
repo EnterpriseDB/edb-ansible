@@ -1,12 +1,13 @@
 ---
 # validate pg version
 - name: Run command to check if efm service is bound to pg service
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: /usr/edb/efm-4.5/bin/efm_db_functions readpgversion main
   become: true
   become_user: "{{ pg_owner }}"
   run_once: true
   delegate_to: "{{ primary_private_ip }}"
+  changed_when: true
   register: efm_read_pg_version_res
 
 - name: Check efm service is bound to pg service

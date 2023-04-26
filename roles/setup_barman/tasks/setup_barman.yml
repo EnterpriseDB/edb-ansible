@@ -41,7 +41,8 @@
        or (force_initdb is defined and force_initdb)
         or (force_replication is defined and force_replication)
          or (force_pemserver is defined and force_pemserver)
-          or (remove_only is defined and remove_only))
+          or (remove_only is defined and remove_only)) and
+           not validate_only|bool
 
 - name: Update /etc/hosts based on use_hostname
   when:

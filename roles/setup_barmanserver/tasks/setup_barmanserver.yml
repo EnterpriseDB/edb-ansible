@@ -12,7 +12,8 @@
   ansible.builtin.include_tasks: rm_barmanserver_install_config.yml
   when: >
     ((force_barmanserver is defined and force_barmanserver) or
-     (remove_only is defined and remove_only))
+     (remove_only is defined and remove_only)) and
+     not validate_only|bool
 
 - name: Include the package installation tasks
   ansible.builtin.include_tasks: install_packages.yml

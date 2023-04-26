@@ -15,6 +15,7 @@
       {{ repmgr_role }} register -F &>> /var/log/repmgr/register.log
   args:
     executable: /bin/bash
+  changed_when: true
   become: true
   become_user: "{{ pg_owner }}"
   throttle: 1
@@ -27,7 +28,7 @@
     login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
     port: "{{ pg_port }}"
     login_user: "{{ pg_owner }}"
-    query: "update repmgr.nodes as n set slot_name=s.slot_name from pg_replication_slots s, pg_stat_replication r where r.pid=s.active_pid and n.node_name=r.application_name and n.type='standby'"
+    query: "{{ repmgr_update_slot_query }}"
   become_user: "{{ pg_owner }}"
   become: true
   delegate_to: "{{ repmgr_primary_info.private_ip }}"
@@ -41,6 +42,7 @@
       {{ repmgr_role }} register -F -h {{ repmgr_primary_info.private_ip }} &>> /var/log/repmgr/register.log
   args:
     executable: /bin/bash
+  changed_when: true
   become: true
   become_user: "{{ pg_owner }}"
   throttle: 1

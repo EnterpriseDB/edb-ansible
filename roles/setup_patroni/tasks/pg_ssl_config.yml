@@ -31,7 +31,7 @@
   ansible.builtin.copy:
     dest: "{{ pg_data }}/ca_key.key"
     content: "{{ ca_key }}"
-    mode: 0600
+    mode: "0600"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_ca_key.stat.exists
@@ -68,7 +68,7 @@
   ansible.builtin.copy:
     dest: "{{ pg_data }}/ca_certificate.crt"
     content: "{{ ca_certificate }}"
-    mode: 0600
+    mode: "0600"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_ca_certificate.stat.exists
@@ -78,7 +78,7 @@
   ansible.builtin.copy:
     dest: "{{ pg_data }}/root.crt"
     content: "{{ ca_certificate }}"
-    mode: 0600
+    mode: "0600"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_root_crt.stat.exists
@@ -102,7 +102,7 @@
   ansible.builtin.copy:
     dest: "{{ pg_data }}/root.crl"
     content: "{{ sql_output.query_result[0].openssl_rsa_generate_crl }}"
-    mode: 0600
+    mode: "0600"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_root_crl.stat.exists
@@ -129,7 +129,7 @@
   ansible.builtin.copy:
     dest: "{{ pg_data }}/server.key"
     content: "{{ server_key }}"
-    mode: 0600
+    mode: "0600"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_server_key.stat.exists
@@ -166,7 +166,7 @@
   ansible.builtin.copy:
     dest: "{{ pg_data }}/server.crt"
     content: "{{ server_certificate }}"
-    mode: 0600
+    mode: "0600"
     owner: "{{ pg_owner }}"
     group: "{{ pg_owner }}"
   when: not ssl_server_crt.stat.exists

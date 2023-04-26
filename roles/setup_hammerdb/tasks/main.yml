@@ -3,7 +3,8 @@
   ansible.builtin.include_tasks: rm_hammerdb_install_config.yml
   when: >
     ((force_hammerdb is defined and force_hammerdb) or
-     (remove_only is defined and remove_only))
+     (remove_only is defined and remove_only)) and
+     not validate_only|bool
 
 - name: Create hammerdb system group {{ hammerdb_group }}
   ansible.builtin.group:

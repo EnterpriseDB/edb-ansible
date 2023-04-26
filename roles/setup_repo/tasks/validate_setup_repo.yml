@@ -4,6 +4,7 @@
   when: ansible_os_family == 'RedHat'
   become: true
   register: yum_repolist
+  changed_when: yum_repolist.rc == '0'
 
 - name: Get repo list on Debian
   ansible.builtin.shell: grep -rhE ^deb /etc/apt/sources.list*
@@ -12,6 +13,7 @@
   when: ansible_os_family == 'Debian'
   become: true
   register: apt_sources
+  changed_when: apt_sources.rc == '0'
 
 - name: Check for EDB Repo on RedHat
   ansible.builtin.assert:

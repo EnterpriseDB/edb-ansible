@@ -31,7 +31,6 @@
   when:
     - enable_edb_repo|bool
     - repo_token | length < 1 and (repo_username | length < 1 or repo_password | length < 1)
-    - not validate_only|bool
 
 - name: Capture if bdr_nodes_ips if defined
   ansible.builtin.set_fact:

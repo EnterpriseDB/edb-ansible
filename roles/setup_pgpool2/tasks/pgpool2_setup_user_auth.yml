@@ -20,7 +20,7 @@
     state: directory
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
-    mode: 0700
+    mode: "0700"
   become: true
 
 # Test if the .pgpoolkey file exist in the home directory
@@ -38,7 +38,7 @@
       {{ lookup('password', '/dev/null chars=ascii_letters,digit length=128') }}
     owner: "{{ pgpool2_user }}"
     group: "{{ pgpool2_group }}"
-    mode: 0600
+    mode: "0600"
   when:
     - not stat_result.stat.exists or stat_result.stat.size == 0
   become: true
