@@ -7,6 +7,7 @@ use_validation: true
 pgpool2_configuration: []
 pgpool2_service_users: []
 pcp_users: []
+
 supported_os:
   - CentOS7
   - CentOS8

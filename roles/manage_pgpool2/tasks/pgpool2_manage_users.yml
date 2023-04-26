@@ -30,6 +30,10 @@
   ansible.builtin.set_fact:
     pgpool2_users_lines: []
 
+- name: Debug pgpool2_users
+  ansible.builtin.debug:
+    msg: "{{ pgpool2_users }}"
+
 - name: Add users with SCRAM authentication
   ansible.builtin.command:
     cmd: >-
