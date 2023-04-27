@@ -90,9 +90,6 @@
     msg: "PEM web interface is not listening on 0.0.0.0:8443"
   become: true
 
-# validate pem web interface
-# "curl --insecure -L -I https://%s:8443/pem | grep HTTP"
-
 - name: Reset variables
   ansible.builtin.set_fact:
     pemagent_query_res: null
