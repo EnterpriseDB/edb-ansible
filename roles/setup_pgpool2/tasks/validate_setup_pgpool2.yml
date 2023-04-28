@@ -144,7 +144,7 @@
       run_once: true
   vars:
     pg_query:
-      - query: "PGPOOL SHOW pcp_socket_dir"
+      - query: "PGPOOL SHOW load_balance_mode"
         db: "{{ pg_pgpool_database }}"
         host: '127.0.0.1'
         port: "{{ pgpool2_port }}"
