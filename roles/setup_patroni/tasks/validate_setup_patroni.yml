@@ -22,89 +22,119 @@
   run_once: true
 
 # validate patroni user
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = 'repuser' and userepl = 't'"
-  become_user: "{{ pg_owner }}"
-  delegate_to: "{{ primary_private_ip }}"
-  run_once: true
-  register: patroni_repuser_query_result
+- name: Run query to check if patroni user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  when: patroni_standby_list|length > 0
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'repuser' and userepl = 't'"
+        db: "{{ pg_database }}"
+
+- name: Set patroni_repuser_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    patroni_repuser_query_result: "{{ sql_query_output }}"
+  become: true
   when: patroni_standby_list|length > 0
 
 - name: Check that repuser was setup correctly
   ansible.builtin.assert:
     that:
-      - patroni_repuser_query_result.query_result[0]['usename'] == 'repuser'
+      - patroni_repuser_query_result.results[0].query_result[0]['usename'] == 'repuser'
     fail_msg: "Replication was not successful on standby's"
     success_msg: "Replication was successful on standby's"
   run_once: true
   when: patroni_standby_list|length > 0
 
 # validate patroni slots
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_replication_slots"
-  become_user: "{{ pg_owner }}"
-  delegate_to: "{{ primary_private_ip }}"
-  run_once: true
-  register: patroni_slots_query_result
+- name: Run query to check patroni slots
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  when: patroni_standby_list|length > 0
+  vars:
+    pg_query:
+      - query: "Select * from pg_replication_slots"
+        db: "{{ pg_database }}"
+
+- name: Set patroni_slots_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    patroni_slots_query_result: "{{ sql_query_output }}"
+  become: true
   when: patroni_standby_list|length > 0
 
 - name: Check that replication created replication slots
   ansible.builtin.assert:
     that:
-      - patroni_wal_query_result.query_result|length == patroni_standby_list|length
+      - patroni_slots_query_result.results[0].query_result|length == patroni_standby_list|length
     fail_msg: "Replication did not create replication slots"
     success_msg: "Replication correctly created replication slots"
   run_once: true
   when: patroni_standby_list|length > 0
 
 # validate patroni stat replication
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: 'Select application_name from pg_stat_replication'
-  become_user: "{{ pg_owner }}"
-  delegate_to: "{{ primary_private_ip }}"
-  run_once: true
+- name: Run query to check if replication was setup correctly on primary
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
   when: patroni_standby_list|length > 0
-  register: patroni_stat_query_result
+  vars:
+    pg_query:
+      - query: 'Select application_name from pg_stat_replication'
+        db: "{{ pg_database }}"
+
+- name: Set patroni_stat_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    patroni_stat_query_result: "{{ sql_query_output }}"
+  become: true
+  when: patroni_standby_list|length > 0
 
 - name: Check that replication was successful on primary
   ansible.builtin.assert:
     that:
-      - patroni_stat_query_result.query_result|length == patroni_standby_list|length
+      - patroni_stat_query_result..results[0].query_result|length == patroni_standby_list|length
     fail_msg: "Replication was not successful on primary"
     success_msg: "Replication was successful on primary"
   when: patroni_standby_list|length > 0
 
 # validate patroni wal receiver - on standby's
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select slot_name from pg_stat_wal_receiver"
-  become_user: "{{ pg_owner }}"
-  register: patroni_wal_query_result
+- name: Run query to check patroni's wal receiver on standby's
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "Select slot_name from pg_stat_wal_receiver"
+        db: "{{ pg_database }}"
   when: "'standby' in group_names"
 
-- name: Check that the data_directory result is linked to pg_data
+- name: Set patroni_wal_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    patroni_wal_query_result: "{{ sql_query_output }}"
+  become: true
+  when: "'standby' in group_names"
+
+- name: Validate that replication was successful on standby's with slot_name
   ansible.builtin.assert:
     that:
-      - patroni_wal_query_result.query_result[0]['slot_name'] ==
+      - patroni_wal_query_result.results[0].query_result[0]['slot_name'] == inventory_hostname
     fail_msg: "Replication was not successful on standby's"
     success_msg: "Replication was successful on standby's"
   when: "'standby' in group_names"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    patroni_repuser_query_result: null
+    patroni_slots_query_result: null
+    patroni_stat_query_result: null
+    patroni_wal_query_result: null

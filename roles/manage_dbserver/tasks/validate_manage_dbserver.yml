@@ -45,22 +45,37 @@
     - pgpass_stat.stat['exists']|bool
 
 # test manage_dbserver created user
-- name: Run postgres query to check if pg_users were created correctly
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = %s"
-    positional_args:
-      - '{{ user.name }}'
-  become_user: "{{ pg_owner }}"
+- name: Build _pg_query lines
+  ansible.builtin.set_fact:
+    _pg_query: >-
+      {{ _pg_query | default([]) + [
+        {
+          "db": pg_database,
+          "query": "Select * from pg_user where usename = '" + user.name + "'"
+        }
+      ] }}
+  when: pg_users|length > 0
   loop: "{{ pg_users }}"
   loop_control:
     loop_var: user
-  when: pg_users|length > 0
   run_once: true
-  register: pg_users_query_result
+
+- name: Run query to check if pg_postgres_conf_params was updated correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  when: pg_users|length > 0
+  vars:
+    pg_query: "{{ _pg_query }}"
+
+- name: Set pg_users_query_result with sql_query_output and reset _pg_query
+  ansible.builtin.set_fact:
+    pg_users_query_result: "{{ sql_query_output }}"
+    _pg_query: []
+  become: true
+  when: pg_users|length > 0
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
@@ -79,45 +94,62 @@
   run_once: true
 
 # test manage_dbserver hba file
-- name: Run postgres query to check if pg_hba file was correctly found
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Show hba_file"
+- name: Run query to check if pg_hba file was updated correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Show hba_file"
+        db: "{{ pg_database }}"
+
+- name: Set hba_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    hba_query_result: "{{ sql_query_output }}"
   become: true
-  become_user: "{{ pg_owner }}"
-  run_once: true
-  register: hba_query_result
 
 - name: Check if pg_hba file was successfully modified
   ansible.builtin.assert:
     that:
-      - hba_query_result.query_result[0]['hba_file'] is defined
+      - hba_query_result.results[0].query_result[0]['hba_file'] is defined
     fail_msg: "pg_hba.conf file was not successfully modified."
     success_msg: "pg_hba.conf file was successfully modified."
   run_once: true
 
 # test manage_dbserver conf params
-- name: Generate conf_query_list
+- name: Build _pg_query lines
   ansible.builtin.set_fact:
-    conf_query_list: "{{ conf_query_list | default([]) + ['Show ' + item.name | string] }}"
+    _pg_query: >-
+      {{ _pg_query | default([]) + [
+        {
+          "db": pg_database,
+          "query": "Show " + param.name | string
+        }
+      ] }}
+  when: pg_postgres_conf_params|length > 0
   loop: "{{ pg_postgres_conf_params }}"
-  when: pg_postgres_conf_params|length > 0
-
-- name: Run postgres query to check if pg_postgres_conf_params were updated
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "{{ item }}"
-  become_user: "{{ pg_owner }}"
-  loop: "{{ conf_query_list }}"
-  when: pg_postgres_conf_params|length > 0
+  loop_control:
+    loop_var: param
   run_once: true
-  register: conf_query
+
+- name: Run query to check if pg_postgres_conf_params was updated correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  when: pg_postgres_conf_params|length > 0
+  vars:
+    pg_query: "{{ _pg_query }}"
+
+- name: Set conf_query with sql_query_output and reset _pg_query
+  ansible.builtin.set_fact:
+    conf_query: "{{ sql_query_output }}"
+    _pg_query: []
+  become: true
+  when: pg_postgres_conf_params|length > 0
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
@@ -139,22 +171,37 @@
   run_once: true
 
 # test manage_dbserver pg slots
-- name: Run postgres query to check replication slots
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_replication_slots WHERE slot_name = %s"
-    positional_args:
-      - '{{ slot.name }}'
-  become_user: "{{ pg_owner }}"
+- name: Build _pg_query lines
+  ansible.builtin.set_fact:
+    _pg_query: >-
+      {{ _pg_query | default([]) + [
+        {
+          "db": pg_database,
+          "query": "Select * from pg_replication_slots WHERE slot_name = '" + slot.name + "'"
+        }
+      ] }}
+  when: pg_slots|length > 0
   loop: "{{ pg_slots }}"
   loop_control:
     loop_var: slot
-  when: pg_slots|length > 0
   run_once: true
-  register: slot_query
+
+- name: Run query to check if pg_slots was updated correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  when: pg_slots|length > 0
+  vars:
+    pg_query: "{{ _pg_query }}"
+
+- name: Set slot_query with sql_query_output and reset _pg_query
+  ansible.builtin.set_fact:
+    slot_query: "{{ sql_query_output }}"
+    _pg_query: []
+  become: true
+  when: pg_slots|length > 0
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
@@ -174,22 +221,37 @@
   when: pg_slots|length > 0
 
 # test manage_dbserver pg extension
-- name: Run postgres query to check if pg_extension
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_extension WHERE extname = %s"
-    positional_args:
-      - '{{ extension.name }}'
-  become_user: "{{ pg_owner }}"
+- name: Build _pg_query lines
+  ansible.builtin.set_fact:
+    _pg_query: >-
+      {{ _pg_query | default([]) + [
+        {
+          "db": pg_database,
+          "query": "Select * from pg_extension WHERE extname = '" + extension.name + "'"
+        }
+      ] }}
+  when: pg_extensions|length > 0
   loop: "{{ pg_extensions }}"
   loop_control:
     loop_var: extension
-  when: pg_extensions|length > 0
   run_once: true
-  register: ext_query
+
+- name: Run query to check if pg_extensions was updated correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  when: pg_extensions|length > 0
+  vars:
+    pg_query: "{{ _pg_query }}"
+
+- name: Set ext_query with sql_query_output and reset _pg_query
+  ansible.builtin.set_fact:
+    ext_query: "{{ sql_query_output }}"
+    _pg_query: []
+  become: true
+  when: pg_extensions|length > 0
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
@@ -208,33 +270,48 @@
   run_once: true
 
 # test manage_dbserver pg grant roles
-- name: Run postgres query to check if pg_roles
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select rolname FROM pg_roles WHERE pg_has_role(%s, oid, 'member') AND rolname = %s"
-    positional_args:
-      - '{{ role.user }}'
-      - '{{ role.role }}'
-  become_user: "{{ pg_owner }}"
+- name: Build _pg_query lines
+  ansible.builtin.set_fact:
+    _pg_query: >-
+      {{ _pg_query | default([]) + [
+        {
+          "db": pg_database,
+          "query": "Select rolname FROM pg_roles WHERE pg_has_role('" + role.user + "', oid, 'member') AND rolname = '" + role.role + "'"
+        }
+      ] }}
+  when: pg_grant_roles|length > 0
   loop: "{{ pg_grant_roles }}"
   loop_control:
     loop_var: role
-  when: pg_grant_roles|length > 0
   run_once: true
-  register: role_query
+
+- name: Run query to check if pg_grant_roles was updated correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  when: pg_grant_roles|length > 0
+  vars:
+    pg_query: "{{ _pg_query }}"
+
+- name: Set role_query with sql_query_output and reset _pg_query
+  ansible.builtin.set_fact:
+    role_query: "{{ sql_query_output }}"
+    _pg_query: []
+  become: true
+  when: pg_grant_roles|length > 0
 
 - name: Isolate desired value from query result
   ansible.builtin.set_fact:
     pg_roles_query_names: >-
       "{{ role_query.results | selectattr('query_result', 'defined') | map(attribute='query_result') | flatten | map(attribute='rolname') }}"
     pg_roles_names: "{{ pg_grant_roles | map(attribute='role') }}"
+  run_once: true
   when:
     - pg_grant_roles|length > 0
 
-- name: Check if pg_postgres_conf_params were updated correctly
+- name: Check if pg_grant_roles were updated correctly
   ansible.builtin.assert:
     that:
       - pg_roles_names|difference(pg_roles_query_names)|length == 0

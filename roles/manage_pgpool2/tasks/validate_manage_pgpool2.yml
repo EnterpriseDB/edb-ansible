@@ -51,23 +51,31 @@
     - pgpool2_test_user_password|length > 1
 
 # validate the pcp socket
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_pgpool_database }}"
-    login_host: 127.0.0.1
-    port: "{{ pgpool2_port }}"
-    login_user: "{{ pgpool2_test_user }}"
-    login_password: "{{ pgpool2_test_user_password }}"
-    query: "PGPOOL SHOW pcp_socket_dir"
-  become_user: "{{ pg_owner }}"
+- name: Run query to check if pcp socket was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  vars:
+    pg_query:
+      - query: "PGPOOL SHOW pcp_socket_dir"
+        db: "{{ pg_pgpool_database }}"
+        host: '127.0.0.1'
+        port: "{{ pgpool2_port }}"
+        login_user: "{{ pgpool2_test_user }}"
+        login_password: "{{ pgpool2_test_user_password }}"
+        login_socket: ""
+
+- name: Set pgpool_pcp_socket_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    pgpool_pcp_socket_query_result: "{{ sql_query_output }}"
   become: true
-  run_once: true
-  register: pgpool_pcp_socket_query_result
 
 - name: Check if pcp_socket_dir is '/tmp'
   ansible.builtin.assert:
     that:
-      - pgpool_pcp_socket_query_result.query_result[0]['pcp_socket_dir'] == '/tmp'
+      - pgpool_pcp_socket_query_result.results[0].query_result[0]['pcp_socket_dir'] == '/tmp'
     fail_msg: "pcp socket was not correctly created"
     success_msg: "pcp socket was correctly created"
 

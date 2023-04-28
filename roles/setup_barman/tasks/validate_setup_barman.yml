@@ -92,45 +92,53 @@
   run_once: true
 
 # validate barman user
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = %s"
-    positional_args:
-      - "{{ barman_user }}"
-  become_user: "{{ pg_owner }}"
-  delegate_to: "{{ primary_private_ip }}"
-  run_once: true
-  register: barman_query_result
+- name: Run query to check if barman user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = '{{ barman_user }}'"
+        db: "{{ pg_database }}"
+
+- name: Set barman_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    barman_query_result: "{{ sql_query_output }}"
+  become: true
 
 - name: Check if barman user is present
   ansible.builtin.assert:
     that:
-      - barman_query_result.query_result[0]['usename'] == barman_user
+      - barman_query_result.results[0].query_result[0]['usename'] == barman_user
     fail_msg: "barman user was not created correctly."
     success_msg: "barman user was created correctly."
   run_once: true
 
 # validate barman logical wal level
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "SELECT setting FROM pg_settings WHERE name = 'wal_level'"
-  become_user: "{{ pg_owner }}"
-  delegate_to: "{{ primary_private_ip }}"
-  run_once: true
-  register: barman_wal_query_result
+- name: Run query to check if wal_level is logical
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "SELECT setting FROM pg_settings WHERE name = 'wal_level'"
+        db: "{{ pg_database }}"
+
+- name: Set barman_wal_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    barman_wal_query_result: "{{ sql_query_output }}"
+  become: true
 
 - name: Check if wal_level is set to logical
   ansible.builtin.assert:
     that:
-      - barman_wal_query_result.query_result[0]['setting'] == 'logical'
+      - barman_wal_query_result.results[0].query_result[0]['setting'] == 'logical'
     fail_msg: "wal_level should be set to 'logical'"
     success_msg: "wal_level is correctly set to 'logical'"
   run_once: true

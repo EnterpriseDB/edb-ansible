@@ -1,21 +1,26 @@
 ---
 # validate efm user
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = 'efm' and userepl = 't'"
-  become_user: "{{ pg_owner }}"
-  run_once: true
-  delegate_to: "{{ primary_private_ip }}"
-  register: efm_query_result
+- name: Run query to check if efm user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'efm' and userepl = 't'"
+        db: "{{ pg_database }}"
+
+- name: Set efm_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    efm_query_result: "{{ sql_query_output }}"
+  become: true
 
 - name: Check if efm user is present
   ansible.builtin.assert:
     that:
-      - efm_query_result.query_result[0]['usename'] == 'efm'
+      - efm_query_result.results[0].query_result[0]['usename'] == 'efm'
     fail_msg: "EFM user was not created correctly."
     success_msg: "EFM user was created correctly."
   run_once: true

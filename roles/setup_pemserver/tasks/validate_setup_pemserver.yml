@@ -1,42 +1,50 @@
 ---
 # validate pemserver pemagent
-- name: Run postgres query to check if pemagent user exists
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = 'agent1'"
+- name: Run query to check if pemagent user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'agent1'"
+        db: "{{ pg_database }}"
+
+- name: Set pemagent_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    pemagent_query_res: "{{ sql_query_output }}"
   become: true
-  become_user: "{{ pg_owner }}"
-  run_once: true
-  register: pemagent_query_res
 
 - name: Check if pemagent user has been configured correctly.
   ansible.builtin.assert:
     that:
-      - pemagent_query_res.query_result[0]['usename'] == 'agent1'
+      - pemagent_query_res.results[0].query_result[0]['usename'] == 'agent1'
     fail_msg: "pemagent user agent1 was not created successfully"
     success_msg: "pemagent user agent1 was created successfully"
   run_once: true
 
 # validate pemserver pemadmin
-- name: Run postgres query to check if pemadmin user exists
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = 'pemadmin'"
+- name: Run query to check if pemadmin user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'pemadmin'"
+        db: "{{ pg_database }}"
+
+- name: Set pemadmin_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    pemadmin_query_res: "{{ sql_query_output }}"
   become: true
-  become_user: "{{ pg_owner }}"
-  run_once: true
-  register: pemadmin_query_res
 
 - name: Check if pemadmin user has been configured correctly.
   ansible.builtin.assert:
     that:
-      - pemadmin_query_res.query_result[0]['usename'] == 'pemadmin'
+      - pemadmin_query_res.results[0].query_result[0]['usename'] == 'pemadmin'
     fail_msg: "pemadmin user was not created successfully"
     success_msg: "pemadmin user was created successfully"
   run_once: true

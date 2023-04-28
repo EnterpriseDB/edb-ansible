@@ -32,21 +32,28 @@
     loop_var: node
   no_log: "{{ disable_logging }}"
 
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select slot_name from pg_replication_slots where active = 't'"
-  become_user: "{{ pg_owner }}"
-  delegate_to: "{{ primary_private_ip }}"
-  register: manage_efm_query_result
+- name: Run query to check if replication slots were setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  when: standby_efm_nodes|length > 0
+  vars:
+    pg_query:
+      - query: "Select slot_name from pg_replication_slots where active = 't'"
+        db: "{{ pg_database }}"
+
+- name: Set manage_efm_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    manage_efm_query_result: "{{ sql_query_output }}"
+  become: true
   when: standby_efm_nodes|length > 0
 
 - name: Isolate desired query result values
   ansible.builtin.set_fact:
-    manage_efm_query_result_vars: "{{ manage_efm_query_result.query_result | map(attribute='slot_name') }}"
+    manage_efm_query_result_vars: "{{ manage_efm_query_result.results[0].query_result | map(attribute='slot_name') }}"
   when: standby_efm_nodes|length > 0
 
 - name: Check efm replication slots

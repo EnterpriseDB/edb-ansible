@@ -76,19 +76,23 @@
     success_msg: "The socket {{ pg_unix_socket_directories[0] }} is enabled."
 
 # check if pg_settings data_directory is linked to pg_data
-- name: Run postgres query
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "SELECT setting FROM pg_settings WHERE name = 'data_directory'"
-  become_user: "{{ pg_owner }}"
-  register: init_data_query_res
+- name: Run query to check if pg_settings data_directory is linked to pg_data
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT setting FROM pg_settings WHERE name = 'data_directory'"
+        db: "{{ pg_database }}"
+
+- name: Set init_data_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    init_data_query_res: "{{ sql_query_output }}"
+  become: true
 
 - name: Get stat info for data_directory
   ansible.builtin.stat:
-    path: "{{ init_data_query_res.query_result[0].setting }}"
+    path: "{{ init_data_query_res.results[0].query_result[0].setting }}"
   register: data_dir_stat
 
 - name: Check that the data_directory result is linked to pg_data
@@ -99,7 +103,7 @@
     fail_msg: "Postgres data_directory is not linked to {{ pg_data }}"
     success_msg: "Postgres data_directory is linked to {{ pg_data }}"
   when:
-    - init_data_query_res.query_result[0].setting != pg_data
+    - init_data_query_res.results[0].query_result[0].setting != pg_data
 
 - name: Reset variables
   ansible.builtin.set_fact:

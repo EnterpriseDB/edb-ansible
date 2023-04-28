@@ -23,21 +23,24 @@
     success_msg: "Package {{ repmgr_package_name }} has been installed."
 
 # validate repmgr user
-- name: Run postgres query to check if repmgr user is present
-  community.postgresql.postgresql_query:
-    db: "{{ pg_database }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    query: "Select * from pg_user where usename = 'repmgr'"
-  become_user: "{{ pg_owner }}"
+- name: Run query to check if repmgr user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'repmgr'"
+        db: "{{ pg_database }}"
+
+- name: Set repmgr_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    repmgr_query_res: "{{ sql_query_output }}"
   become: true
-  register: repmgr_query_res
 
 - name: Check if repmgr user is present on all nodes
   ansible.builtin.assert:
     that:
-      - repmgr_query_res.query_result[0]['usename'] == 'repmgr'
+      - repmgr_query_res.results[0].query_result[0]['usename'] == 'repmgr'
     fail_msg: "User 'repmgr' was not successfully created"
     success_msg: "User 'repmgr' was successfully created"
 
