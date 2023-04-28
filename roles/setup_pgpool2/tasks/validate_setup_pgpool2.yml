@@ -63,7 +63,7 @@
     loop_var: package
 
 # test if pgpool user was created
-- name: Run query to check if pg_pgpool2_user was setup correctly
+- name: Run query to check if pg_pgpool_user was setup correctly
   ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: execute_sql_scripts
@@ -72,7 +72,7 @@
       run_once: true
   vars:
     pg_query:
-      - query: "Select * from pg_user where usename = '{{ pg_pgpool2_user }}'"
+      - query: "Select * from pg_user where usename = '{{ pg_pgpool_user }}'"
         db: "{{ pg_pgpool_database }}"
 
 - name: Set pgpool_user_query_result with sql_query_output
