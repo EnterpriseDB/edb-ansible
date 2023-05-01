@@ -1,0 +1,120 @@
+---
+# generate test user
+- name: Generate test user
+  ansible.builtin.set_fact:
+    pgpool2_test_user: "test_user"
+    pgpool2_test_user_password: ""
+
+- name: Generate the pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pgpool2_test_user }}"
+    input_password: "{{ pgpool2_test_user_password }}"
+  no_log: "{{ disable_logging }}"
+  run_once: true
+  when: pgpool2_test_user_password|length < 1
+
+- name: Set pgpool2_test_pcp_user_password
+  ansible.builtin.set_fact:
+    pgpool2_test_user_password: "{{ input_password }}"
+  when: pgpool2_test_user_password|length < 1
+  run_once: true
+
+- name: Add pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_users
+  vars:
+    pgpool2_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        auth: scram
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgpool2_test_user_password|length > 1
+
+- name: Add pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+    apply:
+      delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  vars:
+    pg_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        pg_database: "{{ pg_pgpool_database }}"
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgpool2_test_user_password|length > 1
+
+# validate the pcp socket
+- name: Run query to check if pcp socket was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  vars:
+    pg_query:
+      - query: "PGPOOL SHOW pcp_socket_dir"
+        db: "{{ pg_pgpool_database }}"
+        host: '127.0.0.1'
+        port: "{{ pgpool2_port }}"
+        login_user: "{{ pgpool2_test_user }}"
+        login_password: "{{ pgpool2_test_user_password }}"
+        login_socket: ""
+
+- name: Set pgpool_pcp_socket_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    pgpool_pcp_socket_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if pcp_socket_dir is '/tmp'
+  ansible.builtin.assert:
+    that:
+      - pgpool_pcp_socket_query_result.results[0].query_result[0]['pcp_socket_dir'] == '/tmp'
+    fail_msg: "pcp socket was not correctly created"
+    success_msg: "pcp socket was correctly created"
+
+- name: Remove pgpool2_test_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+    apply:
+      delegate_to: "{{ _pgpool2_primary_inventory_hostname }}"
+  vars:
+    pg_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        pg_database: "{{ pg_pgpool_database }}"
+        state: absent
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgpool2_test_user_password|length > 1
+
+- name: Remove pgpool2_test_user from pgpool2 users
+  ansible.builtin.include_role:
+    name: manage_pgpool2
+    tasks_from: pgpool2_manage_users
+  vars:
+    pgpool2_users:
+      - name: "{{ pgpool2_test_user }}"
+        pass: "{{ pgpool2_test_user_password }}"
+        state: absent
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgpool2_test_user_password|length > 1
+
+- name: Reload pgpool2 service after changing pool_passwd file
+  ansible.builtin.include_role:
+    name: setup_pgpool2
+    tasks_from: pgpool2_restart_service
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pgpool2_test_user: null
+    pgpool2_test_user_password: null
+    pgpool_pcp_socket_query_result: null

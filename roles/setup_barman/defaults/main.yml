@@ -15,6 +15,11 @@ ssh_port: 22
 
 pass_dir: "~/.edb"
 
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
+
 supported_os:
   - Debian10
   - CentOS7

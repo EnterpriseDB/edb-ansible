@@ -19,11 +19,13 @@
   community.postgresql.postgresql_query:
     query: "{{ line_item.query }}"
     db: "{{ line_item.db }}"
-    port: "{{ pg_port }}"
-    login_user: "{{ pg_owner }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ line_item.port | default(pg_port) }}"
+    login_host: "{{ line_item.host | default('') }}"
+    login_user: "{{ line_item.login_user | default(pg_owner) }}"
+    login_password: "{{ line_item.login_password | default('') }}"
+    login_unix_socket: "{{ line_item.login_socket | default(pg_unix_socket_directories[0]) }}"
   become: true
-  become_user: "{{ pg_owner }}"
+  become_user: "{{ line_item.become_user | default(pg_owner) }}"
   with_items: "{{ pg_query }}"
   loop_control:
     loop_var: line_item

@@ -62,7 +62,7 @@
     dest: "{{ efm_bin_path }}/pcp_control.sh"
     owner: "root"
     group: "root"
-    mode: 0755
+    mode: "0755"
   become: true
 
 - name: Copy the pcp_attach_all.sh to the server
@@ -71,7 +71,7 @@
     dest: "{{ efm_bin_path }}/pcp_attach_all.sh"
     owner: "root"
     group: "root"
-    mode: 0755
+    mode: "0755"
   become: true
 
 - name: Copy the pg_pcp_health.sh to the server
@@ -80,5 +80,5 @@
     dest: "{{ efm_bin_path }}/pg_pcp_health.sh"
     owner: "root"
     group: "root"
-    mode: 0755
+    mode: "0755"
   become: true

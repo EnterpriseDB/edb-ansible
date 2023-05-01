@@ -11,6 +11,9 @@
     - name: Initialize the user defined variables
       set_fact:
         disable_logging: false
+        pg_query:
+          - query: "CREATE TABLE IF NOT EXISTS test2()"
+            db: "postgres"
 
   roles:
     - role: setup_repo

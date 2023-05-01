@@ -12,10 +12,12 @@
   ansible.builtin.include_tasks: rm_barmanserver_install_config.yml
   when: >
     ((force_barmanserver is defined and force_barmanserver) or
-     (remove_only is defined and remove_only))
+     (remove_only is defined and remove_only)) and
+     not validate_only|bool
 
 - name: Include the package installation tasks
   ansible.builtin.include_tasks: install_packages.yml
+  when: not validate_only|bool
 
 - name: Update /etc/hosts based on use_hostname
   become: true
@@ -28,12 +30,20 @@
 
 - name: Include the user ans group creation tasks
   ansible.builtin.include_tasks: create_user.yml
+  when: not validate_only|bool
 
 - name: Include the directories creation tasks
   ansible.builtin.include_tasks: create_directories.yml
+  when: not validate_only|bool
 
 - name: Include the configuration file generation tasks
   ansible.builtin.include_tasks: generate_configuration.yml
+  when: not validate_only|bool
 
 - name: Include the SSH keys generation tasks
   ansible.builtin.include_tasks: generate_ssh_keys.yml
+  when: not validate_only|bool
+
+- name: Include the validate_setup_barmanserver tasks
+  ansible.builtin.include_tasks: validate_setup_barmanserver.yml
+  when: validate_only|bool or use_validation|bool

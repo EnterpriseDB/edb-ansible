@@ -30,10 +30,17 @@
     ((force_pgbouncer is defined and force_pgbouncer) or
      (force_initdb is defined and force_initdb) or
      (force_replication is defined and force_replication) or
-     (remove_only is defined and remove_only))
+     (remove_only is defined and remove_only)) and
+     not validate_only|bool
 
 - name: Include the pgbouncer_install
   ansible.builtin.include_tasks: pgbouncer_install.yml
+  when: not validate_only|bool
 
 - name: Include the pgbouncer_setup
   ansible.builtin.include_tasks: pgbouncer_setup.yml
+  when: not validate_only|bool
+
+- name: Include the validate pgbouncer tasks
+  ansible.builtin.include_tasks: validate_setup_pgbouncer.yml
+  when: validate_only|bool or use_validation|bool

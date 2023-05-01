@@ -4,7 +4,7 @@
     path: "{{ pg_data }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
 
@@ -13,7 +13,7 @@
     path: "{{ pg_default_data }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
 
@@ -22,7 +22,7 @@
     path: "{{ pg_log }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
   when: pg_log|length > 0 and pg_data not in pg_log
@@ -32,7 +32,7 @@
     path: "{{ pg_wal }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
   when: pg_wal|length > 0 and pg_data not in pg_wal
@@ -42,7 +42,7 @@
     path: "{{ pg_local_wal_archive_dir }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
   when: pg_local_wal_archive_dir|length > 0
@@ -52,7 +52,7 @@
     path: "{{ line_item }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 02775
+    mode: "02775"
     state: directory
   with_items: "{{ pg_unix_socket_directories }}"
   loop_control:
@@ -65,7 +65,7 @@
     path: "{{ edb_audit_directory }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
   when: >
@@ -75,7 +75,7 @@
 - name: Create hidden edb directory if not exists
   ansible.builtin.file:
     path: "{{ pass_dir }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: false
   delegate_to: localhost

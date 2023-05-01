@@ -30,6 +30,10 @@
   ansible.builtin.set_fact:
     pgpool2_users_lines: []
 
+- name: Debug pgpool2_users
+  ansible.builtin.debug:
+    msg: "{{ pgpool2_users }}"
+
 - name: Add users with SCRAM authentication
   ansible.builtin.command:
     cmd: >-
@@ -40,6 +44,7 @@
   loop: "{{ pgpool2_users }}"
   loop_control:
     loop_var: user_item
+  changed_when: true
   when:
     - pgpool2_users|length > 0
     - user_item.state is not defined or user_item.state == 'present'
@@ -55,6 +60,7 @@
   loop: "{{ pgpool2_users }}"
   loop_control:
     loop_var: user_item
+  changed_when: true
   when:
     - pgpool2_users|length > 0
     - user_item.state is not defined or user_item.state == 'present'

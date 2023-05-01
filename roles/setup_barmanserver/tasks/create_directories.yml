@@ -5,7 +5,7 @@
     state: directory
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
-    mode: 0755
+    mode: "0755"
   become: true
 
 - name: Ensure running directory barman_lock_directory exists
@@ -14,7 +14,7 @@
     state: directory
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
-    mode: 0750
+    mode: "0750"
   become: true
 
 - name: Ensure configuration files directory barman_configuration_files_directory exists
@@ -23,5 +23,5 @@
     state: directory
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
-    mode: 0750
+    mode: "0750"
   become: true

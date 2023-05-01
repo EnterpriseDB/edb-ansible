@@ -43,4 +43,3 @@
       - oracle-instantclient-sqlplus
       - oracle-instantclient-tools
     state: absent
-

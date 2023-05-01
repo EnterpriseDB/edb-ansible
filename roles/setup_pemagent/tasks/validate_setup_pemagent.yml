@@ -1,0 +1,106 @@
+---
+# validate pemagent
+- name: Gather the pem cluster informations
+  ansible.builtin.set_fact:
+    pem_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary private ip
+  ansible.builtin.set_fact:
+    primary_private_ip: "{{ node.private_ip }}"
+  when: node.node_type == 'primary'
+  loop: "{{ pem_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"
+
+- name: Run query to check pemagent user was successfully created
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'pemagent'"
+        db: "{{ pg_database }}"
+
+- name: Set pemagent_user_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    pemagent_user_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if pemagent user is present
+  ansible.builtin.assert:
+    that:
+      - pemagent_user_query_result.results[0].query_result[0]['usename'] == 'pemagent'
+    fail_msg: "Pemagent user was not created correctly."
+    success_msg: "Pemagent user was created correctly."
+  run_once: true
+
+# validate pem agent id's
+- name: Get PEM agent informations
+  ansible.builtin.set_fact:
+    pem_agent_info: "{{ lookup('edb_devops.edb_postgres.pem_agents', pem_server_info[0].private_ip, wantlist=True) }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Get PEM agent informations with pem server
+  ansible.builtin.set_fact:
+    pem_agent_info: "{{ pem_agent_info | default([]) + pem_server_info }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Run query to check PEM agent id's
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ pem_server_info[0].inventory_hostname }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select id from pem.agent"
+        db: "{{ pg_pem_database }}"
+        port: "{{ pem_pg_port }}"
+
+- name: Set pemagent_id_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    pemagent_id_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if pemagent id's were set up correctly
+  ansible.builtin.assert:
+    that:
+      - pemagent_id_query_result.results[0].query_result|length == pem_agent_info|length
+    fail_msg: "Pem agents were not created successfully"
+    success_msg: "Pem agents were created successfully"
+
+# validate pemagent service
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Check if pemagent service is running and enabled
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services['pemagent.service']['state'] == 'running'
+      - ansible_facts.services['pemagent.service']['status'] == 'enabled'
+    fail_msg: "The service 'pemagent' is not running."
+    success_msg: "The service 'pemagent' is running."
+
+# validate pemagent packages
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all required packages have been installed
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.packages['edb-pem-agent'] is defined
+    fail_msg: "Package 'edb-pem-agent' has not been installed."
+    success_msg: "Package 'edb-pem-agent' has been installed."
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pem_cluster_nodes: null
+    pemagent_user_query_result: null
+    pemagent_id_query_result: null
+    pem_agent_info: null

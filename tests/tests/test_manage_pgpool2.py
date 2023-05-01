@@ -69,8 +69,8 @@ def test_manage_pgpool_pcp_node_count():
 
 def test_manage_pgpool_test_user():
     ansible_vars = load_ansible_vars()
-    pgpool2_user = ansible_vars['pgpool2_users'][0]['name']
-    pgpool2_password = ansible_vars['pgpool2_users'][0]['pass']
+    pgpool2_user = ansible_vars['pgpool2_service_users'][0]['name']
+    pgpool2_password = ansible_vars['pgpool2_service_users'][0]['pass']
     pgpool2_port = ansible_vars['pgpool2_port']
 
     pg_user = 'postgres'
@@ -98,8 +98,8 @@ def test_manage_pgpool_test_user():
 
 def test_manage_pgpool_pcp_socket():
     ansible_vars = load_ansible_vars()
-    pgpool2_user = ansible_vars['pgpool2_users'][0]['name']
-    pgpool2_password = ansible_vars['pgpool2_users'][0]['pass']
+    pgpool2_user = ansible_vars['pgpool2_service_users'][0]['name']
+    pgpool2_password = ansible_vars['pgpool2_service_users'][0]['pass']
     pgpool2_port = ansible_vars['pgpool2_port']
 
     pg_user = 'postgres'

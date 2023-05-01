@@ -1,0 +1,45 @@
+---
+# validate dbt7 package
+- name: Set dbt7 package name
+  ansible.builtin.set_fact:
+    dbt7_package: 'dbt7'
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that DBT7 packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[dbt7_package] }} is defined"
+    fail_msg: "Package {{ dbt7_package }} has not been installed."
+    success_msg: "Package {{ dbt7_package }} has been installed."
+
+# validate dbt7 user
+- name: Run query to check dbt7 user is in pg_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = '{{ pg_owner }}'"
+        db: "{{ pg_database }}"
+
+- name: Set user_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    user_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if DBT7 postgres user was successfully created
+  ansible.builtin.assert:
+    that:
+      - user_query_result.results[0].query_result[0]['usename'] == pg_owner
+    fail_msg: "DBT7 postgres user was not successfully created."
+    success_msg: "DBT7 postgres user was successfully created."
+  run_once: true
+
+# reset variables
+- name: Reset variables
+  ansible.builtin.set_fact:
+    dbt7_package: null
+    user_query_result: null

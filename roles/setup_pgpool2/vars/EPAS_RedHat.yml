@@ -2,6 +2,7 @@
 pgpool2_version: 4.3
 pgpool2_package_name: "edb-pgpool{{ pgpool2_version | string | replace('.', '') }}"
 pgpool2_configuration_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pgpool.conf"
+pgpool2_pool_passwd_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pool_passwd"
 pcp_configuration_file: "/etc/sysconfig/edb/pgpool{{ pgpool2_version | string }}/pcp.conf"
 pgpool2_user: "enterprisedb"
 pgpool2_group: "enterprisedb"

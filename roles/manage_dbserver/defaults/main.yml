@@ -14,6 +14,10 @@ patroni_config_dir: "/etc/patroni"
 patroni_config_file: "{{ patroni_config_dir }}/{{ inventory_hostname }}.yml"
 patroni_bin_dir: "{{ '/usr/local/bin' if ansible_distribution_major_version == '8' else '/usr/bin' }}"
 
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
 
 pass_dir: "~/.edb"
 passfile: ""

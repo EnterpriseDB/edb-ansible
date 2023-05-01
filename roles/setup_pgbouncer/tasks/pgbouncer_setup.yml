@@ -1,5 +1,4 @@
 ---
-
 - name: Gather service facts
   ansible.builtin.service_facts:
 
@@ -36,7 +35,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   loop:
     - "{{ pgbouncer_config_file | dirname }}"
     - "{{ pgbouncer_databases_file | dirname }}"
@@ -51,7 +50,7 @@
     state: directory
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
-    mode: 0755
+    mode: "0755"
   become: true
 
 - name: Create running directory for {{ pgbouncer_pid_file }}
@@ -60,7 +59,7 @@
     state: directory
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
-    mode: 0700
+    mode: "0700"
   become: true
 
 - name: Generate PgBouncer configuration file {{ pgbouncer_config_file }}
@@ -70,7 +69,7 @@
     owner: "{{ pgbouncer_user }}"
     group: "{{ pgbouncer_group }}"
     src: ./templates/pgbouncer.ini.template
-    mode: 0600
+    mode: "0600"
   become: true
 
 - name: Create empty databases file {{ pgbouncer_databases_file }}
@@ -80,7 +79,7 @@
     force: false
     group: "{{ pgbouncer_group }}"
     owner: "{{ pgbouncer_user }}"
-    mode: 0600
+    mode: "0600"
   become: true
 
 - name: Create empty authentication file {{ pgbouncer_auth_file }}
@@ -90,7 +89,7 @@
     force: false
     group: "{{ pgbouncer_group }}"
     owner: "{{ pgbouncer_user }}"
-    mode: 0600
+    mode: "0600"
   become: true
 
 - name: Configure SSL
@@ -102,7 +101,7 @@
     backup: true
     dest: "{{ pgbouncer_systemd_unit_file }}"
     src: ./templates/pgbouncer.unit.conf.template
-    mode: 0644
+    mode: "0644"
   when: pg_type == 'PG'
   become: true
 

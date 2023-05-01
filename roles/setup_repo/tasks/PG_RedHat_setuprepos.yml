@@ -65,6 +65,7 @@
   ansible.builtin.command: >
     dnf config-manager --set-enabled powertools
   become: true
+  changed_when: true
   when:
     - ansible_distribution_major_version == '8'
     - enable_epel_repo|bool
@@ -147,6 +148,7 @@
   become: true
   failed_when: >
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+  changed_when: reposub.rc == '0'
   when: >
     tpa_subscription_token|length > 0
     and install_bdr_packages|bool
@@ -163,5 +165,6 @@
   become: true
   failed_when: >
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+  changed_when: reposub.rc == '0'
   when: >
     enable_edb_repo|bool and repo_token|length > 0

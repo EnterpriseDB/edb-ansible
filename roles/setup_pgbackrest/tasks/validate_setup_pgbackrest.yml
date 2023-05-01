@@ -1,0 +1,65 @@
+---
+- name: Get pgBackRest node informations
+  ansible.builtin.set_fact:
+    pgbackrest_server_node_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+
+# validate command for configuration validation is successful
+- name: Run command to check if pgbackrest server has been configured correctly
+  ansible.builtin.command:
+    cmd: pgbackrest --stanza={{ pg_instance_name }} check
+  become: true
+  become_user: "{{ pgbackrest_user }}"
+  delegate_to: "{{ pgbackrest_server_node_info[0].inventory_hostname }}"
+  run_once: true
+  register: pgbackrest_config_check_res
+  changed_when: pgbackrest_config_check_res.rc == '0'
+
+- name: Check if pgbackrest server has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - pgbackrest_config_check_res.stdout_lines is search('Completed successfully')
+    fail_msg: "Configuration for pgBackRest server node is not properly done."
+    success_msg: "Configuration for pgBackRest server node is properly done."
+  run_once: true
+
+# validate backup exists on pgbackrest
+- name: Run command to check if backup for pgbackrest cluster was successful
+  ansible.builtin.command:
+    cmd: pgbackrest --stanza={{ pg_instance_name }} info
+  become: true
+  become_user: "{{ pgbackrest_user }}"
+  run_once: true
+  register: pgbackrest_config_info_res
+  changed_when: pgbackrest_config_info_res.rc == '0'
+
+- name: Check if backup for pgbackrest cluster was successful
+  ansible.builtin.assert:
+    that:
+      - pgbackrest_config_info_res.stdout_lines is search('full backup')
+    fail_msg: "Backup for pgBackRest cluster was not successful"
+    success_msg: "Backup for pgBackRest cluster was successful"
+  run_once: true
+
+# test archive repo for pgbackrest exists
+- name: Run command to check if pgbackrest archive repo was successfully configured
+  ansible.builtin.command:
+    cmd: pgbackrest repo-ls
+  become: true
+  become_user: "{{ pgbackrest_user }}"
+  run_once: true
+  register: pgbackrest_config_repo_res
+  changed_when: pgbackrest_config_repo_res.rc == '0'
+
+- name: Check if pgbackrest archive repo was successfully configured
+  ansible.builtin.assert:
+    that:
+      - pgbackrest_config_repo_res.stdout_lines is search('archive')
+    fail_msg: "Configuration for pgBackRest archive repo was not successful"
+    success_msg: "Configuration for pgBackRest archive repo was successful"
+  run_once: true
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pgbackrest_config_check_res: null
+    pgbackrest_config_info_res: null
+    pgbackrest_config_repo_res: null

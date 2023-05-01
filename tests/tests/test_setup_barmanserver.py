@@ -9,6 +9,7 @@ from conftest import (
     get_pg_unix_socket_dir
 )
 
+
 def test_setup_barmanserver_packages():
     host = get_barmanserver()
     packages = [
@@ -20,6 +21,7 @@ def test_setup_barmanserver_packages():
         assert host.package(package).is_installed, \
             "Package %s not installed" % packages
 
+
 def test_setup_barmanserver_config_file():
     host = get_barmanserver()
     ansible_vars = load_ansible_vars()
@@ -27,6 +29,7 @@ def test_setup_barmanserver_config_file():
 
     assert host.file(config_file).exists, \
         "%s does not exist" % config_file
+
 
 def test_setup_barmanserver_sudo():
     host = get_barmanserver()

@@ -22,7 +22,7 @@
     dest: "{{ efm_bin_path }}/efm_db_functions"
     owner: "root"
     group: "root"
-    mode: 0755
+    mode: "0755"
   become: true
   when: efm_version is version('4.1','<=')
 
@@ -32,7 +32,7 @@
     dest: "{{ efm_node_file }}"
     owner: "{{ pg_efm_user }}"
     group: "{{ pg_efm_user }}"
-    mode: 0644
+    mode: "0644"
   become: true
 
 - name: Copy the efm service file
@@ -41,5 +41,5 @@
     dest: "{{ efm_service_file }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   become: true

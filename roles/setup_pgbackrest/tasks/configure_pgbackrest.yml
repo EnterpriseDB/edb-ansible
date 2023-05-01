@@ -36,7 +36,7 @@
     state: directory
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0750
+    mode: "0750"
     recurse: true
   become: true
 
@@ -47,7 +47,7 @@
     state: directory
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0750
+    mode: "0750"
     recurse: true
   become: true
   when: pgbackrest_archive_method == "async"
@@ -58,7 +58,7 @@
     dest: "{{ pgbackrest_configuration_file }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
   become: true
   vars:
     pgbackrest_host: "{{ _pgbackrest_host }}"

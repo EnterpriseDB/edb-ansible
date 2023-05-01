@@ -1,0 +1,116 @@
+---
+# test repuser was created correctly
+- name: Run query to check if repuser was created correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_inventory_hostname }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'repuser' and userepl = 't'"
+        db: "{{ pg_database }}"
+
+- name: Set repuser_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    repuser_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if repuser was created correctly
+  ansible.builtin.assert:
+    that:
+      - repuser_query_result.results[0].query_result[0]['usename'] == 'repuser'
+      - repuser_query_result.results[0].query_result[0]['userepl']|bool
+    fail_msg: "repuser was not succesfully created"
+    success_msg: "repuser was succesfully created"
+  run_once: true
+
+# test if replication slots were created correctly
+# get number of standby nodes in cluster
+- name: Get the standby information
+  ansible.builtin.set_fact:
+    standby_node_info: "{{ pg_cluster_nodes | selectattr('node_type', 'equalto', 'standby') | default([]) | list }}"
+
+- name: Run query to check replication slots were created correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_inventory_hostname }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_replication_slots"
+        db: "{{ pg_database }}"
+
+- name: Set repslots_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    repslots_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if replication slots were created correctly
+  ansible.builtin.assert:
+    that:
+      - repslots_query_result.results[0].query_result|length == standby_node_info|length
+    fail_msg: "Replication did not create replication slots"
+    success_msg: "Replication created replication slots successfully"
+  run_once: true
+
+# test if pg_stat_replication gives correct results
+- name: Run query to check application_name of pg_stat_replication
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_inventory_hostname }}"
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select application_name from pg_stat_replication"
+        db: "{{ pg_database }}"
+
+- name: Set pg_stat_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    pg_stat_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if pg_stat_replication shows replication slots correctly
+  ansible.builtin.assert:
+    that:
+      - pg_stat_query_result.results[0].query_result|length == standby_node_info|length
+    fail_msg: "Replication did not create replication slots"
+    success_msg: "Replication created replication slots successfully"
+  run_once: true
+
+# test if replication was successful on standby's
+- name: Run query to check slot_name on standby's
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "Select slot_name from pg_stat_wal_receiver"
+        db: "{{ pg_database }}"
+  when: "'standby' in group_names"
+
+- name: Set rep_slots_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    rep_slots_query_result: "{{ sql_query_output }}"
+  become: true
+  when: "'standby' in group_names"
+
+- name: Check if replication was successful on standby(s)
+  ansible.builtin.assert:
+    that:
+      - rep_slots_query_result.results[0].query_result[0]['slot_name'] == inventory_hostname
+    fail_msg: "Replication was not successful on standby(s)"
+    success_msg: "Replication was successful on standby(s)"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    repuser_query_result: null
+    repslots_query_result: null
+    pg_stat_query_result: null
+    rep_slots_query_result: null
+    standby_node_info: null

@@ -130,22 +130,27 @@
   ansible.builtin.include_tasks: rm_pgpool2_install_config.yml
   when: >
     ((force_pgpool2 is defined and force_pgpool2) or
-     (remove_only is defined and remove_only))
+     (remove_only is defined and remove_only)) and
+     not validate_only|bool
 
 - name: Include the pgpool2_install
   ansible.builtin.include_tasks: pgpool2_install.yml
+  when: not validate_only|bool
 
 - name: Include the pgpool2_setup
   ansible.builtin.include_tasks: pgpool2_setup.yml
+  when: not validate_only|bool
 
 - name: Include the pgpool2_setup_user_auth
   ansible.builtin.include_tasks: pgpool2_setup_user_auth.yml
+  when: not validate_only|bool
 
 - name: Update /etc/hosts based on use_hostname
   become: true
   when:
     - use_hostname|bool
     - update_etc_file|bool
+    - not validate_only|bool
   block:
     - name: Update /etc/hosts
       ansible.builtin.import_tasks: linux_update_etc_hosts.yml
@@ -155,6 +160,7 @@
   when:
     - _pgpool2_backends|length > 0
     - _pgpool2_primary_inventory_hostname|length > 0
+    - not validate_only|bool
   vars:
     pgpool2_backends: "{{ _pgpool2_backends }}"
 
@@ -163,6 +169,7 @@
   when:
     - _pgpool2_backends|length > 0
     - _pgpool2_primary_inventory_hostname|length > 0
+    - not validate_only|bool
   vars:
     pgpool2_primary_inventory_hostname: "{{ _pgpool2_primary_inventory_hostname }}"
 
@@ -170,11 +177,13 @@
   ansible.builtin.include_tasks: pgpool2_setup_ssl.yml
   when:
     - pgpool2_ssl
+    - not validate_only|bool
 
 - name: Include the pgpool2_configure_loadbalancing
   ansible.builtin.include_tasks: pgpool2_configure_loadbalancing.yml
   when:
     - pgpool2_load_balancing
+    - not validate_only|bool
 
 - name: Include the pgpool2_configure_backend_pg_hba
   ansible.builtin.include_tasks:
@@ -186,6 +195,7 @@
     loop_var: server
   when:
     - _pgpool2_ip_list|length > 0
+    - not validate_only|bool
   vars:
     pgpool2_ip_list: "{{ _pgpool2_ip_list }}"
 
@@ -193,22 +203,32 @@
   ansible.builtin.include_tasks: pgpool2_setup_watchdog.yml
   when:
     - pgpool2_watchdog
+    - not validate_only|bool
   vars:
     pgpool2_node_list: "{{ _pgpool2_node_list }}"
     pgpool2_current_node: "{{ _pgpool2_current_node }}"
 
 - name: Include the pgpool2_set_node_id
   ansible.builtin.include_tasks: pgpool2_set_node_id.yml
+  when: not validate_only|bool
   vars:
     pgpool2_nodes: "{{ _pgpool2_nodes }}"
 
 - name: Include the pgpool2_restart_service
   ansible.builtin.include_tasks: pgpool2_restart_service.yml
+  when: not validate_only|bool
 
 - name: Create and update pgpool2 database user
   ansible.builtin.include_tasks: pgpool2_create_db_user.yml
+  when: not validate_only|bool
   vars:
     pgpool2_primary_inventory_hostname: "{{ _pgpool2_primary_inventory_hostname }}"
 
 - name: Create pcp user for pgpool2
   ansible.builtin.include_tasks: pgpool2_create_pcp_user.yml
+  when: not validate_only|bool
+
+- name: Include validate tasks
+  ansible.builtin.include_tasks: validate_setup_pgpool2.yml
+  when:
+    - validate_only|bool or use_validation|bool

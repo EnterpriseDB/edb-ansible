@@ -1,0 +1,123 @@
+---
+# validate repmgr service
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Check if repmgr service is running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[repmgrd_service + '.service']['state'] == 'running'
+    fail_msg: "The service {{ repmgrd_service }} is not running."
+    success_msg: "The service {{ repmgrd_service }} is running."
+
+# validate repmgr packages
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all required packages have been installed on RedHat
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.packages[repmgr_package_name] is defined
+    fail_msg: "Package {{ repmgr_package_name }} has not been installed."
+    success_msg: "Package {{ repmgr_package_name }} has been installed."
+
+# validate repmgr user
+- name: Run query to check if repmgr user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'repmgr'"
+        db: "{{ pg_database }}"
+
+- name: Set repmgr_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    repmgr_query_res: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if repmgr user is present on all nodes
+  ansible.builtin.assert:
+    that:
+      - repmgr_query_res.results[0].query_result[0]['usename'] == 'repmgr'
+    fail_msg: "User 'repmgr' was not successfully created"
+    success_msg: "User 'repmgr' was successfully created"
+
+# validate repmgr node status
+- name: Run command to check repmgr node status on RedHat
+  ansible.builtin.command:
+    cmd: /usr/pgsql-{{ pg_version }}/bin/repmgr -f /etc/repmgr/{{ pg_version }}/repmgr-main.conf node status
+  become: true
+  become_user: "{{ pg_owner }}"
+  register: repmgr_node_status_res_rh
+  changed_when: repmgr_node_status_res_rh.rc == '0'
+  when: ansible_os_family == 'RedHat'
+
+- name: Run command to check repmgr node status on Debian
+  ansible.builtin.command:
+    cmd: repmgr -f /etc/repmgr.conf node status
+  become: true
+  become_user: "{{ pg_owner }}"
+  register: repmgr_node_status_res_deb
+  changed_when: repmgr_node_status_res_deb.rc == '0'
+  when: ansible_os_family == 'Debian'
+
+- name: Check if repmgr node can check status correctly on RedHat
+  ansible.builtin.assert:
+    that:
+      - not repmgr_node_status_res_rh.failed|bool
+    fail_msg: "repmgr command node status failed"
+    success_msg: "repmgr command node status was successful"
+  when: ansible_os_family == 'RedHat'
+
+- name: Check if repmgr node can check status correctly on Debian
+  ansible.builtin.assert:
+    that:
+      - not repmgr_node_status_res_deb.failed|bool
+    fail_msg: "repmgr command node status failed"
+    success_msg: "repmgr command node status was successful"
+  when: ansible_os_family == 'Debian'
+
+# validate repmgr node setup
+- name: Run command to check repmgr node check on RedHat
+  ansible.builtin.command:
+    cmd: /usr/pgsql-{{ pg_version }}/bin/repmgr -f /etc/repmgr/{{ pg_version }}/repmgr-main.conf node check
+  become: true
+  become_user: "{{ pg_owner }}"
+  register: repmgr_node_check_res_rh
+  changed_when: repmgr_node_check_res_rh.rc == '0'
+  when: ansible_os_family == 'RedHat'
+
+- name: Run command to check repmgr node check on Debian
+  ansible.builtin.command:
+    cmd: repmgr -f /etc/repmgr.conf node check
+  become: true
+  become_user: "{{ pg_owner }}"
+  register: repmgr_node_check_res_deb
+  changed_when: repmgr_node_check_res_deb.rc == '0'
+  when: ansible_os_family == 'Debian'
+
+- name: Check if repmgr node can check node correctly on RedHat
+  ansible.builtin.assert:
+    that:
+      - repmgr_node_check_res_rh.stdout_lines is search('OK')
+    fail_msg: "repmgr command node check failed"
+    success_msg: "repmgr command node check was successful"
+  when: ansible_os_family == 'RedHat'
+
+- name: Check if repmgr node can check node correctly on Debian
+  ansible.builtin.assert:
+    that:
+      - repmgr_node_check_res_deb.stdout_lines is search('OK')
+    fail_msg: "repmgr command node check failed"
+    success_msg: "repmgr command node check was successful"
+  when: ansible_os_family == 'Debian'
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    repmgr_query_res: null
+    repmgr_node_status_res_rh: null
+    repmgr_node_status_res_deb: null
+    repmgr_node_check_res_rh: null
+    repmgr_node_check_res_deb: null

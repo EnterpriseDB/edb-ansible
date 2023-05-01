@@ -10,12 +10,14 @@
   when: >
     ((force_dbt2 is defined and force_dbt2) or
      (force_dbt2_client is defined and force_dbt2_client) or
-     (remove_only is defined and remove_only))
+     (remove_only is defined and remove_only)) and
+     not validate_only|bool
 
 - name: Include DBT-2 kit client installation
   ansible.builtin.include_role:
     name: setup_dbt2
     tasks_from: dbt2_install_packages_client
+  when: not validate_only|bool
 
 - name: Include DBT-2 user setup configuration
   ansible.builtin.include_tasks: dbt2_setup_user.yml
@@ -30,12 +32,14 @@
     - ansible_facts.services['firewalld.service'] is defined
     - ansible_facts.services['firewalld.service'].state == 'running'
     - ansible_facts.services['firewalld.service'].status == 'enabled'
+    - not validate_only|bool
   become: true
 
 - name: Include DBT-2 .pgpass configuration
   ansible.builtin.include_role:
     name: setup_dbt2
     tasks_from: dbt2_configure_pgpass
+  when: not validate_only|bool
 
 - name: "Increase nofile limits for user {{ pg_owner }}"
   edb_devops.edb_postgres.linesinfile:
@@ -43,4 +47,9 @@
     lines:
       - line: "{{ pg_owner }}    hard  nofile  10000"
       - line: "{{ pg_owner }}    soft  nofile  10000"
+  when: not validate_only|bool
   become: true
+
+- name: Include validate_setup_dbt2_client tasks
+  ansible.builtin.include_tasks: validate_setup_dbt2_client.yml
+  when: validate_only|bool or use_validation|bool

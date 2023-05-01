@@ -41,7 +41,8 @@
        or (force_initdb is defined and force_initdb)
         or (force_replication is defined and force_replication)
          or (force_pemserver is defined and force_pemserver)
-          or (remove_only is defined and remove_only))
+          or (remove_only is defined and remove_only)) and
+           not validate_only|bool
 
 - name: Update /etc/hosts based on use_hostname
   when:
@@ -59,39 +60,52 @@
 
 - name: Include the password generation tasks
   ansible.builtin.include_tasks: generate_pg_password.yml
-  when: barman_pg_password is not defined
+  when:
+    - barman_pg_password is not defined
+    - not validate_only|bool
 
 - name: Include the barman .pgpass file tasks
   ansible.builtin.include_tasks: update_barman_pgpass.yml
+  when: not validate_only|bool
 
 - name: Include the Postgres user creation tasks
   ansible.builtin.include_tasks: create_pg_user.yml
   when: >
-    'primary' in group_names
+    'primary' in group_names and not validate_only|bool
 
 - name: Include the HBA file update tasks
   ansible.builtin.include_tasks: update_pg_hba.yml
+  when: not validate_only|bool
 
 - name: Include the SSH keys generation tasks
   ansible.builtin.include_tasks: generate_ssh_keys.yml
+  when: not validate_only|bool
 
 - name: Include the SSH keys exchange tasks
   ansible.builtin.include_tasks: exchange_ssh_keys.yml
+  when: not validate_only|bool
 
 - name: Include the barman configuration tasks
   ansible.builtin.include_tasks: configure_barman.yml
   when: >
-    hostvars[inventory_hostname].barman_no_configuration is not defined
-    or not hostvars[inventory_hostname].barman_no_configuration|bool
+    (hostvars[inventory_hostname].barman_no_configuration is not defined
+    or not hostvars[inventory_hostname].barman_no_configuration|bool) and
+    not validate_only|bool
 
 - name: Include the Postgres configuration tasks for backup
   ansible.builtin.include_tasks: configure_pg_backup.yml
   when: >
-    hostvars[inventory_hostname].barman_no_configuration is not defined
-    or not hostvars[inventory_hostname].barman_no_configuration|bool
+    (hostvars[inventory_hostname].barman_no_configuration is not defined
+    or not hostvars[inventory_hostname].barman_no_configuration|bool) and
+    not validate_only|bool
 
 - name: Include the barman post configuration tasks
   ansible.builtin.include_tasks: post_configure_barman.yml
   when: >
-    hostvars[inventory_hostname].barman_no_configuration is not defined
-    or not hostvars[inventory_hostname].barman_no_configuration|bool
+    (hostvars[inventory_hostname].barman_no_configuration is not defined
+    or not hostvars[inventory_hostname].barman_no_configuration|bool) and
+    not validate_only|bool
+
+- name: Include the validate_setup_barman tasks
+  ansible.builtin.include_tasks: validate_setup_barman.yml
+  when: validate_only|bool or use_validation|bool

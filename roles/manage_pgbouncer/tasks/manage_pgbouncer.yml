@@ -9,6 +9,12 @@
 
 - name: Include the pgbouncer_set_databases
   ansible.builtin.include_tasks: pgbouncer_set_databases.yml
+  when: not validate_only|bool
 
 - name: Include the pgbouncer_set_userlist
   ansible.builtin.include_tasks: pgbouncer_set_userlist.yml
+  when: not validate_only|bool
+
+- name: Include the validate manage_pgouncer tasks
+  ansible.builtin.include_tasks: validate_manage_pgbouncer.yml
+  when: validate_only|bool or use_validation|bool
