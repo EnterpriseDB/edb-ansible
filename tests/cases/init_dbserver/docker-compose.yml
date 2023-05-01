@@ -15,7 +15,7 @@ services:
     - EDB_PG_VERSION
     - CASE_NAME=init_dbserver
     - EDB_OS
-    - ANSIBLE_CORE_VERSION="${ANSIBLE_CORE_VERSION:-2.12}"
+    - ANSIBLE_CORE_VERSION="${ANSIBLE_CORE_VERSION:-2.13}"
     volumes:
     - ../../..:/workspace
     command: "/workspace/tests/docker/exec-tests.sh"

@@ -188,7 +188,7 @@ if __name__ == '__main__':
         '--ansible-core-version',
         dest='ansible_core_version',
         nargs='+',
-        default=['2.12'],
+        default=['2.13'],
         action=ACVersionChecker,
         help="Ansible-core version to be used by tester. Default: %(default)s",
     )
