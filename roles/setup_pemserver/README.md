@@ -30,7 +30,7 @@ The requirements for this ansible galaxy role are:
 
 ## Role variables
 
-When executing the role via ansible there are three required variables:
+When executing the role via ansible there these are the required variables:
 
   * ***pg_version***
 
@@ -40,13 +40,21 @@ When executing the role via ansible there are three required variables:
 
   Database Engine supported are: PG and EPAS
 
+  * ***repo_username***
+
+  Username for the EDB public package repository.
+
+  * ***repo_password***
+
+  Key (not password) for the EDB public package repository.
+
+  * ***pg_pem_admin_password***
+
+  Password for the **pemadmin** user in order to log into PEM.
+
 The rest of the variables can be configured and are available in the:
 
   * [roles/setup_pemserver/defaults/main.yml](./defaults/main.yml)
-
-## Dependencies
-
-The `setup_pemserver` role does not have any dependencies on any other roles.
 
 ## Example Playbook
 
@@ -70,22 +78,6 @@ all:
           private_ip: xxx.xxx.xxx.xxx
           pem_agent: true
           pem_server_private_ip: xxx.xxx.xxx.xxx
-    standby:
-      hosts:
-        standby1:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
-          upstream_node_private_ip: xxx.xxx.xxx.xxx
-          replication_type: synchronous
-          pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
-        standby2:
-          ansible_host: xxx.xxx.xxx.xxx
-          private_ip: xxx.xxx.xxx.xxx
-          upstream_node_private_ip: xxx.xxx.xxx.xxx
-          replication_type: asynchronous
-          pem_agent: true
-          pem_server_private_ip: xxx.xxx.xxx.xxx
 ```
 
 ## How to include the `setup_pemserver` role in your Playbook
@@ -107,8 +99,14 @@ Below is an example of how to include the `setup_pemserver` role:
       set_fact:
         pg_version: 14
         pg_type: "PG"
+        repo_username: "REPO_USERNAME"
+        repo_password: "REPO_KEY"
+        pg_pem_admin_password: "CHANGEME"
 
   roles:
+    - setup_repo
+    - install_dbserver
+    - init_dbserver
     - setup_pemserver
 ```
 
@@ -168,6 +166,10 @@ $ ansible-playbook playbook.yml \
   --private-key <key.pem> \
   --extra-vars="pg_version=12 pg_type=EPAS"
 ```
+
+## Notes
+
+Log into PEM at https://<pemserver1.ansible_host>/pem
 
 ## License
 
