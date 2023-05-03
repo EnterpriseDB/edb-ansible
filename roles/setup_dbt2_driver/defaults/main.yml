@@ -18,3 +18,8 @@ pg_superuser: ""
 pg_user_home: ""
 
 ssh_port: 22
+
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true

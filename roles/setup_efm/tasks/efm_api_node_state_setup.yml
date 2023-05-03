@@ -17,7 +17,7 @@
     dest: /etc/edb/efm-api-node-state/config.toml
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   become: true
 
 - name: Open TCP port {{ efm_api_node_state_port }}

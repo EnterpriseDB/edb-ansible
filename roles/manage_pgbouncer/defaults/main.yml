@@ -4,6 +4,11 @@ pgbouncer_databases_list: []
 # User names & passwords list
 pgbouncer_auth_user_list: []
 
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
+
 supported_os:
   - CentOS7
   - CentOS8

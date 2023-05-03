@@ -1,0 +1,180 @@
+---
+- name: Set package list for PG RedHat
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'glibc-common', 'ca-certificates', 'postgresql' + pg_version | string,
+        'postgresql' + pg_version + '-server' | string, 'postgresql' + pg_version + '-contrib' | string,
+        'sslutils_' + pg_version | string
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+
+- name: Add Centos7 packages to PG RedHat package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python-pycurl', 'libselinux-python', 'python2-psycopg2', 'python-ipaddress'
+      ] }}
+  when:
+    - pg_type == 'PG'
+    - os == 'Centos7'
+
+- name: Add EL8 packages to PG RedHat package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python3-pycurl', 'python3-libselinux', 'python3-psycopg2'
+      ] }}
+  when:
+    - pg_type == 'PG'
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+
+- name: Set package list for EPAS RedHat
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'edb-as' + pg_version + '-server' | string, 'edb-as' + pg_version + '-server-core' | string,
+        'edb-as' + pg_version + '-server-contrib' | string, 'edb-as' + pg_version + '-server-libs' | string,
+        'edb-as' + pg_version + '-server-client' | string, 'edb-as' + pg_version + '-server-sslutils' | string,
+        'edb-as' + pg_version + '-server-indexadvisor' | string, 'edb-as' + pg_version + '-server-sqlprofiler' | string,
+        'edb-as' + pg_version + '-server-sqlprotect' | string
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+
+- name: Add EL7 packages to EPAS RedHat package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python2-pip', 'python2-psycopg2', 'python-ipaddress'
+      ] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
+
+- name: Add EL8 packages to EPAS RedHat package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python3-pip', 'python3-psycopg2'
+      ] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+
+- name: Add pg_version > 10 packages to EPAS RedHat package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-llvmjit' | string] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'RedHat'
+    - pg_version|int > 10
+
+- name: Add 10 < pg_version < 14 packages to EPAS RedHat package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb-modules' | string] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'RedHat'
+    - pg_version|int > 10
+    - pg_version|int < 14
+
+- name: Add pg_version >= 14 packages to EPAS RedHat package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb_wait_states' | string] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'RedHat'
+    - pg_version|int >= 14
+
+- name: Install python-apt package
+  ansible.builtin.package:
+    name: python-apt
+    state: present
+  when:
+    - ansible_os_family == 'Debian'
+
+- name: Set package list for PG Debian
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'ca-certificates', 'python3-pycurl', 'python3-psycopg2', 'postgresql-' + pg_version | string,
+        'postgresql-server-dev-' + pg_version | string, 'postgresql-' + pg_version + '-sslutils' | string
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+
+- name: Add Debian OS packages to package list for PG Debian
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['python-psycopg2', 'python-ipaddress'] }}
+  when:
+    - pg_type == 'PG'
+    - ansible_distribution == 'Debian'
+
+- name: Set package list for EPAS Debian
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python3-pip', 'python3-psycopg2', 'edb-as' + pg_version + '-server' | string,
+        'edb-as' + pg_version + '-server-core' | string, 'edb-as' + pg_version + '-server-client' | string,
+        'edb-as' + pg_version + '-server-sslutils' | string, 'edb-as' + pg_version + '-server-indexadvisor' | string,
+        'edb-as' + pg_version + '-server-sqlprofiler' | string, 'edb-as' + pg_version + '-server-sqlprotect' | string
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+
+- name: Add Debian OS packages to package list for EPAS Debian
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['python-psycopg2', 'python-ipaddress'] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_distribution == 'Debian'
+
+- name: Add pg_version < 14 packages to EPAS Debian package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb-modules' | string] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'Debian'
+    - pg_version|int < 14
+
+- name: Add pg_version >= 14 packages to EPAS Debian package_list
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb-wait-states' | string] }}
+  when:
+    - pg_type == 'EPAS'
+    - ansible_os_family == 'Debian'
+    - pg_version|int >= 14
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all required packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ package_list }}"
+  loop_control:
+    loop_var: package
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    package_list: null

@@ -15,7 +15,7 @@ services:
     - EDB_PG_VERSION
     - CASE_NAME=setup_pgbackrest
     - EDB_OS
-    - ANSIBLE_CORE_VERSION="${ANSIBLE_CORE_VERSION:-2.12}"
+    - ANSIBLE_CORE_VERSION="${ANSIBLE_CORE_VERSION:-2.13}"
     volumes:
     - ../../..:/workspace
     command: "/workspace/tests/docker/exec-tests.sh"
@@ -32,18 +32,6 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   standby1-rocky8:
-    # Required for running systemd containers via GitHub actions
-    privileged: true
-    build:
-      context: ../../docker
-      dockerfile: Dockerfile.rocky8
-    cap_add:
-    - SYS_ADMIN
-    volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
-    command: /usr/sbin/init
-  standby2-rocky8:
     # Required for running systemd containers via GitHub actions
     privileged: true
     build:
@@ -91,18 +79,6 @@ services:
     - .:/workspace
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
-  standby2-almalinux8:
-    # Required for running systemd containers via GitHub actions
-    privileged: true
-    build:
-      context: ../../docker
-      dockerfile: Dockerfile.almalinux8
-    cap_add:
-    - SYS_ADMIN
-    volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
-    command: /usr/sbin/init
   pgbackrest1-almalinux8:
     # Required for running systemd containers via GitHub actions
     privileged: true
@@ -137,17 +113,6 @@ services:
     - .:/workspace
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
-  standby2-centos7:
-    privileged: true
-    build:
-      context: ../../docker
-      dockerfile: Dockerfile.centos7
-    cap_add:
-    - SYS_ADMIN
-    volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
-    command: /usr/sbin/init
   pgbackrest1-centos7:
     privileged: true
     build:
@@ -160,6 +125,7 @@ services:
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
   primary1-debian10:
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.debian10
@@ -174,20 +140,7 @@ services:
       - /run/sshd
       - /run/lock
   standby1-debian10:
-    build:
-      context: ../../docker
-      dockerfile: Dockerfile.debian10
-    cap_add:
-      - SYS_ADMIN
-    volumes:
-      - .:/workspace
-      - /sys/fs/cgroup/:/sys/fs/cgroup:ro
-    tmpfs:
-      - /run
-      - /tmp
-      - /run/sshd
-      - /run/lock
-  standby2-debian10:
+    privileged: true
     build:
       context: ../../docker
       dockerfile: Dockerfile.debian10
@@ -231,21 +184,6 @@ services:
     - /run/sshd
     - /run/lock
   standby1-ubuntu20:
-    privileged: true
-    build:
-      context: ../../docker
-      dockerfile: Dockerfile.ubuntu20
-    cap_add:
-    - SYS_ADMIN
-    volumes:
-    - .:/workspace
-    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
-    tmpfs:
-    - /run
-    - /tmp
-    - /run/sshd
-    - /run/lock
-  standby2-ubuntu20:
     privileged: true
     build:
       context: ../../docker

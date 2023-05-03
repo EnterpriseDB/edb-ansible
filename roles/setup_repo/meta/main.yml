@@ -1,8 +1,8 @@
 ---
 galaxy_info:
   author: EDB
-  description: Installation of Postgres or EDB Postgres Advanced Server 10, 11 and 12 to CentOS or RHEL repos
-  company: "EDB"
+  description: Installation of EPEL, Postgres (PGDG) and/or EDB repos
+  company: "EnterpriseDB"
   license: BSD-3-Clause
   min_ansible_version: "2.8"
 
@@ -11,6 +11,12 @@ galaxy_info:
       versions:
         - "7"
         - "8"
+    - name: Debian
+      versions:
+        - "buster"
+    - name: Ubuntu
+      versions:
+        - "focal"
 
   galaxy_tags:
     - database

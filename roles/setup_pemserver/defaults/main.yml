@@ -1,5 +1,4 @@
 ---
-
 pg_instance_name: main
 pg_version: 14
 use_hostname: true
@@ -24,6 +23,7 @@ pem_agent_bin_path: "/usr/edb/pem/agent/bin"
 
 pem_allowed_connections: "0.0.0.0/0"
 pem_server_hba_local_entry: []
+pg_pem_database: "pem"
 # 1: web servce and database, 2: web services, 3: database
 pem_installation_type: "1"
 
@@ -31,6 +31,11 @@ pem_installation_type: "1"
 etc_hosts_lists: []
 input_password: ""
 pg_allow_ip_addresses: []
+
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
 
 # pem probe and alert query
 pem_probe_query: "UPDATE

@@ -1,0 +1,26 @@
+---
+# validate hammerdb directory
+- name: Stat to hammerdb directory
+  ansible.builtin.stat:
+    path: "/home/{{ hammerdb_user }}/HammerDB-{{ hammerdb_version | string }}"
+  register: hammerdb_directory_check
+
+- name: Check that hammerdb install file is present
+  ansible.builtin.assert:
+    that:
+      - hammerdb_directory_check.stat['exists']
+    fail_msg: "The directory /home/{{ hammerdb_user }}/HammerDB-{{ hammerdb_version | string }} is not configured correctly."
+    success_msg: "The directory /home/{{ hammerdb_user }}/HammerDB-{{ hammerdb_version | string }} is configured correctly."
+
+# validate hammerdb install file
+- name: Stat to hammerdb install file
+  ansible.builtin.stat:
+    path: "/home/{{ hammerdb_user }}/{{ hammerdb_filename }}"
+  register: hammerdb_install_check
+
+- name: Check that hammerdb install file is present
+  ansible.builtin.assert:
+    that:
+      - hammerdb_install_check.stat['exists']
+    fail_msg: "The file /home/{{ hammerdb_user }}/{{ hammerdb_filename }} is not configured correctly."
+    success_msg: "The file /home/{{ hammerdb_user }}/{{ hammerdb_filename }} is configured correctly."

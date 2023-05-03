@@ -1,0 +1,73 @@
+---
+# validate pg version
+- name: Run command to check if efm service is bound to pg service
+  ansible.builtin.command:
+    cmd: /usr/edb/efm-4.5/bin/efm_db_functions readpgversion main
+  become: true
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  delegate_to: "{{ primary_private_ip }}"
+  changed_when: true
+  register: efm_read_pg_version_res
+
+- name: Check efm service is bound to pg service
+  ansible.builtin.assert:
+    that:
+      - efm_read_pg_version_res.stdout_lines is search('{{ pg_version }}')
+    fail_msg: "efm service is not correctly bound to postgres service"
+    success_msg: "efm service is correctly bound to postgres service"
+  run_once: true
+
+# validate replication slots
+- name: Gather the EFM cluster informations
+  ansible.builtin.set_fact:
+    efm_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.efm_nodes', wantlist=True) }}"
+
+- name: Get the standby information
+  ansible.builtin.set_fact:
+    standby_efm_nodes: "{{ standby_efm_nodes | default([]) + [node.inventory_hostname] }}"
+  when: node.node_type == 'standby'
+  loop: "{{ efm_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  no_log: "{{ disable_logging }}"
+
+- name: Run query to check if replication slots were setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_private_ip }}"
+      run_once: true
+  when: standby_efm_nodes|length > 0
+  vars:
+    pg_query:
+      - query: "Select slot_name from pg_replication_slots where active = 't'"
+        db: "{{ pg_database }}"
+
+- name: Set manage_efm_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    manage_efm_query_result: "{{ sql_query_output }}"
+  become: true
+  when: standby_efm_nodes|length > 0
+
+- name: Isolate desired query result values
+  ansible.builtin.set_fact:
+    manage_efm_query_result_vars: "{{ manage_efm_query_result.results[0].query_result | map(attribute='slot_name') }}"
+  when: standby_efm_nodes|length > 0
+
+- name: Check efm replication slots
+  ansible.builtin.assert:
+    that:
+      - manage_efm_query_result_vars is search('{{ item }}')
+    fail_msg: "EFM user was not created correctly."
+    success_msg: "EFM user was created correctly."
+  loop: "{{ standby_efm_nodes }}"
+  when: standby_efm_nodes|length > 0
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    manage_efm_query_result: null
+    manage_efm_query_result_vars: null
+    standby_efm_nodes: null
+    efm_read_pg_version_res: null

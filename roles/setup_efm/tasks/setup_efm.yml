@@ -86,7 +86,8 @@
     (force_efm is defined and force_efm)
     or (force_initdb is defined and force_initdb)
     or (force_replication is defined and force_replication)
-    or (remove_only is defined and remove_only)
+    or (remove_only is defined and remove_only) and
+    not validate_only|bool
 
 - name: Prepare efm_nodes_list based on use_hostname
   ansible.builtin.set_fact:
@@ -128,6 +129,7 @@
   run_once: true
   no_log: "{{ disable_logging }}"
   delegate_to: "{{ primary_inventory_hostname }}"
+  when: not validate_only|bool
 
 - name: Update /etc/hosts based on use_hostname
   ansible.builtin.import_tasks: linux_update_etc_hosts.yml
@@ -135,10 +137,12 @@
   when:
     - use_hostname|bool
     - update_etc_file|bool
+    - not validate_only|bool
 
 - name: EFM installation
   no_log: "{{ disable_logging }}"
   become: true
+  when: not validate_only|bool
   block:
     - name: Import efm_hba
       ansible.builtin.import_tasks: efm_hba.yml
@@ -150,11 +154,13 @@
   when:
     - efm_pgpool2_integration
     - "'witness' not in group_names"
+    - not validate_only|bool
   no_log: "{{ disable_logging }}"
 
 - name: EFM configuration
   no_log: "{{ disable_logging }}"
   become: true
+  when: not validate_only|bool
   block:
     - name: Import efm_create_properties
       ansible.builtin.import_tasks: efm_create_properties.yml
@@ -166,6 +172,11 @@
   no_log: "{{ disable_logging }}"
   when:
     - efm_api_node_state
+    - not validate_only|bool
+
+- name: Include the validate setup_efm tasks
+  ansible.builtin.include_tasks: validate_setup_efm.yml
+  when: validate_only|bool or use_validation|bool
 
 - name: Reset the variables used in this role
   ansible.builtin.set_fact:

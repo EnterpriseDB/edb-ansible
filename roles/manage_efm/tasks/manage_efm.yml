@@ -86,10 +86,16 @@
 
 - name: Include the efm_db_password.yml
   ansible.builtin.include_tasks: efm_db_password.yml
+  when: not validate_only|bool
 
 - name: EFM parameters settings
   ansible.builtin.include_tasks: efm_cluster_set_params.yml
   no_log: "{{ disable_logging }}"
+  when: not validate_only|bool
+
+- name: Include validate manage_efm tasks
+  ansible.builtin.include_tasks: validate_manage_efm.yml
+  when: validate_only|bool or use_validation|bool
 
 - name: Reset the variables used in this role
   ansible.builtin.set_fact:

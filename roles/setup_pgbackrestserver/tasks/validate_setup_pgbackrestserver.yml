@@ -1,0 +1,47 @@
+---
+# validate pgbackrest package
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all required packages have been installed
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.packages[pgbackrest_package_name] is defined
+    fail_msg: "Package {{ pgbackrest_package_name }} has not been installed."
+    success_msg: "Package {{ pgbackrest_package_name }} has been installed."
+
+# validate pgbackrest configuration file
+- name: Stat to pgbackrest_configuration_file
+  ansible.builtin.stat:
+    path: "{{ pgbackrest_configuration_file }}"
+  register: pgbackrest_config_stat
+
+- name: Check that pgbackrest_configuration_file was created
+  ansible.builtin.assert:
+    that:
+      - pgbackrest_config_stat.stat['gr_name'] == pgbackrest_group
+      - pgbackrest_config_stat.stat['pw_name'] == pgbackrest_user
+    fail_msg: "The file {{ pgbackrest_configuration_file }} is not configured correctly."
+    success_msg: "The file {{ pgbackrest_configuration_file }} is configured correctly."
+
+# validate archive_repo_directory
+- name: Stat to archive_repo_directory
+  ansible.builtin.stat:
+    path: "{{ archive_repo_directory }}"
+  register: archive_repo_stat
+  become: true
+
+- name: Check that archive_repo_directory was created correctly
+  ansible.builtin.assert:
+    that:
+      - archive_repo_stat.stat['exists']|bool
+      - archive_repo_stat.stat['gr_name'] == pgbackrest_group
+      - archive_repo_stat.stat['pw_name'] == pgbackrest_user
+    fail_msg: "The archive repo {{ archive_repo_directory }} is not configured correctly."
+    success_msg: "The archive repo {{ archive_repo_directory }} is configured correctly."
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pgbackrest_config_stat: null
+    archive_repo_stat: null

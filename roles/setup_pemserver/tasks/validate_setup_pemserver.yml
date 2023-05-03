@@ -1,0 +1,105 @@
+---
+# validate pemserver pemagent
+- name: Run query to check if pemagent user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'agent1'"
+        db: "{{ pg_database }}"
+
+- name: Set pemagent_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    pemagent_query_res: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if pemagent user has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - pemagent_query_res.results[0].query_result[0]['usename'] == 'agent1'
+    fail_msg: "pemagent user agent1 was not created successfully"
+    success_msg: "pemagent user agent1 was created successfully"
+  run_once: true
+
+# validate pemserver pemadmin
+- name: Run query to check if pemadmin user was setup correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      run_once: true
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = 'pemadmin'"
+        db: "{{ pg_database }}"
+
+- name: Set pemadmin_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    pemadmin_query_res: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if pemadmin user has been configured correctly.
+  ansible.builtin.assert:
+    that:
+      - pemadmin_query_res.results[0].query_result[0]['usename'] == 'pemadmin'
+    fail_msg: "pemadmin user was not created successfully"
+    success_msg: "pemadmin user was created successfully"
+  run_once: true
+
+# validate pemagent service
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Check if service pg_service is running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services['pemagent.service']['state'] == 'running'
+    fail_msg: "The service 'pemagent' is not running."
+    success_msg: "The service 'pemagent' is running."
+
+# validate pemserver packages
+- name: Gather package facts
+  ansible.builtin.package_facts:
+
+- name: Check that all required packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[item] }} is defined"
+    fail_msg: "Package {{ item }} has not been installed."
+    success_msg: "Package {{ item }} has been installed."
+  loop: "{{ pem_server_packages }}"
+
+# validate pem database
+- name: Get postgres info
+  community.postgresql.postgresql_info:
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pem_pg_port }}"
+    login_user: "{{ pg_owner }}"
+    filter: databases
+  become_user: "{{ pg_owner }}"
+  become: true
+  register: pem_db_info_res
+
+- name: Check that PEM database was successfully created
+  ansible.builtin.assert:
+    that:
+      - pem_db_info_res.databases.pem is defined
+    fail_msg: "PEM database was not successfully created"
+    success_msg: "PEM database was succesfully created"
+
+# validate pemserver socket
+- name: Check that pemserver is listening
+  ansible.builtin.wait_for:
+    host: 0.0.0.0
+    port: 8443
+    msg: "PEM web interface is not listening on 0.0.0.0:8443"
+  become: true
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pemagent_query_res: null
+    pemadmin_query_res: null
+    pem_db_info_res: null

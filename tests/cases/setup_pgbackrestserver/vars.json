@@ -5,5 +5,7 @@
   "pgbackrest_group": "pgbackrest",
   "pgbackrest_configuration_file": "/etc/pgbackrest.conf",
   "pgbackrest_home": "/var/lib/pgbackrest",
-  "repo_cipher_password": "acbd"
+  "repo_cipher_password": "acbd",
+  "pg_data": "/opt/pgdata",
+  "pg_wal": "/opt/pgwal"
 }

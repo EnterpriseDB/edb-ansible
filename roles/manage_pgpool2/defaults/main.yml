@@ -1,8 +1,13 @@
 ---
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
 
 pgpool2_configuration: []
-pgpool2_users: []
+pgpool2_service_users: []
 pcp_users: []
+
 supported_os:
   - CentOS7
   - CentOS8

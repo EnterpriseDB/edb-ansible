@@ -24,7 +24,6 @@ def test_init_dbserver_files():
         pg_user = 'enterprisedb'
         pg_group = 'enterprisedb'
 
-
     host = get_primary()
 
     for pg_dir in [pg_data, pg_wal]:
@@ -99,7 +98,6 @@ def test_init_dbserver_data_directory():
     pg_user = 'postgres'
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
-
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()

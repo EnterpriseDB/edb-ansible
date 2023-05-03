@@ -39,7 +39,7 @@
     dest: "{{ barman_configuration_files_directory }}/{{ inventory_hostname }}-{{ pg_instance_name }}.conf"
     owner: "{{ barman_user }}"
     group: "{{ barman_group }}"
-    mode: 0700
+    mode: "0700"
   delegate_to: "{{ _barman_server_inventory_hostname }}"
   become: true
   vars:

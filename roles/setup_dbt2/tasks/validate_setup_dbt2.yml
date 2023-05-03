@@ -1,0 +1,48 @@
+---
+# validate dbt2 packages
+- name: Set dbt2 package name
+  ansible.builtin.set_fact:
+    dbt2_package_list: ['dbt2-db', 'dbt2-pgsql-c_14', 'dbt2-pgsql-plpgsql', 'dbt2-scripts']
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all DBT2 packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ dbt2_package_list }}"
+  loop_control:
+    loop_var: package
+
+# validate dbt2 user
+- name: Run query to check dbt2 user is in pg_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "Select * from pg_user where usename = '{{ pg_owner }}'"
+        db: "{{ pg_database }}"
+
+- name: Set user_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    user_query_result: "{{ sql_query_output }}"
+  become: true
+
+- name: Check if DBT2 postgres user was successfully created
+  ansible.builtin.assert:
+    that:
+      - user_query_result.results[0].query_result[0]['usename'] == pg_owner
+    fail_msg: "DBT2 postgres user was not successfully created."
+    success_msg: "DBT2 postgres user was successfully created."
+  run_once: true
+
+# reset variables
+- name: Reset variables
+  ansible.builtin.set_fact:
+    dbt2_package_list: null
+    user_query_result: null

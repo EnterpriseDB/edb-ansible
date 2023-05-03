@@ -42,6 +42,11 @@ patroni_initdb_options:
 pg_basebackup: "{{ pg_bin_path }}/pg_basebackup -Fp -R -l standby --checkpoint=fast --wal-method=stream"
 pg_basebackup_options: ""
 
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
+
 # unix socket domain directories
 pg_unix_socket_directories:
   - "/var/run/postgresql"

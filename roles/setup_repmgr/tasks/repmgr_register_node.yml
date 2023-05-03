@@ -15,10 +15,24 @@
       {{ repmgr_role }} register -F &>> /var/log/repmgr/register.log
   args:
     executable: /bin/bash
+  changed_when: true
   become: true
   become_user: "{{ pg_owner }}"
   throttle: 1
   when: "repmgr_role in ('primary', 'standby')"
+
+# update standby slot_name
+- name: Update standby slot_name
+  community.postgresql.postgresql_query:
+    db: "{{ pg_repmgr_dbname }}"
+    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
+    port: "{{ pg_port }}"
+    login_user: "{{ pg_owner }}"
+    query: "{{ repmgr_update_slot_query }}"
+  become_user: "{{ pg_owner }}"
+  become: true
+  delegate_to: "{{ repmgr_primary_info.private_ip }}"
+  when: "repmgr_role in ('standby')"
 
 - name: Register repmgr witness node
   ansible.builtin.shell: |
@@ -28,6 +42,7 @@
       {{ repmgr_role }} register -F -h {{ repmgr_primary_info.private_ip }} &>> /var/log/repmgr/register.log
   args:
     executable: /bin/bash
+  changed_when: true
   become: true
   become_user: "{{ pg_owner }}"
   throttle: 1

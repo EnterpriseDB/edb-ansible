@@ -1,0 +1,51 @@
+---
+# validate pgbouncer databases file
+- name: Stat to pgbouncer_databases_file
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_databases_file }}"
+  register: pgbouncer_db_stat
+  become: true
+
+- name: Check if pgbouncer_databases_file file was created properly
+  ansible.builtin.assert:
+    that:
+      - pgbouncer_db_stat.stat['exists']|bool
+      - pgbouncer_db_stat.stat['pw_name'] == pgbouncer_user
+    fail_msg: "pgbouncer databases file {{ pgbouncer_databases_file }} was not created properly"
+    success_msg: "pgbouncer databases file {{ pgbouncer_databases_file }} was created successfully"
+
+# validate pgbouncer pid file
+- name: Stat to pgbouncer_pid_file
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_pid_file }}"
+  register: pgbouncer_pid_stat
+  become: true
+
+- name: Check if pgbouncer_pid_file file was created properly
+  ansible.builtin.assert:
+    that:
+      - pgbouncer_pid_stat.stat['exists']|bool
+      - pgbouncer_pid_stat.stat['pw_name'] == pgbouncer_user
+    fail_msg: "pgbouncer pid file {{ pgbouncer_pid_file }} was not created properly"
+    success_msg: "pgbouncer pid file {{ pgbouncer_pid_file }} was created successfully"
+
+# validate pgbouncer auth file
+- name: Stat to pgbouncer_auth_file
+  ansible.builtin.stat:
+    path: "{{ pgbouncer_auth_file }}"
+  register: pgbouncer_auth_stat
+  become: true
+
+- name: Check if pgbouncer_auth_file file was created properly
+  ansible.builtin.assert:
+    that:
+      - pgbouncer_auth_stat.stat['exists']|bool
+      - pgbouncer_auth_stat.stat['pw_name'] == pgbouncer_user
+    fail_msg: "pgbouncer auth file {{ pgbouncer_auth_file }} was not created properly"
+    success_msg: "pgbouncer auth file {{ pgbouncer_auth_file }} was created successfully"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    pgbouncer_db_stat: null
+    pgbouncer_pid_stat: null
+    pgbouncer_auth_stat: null

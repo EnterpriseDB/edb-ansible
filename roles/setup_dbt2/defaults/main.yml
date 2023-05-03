@@ -16,6 +16,11 @@ pg_superuser: ""
 pg_superuser_password: ""
 pg_user_home: ""
 
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
+
 supported_os:
   - CentOS8
   - RedHat8

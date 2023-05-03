@@ -121,7 +121,7 @@
     dest: "{{ pgbackrest_configuration_file }}"
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
-    mode: 0600
+    mode: "0600"
   become: true
 
 - name: Build pgbackrest_conf_lines
@@ -140,7 +140,7 @@
     path: "{{ pgbackrest_configuration_file }}"
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
-    mode: 0600
+    mode: "0600"
     lines: "{{ pgbackrest_conf_lines }}"
   become: true
   when:

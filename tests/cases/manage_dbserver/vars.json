@@ -70,12 +70,6 @@
    "db": "testdb"
   }
  ],
- "pg_query": [
-  {
-   "query": "CREATE TABLE IF NOT EXISTS test2()",
-   "db": "postgres"
-  }
- ],
  "pg_pgpass_values": [
   {
    "host": "127.0.0.1",

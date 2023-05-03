@@ -6,7 +6,7 @@
     dest: /etc/udev/rules.d/60-watchdog.rules
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Install watchdog
   ansible.builtin.package:
@@ -19,4 +19,4 @@
     dest: /etc/systemd/system/patroni-watchdog.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"

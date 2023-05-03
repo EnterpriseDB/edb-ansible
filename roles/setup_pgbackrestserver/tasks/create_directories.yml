@@ -1,12 +1,11 @@
 ---
-
 - name: Ensure logging directory pgbackrest_log_file exists
   ansible.builtin.file:
     path: "{{ pgbackrest_log_file | dirname }}"
     state: directory
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
-    mode: 0755
+    mode: "0755"
     recurse: true
   become: true
 
@@ -16,7 +15,7 @@
     state: directory
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
-    mode: 0750
+    mode: "0750"
     recurse: true
   become: true
 
@@ -26,6 +25,6 @@
     state: directory
     owner: "{{ pgbackrest_user }}"
     group: "{{ pgbackrest_group }}"
-    mode: 0750
+    mode: "0750"
     recurse: true
   become: true

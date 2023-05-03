@@ -5,7 +5,7 @@
     path: "{{ pg_user_home }}/.ssh"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
-    mode: 0700
+    mode: "0700"
   become: true
 
 - name: Check if the SSH private key exists
