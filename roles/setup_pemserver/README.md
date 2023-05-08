@@ -34,7 +34,7 @@ When executing the role via ansible there these are the required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: 10, 11, 12, 13, 14 and 15
 
   * ***pg_type***
 
@@ -46,11 +46,15 @@ When executing the role via ansible there these are the required variables:
 
   * ***repo_password***
 
-  Key (not password) for the EDB public package repository.
+  Password for the EDB public package repository v1 (if you have a repo token, use `repo_token` instead).
+  
+  * ***repo_token***
+  
+  Token for EDB public package repository. 
 
   * ***pg_pem_admin_password***
 
-  Password for the **pemadmin** user in order to log into PEM.
+  Password for the **pemadmin** user in order to log into PEM. I
 
 The rest of the variables can be configured and are available in the:
 
@@ -100,7 +104,8 @@ Below is an example of how to include the `setup_pemserver` role:
         pg_version: 14
         pg_type: "PG"
         repo_username: "REPO_USERNAME"
-        repo_password: "REPO_KEY"
+        repo_password: "REPO_PASSWORD"
+        repo_token: "REPO_TOKEN"
         pg_pem_admin_password: "CHANGEME"
 
   roles:
@@ -115,8 +120,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   - [roles/setup_pemserver/defaults/main.yml](./defaults/main.yml) 
-  - [roles/setup_pemserver/vars/EPAS.yml](./vars/EPAS_RedHat.yml) 
-  - [roles/setup_pemserver/vars/PG.yml](./vars/PG_RedHat.yml) 
+  - [roles/setup_pemserver/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml) 
+  - [roles/setup_pemserver/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
+  - [roles/setup_pemserver/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  - [roles/setup_pemserver/vars/PG_Debian.yml](./vars/PG_Debian.yml)
 
 ## Database engines supported
 
