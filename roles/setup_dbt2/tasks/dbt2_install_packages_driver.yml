@@ -8,6 +8,26 @@
   when: ansible_os_family == "RedHat"
   become: true
 
+- name: Install DBT-2 pg extensions package for DBT-2 Database for PG v13 or v14
+  ansible.builtin.package:
+    name: "dbt2-pg{{ pg_version }}-extensions"
+    state: present
+  when:
+    - ansible_os_family == "RedHat"
+    - pg_version|string in ['13', '14']
+  become: true
+
+- name: Install DBT-2 Database PG extensions for PG not v13 or v14
+  ansible.builtin.dnf:
+    name:
+      - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-c_{{ pg_version }}-{{ dbt2_version }}-1.el8.x86_64.rpm'
+    state: present
+    disable_gpg_check: true
+  when:
+    - ansible_os_family == "RedHat"
+    - pg_version|string not in ['13', '14']
+  become: true
+
 - name: Download stackcollapse-perf.pl
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/brendangregg/FlameGraph/master/stackcollapse-perf.pl

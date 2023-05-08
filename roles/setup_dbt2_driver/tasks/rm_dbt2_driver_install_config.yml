@@ -26,6 +26,26 @@
   when: ansible_os_family == 'RedHat'
   become: true
 
+- name: Remove DBT-2 Database extensions package for PG v13 or v14
+  ansible.builtin.dnf:
+    name:
+      - "dbt2-pgsql-c_{{ pg_version }}-{{ dbt2_version }}-1"
+    state: absent
+  when:
+    - ansible_os_family == "RedHat"
+    - pg_version|string not in ['13', '14']
+  become: true
+
+- name: Remove DBT-2 Database extensions package for not PG v13 or v14
+  ansible.builtin.package:
+    name:
+      - "dbt2-pg{{ pg_version }}-extensions"
+    state: absent
+  when:
+    - ansible_os_family == "RedHat"
+    - pg_version|string not in ['13', '14']
+  become: true
+
 - name: Remove additional supporting packages
   ansible.builtin.package:
     name:

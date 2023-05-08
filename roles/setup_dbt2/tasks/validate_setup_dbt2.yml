@@ -1,8 +1,14 @@
 ---
 # validate dbt2 packages
-- name: Set dbt2 package name
+- name: Set dbt2 package name for not v13 and v14
   ansible.builtin.set_fact:
-    dbt2_package_list: ['dbt2-db', 'dbt2-pgsql-c_14', 'dbt2-pgsql-plpgsql', 'dbt2-scripts']
+    dbt2_package_list: ['dbt2-common', 'dbt2-pgsql-c_{{ pg_version }}-{{ dbt2_version }}-1']
+  when: pg_version|string not in ['13', '14']
+
+- name: Set dbt2 package name for v13 and v14
+  ansible.builtin.set_fact:
+    dbt2_package_list: ['dbt2-common', "dbt2-pg{{ pg_version }}-extensions"]
+  when: pg_version|string in ['13', '14']
 
 - name: Gather the package facts
   ansible.builtin.package_facts:

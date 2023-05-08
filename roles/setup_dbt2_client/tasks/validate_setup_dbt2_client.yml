@@ -2,7 +2,7 @@
 # validate dbt2 client packages
 - name: Set dbt2 package name
   ansible.builtin.set_fact:
-    dbt2_client_package_list: ['dbt2-client', 'dbt2-db', 'dbt2-pgsql-plpgsql', 'dbt2-scripts']
+    dbt2_client_package_list: ['dbt2-common']
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
@@ -11,10 +11,12 @@
 - name: Check that all DBT2 packages have been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[item] }} is defined"
-    fail_msg: "Package {{ item }} has not been installed."
-    success_msg: "Package {{ item }} has been installed."
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
   loop: "{{ dbt2_client_package_list }}"
+  loop_control:
+    loop_var: package
 
 # validate dbt2 client sudo user
 - name: Run command to check DBT-2 client sudo user was configured properly
