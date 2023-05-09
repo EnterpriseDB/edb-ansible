@@ -4,7 +4,7 @@
 validate_only: false
 use_validation: true
 
-hammerdb_version: 4.7
+hammerdb_version: 4.6
 hammerdb_filename: "HammerDB-{{ hammerdb_version }}-\
                     {{ 'RHEL' if ansible_os_family == 'RedHat' else 'Linux' }}\
                     {{ ansible_distribution_major_version if \
@@ -34,4 +34,15 @@ supported_os:
   - Debian10
   - OracleLinux8
   - Ubuntu20
+
 use_patroni: false
+
+supported_hammerdb_versions:
+  - "4.6"
+  - "4.5"
+  - "4.4"
+  - "4.3"
+  - "4.2"
+  - "4.1"
+  - "4.0"
+  - "3.3"
