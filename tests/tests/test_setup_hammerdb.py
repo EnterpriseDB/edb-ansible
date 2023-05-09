@@ -10,10 +10,11 @@ from conftest import (
 
 def test_setup_hammerdb_dir():
     ansible_vars = load_ansible_vars()
-    hammerdb = ansible_vars['hammerdb']
+    hammerdb_version = ansible_vars['hammerdb_version']
+    hammerdb_file = '/home/hammerdb/HammerDB-%s' % hammerdb_version
     host = get_hammerdb()[0]
     
-    assert host.file(hammerdb).exists, \
+    assert host.file(hammerdb_file).exists, \
         "HammerDB wasn't sucessfully installed"
 
 def test_setup_hammerdb_install_file():
