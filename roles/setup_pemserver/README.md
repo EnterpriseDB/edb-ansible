@@ -54,7 +54,7 @@ When executing the role via ansible there these are the required variables:
 
   * ***pg_pem_admin_password***
 
-  Password for the **pemadmin** user in order to log into PEM. I
+  Password for the **pemadmin** user in order to log into PEM.
 
 The rest of the variables can be configured and are available in the:
 
