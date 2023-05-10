@@ -11,12 +11,11 @@
     - name: Initialize the user defined variables
       set_fact:
         disable_logging: false
-        efm_version: 4.5
         pg_package_list:
           - edb-as14-server*
-          - edb-efm45*
+          - edb-efm46*
         user_package_list:
-          - edb-efm45*
+          - edb-efm46*
 
   roles:
     - role: setup_repo
