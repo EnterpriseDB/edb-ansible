@@ -29,7 +29,7 @@
 - name: Run command to check efm cluster status
   ansible.builtin.shell: |
     set -o pipefail
-    /usr/edb/efm-4.5/bin/efm cluster-status {{ efm_cluster_name }} | grep UP
+    {{ efm_bin_path }}/efm cluster-status {{ efm_cluster_name }} | grep UP
   args:
     executable: /bin/bash
   become: true

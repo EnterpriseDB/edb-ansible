@@ -36,11 +36,11 @@ def test_manage_dbpatches_service():
     if get_pg_type() == 'EPAS':
         pg_user = 'enterprisedb'
 
-    host= get_primary()
+    host = get_primary()
     nodes = [node for node in get_pg_cluster_nodes()]
     
     with host.sudo(pg_user):
-        cmd = host.run('/usr/edb/efm-4.5/bin/efm cluster-status main | grep UP')
+        cmd = host.run('/usr/edb/efm-4.6/bin/efm cluster-status main | grep UP')
         result = cmd.stdout.strip().split('\n')
 
     assert len(result) == len(nodes), \
@@ -72,7 +72,7 @@ def test_manage_dbpatches_redhat():
     packages = [
         'java-1.8.0-openjdk',
         'mailx',
-        'edb-efm45'
+        'edb-efm46'
     ]
 
     for package in packages:
@@ -87,7 +87,7 @@ def test_manage_dbpatches_debian():
     packages = [
         'openjdk-8-jdk',
         'bsd-mailx',
-        'edb-efm45'
+        'edb-efm46'
     ]
 
     for package in packages:
