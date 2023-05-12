@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: EDB
-  description: Setup HammerDB
+  description: Setup Touchstone Tools from source
   company: "EnterpriseDB"
 
   license: BSD
