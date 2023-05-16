@@ -1,12 +1,12 @@
 ---
-- name: Install require packages for PEM agent
+- name: Install required packages for PEM agent
   ansible.builtin.package:
     name: "{{ pem_agent_package }}"
     state: present
   no_log: "{{ disable_logging }}"
   become: true
 
-- name: Install require packages for PEM agent when enable_pemagent_monitor_barman
+- name: Install required packages for PEM agent when enable_pemagent_monitor_barman
   ansible.builtin.package:
     name: "{{ pg_backup_api_package }}"
     state: present
