@@ -416,5 +416,6 @@ Authors:
   * Mark Wong
   * Vincent Phan
   * Hannah Stoik
+  * Bryan Barajas
 
 Contact: **edb-devops@enterprisedb.com**
