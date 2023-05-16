@@ -87,6 +87,7 @@
     - pem_server_exists
     - node_ssh_to_pemserver
     - not validate_only|bool
+    - pg_pem_admin_password|length < 1
   no_log: "{{ disable_logging }}"
 
 - name: Create pemagent user on primary
