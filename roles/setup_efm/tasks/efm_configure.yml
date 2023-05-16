@@ -82,6 +82,12 @@
     - efm_eager_failover|bool
     - efm_install_version|int >= 40
 
+- name: Add user defined efm initialization parameters to efm parameters list
+  ansible.builtin.set_fact:
+    efm_node_parameters: "{{ efm_node_parameters + efm_init_parameters }}"
+  when:
+    - efm_init_parameters|length > 0
+
 - name: Build efm_properties_lines
   ansible.builtin.set_fact:
     efm_properties_lines: >

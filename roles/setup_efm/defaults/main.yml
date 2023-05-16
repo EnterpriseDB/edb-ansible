@@ -66,11 +66,11 @@ efm_eager_failover_params:
   - {name: primary.shutdown.as.failure, value: true}
   - {name: enable.stop.cluster, value: false}
 
-# example of efm_custom_parameters:
-# efm_parameters:
+# example of efm_init_parameters:
+# efm_init_parameters:
 #   - name: script.notification
 #     value: "/usr/edb/efm-3.10/bin/notification.sh"
-efm_parameters: ""
+efm_init_parameters: ""
 
 efm_properties: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.properties"
 efm_node_file: "/etc/edb/efm-{{ efm_version }}/{{ efm_cluster_name }}.nodes"
