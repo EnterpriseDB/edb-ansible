@@ -2,7 +2,7 @@
 
 `manage_dbserver` role is for managing the database cluster. It makes the
 managing of the database cluster by giving key tasks. In all the roles, we have
-used the tasks given in the this role.
+used the tasks given in this role.
 
 ## Requirements
 
@@ -163,7 +163,7 @@ pg_tablespaces:
 
 ## Dependencies
 
-The `manage_dbserver` role does depend on the following roles:
+The `manage_dbserver` role does depend on the following collections:
 
   * `community.general`
 
@@ -239,7 +239,8 @@ Below is an example of how to include the `manage_dbserver` role:
             database: "edb"
 
   roles:
-    - manage_dbserver
+    - role: manage_dbserver
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.

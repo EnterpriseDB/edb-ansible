@@ -16,11 +16,15 @@ When executing the role via ansible these are the required variables:
 
   * ***os***
 
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, Rocky8, and Ubuntu20
+    Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, Rocky8, Ubuntu20, Debian10 and AlmaLinux8
 
 The rest of the variables can be configured and are available in the:
 
   * [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_pgbouncer/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/manage_pgbouncer/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/manage_pgbouncer/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/manage_pgbouncer/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
 
 Below is the documentation of the rest of the variables:
 
@@ -204,6 +208,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/manage_pgbouncer/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_pgbouncer/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/manage_pgbouncer/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/manage_pgbouncer/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/manage_pgbouncer/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
 
 ## License
 

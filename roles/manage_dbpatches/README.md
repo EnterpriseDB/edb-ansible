@@ -24,11 +24,15 @@ When executing the role via ansible these are the required variables:
 
   * ***os***
 
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, and Rocky8
+    Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, Rocky8, AlmaLinux8, Debian10 and Ubuntu20
 
 The rest of the variables can be configured and are available in the:
 
   * [roles/manage_dbpatches/defaults/main.yml](./defaults/main.yml)
+  * [roles/manage_dbpatches/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/manage_dbpatches/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/manage_dbpatches/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/manage_dbpatches/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
 
 Below is the documentation of the rest of the variables:
 

@@ -278,6 +278,8 @@ Below is an example of how to include the `setup_pgbouncer` role:
         pg_type: "PG"
 
   roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pgbouncer
       # Ensure to execute this role only on hosts from the pgbouncer group, or,
       # from the primary and standby groups having the 'pgbouncer' inventory
@@ -290,6 +292,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/setup_pgbouncer/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_pgbouncer/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_pgbouncer/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/setup_pgbouncer/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_pgbouncer/vars/EPAS_Debian.yml](./vars/EPAS_Debian.yml)
 
 ## License
 
