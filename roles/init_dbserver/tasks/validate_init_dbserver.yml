@@ -16,6 +16,7 @@
     path: "{{ pg_wal }}"
   register: wal_check
   become: true
+  when: pg_wal|length > 0 and pg_data not in pg_wal
 
 - name: Check that pg_data was configured correctly
   ansible.builtin.assert:
@@ -35,6 +36,7 @@
       - data_wal_check.stat['lnk_source'] == pg_wal
     fail_msg: "The directory {{ pg_wal }} is not configured correctly."
     success_msg: "The directory {{ pg_wal }} is configured correctly."
+  when: pg_wal|length > 0 and pg_data not in pg_wal
 
 # check if service pg_service is running
 - name: Gather service facts
