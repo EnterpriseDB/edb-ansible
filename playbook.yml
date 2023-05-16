@@ -46,6 +46,12 @@
       when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: setup_pemagent
       when: "'setup_pemagent' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_repmgr
+      when: "'setup_repmgr' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgbackrest
+      when: "'setup_pgbackrest' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgbackrestserver
+      when: "'setup_pgbackrestserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: tuning
       when: "'tuning' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: manage_dbpatches

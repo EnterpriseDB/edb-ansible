@@ -8,6 +8,7 @@ Following are the requirements of this role.
   1. Ansible
   2. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository on
      the systems.
+  3. `edb_devops.edb_postgres` -> `setup_pgbackrest` role for setting up pgbackrest on all other cluster nodes.
 
 ## Role Variables
 
@@ -175,7 +176,7 @@ pg_instance_name: 'main'
 
 ## Dependencies
 
-This role does not have any dependencies, but packages repositories should have
+This role requires the `setup_pgbackrest` role to be run on cluster nodes, and packages repositories should have
 been configured beforehand with the `setup_repo` role.
 
 ## Example Playbook
@@ -215,15 +216,19 @@ Below is an example of how to include the `setup_pgbackrestserver` role:
         pg_version: 14
         pg_type: "PG"
         repo_cipher_password: "password"
+        repo_retention_full_type: "count"
+        repo_retention_full: 2
 
   roles:
-    - setup_repo
-    - setup_pgbackrestserver
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgbackrestserver
+      when: "'setup_pgbackrestserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 
-All of the variables are available at:
+All the variables are available at:
 
 * [/roles/setup_pgbackrestserver/defaults/main.yml](./defaults/main.yml)
 

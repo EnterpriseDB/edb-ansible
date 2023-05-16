@@ -16,7 +16,7 @@ When executing the role via ansible these are the required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: 10, 11, 12, 13, 14 and 15
 
   * ***pg_type***
 
@@ -170,7 +170,10 @@ Below is an example of how to include the `setup_pgpool2` role:
         pgpool2_port: 5433
 
   roles:
-    - setup_pgpool2
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgpool2
+      when: "'setup_pgpool2' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.

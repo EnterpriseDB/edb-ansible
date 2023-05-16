@@ -15,7 +15,7 @@ When executing the role via ansible these are the required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: 10, 11, 12, 13, 14 and 15
 
   * ***pg_type***
 
@@ -27,6 +27,10 @@ section: *How to include the `setup_barman` role in your Playbook*
 The rest of the variables can be configured and are available in the:
 
   * [roles/setup_barman/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_barman/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_barman/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/setup_barman/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_barman/vars/EPAS_Debian.yml](./vars/PG_Debian.yml)
 
 Below is the documentation of the rest of the main variables:
 
@@ -197,7 +201,9 @@ Below is an example of how to include the `setup_barman` role:
         pg_type: "PG"
 
   roles:
-    - setup_barman
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_barman
       when: "'setup_barman' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
@@ -206,6 +212,10 @@ Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
 All the variables are available at:
 
   * [roles/setup_barman/defaults/main.yml](./defaults/main.yml)
+  * [roles/setup_barman/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
+  * [roles/setup_barman/vars/PG_Debian.yml](./vars/PG_Debian.yml)
+  * [roles/setup_barman/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_barman/vars/EPAS_Debian.yml](./vars/PG_Debian.yml)
 
 ## Important notes for recovery
 
