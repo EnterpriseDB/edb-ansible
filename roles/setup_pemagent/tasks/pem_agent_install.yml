@@ -6,7 +6,7 @@
   no_log: "{{ disable_logging }}"
   become: true
 
-- name: Install require packages for PEM agent
+- name: Install require packages for PEM agent when enable_pemagent_monitor_barman
   ansible.builtin.package:
     name: "{{ pg_backup_api_package }}"
     state: present
