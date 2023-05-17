@@ -157,6 +157,11 @@
   when:
     - pg_postgres_conf_params|length > 0
 
+- name: Determine parameter boolean values
+  ansible.builtin.set_fact:
+    _pg_postgres_conf_params: "{{ lookup('edb_devops.edb_postgres.pg_conf_params_boolean', pg_postgres_conf_params, wantlist=True) }}"
+  when: pg_postgres_conf_params|length > 0
+
 - name: Check if pg_postgres_conf_params were updated correctly
   ansible.builtin.assert:
     that:
@@ -164,7 +169,7 @@
     fail_msg: "Configuration parameter {{ parameter.name }} was not updated correctly."
     success_msg: "Configuration parameter {{ parameter.name }} was updated correctly."
   when: pg_postgres_conf_params|length > 0
-  loop: "{{ pg_postgres_conf_params }}"
+  loop: "{{ _pg_postgres_conf_params }}"
   loop_control:
     loop_var: parameter
     extended: true
@@ -331,6 +336,7 @@
     hba_query_result: null
     conf_query: null
     conf_query_res: null
+    _pg_postgres_conf_params: null
     slot_query: null
     pg_slots_names: null
     pg_slots_query_names: null
