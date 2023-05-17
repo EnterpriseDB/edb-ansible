@@ -21,11 +21,12 @@ day tasks:
 ### `pg_postgres_conf_params`
 
 Using this parameters user can set the database parameters.
+*Note*: To ensure the playbook runs successfully, input parameter names and values as strings.
 
 Example:
 ```yaml
 pg_postgres_conf_params:
-  - name: listen_addresses
+  - name: "listen_addresses"
     value: "*"
 ```
 
