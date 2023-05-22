@@ -106,6 +106,36 @@
     success_msg: "Postgres data_directory is linked to {{ pg_data }}"
   when:
     - init_data_query_res.results[0].query_result[0].setting != pg_data
+# test if TDE is enabled or not
+- name: Run query to check if TDE on standbys or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT data_encryption_version FROM pg_control_init"
+        db: "{{ pg_database }}"
+  when: >
+      edb_enable_tde and edb_master_key|length > 0
+      and pg_version|int >= 15 and pg_type == 'EPAS'
+
+- name: Set pg_tde_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    pg_tde_query_result: "{{ sql_query_output }}"
+  when: >
+      edb_enable_tde and edb_master_key|length > 0
+      and pg_version|int >= 15 and pg_type == 'EPAS'
+  become: true
+
+- name: Check if TDE is enabled or not
+  ansible.builtin.assert:
+    that:
+      - pg_tde_query_result.results[0].query_result[0]['data_encryption_version'] == 1
+    fail_msg: "TDE is not enabled"
+    success_msg: "TDE is enabled on standbys"
+  when: >
+      edb_enable_tde and edb_master_key|length > 0
+      and pg_version|int >= 15 and pg_type == 'EPAS'
 
 - name: Reset variables
   ansible.builtin.set_fact:
