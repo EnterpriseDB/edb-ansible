@@ -10,6 +10,36 @@
     pg_initdb_options: "{{ pg_initdb_options + ' --waldir=' + pg_wal }}"
   when: pg_wal|length > 0  and not pg_data in pg_wal
 
+- name: Store edb_master_key in a secure location
+  ansible.builtin.copy:
+    content: "{{ edb_master_key }}"
+    dest: "{{ edb_master_key_location_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0600"
+  when: >
+    edb_enable_tde and edb_master_key|length > 0
+    and pg_version|int >= 15 and pg_type == 'EPAS'
+
+- name: Store edb_master_secure_key in a secure location
+  ansible.builtin.copy:
+    content: "{{ edb_secure_master_key }}"
+    dest: "{{ edb_secure_master_key_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0600"
+  when: >
+    edb_enable_tde and edb_master_key|length > 0
+    and pg_version|int >= 15 and pg_type == 'EPAS'
+
+- name: Add encryption options pg_initdb_options
+  ansible.builtin.set_fact:
+    pg_initdb_options: "{{ pg_initdb_options + ' ' + edb_initdb_encryption_options }}"
+  when: >
+    edb_enable_tde and edb_key_unwrap_cmd|length > 0
+    and edb_key_wrap_cmd|length > 0
+    and pg_version|int >= 15 and pg_type == 'EPAS'
+
 - name: Initialize database postgres service
   ansible.builtin.shell: >
     {{ pg_initdb }} {{ pg_service }}
@@ -18,6 +48,7 @@
     creates: "{{ pg_data }}/PG_VERSION"
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
+    ENCRYPTION_PASSPHRASE: "{{ edb_secure_master_key }}"
   when: ansible_os_family == 'RedHat'
   become: true
 

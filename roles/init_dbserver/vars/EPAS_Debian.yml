@@ -23,6 +23,8 @@ pg_unix_socket_directories:
 pg_port: 5444
 
 pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer"
+edb_initdb_encryption_options: "--data-encryption --key-wrap-command='{{ edb_key_wrap_cmd }}' --key-unwrap-command=' {{ edb_key_unwrap_cmd }}'"
+
 pg_initdb: "/usr/bin/epas_createcluster -s {{ pg_unix_socket_directories[0] }} {{ pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
 
 # postgres database
