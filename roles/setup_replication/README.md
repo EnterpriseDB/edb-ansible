@@ -33,6 +33,31 @@ When executing the role via ansible there are three required variables:
 
   Database Engine supported are: PG and EPAS
 
+With above two variables, role has the following optional variables to enable
+**Transparent Data Encryption (TDE) for EPAS versions 15.0 and above**:
+* ***edb_enable_tde***
+
+Supported value is true or false. This variable informs roles to execute specific tasks related Enable TDE
+
+* ***edb_key_unwrap_cmd***
+
+Unwrap commad to decrypt EDB master key. User can also pass KMS using the above parameter to
+EPAS for using master key for encryption. For more information, please refer to EPAS guide on TDE.
+This parameter used by EDB during starting the Postgres service.
+
+* ***edb_key_wrap_cmd***
+
+Wrap command to encrypt EDB master key. User can also use KMS commands to get the key
+and encrypt the master key to store in EPAS.
+
+* ***edb_master_key***
+
+This is an optional key master key parameter. Using this parameter user can pass a master key. If you don't want to use this parameter then pass radom string and ensure that your _edb_key_unwrap_cmd_ and _edb_key_wrap_cmd_ commands can get the right key from known KMS.
+
+* ***edb_secure_master_key***
+
+ This is an option key for encrypting _edb_master_key_ to keep it secure in EPAS. User can skip _edb_master_key_ and _edb_secure_master_key_ both by ensuring that edb_key_unwrap_cmd_ and _edb_key_wrap_cmd_ commands can get the right key from known KMS.
+
 The rest of the variables can be configured and are available in the:
 
   * [roles/setup_replication/defaults/main.yml](./defaults/main.yml)

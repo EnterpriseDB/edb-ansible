@@ -23,18 +23,6 @@
     - initdb_cmd.changed
   become: true
 
-- name: Ensure encryption master key directory exists
-  ansible.builtin.file:
-    path: "{{ edb_master_key_location }}"
-    owner: "{{ pg_owner }}"
-    group: "{{ pg_group }}"
-    mode: "0700"
-    state: directory
-  become: true
-  when: >
-    edb_enable_tde and edb_secure_master_key|length > 0
-    and edb_master_key_location not in pg_data
-
 - name: Ensure postgres default data directory exists
   ansible.builtin.file:
     path: "{{ pg_default_data }}"
