@@ -96,3 +96,22 @@
   become: true
   when:
     - ansible_os_family == 'RedHat'
+
+# TDE specific files clean up
+- name: Remove master key's secure key file if file exists
+  ansible.builtin.file:
+    path: "{{ edb_secure_master_key_file }}"
+    state: absent
+  become: true
+
+- name: Remove master key file if file exists
+  ansible.builtin.file:
+    path: "{{ edb_master_key_plain_file }}"
+    state: absent
+  become: true
+
+- name: Remove master key directory if directory exists
+  ansible.builtin.file:
+    path: "{{ edb_master_key_location }}"
+    state: absent
+  become: true

@@ -10,27 +10,12 @@
         create: true
   no_log: "{{ disable_logging }}"
 
-- name: Store edb_master_key in a secure location
-  ansible.builtin.copy:
-    content: "{{ edb_master_key }}"
-    dest: "{{ edb_master_key_location_file }}"
-    owner: "{{ pg_owner }}"
-    group: "{{ pg_group }}"
-    mode: "0600"
-  when: >
-    edb_enable_tde and edb_master_key|length > 0
-    and pg_version|int >= 15 and pg_type == 'EPAS'
-
-- name: Store edb_master_secure_key in a secure location
-  ansible.builtin.copy:
-    content: "{{ edb_secure_master_key }}"
-    dest: "{{ edb_secure_master_key_file }}"
-    owner: "{{ pg_owner }}"
-    group: "{{ pg_group }}"
-    mode: "0600"
-  when: >
-    edb_enable_tde and edb_master_key|length > 0
-    and pg_version|int >= 15 and pg_type == 'EPAS'
+- name: Include setup_tde tasks
+  ansible.builtin.include_tasks: setup_tde.yml
+  when:
+    - edb_enable_tde
+    - pg_version|int >= 15
+    - pg_type == 'EPAS'
 
 - name: Create standby
   ansible.builtin.shell: >

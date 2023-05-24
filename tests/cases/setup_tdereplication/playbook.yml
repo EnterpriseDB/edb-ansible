@@ -14,14 +14,10 @@
         disable_logging: false
         edb_enable_tde: true
         edb_master_key_location: "/etc/edb/keyloc"
-        edb_master_key_location_file: "{{ edb_master_key_location }}/master_key.plain"
-        edb_key_unwrap_cmd: 'openssl enc -d -aes-128-cbc -pbkdf2 -in "%p" -pass file:/etc/edb/keyloc/master_secure_key.key'
-        edb_key_wrap_cmd: 'openssl enc -e -aes-128-cbc -pbkdf2 -in  /etc/edb/keyloc/master_key.plain -out "%p" -pass file:/etc/edb/keyloc/master_secure_key.key'
+        edb_key_unwrap_cmd: 'openssl enc -d -aes-128-cbc -in "%p" -pass file:/etc/edb/keyloc/master_secure_key.key'
+        edb_key_wrap_cmd: 'openssl enc -e -aes-128-cbc -in  /etc/edb/keyloc/master_key.plain -out "%p" -pass file:/etc/edb/keyloc/master_secure_key.key'
         edb_master_key: "ItsImportantToCheckThisItsImportantToCheckThisItsImportantToCheckThis"
         edb_secure_master_key: "12345678" 
-        edb_secure_master_key_file: "{{ edb_master_key_location }}/master_secure_key.key"
-        pg_type: "EPAS"
-        pg_version: 15
 
   roles:
     - role: setup_repo

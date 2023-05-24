@@ -56,6 +56,19 @@ cases:
     - debian10
     - ubuntu20
     - oraclelinux7
+  init_tdedbserver:
+    pg_version:
+    - 15
+    pg_type:
+    - EPAS
+    os:
+    - centos7
+    - rocky8
+    - almalinux8
+    - debian9
+    - debian10
+    - ubuntu20
+    - oraclelinux7
   manage_dbserver:
     pg_version:
     - 10
@@ -85,6 +98,19 @@ cases:
     - 15
     pg_type:
     - PG
+    - EPAS
+    os:
+    - centos7
+    - rocky8
+    - almalinux8
+    - debian9
+    - debian10
+    - ubuntu20
+    - oraclelinux7
+  setup_tdereplication:
+    pg_version:
+    - 15
+    pg_type:
     - EPAS
     os:
     - centos7
