@@ -108,7 +108,7 @@
     package_list: >-
       {{ package_list | default([]) + [
         'ca-certificates', 'python3-pycurl', 'python3-psycopg2', 'postgresql-' + pg_version | string,
-        'postgresql-server-dev-' + pg_version | string, 'postgresql-' + pg_version | string + '-sslutils'
+        'postgresql-server-dev-' + pg_version | string, 'postgresql-' + pg_version | string + ('-sslutils' if pg_ssl else '')
       ] }}
   when:
     - ansible_os_family == 'Debian'
