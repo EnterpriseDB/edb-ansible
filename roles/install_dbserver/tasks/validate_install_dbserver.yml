@@ -4,12 +4,20 @@
     package_list: >-
       {{ package_list | default([]) + [
         'glibc-common', 'ca-certificates', 'postgresql' + pg_version | string,
-        'postgresql' + pg_version | string + '-server', 'postgresql' + pg_version | string + '-contrib',
-        'sslutils_' + pg_version | string
+        'postgresql' + pg_version | string + '-server', 'postgresql' + pg_version | string + '-contrib'
       ] }}
   when:
     - ansible_os_family == 'RedHat'
     - pg_type == 'PG'
+
+- name: Add PG RHEL sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['sslutils_' + pg_version | string] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+    - pg_ssl
 
 - name: Add Centos7 packages to PG RedHat package_list
   ansible.builtin.set_fact:
@@ -38,13 +46,21 @@
       {{ package_list | default([]) + [
         'edb-as' + pg_version | string + '-server', 'edb-as' + pg_version | string + '-server-core',
         'edb-as' + pg_version | string + '-server-contrib', 'edb-as' + pg_version | string + '-server-libs',
-        'edb-as' + pg_version | string + '-server-client', 'edb-as' + pg_version | string + '-server-sslutils',
-        'edb-as' + pg_version | string + '-server-indexadvisor', 'edb-as' + pg_version | string + '-server-sqlprofiler',
-        'edb-as' + pg_version | string + '-server-sqlprotect'
+        'edb-as' + pg_version | string + '-server-client', 'edb-as' + pg_version | string + '-server-indexadvisor',
+        'edb-as' + pg_version | string + '-server-sqlprofiler', 'edb-as' + pg_version | string + '-server-sqlprotect'
       ] }}
   when:
     - ansible_os_family == 'RedHat'
     - pg_type == 'EPAS'
+
+- name: Add EPAS RHEL sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-sslutils'] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+    - pg_ssl
 
 - name: Add EL7 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:
@@ -108,11 +124,20 @@
     package_list: >-
       {{ package_list | default([]) + [
         'ca-certificates', 'python3-pycurl', 'python3-psycopg2', 'postgresql-' + pg_version | string,
-        'postgresql-server-dev-' + pg_version | string, 'postgresql-' + pg_version | string + '-sslutils'
+        'postgresql-server-dev-' + pg_version | string
       ] }}
   when:
     - ansible_os_family == 'Debian'
     - pg_type == 'PG'
+
+- name: Add PG Debian sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['postgresql-' + pg_version | string + '-sslutils'] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+    - pg_ssl
 
 - name: Add Debian OS packages to package list for PG Debian
   ansible.builtin.set_fact:
@@ -128,12 +153,21 @@
       {{ package_list | default([]) + [
         'python3-pip', 'python3-psycopg2', 'edb-as' + pg_version | string + '-server',
         'edb-as' + pg_version | string + '-server-core', 'edb-as' + pg_version | string + '-server-client',
-        'edb-as' + pg_version | string + '-server-sslutils', 'edb-as' + pg_version | string + '-server-indexadvisor',
-        'edb-as' + pg_version | string + '-server-sqlprofiler', 'edb-as' + pg_version | string + '-server-sqlprotect'
+        'edb-as' + pg_version | string + '-server-indexadvisor', 'edb-as' + pg_version | string + '-server-sqlprofiler',
+        'edb-as' + pg_version | string + '-server-sqlprotect'
       ] }}
   when:
     - ansible_os_family == 'Debian'
     - pg_type == 'EPAS'
+
+- name: Add EPAS Debian sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-sslutils'] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+    - pg_ssl
 
 - name: Add Debian OS packages to package list for EPAS Debian
   ansible.builtin.set_fact:
