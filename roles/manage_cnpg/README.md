@@ -12,29 +12,30 @@ The only dependencies required for this ansible galaxy role are:
   1. AWS EKS CLI, Azure CLI, or Google Cloud CLI - Depends directly on the target cloud
   2. Kubectl
   3. Ansible
-  4. Python packages: openshift, pyyaml, kubernetes, pyhelm
+  4. Python packages: `openshift`, `pyyaml`, `kubernetes` and `pyhelm`;
      Installed with commands:
      `pip install openshift pyyaml kubernetes`
      `pip install pyhelm`
   5. `kubernetes.core.k8s` - Ansible Module - Required for Kubernetes.
-  6. CloudNativePG PlugIn is required for: Promoting Pods, Reloading cluster and pods, Restarting Cluster and Pods, Managing Maintenance Modes and Cluster Status.
+  6. CloudNativePG PlugIn is required for: `promote-pod`, `reload-cluster`, `restart-cluster`, `restart-pod`,
+     `maintenance-set`, `maintenance-unset` and `status-cluster`.
 
 ## Role variables
 
-'cnpg_task' must be defined with a value in order to indicate which task in the role will be executed.
+`cnpg_task` must be defined with a value in order to indicate which task in the role will be executed.
 The options are:
-- add-db, add-schema, add-role
-- drop-db, drop-schema, drop-role
-- execute-sql-script
-- apply-manifest, remove-manifest
-- configure-memory, configure-pg-hba
-- scale-replicas
-- get-superuser-secret, add-postgres-expose-service, drop-postgres-expose-service
-- add-grafana-expose-service, drop-grafana-expose-service
-- promote-pod
-- reload-cluster, restart-cluster, restart-pod
-- maintenance-set, maintenance-unset
-- status-cluster
+- `add-db`, `add-schema`, `add-role`
+- `drop-db`, `drop-schema`, `drop-role`
+- `execute-sql-script`
+- `apply-manifest`, `remove-manifest`
+- `configure-memory`, `configure-pg-hba`
+- `scale-replicas`
+- `get-superuser-secret`, `add-postgres-expose-service`, `drop-postgres-expose-service`
+- `add-grafana-expose-service`, `drop-grafana-expose-service`
+- `promote-pod`
+- `reload-cluster`, `restart-cluster`, `restart-pod`
+- `maintenance-set`, `maintenance-unset`
+- `status-cluster`
 
 
 ## Dependencies

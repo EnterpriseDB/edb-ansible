@@ -1,4 +1,9 @@
 ---
+- name: Check support for HammerDB version
+  ansible.builtin.fail:
+    msg: "HammerDB version = {{ hammerdb_version }} not supported."
+  when: hammerdb_version|string not in supported_hammerdb_versions
+
 - name: Remove hammerdb install/config based on force_hammerdb
   ansible.builtin.include_tasks: rm_hammerdb_install_config.yml
   when: >

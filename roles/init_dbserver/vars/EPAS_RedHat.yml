@@ -16,6 +16,7 @@ pg_user_home: "/var/lib/edb"
 pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
 pg_initdb: "{{ pg_bin_path }}/edb-as-{{ pg_version }}-setup initdb"
 pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
+edb_initdb_encryption_options: "--data-encryption --key-wrap-command='{{ edb_key_wrap_cmd }}' --key-unwrap-command='{{ edb_key_unwrap_cmd }}'"
 
 # unix socket domain directories
 pg_unix_socket_directories:

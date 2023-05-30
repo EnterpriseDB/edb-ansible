@@ -10,6 +10,13 @@
     pg_initdb_options: "{{ pg_initdb_options + ' --waldir=' + pg_wal }}"
   when: pg_wal|length > 0  and not pg_data in pg_wal
 
+- name: Include setup_tde tasks
+  ansible.builtin.include_tasks: setup_tde.yml
+  when:
+    - edb_enable_tde
+    - pg_version|int >= 15
+    - pg_type == 'EPAS'
+
 - name: Initialize database postgres service
   ansible.builtin.shell: >
     {{ pg_initdb }} {{ pg_service }}
@@ -18,6 +25,7 @@
     creates: "{{ pg_data }}/PG_VERSION"
   environment:
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
+    ENCRYPTION_PASSPHRASE: "{{ edb_secure_master_key }}"
   when: ansible_os_family == 'RedHat'
   become: true
 

@@ -8,6 +8,7 @@ Following are the requirements of this role.
   1. Ansible
   2. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository on
      the systems.
+  3. `edb_devops.edb_postgres` -> `setup_pgbackrestserver` role to set up the pgbackrestserver.
 
 ## Role Variables
 
@@ -15,7 +16,7 @@ When executing the role via ansible these are the required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 13 and 14
+  Postgres Versions supported are: 13, 14 and 15
 
   * ***pg_type***
 
@@ -183,7 +184,7 @@ Below is an example of how to include the `setup_pgbackrest` role:
         pg_type: "PG"
         
   roles:
-    - setup_pgbackrest
+    - role: setup_pgbackrest
       when: "'setup_pgbackrest' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 

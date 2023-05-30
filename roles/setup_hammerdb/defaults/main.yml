@@ -34,4 +34,9 @@ supported_os:
   - Debian10
   - OracleLinux8
   - Ubuntu20
+
 use_patroni: false
+
+supported_hammerdb_versions:
+  - "4.7"
+  - "4.6"

@@ -1,7 +1,7 @@
 # init_dbserver
 
 This Ansible Galaxy Role Initializes Postgres or EnterpriseDB Postgresql
-Advanced Server versions: 10, 11, 12, 13 and 14 on instances previously configured.
+Advanced Server versions: 10, 11, 12, 13, 14 and 15 on instances previously configured.
 
 **Not all Distribution or versions are supported on all the operating systems
 available.**
@@ -10,8 +10,8 @@ For more details refer to the: *Database engines supported* section.
 
 **Note:**
 The role does not configure Postgres nor EnterpriseDB Postgres Advanced Server
-for replication it only installs Postgres or EnterpriseDB Postgres Advanced
-Server across multiple nodes: Main and Standby.
+for replication, it only installs Postgres or EnterpriseDB Postgres Advanced
+Server across multiple nodes: primary and pemserver.
 Should there be a need to configure a Postgres or EnterpriseDB Postgres
 Advanced Server Cluster for replication you can utilize the `setup_replication`
 role.
@@ -36,11 +36,37 @@ When executing the role via ansible there are three required variables:
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: 10, 11, 12, 13, 14 and 15
 
   * ***pg_type***
 
   Database Engine supported are: PG and EPAS
+
+With above two variables, role has the following optional variables to enable
+**Transparent Data Encryption (TDE) for EPAS versions 15.0 and above**:
+* ***edb_enable_tde***
+
+Supported value is true or false. This variable informs roles to execute specific tasks related Enable TDE
+
+* ***edb_key_unwrap_cmd***
+
+Unwrap commad to decrypt EDB master key. User can also pass KMS using the above parameter to
+EPAS for using master key for encryption. For more information, please refer to EPAS guide on TDE.
+This parameter used by EDB during starting the Postgres service.
+
+* ***edb_key_wrap_cmd***
+
+Wrap command to encrypt EDB master key. User can also use KMS commands to get the key
+and encrypt the master key to store in EPAS.
+
+* ***edb_master_key***
+
+This is an optional key master key parameter. Using this parameter user can pass a master key. If you don't want to use this parameter then pass radom string and ensure that your _edb_key_unwrap_cmd_ and _edb_key_wrap_cmd_ commands can get the right key from known KMS.
+
+* ***edb_secure_master_key***
+
+ This is an option key for encrypting _edb_master_key_ to keep it secure in EPAS. User can skip _edb_master_key_ and _edb_secure_master_key_ both by ensuring that edb_key_unwrap_cmd_ and _edb_key_wrap_cmd_ commands can get the right key from known KMS.
+
 
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: *How to include the `init_dbserver` role in your Playbook*
@@ -102,7 +128,7 @@ Below is an example of how to include the `init_dbserver` role:
 
 ```yaml
 ---
-- hosts: primary,pemserver
+- hosts: primary, pemserver
   name: Initialize Postgres instances
   become: yes
   gather_facts: yes
@@ -117,7 +143,12 @@ Below is an example of how to include the `init_dbserver` role:
         pg_type: "PG"
 
   roles:
-    - initdb_dbserver
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: initdb_dbserver
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
 ```
 
 Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
@@ -135,26 +166,28 @@ All the variables are available at:
 
 ### PostgreSQL
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |               15 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| AlmaLinux8                        |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 ### EnterpriseDB Postgres Advanced Server
 
-| Distribution                      |               10 |               11 |               12 |               13 |               14 |
-| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|
-| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
-| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Distribution                      |               10 |               11 |               12 |               13 |               14 |               15 |
+| --------------------------------- |:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
+| CentOS 7                          |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 7                   |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| RockyLinux 8                      |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Red Hat Linux 8                   |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| AlmaLinux8                        |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Ubuntu 20.04 LTS (Focal) - x86_64 |               :x:|               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 9 (Stretch) - x86_64       |               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
+| Debian 10 (Buster) - x86_64       |               :x:|               :x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:|
 
 - :white_check_mark: - Tested and supported
 

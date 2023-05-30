@@ -10,6 +10,13 @@
         create: true
   no_log: "{{ disable_logging }}"
 
+- name: Include setup_tde tasks
+  ansible.builtin.include_tasks: setup_tde.yml
+  when:
+    - edb_enable_tde
+    - pg_version|int >= 15
+    - pg_type == 'EPAS'
+
 - name: Create standby
   ansible.builtin.shell: >
     PGAPPNAME={{ inventory_hostname }} {{ pg_basebackup }}

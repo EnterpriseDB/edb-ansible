@@ -14,6 +14,13 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
+- name: Verify TDE parameters based on the version and pg_type
+  ansible.builtin.include_tasks: verify_tde_vars.yml
+  when:
+    - edb_enable_tde
+    - pg_type == 'EPAS'
+    - pg_version|int >= 15
+
 - name: Reference pg_type variables
   ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
 

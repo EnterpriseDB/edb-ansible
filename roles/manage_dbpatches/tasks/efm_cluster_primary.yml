@@ -1,4 +1,13 @@
 ---
+- name: Perform switch WAL file
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT pg_switch_wal();"
+        db: "{{ pg_database }}"
+
 - name: Execute efm cluster status
   ansible.builtin.command:
     cmd: "{{ efm_bin_path }}/efm cluster-status-json {{ efm_cluster_name }}"

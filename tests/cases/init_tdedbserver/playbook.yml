@@ -1,0 +1,28 @@
+---
+- hosts: all
+  name: Postgres deployment playbook
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        disable_logging: false
+        edb_enable_tde: true
+        edb_master_key_location: "/etc/edb/keyloc"
+        edb_key_unwrap_cmd: 'openssl enc -d -aes-128-cbc -in "%p" -pass file:/etc/edb/keyloc/master_secure_key.key'
+        edb_key_wrap_cmd: 'openssl enc -e -aes-128-cbc -in  /etc/edb/keyloc/master_key.plain -out "%p" -pass file:/etc/edb/keyloc/master_secure_key.key'
+        edb_master_key: "ItsImportantToCheckThisItsImportantToCheckThisItsImportantToCheckThis"
+        edb_secure_master_key: "12345678"
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: init_dbserver
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

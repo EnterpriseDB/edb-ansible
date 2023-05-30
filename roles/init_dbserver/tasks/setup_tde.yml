@@ -1,0 +1,37 @@
+---
+- name: Ensure encryption master key directory exists
+  ansible.builtin.file:
+    path: "{{ edb_master_key_location }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+    state: directory
+  become: true
+  when:
+    - edb_master_key|length > 0
+    - edb_master_key_location not in pg_data
+
+- name: Store edb_master_key in a secure location
+  ansible.builtin.copy:
+    content: "{{ edb_master_key }}"
+    dest: "{{ edb_master_key_plain_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0600"
+  when: edb_master_key|length > 0
+
+- name: Store edb_master_secure_key in a secure location
+  ansible.builtin.copy:
+    content: "{{ edb_secure_master_key }}"
+    dest: "{{ edb_secure_master_key_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0600"
+  when: edb_secure_master_key|length > 0
+
+- name: Add encryption options pg_initdb_options
+  ansible.builtin.set_fact:
+    pg_initdb_options: "{{ pg_initdb_options + ' ' + edb_initdb_encryption_options }}"
+  when:
+    - edb_key_unwrap_cmd|length > 0
+    - edb_key_wrap_cmd|length > 0

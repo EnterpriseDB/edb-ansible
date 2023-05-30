@@ -4,12 +4,20 @@
     package_list: >-
       {{ package_list | default([]) + [
         'glibc-common', 'ca-certificates', 'postgresql' + pg_version | string,
-        'postgresql' + pg_version + '-server' | string, 'postgresql' + pg_version + '-contrib' | string,
-        'sslutils_' + pg_version | string
+        'postgresql' + pg_version | string + '-server', 'postgresql' + pg_version | string + '-contrib'
       ] }}
   when:
     - ansible_os_family == 'RedHat'
     - pg_type == 'PG'
+
+- name: Add PG RHEL sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['sslutils_' + pg_version | string] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+    - pg_ssl
 
 - name: Add Centos7 packages to PG RedHat package_list
   ansible.builtin.set_fact:
@@ -36,15 +44,23 @@
   ansible.builtin.set_fact:
     package_list: >-
       {{ package_list | default([]) + [
-        'edb-as' + pg_version + '-server' | string, 'edb-as' + pg_version + '-server-core' | string,
-        'edb-as' + pg_version + '-server-contrib' | string, 'edb-as' + pg_version + '-server-libs' | string,
-        'edb-as' + pg_version + '-server-client' | string, 'edb-as' + pg_version + '-server-sslutils' | string,
-        'edb-as' + pg_version + '-server-indexadvisor' | string, 'edb-as' + pg_version + '-server-sqlprofiler' | string,
-        'edb-as' + pg_version + '-server-sqlprotect' | string
+        'edb-as' + pg_version | string + '-server', 'edb-as' + pg_version | string + '-server-core',
+        'edb-as' + pg_version | string + '-server-contrib', 'edb-as' + pg_version | string + '-server-libs',
+        'edb-as' + pg_version | string + '-server-client', 'edb-as' + pg_version | string + '-server-indexadvisor',
+        'edb-as' + pg_version | string + '-server-sqlprofiler', 'edb-as' + pg_version | string + '-server-sqlprotect'
       ] }}
   when:
     - ansible_os_family == 'RedHat'
     - pg_type == 'EPAS'
+
+- name: Add EPAS RHEL sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-sslutils'] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+    - pg_ssl
 
 - name: Add EL7 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:
@@ -71,7 +87,7 @@
 - name: Add pg_version > 10 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:
     package_list: >-
-      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-llvmjit' | string] }}
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-llvmjit'] }}
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'RedHat'
@@ -80,7 +96,7 @@
 - name: Add 10 < pg_version < 14 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:
     package_list: >-
-      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb-modules' | string] }}
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-edb-modules'] }}
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'RedHat'
@@ -90,7 +106,7 @@
 - name: Add pg_version >= 14 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:
     package_list: >-
-      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb_wait_states' | string] }}
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-edb_wait_states'] }}
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'RedHat'
@@ -108,11 +124,20 @@
     package_list: >-
       {{ package_list | default([]) + [
         'ca-certificates', 'python3-pycurl', 'python3-psycopg2', 'postgresql-' + pg_version | string,
-        'postgresql-server-dev-' + pg_version | string, 'postgresql-' + pg_version + '-sslutils' | string
+        'postgresql-server-dev-' + pg_version | string
       ] }}
   when:
     - ansible_os_family == 'Debian'
     - pg_type == 'PG'
+
+- name: Add PG Debian sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['postgresql-' + pg_version | string + '-sslutils'] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+    - pg_ssl
 
 - name: Add Debian OS packages to package list for PG Debian
   ansible.builtin.set_fact:
@@ -126,14 +151,23 @@
   ansible.builtin.set_fact:
     package_list: >-
       {{ package_list | default([]) + [
-        'python3-pip', 'python3-psycopg2', 'edb-as' + pg_version + '-server' | string,
-        'edb-as' + pg_version + '-server-core' | string, 'edb-as' + pg_version + '-server-client' | string,
-        'edb-as' + pg_version + '-server-sslutils' | string, 'edb-as' + pg_version + '-server-indexadvisor' | string,
-        'edb-as' + pg_version + '-server-sqlprofiler' | string, 'edb-as' + pg_version + '-server-sqlprotect' | string
+        'python3-pip', 'python3-psycopg2', 'edb-as' + pg_version | string + '-server',
+        'edb-as' + pg_version | string + '-server-core', 'edb-as' + pg_version | string + '-server-client',
+        'edb-as' + pg_version | string + '-server-indexadvisor', 'edb-as' + pg_version | string + '-server-sqlprofiler',
+        'edb-as' + pg_version | string + '-server-sqlprotect'
       ] }}
   when:
     - ansible_os_family == 'Debian'
     - pg_type == 'EPAS'
+
+- name: Add EPAS Debian sslutils package if pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-sslutils'] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+    - pg_ssl
 
 - name: Add Debian OS packages to package list for EPAS Debian
   ansible.builtin.set_fact:
@@ -146,7 +180,7 @@
 - name: Add pg_version < 14 packages to EPAS Debian package_list
   ansible.builtin.set_fact:
     package_list: >-
-      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb-modules' | string] }}
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-edb-modules'] }}
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'Debian'
@@ -155,7 +189,7 @@
 - name: Add pg_version >= 14 packages to EPAS Debian package_list
   ansible.builtin.set_fact:
     package_list: >-
-      {{ package_list | default([]) + ['edb-as' + pg_version + '-server-edb-wait-states' | string] }}
+      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-edb-wait-states'] }}
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'Debian'
