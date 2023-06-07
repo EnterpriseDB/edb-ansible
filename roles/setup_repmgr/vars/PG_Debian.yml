@@ -1,5 +1,5 @@
 ---
-repmgr_package_name: "postgresql-14-repmgr"
+repmgr_package_name: "postgresql-{{ pg_version }}-repmgr"
 repmgrd_service: repmgrd
 repmgr_configuration_file: "/etc/repmgr.conf"
 
