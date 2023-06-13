@@ -12,6 +12,7 @@ repo_username: ""
 repo_password: ""
 tpa_subscription_token: ""
 install_bdr_packages: false
+bdr_version: 4
 
 # set to false only if you are using local repositories and do not need the PGDG and/or EPEL repositories.
 # setting to false will result in failure to download required packages if access to local repos is not available
@@ -30,7 +31,18 @@ edb_2q_base_repo_link: "https://techsupport.enterprisedb.com/api/repository/{{ t
 edb_2q_repositories:
   - bdr4/release
   - harp/release
-edb_repo_script_link: "https://downloads.enterprisedb.com/{{ repo_token }}/enterprise/setup.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}.sh"
+edb_repo_base_download: "https://downloads.enterprisedb.com/{{ repo_token }}"
+edb_repo_script_link: "{{ edb_repo_base_download }}/enterprise/setup.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}.sh"
+
+# EDB postgres_distributed RPM repo links
+pgd_rpm_repo:
+  - name: "enterprisedb-postgres_distributed-x86_64"
+    description: "EDB Postgres Distributed Repo For x86_64"
+    repo_url: "{{ edb_repo_base_download }}/postgres_distributed/rpm/el/{{ ansible_distribution_major_version }}/x86_64"
+  - name: "enterprisedb-postgres_distributed-noarch"
+    description: "EDB Postgres Distributed Repo For noarch"
+    repo_url: "{{ edb_repo_base_download }}/postgres_distributed/rpm/el/{{ ansible_distribution_major_version }}/noarch"
+edb_pgd_rpm_gpg_key: "{{ edb_repo_base_download }}/postgres_distributed/gpg.key"
 
 # debian/ubuntu Repo
 edb_deb_repo_url: "deb [arch=amd64] https://apt.enterprisedb.com/{{ ansible_distribution_release }}-edb/ {{ ansible_distribution_release }} main"

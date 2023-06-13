@@ -109,7 +109,7 @@
   when: >
     tpa_subscription_token|length > 0
     and install_bdr_packages|bool
-    and pg_version|int >= 14
+    and pg_version|int == 14
   loop: "{{ edb_2q_repositories }}"
 
 - name: Install EDB repository 2.0
