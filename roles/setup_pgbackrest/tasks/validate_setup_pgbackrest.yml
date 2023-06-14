@@ -14,10 +14,14 @@
   register: pgbackrest_config_check_res
   changed_when: pgbackrest_config_check_res.rc == '0'
 
+- name: Debug
+  ansible.builtin.debug:
+    var: "{{ pgbackrest_config_check_res.stdout_lines }}"
+
 - name: Check if pgbackrest server has been configured correctly.
   ansible.builtin.assert:
     that:
-      - pgbackrest_config_check_res.stdout_lines is search('Completed successfully')
+      - pgbackrest_config_check_res.stdout_lines is search('completed successfully')
     fail_msg: "Configuration for pgBackRest server node is not properly done."
     success_msg: "Configuration for pgBackRest server node is properly done."
   run_once: true
@@ -28,6 +32,7 @@
     cmd: pgbackrest --stanza={{ pg_instance_name }} info
   become: true
   become_user: "{{ pgbackrest_user }}"
+  delegate_to: "{{ pgbackrest_server_node_info[0].inventory_hostname }}"
   run_once: true
   register: pgbackrest_config_info_res
   changed_when: pgbackrest_config_info_res.rc == '0'
@@ -46,6 +51,7 @@
     cmd: pgbackrest repo-ls
   become: true
   become_user: "{{ pgbackrest_user }}"
+  delegate_to: "{{ pgbackrest_server_node_info[0].inventory_hostname }}"
   run_once: true
   register: pgbackrest_config_repo_res
   changed_when: pgbackrest_config_repo_res.rc == '0'
