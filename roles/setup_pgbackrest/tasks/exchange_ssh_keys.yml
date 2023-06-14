@@ -74,7 +74,6 @@
   delegate_to: "{{ _pgbackrest_server_inventory_hostname }}"
   become: true
   changed_when: false
-  # delegate_facts: true
 
 - name: Add pg_owner SSH public key into pgbackrest_server known hosts
   ansible.builtin.known_hosts:
