@@ -14,10 +14,6 @@
   register: pgbackrest_config_check_res
   changed_when: pgbackrest_config_check_res.rc == '0'
 
-- name: Debug
-  ansible.builtin.debug:
-    var: "{{ pgbackrest_config_check_res.stdout_lines }}"
-
 - name: Check if pgbackrest server has been configured correctly.
   ansible.builtin.assert:
     that:
