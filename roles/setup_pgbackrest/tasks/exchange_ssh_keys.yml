@@ -72,9 +72,9 @@
   ansible.builtin.command: ssh-keyscan {{ _pg_host }}
   register: _pgbackrest_ssh_keyscan_output
   delegate_to: "{{ _pgbackrest_server_inventory_hostname }}"
-  delegate_facts: true
   become: true
   changed_when: false
+  # delegate_facts: true
 
 - name: Add pg_owner SSH public key into pgbackrest_server known hosts
   ansible.builtin.known_hosts:

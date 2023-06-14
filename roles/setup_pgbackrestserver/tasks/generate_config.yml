@@ -124,7 +124,7 @@
     mode: "0600"
   become: true
 
-- name: Build pgbackrest_conf_lines
+- name: Build pgbackrest_conf_lines when standby_present is defined
   ansible.builtin.set_fact:
     pgbackrest_conf_lines: >
       {{ pgbackrest_conf_lines | default([]) + [
@@ -134,6 +134,8 @@
         }
       ] }}
   loop: "{{ pgbackrest_standby_configuration }}"
+  when:
+    - standby_present is defined
 
 - name: Add standby information to configuration file
   edb_devops.edb_postgres.linesinfile:
