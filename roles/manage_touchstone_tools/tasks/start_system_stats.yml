@@ -1,0 +1,14 @@
+---
+- name: Set ts_output_dir
+  ansible.builtin.set_fact:
+    ts_output_dir: "/var/log/touchstone/{{ now() }}"
+  when:
+    - ts_output_dir is not defined
+
+- name: Start ts sysstat
+  ansible.builtin.shell: |
+    set -o pipefail
+    ts sysstat -o {{ ts_output_dir }} -i {{ sec_bw_sample }}
+  args:
+    chdir: /usr/bin/
+  become: true
