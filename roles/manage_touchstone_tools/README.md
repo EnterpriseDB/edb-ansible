@@ -96,7 +96,7 @@ The number of seconds between samples, default 60.
 
 The database name to connect to.
 
-#### `pg_server_name`
+#### `pg_server_hostname`
 
 Database server host or docker directory. Same as `-h` in `psql` commands.
 
