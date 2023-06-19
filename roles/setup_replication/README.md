@@ -109,6 +109,7 @@ Below is an example of how to include the `setup_replication` role:
   name: Setup Postgres replication on Instances
   become: true
   gather_facts: true
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

@@ -105,6 +105,7 @@ Below is an example of how to include the `install_dbserver` role:
   name: Install Postgres binaries
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

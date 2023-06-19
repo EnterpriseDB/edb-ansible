@@ -3,6 +3,7 @@
   name: Postgres deployment playbook
   become: true
   gather_facts: true
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres
