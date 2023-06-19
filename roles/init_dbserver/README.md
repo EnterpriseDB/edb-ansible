@@ -132,6 +132,7 @@ Below is an example of how to include the `init_dbserver` role:
   name: Initialize Postgres instances
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

@@ -141,6 +141,7 @@ repositories access to EDB Postgres Advanced Server packages in version 14:
   name: Setup EPAS Repositories
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres
