@@ -53,6 +53,7 @@ Below is an example of how to include the `manage_cnpg` role:
 - name: Manage a CloudNativePG or CloudNative Postgres Cluster Playbook
   hosts: localhost
   gather_facts: false
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

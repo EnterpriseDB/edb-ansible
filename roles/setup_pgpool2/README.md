@@ -153,6 +153,7 @@ Below is an example of how to include the `setup_pgpool2` role:
   name: Deploy PgpoolII instances
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

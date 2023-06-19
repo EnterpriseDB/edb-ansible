@@ -157,6 +157,7 @@ Below is an example of how to include the `manage_pgbouncer` role:
   name: Manage PgBouncer databases and users
   become: true
   gather_facts: yes
+  any_errors_fatal: true
 
   # When using collections
   collections:

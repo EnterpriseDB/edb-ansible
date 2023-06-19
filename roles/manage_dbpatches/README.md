@@ -116,6 +116,7 @@ Below is an example of how to include the `manage_dbpatches` role:
   name: Apply database patches
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

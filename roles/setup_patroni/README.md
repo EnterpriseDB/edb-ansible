@@ -101,6 +101,7 @@ Below is an example of how to include the `setup_patroni` role:
   name: Install Patroni on Instances
   become: true
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres
