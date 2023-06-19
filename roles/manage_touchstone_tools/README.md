@@ -92,19 +92,19 @@ The output directory for the touchstone-tools database data collection.
 
 The number of seconds between samples, default 60.
 
-#### `db_name`
+#### `pg_database`
 
 The database name to connect to.
 
-#### `db_server_name`
+#### `pg_server_name`
 
 Database server host or docker directory. Same as `-h` in `psql` commands.
 
-#### `db_port`
+#### `pg_port`
 
 Database server port. Same as `-p` in `psql` commands.
 
-#### `db_user`
+#### `pg_owner`
 
 The database connection username. Same as `-U` in `psql` commands.
  
@@ -113,6 +113,16 @@ The database connection username. Same as `-U` in `psql` commands.
 Below is an example of how to put `start_db_stats` in your playbook.
 
 ```yaml
+# if libpq environment vars are set on the machine, only ts_output_dir is required
+- name: Include start_db_stats tasks to start pgsql stats data collection
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: start_db_stats
+  vars:
+    ts_output_dir: "/var/log/touchstone/db_run_1"
+    sec_bw_sample: 60
+
+# if libpq environment vars are not set or you wish to explicitly define them
 - name: Include start_db_stats tasks to start pgsql stats data collection
   ansible.builtin.include_role:
     name: manage_touchstone_tools
@@ -120,10 +130,10 @@ Below is an example of how to put `start_db_stats` in your playbook.
   vars:
     ts_output_dir: "/var/log/touchstone/db_stats"
     sec_bw_sample: 15
-    db_name: "postgres"
-    db_server_hostname: "primary1"
-    db_server_port: 5432
-    db_user: "postgres"
+    pg_database: "postgres"
+    pg_server_hostname: "primary1"
+    pg_port: 5432
+    pg_owner: "postgres"
 ```
 
 ### `stop_db_stats`
@@ -133,22 +143,6 @@ This task stops the collection of database statistics.
 #### `ts_output_dir`
 
 The output directory for the touchstone-tools database data collection.
-
-#### `db_name`
-
-The database name to connect to.
-
-#### `db_server_name`
-
-Database server host or docker directory. Same as `-h` in `psql` commands.
-
-#### `db_port`
-
-Database server port. Same as `-p` in `psql` commands.
-
-#### `db_user`
-
-The database connection username. Same as `-U` in `psql` commands.
  
 #### How to include `stop_db_stats` in your playbook
 
@@ -161,11 +155,6 @@ Below is an example of how to put `stop_db_stats` in your playbook.
     tasks_from: stop_db_stats
   vars:
     ts_output_dir: "/var/log/touchstone/db_stats"
-    sec_bw_sample: 15
-    db_name: "postgres"
-    db_server_hostname: "primary1"
-    db_server_port: 5432
-    db_user: "postgres"
 ```
 
 ### `process_pidstat_data`
@@ -260,7 +249,7 @@ Below is an example of how to put `plot_pidstat_data` in your playbook.
 
 This task plots the generated database stats.
 
-#### `db_name`
+#### `pg_databse`
 
 The database name to plot the stats from.
 
@@ -288,7 +277,7 @@ Below is an example of how to put `plot_db_data` in your playbook.
     name: manage_touchstone_tools
     tasks_from: plot_db_data
   vars:
-    db_name: "postgres"
+    pg_database: "postgres"
     ts_output_dir: "/var/log/touchstone/db_stats"
     ts_plot_output_dir: "/var/log/touchstone/db_stats/pgsql_plots"
     plot_size: "800,500"

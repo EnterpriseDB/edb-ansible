@@ -1,14 +1,35 @@
 ---
-- name: Start ts pgsql-stat
+- name: Start ts pgsql-stat with no explicit libpq vars
+  ansible.builtin.shell: |
+    set -o pipefail
+    ts pgsql-stat \
+      -o {{ ts_output_dir }} \
+      -i {{ sec_bw_sample }}
+  args:
+    chdir: /usr/bin/
+  become: true
+  when:
+    - pg_database|length < 1
+    - pg_server_hostname|length < 1
+    - pg_port|length < 1
+    - pg_owner|length < 1
+
+# if libpq environment vars are not set or explicitly defined
+- name: Start ts pgsql-stat with explicitly set libpq vars
   ansible.builtin.shell: |
     set -o pipefail
     ts pgsql-stat \
       -o {{ ts_output_dir }} \
       -i {{ sec_bw_sample }} \
-      -d {{ db_name }} \
-      -h {{ db_server_hostname }} \
-      -p {{ db_server_port }} \
-      -U {{ db_user }}
+      -d {{ pg_database }} \
+      -h {{ pg_server_hostname }} \
+      -p {{ pg_port }} \
+      -U {{ pg_owner }}
   args:
     chdir: /usr/bin/
   become: true
+  when:
+    - pg_database|length > 0
+    - pg_server_hostname|length > 0
+    - pg_port|length > 0
+    - pg_owner|length > 0

@@ -8,7 +8,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     ts plot-pgsql \
-      -d {{ db_name }} \
+      -d {{ pg_database }} \
       -i {{ ts_output_dir }} \
       -o {{ ts_plot_output_dir }} \
       -s {{ plot_size }}

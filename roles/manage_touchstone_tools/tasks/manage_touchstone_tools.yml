@@ -14,10 +14,10 @@
   vars:
     ts_output_dir: "/var/log/touchstone/db_run_1"
     sec_bw_sample: 60
-    db_name: "postgres"
-    db_server_hostname: "primary1"
-    db_server_port: 5432
-    db_user: "postgres"
+    pg_database: "postgres"
+    pg_server_hostname: "primary1"
+    pg_port: 5432
+    pg_owner: "postgres"
 
 - name: Include stop_system_stats tasks to stop sysstat data collection
   ansible.builtin.include_role:
@@ -32,10 +32,6 @@
     tasks_from: stop_db_stats
   vars:
     ts_output_dir: "/var/log/touchstone/db_run_1"
-    db_name: "postgres"
-    db_server_hostname: "primary1"
-    db_server_port: 5432
-    db_user: "postgres"
 
 - name: Include process_pidstat tasks
   ansible.builtin.include_role:
@@ -66,6 +62,6 @@
     name: manage_touchstone_tools
     tasks_from: plot_db_data
   vars:
-    db_name: "postgres"
+    pg_database: "postgres"
     ts_output_dir: "/var/log/touchstone/db_run_1"
     ts_plot_output_dir: "/var/log/touchstone/db_run_1/pgsql_plots"

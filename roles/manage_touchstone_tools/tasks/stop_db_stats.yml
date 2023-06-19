@@ -2,13 +2,7 @@
 - name: Stop ts pgsql-stat
   ansible.builtin.shell: |
     set -o pipefail
-    ts pgsql-stat \
-      -o {{ ts_output_dir }} \
-      -d {{ db_name }} \
-      -h {{ db_server_hostname }} \
-      -p {{ db_server_port }} \
-      -U {{ db_user }} \
-      -s
+    ts pgsql-stat -o {{ ts_output_dir }} -s
   args:
     chdir: /usr/bin/
   become: true

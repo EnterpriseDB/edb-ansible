@@ -3,10 +3,10 @@ touchstone_tools_version: 0.6.1
 touchstone_tools_appimage: https://touchstone.gitlab.io/download/ts-tools-{{ touchstone_tools_version }}-x86_64.AppImage
 
 # database informations for ts-pgsql commands
-db_name: ""   # database name to connect to
-db_server_hostname: ""    # database server host or docker directory (-h)
-db_server_port: ""    # database server PORT (-p)
-db_user: ""   # database USERNAME (-U)
+pg_database: ""   # database name to connect to
+pg_server_hostname: ""    # database server host or docker directory (-h)
+pg_port: ""    # database server PORT (-p)
+pg_owner: ""   # database USERNAME (-U)
 
 # size of plots output from ts-plot-sar, ts-plot-pidstat and ts-plot-pgsql
 plot_size: '1600,1000'
