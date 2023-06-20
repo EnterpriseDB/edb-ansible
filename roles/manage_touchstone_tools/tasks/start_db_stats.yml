@@ -8,7 +8,8 @@
       -i {{ sec_bw_sample }} \
       -d {{ pg_database }} \
       -h {{ pg_server_hostname }} \
-      -p {{ pg_port }}
+      -p {{ pg_port }} \
+      -U {{ pg_owner }}
   args:
     chdir: /usr/bin/
   become: true
