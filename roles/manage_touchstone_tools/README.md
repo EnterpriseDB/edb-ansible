@@ -104,25 +104,13 @@ Database server host or docker directory. Same as `-h` in `psql` commands.
 
 Database server port. Same as `-p` in `psql` commands.
 
-#### `pg_owner`
-
-The database connection username. Same as `-U` in `psql` commands.
  
 #### How to include `start_db_stats` in your playbook
 
 Below is an example of how to put `start_db_stats` in your playbook.
 
 ```yaml
-# if libpq environment vars are set on the machine, only ts_output_dir is required
-- name: Include start_db_stats tasks to start pgsql stats data collection
-  ansible.builtin.include_role:
-    name: manage_touchstone_tools
-    tasks_from: start_db_stats
-  vars:
-    ts_output_dir: "/var/log/touchstone/db_run_1"
-    sec_bw_sample: 60
-
-# if libpq environment vars are not set or you wish to explicitly define them
+# if vars pg_database, pg_port are already set by ansible, they are not required to be passed in
 - name: Include start_db_stats tasks to start pgsql stats data collection
   ansible.builtin.include_role:
     name: manage_touchstone_tools
@@ -133,7 +121,6 @@ Below is an example of how to put `start_db_stats` in your playbook.
     pg_database: "postgres"
     pg_server_hostname: "primary1"
     pg_port: 5432
-    pg_owner: "postgres"
 ```
 
 ### `stop_db_stats`

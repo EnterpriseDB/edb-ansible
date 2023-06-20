@@ -17,7 +17,6 @@
     pg_database: "postgres"
     pg_server_hostname: "primary1"
     pg_port: 5432
-    pg_owner: "postgres"
 
 - name: Include stop_system_stats tasks to stop sysstat data collection
   ansible.builtin.include_role:

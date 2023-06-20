@@ -1,5 +1,5 @@
 ---
-touchstone_tools_version: 0.6.1
+touchstone_tools_version: 0.6.2
 touchstone_tools_appimage: https://touchstone.gitlab.io/download/ts-tools-{{ touchstone_tools_version }}-x86_64.AppImage
 
 # database informations for ts-pgsql commands
