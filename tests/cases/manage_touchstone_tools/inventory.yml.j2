@@ -12,3 +12,8 @@ all:
         dbt2_driver1:
           ansible_host: {{ inventory_vars['dbt2_driver1_ip'] }}
           private_ip: {{ inventory_vars['dbt2_driver1_ip'] }}
+    dbt2_client:
+      hosts:
+        dbt2_client1:
+          ansible_host: {{ inventory_vars['dbt2_client1_ip'] }}
+          private_ip: {{ inventory_vars['dbt2_client1_ip'] }}

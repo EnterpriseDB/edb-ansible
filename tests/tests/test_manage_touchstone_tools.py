@@ -27,7 +27,7 @@ def test_touchstone_packages():
     ]
 
     if os_family() == 'RedHat':
-        packages.append('fuse-sshfs')
+        packages.append('fuse-libs')
 
     for package in packages:
         assert host.package(package).is_installed, \
