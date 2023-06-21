@@ -1,0 +1,16 @@
+---
+# Start collection of pgsql-stat
+- name: Start ts pgsql-stat
+  ansible.builtin.shell: |
+    set -o pipefail
+    ts pgsql-stat \
+      -o {{ ts_output_dir }} \
+      -i {{ sec_bw_sample }} \
+      -d {{ pg_database }} \
+      -h {{ pg_server_hostname }} \
+      -p {{ pg_port }} \
+      -U {{ pg_owner }}
+  args:
+    chdir: /usr/bin/
+  become: true
+

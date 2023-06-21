@@ -1,0 +1,21 @@
+---
+touchstone_tools_version: 0.7.0
+touchstone_tools_appimage: https://touchstone.gitlab.io/download/ts-tools-{{ touchstone_tools_version }}-x86_64.AppImage
+
+# database informations for ts-pgsql commands
+pg_database: ""   # database name to connect to
+pg_server_hostname: ""    # database server host or docker directory (-h)
+pg_port: ""    # database server PORT (-p)
+pg_owner: ""   # database USERNAME (-U)
+
+# size of plots output from ts-plot-sar, ts-plot-pidstat and ts-plot-pgsql
+plot_size: '1600,1000'
+
+# default number of seconds in between samples
+sec_bw_sample: 60
+
+supported_os:
+  - CentOS8
+  - RHEL8
+  - Rocky8
+  - AlmaLinux8

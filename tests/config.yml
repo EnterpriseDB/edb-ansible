@@ -491,3 +491,14 @@ cases:
     - debian10
     - ubuntu20
     - oraclelinux7
+  manage_touchstone_tools:
+    pg_version:
+    - 13
+    - 14
+    - 15
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - almalinux8

@@ -1,0 +1,4 @@
+---
+# Entry point of the manage_touchstone_tools role
+- name: Include the manage_touchstone_tools.yml
+  ansible.builtin.include_tasks: manage_touchstone_tools.yml
