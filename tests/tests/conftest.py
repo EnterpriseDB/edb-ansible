@@ -89,6 +89,8 @@ def os_family():
         return 'RedHat'
     elif (get_os().startswith('debian') or get_os().startswith('ubuntu')):
         return 'Debian'
+    elif (get_os().startswith('suse')):
+        return 'Suse'
     else:
         return 'unknown'
 
