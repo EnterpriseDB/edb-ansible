@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1
+
+FROM jrei/systemd-centos:8
+
+RUN sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-*
+RUN sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*
+
+RUN yum install iproute -y
+RUN yum install sudo -y
+RUN yum install python3 -y
+RUN yum install ca-certificates -y
+RUN yum install openssh-clients -y
+RUN yum install openssl -y
+RUN yum install openssh-server -y
+RUN yum install which -y
