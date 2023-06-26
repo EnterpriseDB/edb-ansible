@@ -95,7 +95,7 @@
   loop: "{{ apt_additional_repos }}"
   when: apt_additional_repos | length > 0
 
-- name: Install BDR packages if tpa_subscription_token is given
+- name: Install PGD packages if tpa_subscription_token is given
   ansible.builtin.shell: >
       set -o pipefail;
       curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/deb" | bash
@@ -108,7 +108,7 @@
   changed_when: reposub.rc == '0'
   when: >
     tpa_subscription_token|length > 0
-    and install_bdr_packages|bool
+    and install_pgd|bool
     and pg_version|int == 14
   loop: "{{ edb_2q_repositories }}"
 

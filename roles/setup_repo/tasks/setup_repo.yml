@@ -32,16 +32,16 @@
     - enable_edb_repo|bool
     - repo_token | length < 1 and (repo_username | length < 1 or repo_password | length < 1)
 
-- name: Capture if bdr_nodes_ips if defined
+- name: Capture if _ips if defined
   ansible.builtin.set_fact:
-    bdr_nodes_ips: "{{ lookup('edb_devops.edb_postgres.bdr_nodes') | flatten | map(attribute='ansible_host') | flatten }}"
+    _ips: "{{ lookup('edb_devops.edb_postgres.pgd_nodes') | flatten | map(attribute='ansible_host') | flatten }}"
 
 - name: Validate tpa_subscription_token
   ansible.builtin.fail:
     msg: "tpa_subscription_token is not defined correctly."
   when:
     - tpa_subscription_token | length < 1
-    - bdr_nodes_ip is defined and bdr_nodes_ips | length > 0
+    - _ip is defined and pgd_nodes_ips | length > 0
     - not validate_only|bool
 
 - name: Cleanup the repos based on force_repo

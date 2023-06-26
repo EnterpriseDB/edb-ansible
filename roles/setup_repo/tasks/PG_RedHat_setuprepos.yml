@@ -135,14 +135,14 @@
   failed_when: false
   changed_when: updateinfo_output.rc != 0
 
-# Adding BDR repository if BDR nodes are defined
+# Adding PGD repository if PGD nodes are defined
 - name: Install curl package if not available
   ansible.builtin.package:
     name: curl
     state: present
   become: true
 
-- name: Install BDR4 packages repo if tpa_subscription_token is given
+- name: Install PGD4 packages repo if tpa_subscription_token is given
   ansible.builtin.shell: >
       set -o pipefail;
       curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/rpm" | bash
@@ -156,9 +156,9 @@
   when:
     - enable_edb_repo|bool
     - tpa_subscription_token|length > 0
-    - install_bdr_packages|bool
+    - install_pgd|bool
     - pg_version|int == 14
-    - bdr_version|int == 4
+    - pgd_version|int == 4
   loop: "{{ edb_2q_repositories }}"
 
 - name: Install PGD RPM packages repo
@@ -173,9 +173,9 @@
   when:
     - enable_edb_repo|bool
     - repo_token|length > 0
-    - install_bdr_packages|bool
+    - install_pgd|bool
     - pg_version|int >= 15
-    - bdr_version|int >= 5
+    - pgd_version|int >= 5
   loop: "{{ pgd_rpm_repo }}"
 
 - name: Install EDB repository 2.0

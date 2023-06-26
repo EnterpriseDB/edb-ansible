@@ -34,16 +34,16 @@
   when: os in ['Ubuntu18','Debian9','Debian10']
   become: true
 
-- name: "Install BDR packages for PG >= 14"
+- name: "Install PGD packages for PG >= 14"
   ansible.builtin.package:
     name:
-      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}
-      - edb-bdr{{ bdr_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
+      - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}
+      - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
     state: present
   become: true
   when: >-
     pg_version|int >= 14
-    and install_bdr_packages|bool
+    and install_pgd|bool
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

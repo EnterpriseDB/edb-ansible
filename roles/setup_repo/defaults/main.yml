@@ -11,8 +11,8 @@ repo_token: ""
 repo_username: ""
 repo_password: ""
 tpa_subscription_token: ""
-install_bdr_packages: false
-bdr_version: 4
+install_pgd: false
+pgd_version: 4
 
 # set to false only if you are using local repositories and do not need the PGDG and/or EPEL repositories.
 # setting to false will result in failure to download required packages if access to local repos is not available
