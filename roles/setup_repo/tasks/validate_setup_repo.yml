@@ -44,7 +44,7 @@
   when:
     - ansible_os_family == 'RedHat'
     - enable_edb_repo|bool
-    - install_bdr_packages|bool
+    - install_pgd|bool
 
 - name: Check for EDB Postgres Distributed noarch Repo on RedHat
   ansible.builtin.assert:
@@ -55,7 +55,7 @@
   when:
     - ansible_os_family == 'RedHat'
     - enable_edb_repo|bool
-    - install_bdr_packages|bool
+    - install_pgd|bool
 
 - name: Check for EDB Repo on Debian
   ansible.builtin.assert:
