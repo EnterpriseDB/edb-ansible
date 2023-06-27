@@ -145,6 +145,7 @@ Below is an example of how to include the `setup_barmanserver` role:
   name: Deploy Barman Servers
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

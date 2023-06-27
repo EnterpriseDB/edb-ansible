@@ -1,0 +1,8 @@
+---
+- name: Stop ts sysstat
+  ansible.builtin.shell: |
+    set -o pipefail
+    ts sysstat -o {{ ts_output_dir }} -s
+  args:
+    chdir: /usr/bin/
+  become: true

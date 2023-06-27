@@ -1,0 +1,25 @@
+---
+- name: Set pidstat_csv_file if not defined
+  ansible.builtin.set_fact:
+    pidstat_csv_file: "{{ ts_output_dir }}/pidstat.csv"
+  when: pidstat_csv_file is not defined
+
+- name: Set ts_plot_output_dir if not defined
+  ansible.builtin.set_fact:
+    ts_plot_output_dir: "{{ ts_output_dir }}"
+  when: ts_plot_output_dir is not defined
+
+- name: Run ts plot-pidstat
+  ansible.builtin.shell: |
+    set -o pipefail
+    ts plot-pidstat \
+      -i {{ pidstat_csv_file }} \
+      -o {{ ts_plot_output_dir }} \
+      -s {{ plot_size }}
+  args:
+    chdir: /usr/bin/
+  become: true
+
+- name: Reset ts_plot_output_dir
+  ansible.builtin.set_fact:
+    ts_plot_output_dir: Null

@@ -12,12 +12,20 @@ cases:
     - EPAS
     os:
     - centos7
+    - centos8
     - oraclelinux7
+    - oraclelinux8
+    - oraclelinux9
     - rocky8
+    - rocky9
+    - rhel8
     - almalinux8
     - debian9
     - debian10
+    - debian11
     - ubuntu20
+    - ubuntu22
+    - suse15
   install_dbserver:
     pg_version:
     - 10
@@ -491,3 +499,14 @@ cases:
     - debian10
     - ubuntu20
     - oraclelinux7
+  manage_touchstone_tools:
+    pg_version:
+    - 13
+    - 14
+    - 15
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - almalinux8

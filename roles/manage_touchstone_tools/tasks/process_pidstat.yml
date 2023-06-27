@@ -1,0 +1,13 @@
+---
+- name: Set pidstat_txt_file if not defined
+  ansible.builtin.set_fact:
+    pidstat_txt_file: "{{ ts_output_dir }}/pidstat.txt"
+  when: pidstat_txt_file is not defined
+
+- name: Run ts process-pidstat
+  ansible.builtin.shell: |
+    set -o pipefail
+    ts process-pidstat -i {{ pidstat_txt_file }}
+  args:
+    chdir: /usr/bin/
+  become: true

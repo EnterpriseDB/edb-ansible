@@ -207,6 +207,7 @@ Below is an example of how to include the `manage_dbserver` role:
   name: Manage Postgres server
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

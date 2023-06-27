@@ -31,15 +31,15 @@ API version, programming language changes, etc...
 
 ### Branches
 
-  * **master** branch is dedicated to development of new features.
-  * Each **new major release** is created from **master** branch.
+  * **main** branch is dedicated to development of new features.
+  * Each **new major release** is created from **main** branch.
   * Each new major release is immediately followed by the **maintenance branch creation**.
   * Maintenance branches should be named like the major version number it refers
     to: **v3_1**, **v4_0**, etc..
   * Bug fixes impacting only one major version must be applied on its
     maintenance branch only.
   * Bug fixes impacting all or many of the major versions must be applied first
-    on master, and then backported on the maintenance branches.
+    on main, and then backported on the maintenance branches.
   * **Maintenance releases** are created from **the maintenance branch**.
 
 ![Branches diagram example](./imgs/github_branches.png)
@@ -64,12 +64,12 @@ $ git remote add upstream https://github.com/EnterpriseDB/edb-ansible.git
   1. Update local code:
 ```shell
 $ git remote update
-$ git checkout master
-$ git merge upstream/master
+$ git checkout main
+$ git merge upstream/main
 ```
   2. Create a new branch:
 ```shell
-$ git checkout -b new_feature upstream/master
+$ git checkout -b new_feature upstream/main
 ```
   3. Commit your awesome feature
   4. Push the branch on your forked repository:
@@ -97,7 +97,7 @@ GitHub.
   feature request, or a general issue, please open a GitHub issue.
 * If you want to contribute to our code by either fixing a problem, enhancing
   some code, or creating a new feature, please open a GitHub pull request
-  against the master branch.
+  against the main branch.
 
 Before you start to code, we recommend discussing your plans through a GitHub
 issue, especially for more ambitious contributions. This gives other

@@ -98,6 +98,7 @@ Below is an example of how to include the `setup_pemserver` role:
   name: Setup PEM server
   become: yes
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres

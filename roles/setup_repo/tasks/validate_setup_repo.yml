@@ -35,6 +35,28 @@
     - ansible_os_family == 'RedHat'
     - pg_type == 'PG'
 
+- name: Check for EDB Postgres Distributed x86_64 Repo on RedHat
+  ansible.builtin.assert:
+    that:
+      - "'enterprisedb-postgres_distributed-x86_64' in yum_repolist.stdout"
+    fail_msg: "Access to the EDB Postgres Distributed x86_64 package repository is not configured"
+    success_msg: "Access to the EDB Postgres Distributed x86_64 package repository has been configured successfully"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_edb_repo|bool
+    - install_bdr_packages|bool
+
+- name: Check for EDB Postgres Distributed noarch Repo on RedHat
+  ansible.builtin.assert:
+    that:
+      - "'enterprisedb-postgres_distributed-noarch' in yum_repolist.stdout"
+    fail_msg: "Access to the EDB Postgres Distributed noarch package repository is not configured"
+    success_msg: "Access to the EDB Postgres Distributed noarch package repository has been configured successfully"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_edb_repo|bool
+    - install_bdr_packages|bool
+
 - name: Check for EDB Repo on Debian
   ansible.builtin.assert:
     that:

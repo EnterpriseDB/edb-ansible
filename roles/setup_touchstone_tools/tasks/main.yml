@@ -1,5 +1,4 @@
 ---
-
 - name: Install packages for Touchstone
   ansible.builtin.package:
     name:
@@ -9,6 +8,15 @@
       - util-linux
     state: present
   become: true
+
+# if CentOS or RHEL, fuse-libs package is needed as per example https://github.com/AppImage/AppImageKit/wiki/FUSE
+- name: Install packages to use AppImage if RHEL
+  ansible.builtin.package:
+    name:
+      - fuse-libs
+    state: present
+  become: true
+  when: ansible_os_family == 'RedHat'
 
 - name: Download Touchstone Tools AppImage
   ansible.builtin.get_url:

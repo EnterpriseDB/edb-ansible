@@ -94,8 +94,9 @@
     name: "{{ edb_rpm_repo }}"
     state: present
   become: true
-  when: >
-    enable_edb_repo|bool and repo_token|length < 1
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length < 1
 
 - name: Set Credentials for EDB Yum Repo
   ansible.builtin.replace:
@@ -103,8 +104,9 @@
     regexp: '<username>:<password>'
     replace: "{{ repo_username }}:{{ repo_password }}"
   become: true
-  when: >
-    enable_edb_repo|bool and repo_token|length < 1
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length < 1
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:
@@ -138,7 +140,7 @@
     state: present
   become: true
 
-- name: Install BDR packages if tpa_subscription_token is given
+- name: Install BDR4 packages repo if tpa_subscription_token is given
   ansible.builtin.shell: >
       set -o pipefail;
       curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/rpm" | bash
@@ -149,11 +151,30 @@
   failed_when: >
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
   changed_when: reposub.rc == '0'
-  when: >
-    tpa_subscription_token|length > 0
-    and install_bdr_packages|bool
-    and pg_version|int >= 14
+  when:
+    - enable_edb_repo|bool
+    - tpa_subscription_token|length > 0
+    - install_bdr_packages|bool
+    - pg_version|int == 14
+    - bdr_version|int == 4
   loop: "{{ edb_2q_repositories }}"
+
+- name: Install PGD RPM packages repo
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    file: "enterprisedb-postgres_distributed"
+    baseurl: "{{ item.repo_url }}"
+    gpgkey: "{{ edb_pgd_rpm_gpg_key }}"
+    repo_gpgcheck: true
+    enabled: true
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length > 0
+    - install_bdr_packages|bool
+    - pg_version|int >= 15
+    - bdr_version|int >= 5
+  loop: "{{ pgd_rpm_repo }}"
 
 - name: Install EDB repository 2.0
   ansible.builtin.shell: >
@@ -166,5 +187,6 @@
   failed_when: >
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
   changed_when: reposub.rc == '0'
-  when: >
-    enable_edb_repo|bool and repo_token|length > 0
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length > 0

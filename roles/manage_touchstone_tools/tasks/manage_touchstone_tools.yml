@@ -1,0 +1,67 @@
+---
+- name: Include start_system_stats tasks to start sysstat data collection
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: start_system_stats
+  vars:
+    ts_output_dir: "/var/log/touchstone/sys_run_1"
+    sec_bw_sample: 60
+
+- name: Include start_db_stats tasks to start pgsql stats data collection
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: start_db_stats
+  vars:
+    ts_output_dir: "/var/log/touchstone/db_run_1"
+    sec_bw_sample: 60
+    pg_database: "postgres"
+    pg_server_hostname: "primary1"
+    pg_port: 5432
+    pg_owner: "postgres"
+
+- name: Include stop_system_stats tasks to stop sysstat data collection
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: stop_system_stats
+  vars:
+    ts_output_dir: "/var/log/touchstone/sys_run_1"
+
+- name: Include stop_db_stats tasks to stop pgsql stats data collection
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: stop_db_stats
+  vars:
+    ts_output_dir: "/var/log/touchstone/db_run_1"
+
+- name: Include process_pidstat tasks
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: process_pidstat
+  vars:
+    pidstat_txt_file: "/var/log/touchstone/sys_run_1/pidstat.txt"
+
+- name: Include plot_sar_data tasks to plot sar data
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: plot_sar_data
+  vars:
+    ts_output_dir: "/var/log/touchstone/sys_run_1"
+    ts_plot_output_dir: "/var/log/touchstone/sys_run_1"
+
+- name: Include plot_pidstat_data tasks to plot pidstat data
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: plot_pidstat_data
+  vars:
+    pidstat_csv_file: "/var/log/touchstone/sys_run_1/pidstat.csv"
+    ts_output_dir: "/var/log/touchstone/sys_run_1"
+    ts_plot_output_dir: "/var/log/touchstone/sys_run_1/pidstat_plots"
+
+- name: Include plot_db_data tasks to plot pgsql data
+  ansible.builtin.include_role:
+    name: manage_touchstone_tools
+    tasks_from: plot_db_data
+  vars:
+    pg_database: "postgres"
+    ts_output_dir: "/var/log/touchstone/db_run_1"
+    ts_plot_output_dir: "/var/log/touchstone/db_run_1/pgsql_plots"

@@ -39,6 +39,7 @@
     apply:
       delegate_to: "{{ primary_inventory_hostname }}"
       run_once: true
+  when: use_replication_slots
   vars:
     pg_query:
       - query: "Select * from pg_replication_slots"
@@ -48,6 +49,7 @@
   ansible.builtin.set_fact:
     repslots_query_result: "{{ sql_query_output }}"
   become: true
+  when: use_replication_slots
 
 - name: Check if replication slots were created correctly
   ansible.builtin.assert:
@@ -56,6 +58,7 @@
     fail_msg: "Replication did not create replication slots"
     success_msg: "Replication created replication slots successfully"
   run_once: true
+  when: use_replication_slots
 
 # test if pg_stat_replication gives correct results
 - name: Run query to check application_name of pg_stat_replication
@@ -129,13 +132,17 @@
     pg_query:
       - query: "Select slot_name from pg_stat_wal_receiver"
         db: "{{ pg_database }}"
-  when: "'standby' in group_names"
+  when:
+    - "'standby' in group_names"
+    - use_replication_slots
 
 - name: Set rep_slots_query_result with sql_query_output
   ansible.builtin.set_fact:
     rep_slots_query_result: "{{ sql_query_output }}"
   become: true
-  when: "'standby' in group_names"
+  when:
+    - "'standby' in group_names"
+    - use_replication_slots
 
 - name: Check if replication was successful on standby(s)
   ansible.builtin.assert:
@@ -143,6 +150,7 @@
       - rep_slots_query_result.results[0].query_result[0]['slot_name'] == inventory_hostname
     fail_msg: "Replication was not successful on standby(s)"
     success_msg: "Replication was successful on standby(s)"
+  when: use_replication_slots
 
 - name: Reset variables
   ansible.builtin.set_fact:

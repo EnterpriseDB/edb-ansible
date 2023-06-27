@@ -86,13 +86,35 @@ class DockerCentos7Container(DockerCentosContainer):
     pass
 
 
+class DockerCentos8Container(DockerCentosContainer):
+    pass
+
+
 class DockerRocky8Container(DockerCentosContainer):
     pass
+
+
+class DockerRocky9Container(DockerCentosContainer):
+    pass
+
+
+class DockerRHEL8Container(DockerCentosContainer):
+    pass
+
 
 class DockerAlmalinux8Container(DockerCentosContainer):
     pass
 
+
 class DockerOraclelinux7Container(DockerCentosContainer):
+    pass
+
+
+class DockerOraclelinux8Container(DockerCentosContainer):
+    pass
+
+
+class DockerOraclelinux9Container(DockerCentosContainer):
     pass
 
 
@@ -113,24 +135,59 @@ class DockerDebian10Container(DockerDebianContainer):
     pass
 
 
+class DockerDebian11Container(DockerDebianContainer):
+    pass
+
+
 class DockerUbuntu20Container(DockerDebianContainer):
+    pass
+
+
+class DockerUbuntu22Container(DockerDebianContainer):
+    pass
+
+"""
+SUSE family
+"""
+class DockerSuseContainer(DockerContainer):
+    def start_sshd(self):
+        self.exec('/bin/systemctl start sshd')
+
+
+class DockerSuse15Container(DockerSuseContainer):
     pass
 
 
 def DockerOSContainer(id, os):
     if os == 'centos7':
         return DockerCentos7Container(id)
+    elif os == 'centos8':
+        return DockerCentos8Container(id)
     elif os == 'rocky8':
         return DockerRocky8Container(id)
+    elif os == 'rocky9':
+        return DockerRocky9Container(id)
+    elif os == 'rhel8':
+        return DockerRHEL8Container(id)
     elif os == 'almalinux8':
         return DockerAlmalinux8Container(id)
     elif os == 'debian9':
         return DockerDebian9Container(id)
     elif os == 'debian10':
         return DockerDebian10Container(id)
+    elif os == 'debian11':
+        return DockerDebian11Container(id)
     elif os == 'ubuntu20':
         return DockerUbuntu20Container(id)
+    elif os == 'ubuntu22':
+        return DockerUbuntu22Container(id)
+    elif os == 'suse15':
+        return DockerSuse15Container(id)
     elif os == 'oraclelinux7':
         return DockerOraclelinux7Container(id)
+    elif os == 'oraclelinux8':
+        return DockerOraclelinux8Container(id)
+    elif os == 'oraclelinux9':
+        return DockerOraclelinux9Container(id)
     else:
         raise Exception("Unknown OS %s" % os)

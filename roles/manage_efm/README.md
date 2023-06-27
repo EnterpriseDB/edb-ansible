@@ -105,6 +105,7 @@ Below is an example of how to include the `manage_efm` role:
   name: Install EFM on Instances
   become: true
   gather_facts: yes
+  any_errors_fatal: true
 
   collections:
     - edb_devops.edb_postgres
