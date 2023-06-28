@@ -23,11 +23,11 @@ Below is the documentation of the rest of the main variables:
 
 ### `touchstone_tools_version`
 
-The version of Touchstone Tools.  Default: 0.6.1
+The version of Touchstone Tools.  Default: 0.7.1
 
 Example:
 ```yaml
-touchstone_version: 0.6.1
+touchstone_version: 0.7.1
 ```
 
 ## License
