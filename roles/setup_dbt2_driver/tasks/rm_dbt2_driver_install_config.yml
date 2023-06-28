@@ -15,35 +15,7 @@
     - '/usr/bin/flamegraph.pl'
     - '/usr/bin/stackcollapse-perf.pl'
     - "{{ pg_user_home }}"
-  become: true
-
-- name: Remove packages for DBT-2 Driver
-  ansible.builtin.package:
-    name:
-      - dbttools
-      - dbt2-common
-    state: absent
-  when: ansible_os_family == 'RedHat'
-  become: true
-
-- name: Remove DBT-2 Database extensions package for PG v13 or v14
-  ansible.builtin.dnf:
-    name:
-      - "dbt2-pgsql-c_{{ pg_version }}-{{ dbt2_version }}-1"
-    state: absent
-  when:
-    - ansible_os_family == "RedHat"
-    - pg_version|string not in ['13', '14']
-  become: true
-
-- name: Remove DBT-2 Database extensions package for not PG v13 or v14
-  ansible.builtin.package:
-    name:
-      - "dbt2-pg{{ pg_version }}-extensions"
-    state: absent
-  when:
-    - ansible_os_family == "RedHat"
-    - pg_version|string not in ['13', '14']
+    - "{{ dbt2_path }}"
   become: true
 
 - name: Remove additional supporting packages
@@ -54,6 +26,9 @@
       - python3-docutils
       - rsync
       - tmux
+      - fuse
+      - fuse-libs
+      - dbttools
     state: absent
   when: ansible_os_family == "RedHat"
   become: true

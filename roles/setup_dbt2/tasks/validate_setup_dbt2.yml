@@ -1,28 +1,17 @@
 ---
-# validate dbt2 packages
-- name: Set dbt2 package name for not v13 and v14
-  ansible.builtin.set_fact:
-    dbt2_package_list: ['dbt2-common', 'dbt2-pgsql-c_{{ pg_version }}-{{ dbt2_version }}-1']
-  when: pg_version|string not in ['13', '14']
+# ensure the DBT-2 AppImage has been installed to the proper location
+- name: Stat to dbt2_path
+  ansible.builtin.stat:
+    path: "{{ dbt2_path }}"
+  register: dbt2_path_stat
+  become: true
 
-- name: Set dbt2 package name for v13 and v14
-  ansible.builtin.set_fact:
-    dbt2_package_list: ['dbt2-common', "dbt2-pg{{ pg_version }}-extensions"]
-  when: pg_version|string in ['13', '14']
-
-- name: Gather the package facts
-  ansible.builtin.package_facts:
-    strategy: "all"
-
-- name: Check that all DBT2 packages have been installed
+- name: Check if DBT-2 AppImage was installed properly on DB
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[package] }} is defined"
-    fail_msg: "Package {{ package }} has not been installed."
-    success_msg: "Package {{ package }} has been installed."
-  loop: "{{ dbt2_package_list }}"
-  loop_control:
-    loop_var: package
+      - dbt2_path_stat.stat['exists']|bool
+    fail_msg: "DBT-2 AppImage at {{ dbt2_path }} was not created properly"
+    success_msg: "DBT-2 AppImage at {{ dbt2_path }} was created successfully"
 
 # validate dbt2 user
 - name: Run query to check dbt2 user is in pg_user
@@ -50,5 +39,5 @@
 # reset variables
 - name: Reset variables
   ansible.builtin.set_fact:
-    dbt2_package_list: null
+    dbt2_path_stat: null
     user_query_result: null

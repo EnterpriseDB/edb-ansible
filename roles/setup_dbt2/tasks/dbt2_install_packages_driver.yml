@@ -1,33 +1,4 @@
 ---
-- name: Install packages for DBT-2 Driver
-  ansible.builtin.package:
-    name:
-      - dbttools
-      - dbt2-common
-    state: present
-  when: ansible_os_family == "RedHat"
-  become: true
-
-- name: Install DBT-2 pg extensions package for DBT-2 Database for PG v13 or v14
-  ansible.builtin.package:
-    name: "dbt2-pg{{ pg_version }}-extensions"
-    state: present
-  when:
-    - ansible_os_family == "RedHat"
-    - pg_version|string in ['13', '14']
-  become: true
-
-- name: Install DBT-2 Database PG extensions for PG not v13 or v14
-  ansible.builtin.dnf:
-    name:
-      - 'https://github.com/osdldbt/dbt2-packaging/releases/download/v{{ dbt2_version }}/dbt2-pgsql-c_{{ pg_version }}-{{ dbt2_version }}-1.el8.x86_64.rpm'
-    state: present
-    disable_gpg_check: true
-  when:
-    - ansible_os_family == "RedHat"
-    - pg_version|string not in ['13', '14']
-  become: true
-
 - name: Download stackcollapse-perf.pl
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/brendangregg/FlameGraph/master/stackcollapse-perf.pl
@@ -42,7 +13,7 @@
     mode: '0755'
   become: true
 
-- name: Install additional supporting packages
+- name: Install DBT-2 Driver supporting packages
   ansible.builtin.package:
     name:
       - perf
@@ -50,6 +21,17 @@
       - python3-docutils
       - rsync
       - tmux
+      - fuse
+      - fuse-libs
+      - dbttools
     state: present
   when: ansible_os_family == "RedHat"
+  become: true
+
+- name: Download DBT-2 AppImage
+  ansible.builtin.get_url:
+    url: "{{ dbt2_appimage }}"
+    checksum: "sha256:{{ dbt2_checksum }}"
+    dest: "{{ dbt2_path }}"
+    mode: '0755'
   become: true

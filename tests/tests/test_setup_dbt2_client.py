@@ -4,20 +4,31 @@ from conftest import (
     load_ansible_vars,
     get_pg_type,
     get_dbt2_client,
-    get_pg_version,
-    get_primary,
-    get_pg_unix_socket_dir
 )
+
 
 def test_setup_dbt2_client_packages():
     host = get_dbt2_client()[0]
     packages = [
-        'dbt2-common'
+        'perf',
+        'rsync',
+        'tmux',
+        'fuse',
+        'fuse-libs'
     ]
 
     for package in packages:
         assert host.package(package).is_installed, \
             "Package %s not installed" % packages
+
+
+def test_setup_dbt2_client_appimage():
+    host = get_dbt2_client()[0]
+    appimage_location = "/usr/bin/dbt2"
+
+    assert host.file(appimage_location).exists, \
+        "DBT-2 AppImage not installed correctly on client."
+
 
 def test_setup_dbt2_client_sudo():
     host = get_dbt2_client()[0]

@@ -1,28 +1,37 @@
 import pytest
 
 from conftest import (
-    load_ansible_vars,
     get_pg_type,
     get_dbt2_driver,
-    get_pg_version,
-    get_primary,
-    get_pg_unix_socket_dir
 )
+
 
 def test_setup_dbt2_driver_packages():
     host = get_dbt2_driver()[0]
     packages = [
-        'dbttools',
-        'dbt2-common'
+        'perf',
+        'rsync',
+        'tmux',
+        'fuse',
+        'fuse-libs',
+        'dbttools'
     ]
 
     for package in packages:
         assert host.package(package).is_installed, \
-            "Package %s not installed" % packages
+            "Package %s not installed" % package
+
+
+def test_setup_dbt2_driver_appimage():
+    host = get_dbt2_driver()[0]
+    appimage_location = "/usr/bin/dbt2"
+
+    assert host.file(appimage_location).exists, \
+        "DBT-2 AppImage not installed correctly on driver."
+
 
 def test_setup_dbt2_driver_sudo():
     host = get_dbt2_driver()[0]
-    ansible_vars = load_ansible_vars()
     pg_user = 'postgres'
 
     if get_pg_type() == 'EPAS':

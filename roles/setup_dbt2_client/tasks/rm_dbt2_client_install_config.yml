@@ -14,11 +14,10 @@
     state: absent
   become: true
 
-- name: Remove packages for DBT-2 Client
-  ansible.builtin.dnf:
-    name: 'dbt2-common'
+- name: Remove DBT-2 AppImage
+  ansible.builtin.file:
+    path: "{{ dbt2_path }}"
     state: absent
-  when: ansible_os_family == "RedHat"
   become: true
 
 - name: Remove additional supporting packages
@@ -27,6 +26,8 @@
       - perf
       - rsync
       - tmux
+      - fuse
+      - fuse-libs
     state: absent
   when: ansible_os_family == "RedHat"
   become: true
