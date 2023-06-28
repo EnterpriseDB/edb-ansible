@@ -21,15 +21,6 @@ When executing the role via ansible these are the required variables:
   See the following link for available versions:
   https://github.com/osdldbt/dbt2/releases
 
-  * ***dbttools_version***
-
-  These playbooks can install any version of DBT Tools that is packaged from
-  GitHub but specific versions may be required depending on the version of DBT-2
-  used.  Unless you have a specific reason to install a specific version, you
-  will generally want to use the latest avaialble versions.  See the following
-  link for available versions:
-  https://github.com/osdldbt/dbttools-packaging/releases
-
   * ***dbt2_path***
 
   This is the location where the DBT-2 AppImage will be installed.

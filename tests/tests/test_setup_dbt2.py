@@ -14,7 +14,8 @@ def test_setup_dbt2_packages():
         'rsync',
         'tmux',
         'fuse',
-        'fuse-libs'
+        'fuse-libs',
+        'sysstat'
     ]
 
     for package in packages:

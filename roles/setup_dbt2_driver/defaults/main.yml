@@ -7,7 +7,6 @@ supported_os:
   - AlmaLinux8
 
 dbt2_version: "0.53.2"
-dbttools_version: "0.3.1"
 
 # DBT-2 AppImage path
 dbt2_path: "/usr/bin/dbt2"

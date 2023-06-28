@@ -17,13 +17,11 @@
   ansible.builtin.package:
     name:
       - perf
-      - postgresql
-      - python3-docutils
       - rsync
       - tmux
       - fuse
       - fuse-libs
-      - dbttools
+      - sysstat
     state: present
   when: ansible_os_family == "RedHat"
   become: true

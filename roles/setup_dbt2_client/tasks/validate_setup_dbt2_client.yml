@@ -1,4 +1,23 @@
 ---
+# validate dbt2 client packages installation
+- name: Set dbt2_client_package_list
+  ansible.builtin.set_fact:
+    dbt2_client_package_list: ['perf', 'rsync', 'tmux', 'fuse', 'fuse-libs', 'sysstat']
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all packages in dbt2_client_package_list has been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ dbt2_client_package_list }}"
+  loop_control:
+    loop_var: package
+
 # ensure the DBT-2 AppImage has been installed to the proper location
 - name: Stat to dbt2_path
   ansible.builtin.stat:
@@ -37,5 +56,6 @@
 # reset variables
 - name: Reset variables
   ansible.builtin.set_fact:
+    dbt2_client_package_list: null
     dbt2_path_client_stat: null
     dbt2_client_sudo_res: null

@@ -19,6 +19,7 @@
       - tmux
       - fuse
       - fuse-libs
+      - sysstat
     state: absent
   when: ansible_os_family == "RedHat"
   become: true

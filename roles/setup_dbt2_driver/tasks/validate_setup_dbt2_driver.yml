@@ -1,15 +1,22 @@
 ---
-# validate dbttools package installation
+# validate dbt2 driver packages installation
+- name: Set dbt2_driver_package_list
+  ansible.builtin.set_fact:
+    dbt2_driver_package_list: ['perf', 'rsync', 'tmux', 'fuse', 'fuse-libs', 'sysstat']
+
 - name: Gather the package facts
   ansible.builtin.package_facts:
     strategy: "all"
 
-- name: Check that the 'dbttools' package has been installed
+- name: Check that all packages in dbt2_driver_package_list has been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages['dbttools'] }} is defined"
-    fail_msg: "Package 'dbttools' has not been installed."
-    success_msg: "Package 'dbttools' has been installed."
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ dbt2_driver_package_list }}"
+  loop_control:
+    loop_var: package
 
 # ensure the DBT-2 AppImage has been installed to the proper location
 - name: Stat to dbt2_path
@@ -49,5 +56,6 @@
 # reset variables
 - name: Reset variables
   ansible.builtin.set_fact:
+    dbt2_driver_package_list: null
     dbt2_path_driver_stat: null
     dbt2_driver_sudo_res: null

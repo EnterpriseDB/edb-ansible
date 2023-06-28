@@ -34,10 +34,6 @@ When executing the role via ansible these are the required variables:
   For ease of use, try to set this location within a directory along the executable `PATH`.
   Unless necessary, there shouldn't be any reason to change this default.
 
-  * ***pg_version***
-
-  Postgres Versions supported are: 10, 11, 12, 13, 14 and 15.
-
   * ***pg_dbt2_dbname***
 
   This is the database name to use specifically for the test.

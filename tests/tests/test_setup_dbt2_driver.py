@@ -14,7 +14,7 @@ def test_setup_dbt2_driver_packages():
         'tmux',
         'fuse',
         'fuse-libs',
-        'dbttools'
+        'sysstat'
     ]
 
     for package in packages:
