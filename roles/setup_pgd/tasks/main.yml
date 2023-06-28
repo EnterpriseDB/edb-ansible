@@ -1,0 +1,4 @@
+---
+# Entry point of the setup_pgd role
+- name: Include the setup_pgd.yml
+  ansible.builtin.include_tasks: setup_pgd.yml

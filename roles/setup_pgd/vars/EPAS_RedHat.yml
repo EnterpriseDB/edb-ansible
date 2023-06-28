@@ -1,0 +1,48 @@
+---
+pg_wal: ""
+pg_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_default_data: "/var/lib/edb/as{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_encoding: ""
+
+# log directory and filename
+pg_log: "/var/log/edb"
+pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
+
+# postgres service
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
+pg_systemd_global_unit_file: "/usr/lib/systemd/system/edb-as-{{ pg_version }}.service"
+# required & optional directories
+pg_user_home: "/var/lib/edb"
+pg_bin_path: "/usr/edb/as{{ pg_version }}/bin"
+pg_initdb: "{{ pg_bin_path }}/edb-as-{{ pg_version }}-setup initdb"
+pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
+edb_initdb_encryption_options: "--data-encryption --key-wrap-command='{{ edb_key_wrap_cmd }}' --key-unwrap-command='{{ edb_key_unwrap_cmd }}'"
+
+# bdr_init_physical binary for backup and restor
+bdr_init_physical: "{{ pg_bin_path }}/bdr_init_physical -D {{ pg_data }} --local-dsn={{ local_node_dsn }} --node-group-name={{ --node-group-name }}"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/edb/as{{ pg_version }}"
+
+# postgres port
+pg_port: 5444
+
+# postgres database
+pg_database: "postgres"
+
+# postgres user
+pg_owner: "enterprisedb"
+pg_group: "enterprisedb"
+
+# postgres superuser
+pg_superuser: "enterprisedb"
+
+pg_shared_libraries_list:
+  - "$libdir/dbms_pipe"
+  - "$libdir/edb_gen"
+  - "$libdir/dbms_aq"
+  - "$libdir/edb_wait_states"
+  - "$libdir/sql-profiler"
+  - "$libdir/index_advisor"
+  - "$libdir/pg_stat_statements"
