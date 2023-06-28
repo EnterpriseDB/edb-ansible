@@ -1,0 +1,41 @@
+---
+pg_wal: ""
+pg_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_default_data: "/var/lib/pgsql/{{ pg_version }}/{{ pg_instance_name }}/data"
+pg_encoding: ""
+
+# log directory and filename
+pg_log: "/var/log/postgres"
+pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
+
+# postgres service
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
+pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ pg_version }}.service"
+
+# required & optional directories
+pg_user_home: "/var/lib/pgsql"
+pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
+pg_initdb: "{{ pg_bin_path }}/postgresql-{{ pg_version }}-setup initdb"
+pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
+
+# bdr_init_physical binary for backup and restor
+bdr_init_physical: "{{ pg_bin_path }}/bdr_init_physical"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+# postgres port
+pg_port: 5432
+
+# postgres database
+pg_database: "postgres"
+
+# postgres user
+pg_owner: "postgres"
+pg_group: "postgres"
+
+# postgres superuser
+pg_superuser: "postgres"
+pg_shared_libraries_list:
+  - "$libdir/pg_stat_statements"
