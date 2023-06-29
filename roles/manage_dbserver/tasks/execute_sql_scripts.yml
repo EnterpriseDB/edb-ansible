@@ -12,7 +12,7 @@
   loop_control:
     loop_var: line_item
   when: pg_sql_scripts|length > 0
-  ignore_errors: true
+  ignore_errors: "{{ ignore_query_execution_error | default(true) }}"
   register: sql_script_output
 
 - name: Execute query
@@ -30,5 +30,5 @@
   loop_control:
     loop_var: line_item
   when: pg_query|length > 0
-  ignore_errors: true
+  ignore_errors: "{{ ignore_query_execution_error | default(true) }}"
   register: sql_query_output

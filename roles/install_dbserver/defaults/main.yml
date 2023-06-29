@@ -3,7 +3,6 @@
 os: ""
 pg_type: "PG"
 pg_version: 14
-pgd_version: 4
 pg_tuner_version: 1
 pg_owner: "{{ 'enterprisedb' if pg_type == 'EPAS' else 'postgres' }}"
 enable_core_dump: false
@@ -14,14 +13,22 @@ core_dump_directory: "/var/coredumps"
 validate_only: false
 use_validation: true
 
+# PGD Specific varaibles
+pgd_version: 5
+install_pgd: false
+
+# EDB PG Tune
 install_edb_postgres_tuner: false
 edb_tuner_package: "edb-{{ 'as' if pg_type == 'EPAS' else 'pg' }}\
                    {{ pg_version }}-postgres-tuner{{ '-' if ansible_os_family == 'Debian' }}{{ pg_tuner_version }}"
-install_pgd: false
+
+# Debian specific variables
 epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
+deb_cluster_name: "main"
+
+# PG Specific variables
 epas_service: "edb-as@{{ pg_version }}-main"
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
-deb_cluster_name: "main"
 pg_service: "postgresql@{{ pg_version }}-main"
 pg_ssl: true
 

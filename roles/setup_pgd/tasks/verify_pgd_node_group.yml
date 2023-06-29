@@ -1,0 +1,38 @@
+---
+- name: Run query to check if PGD on server is configured for local node
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT node_name FROM bdr.local_node_info;"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when: initdb_executed
+
+- name: Verify PGD local node is created or not
+  ansible.builtin.set_fact:
+     pgd_local_node_created: true
+  when:
+    - sql_query_output.results[0].query_result[0].node_name is defined
+    - sql_query_output.results[0].query_result[0].node_name == pgd_local_node_name
+    - initdb_executed
+
+- name: Run query to check if PGD on server had joined PGD group
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT node_group_name FROM bdr.node_group WHERE node_group_name = '{{ pgd_cluster_name }}';"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when: initdb_executed
+
+- name: Verify PGD local node joined group or not
+  ansible.builtin.set_fact:
+     pgd_cluster_group_joined: true
+  when:
+    - sql_query_output.results[0].query_result[0].node_group_name is defined
+    - sql_query_output.results[0].query_result[0].node_group_name == pgd_cluster_name
+    - initdb_executed

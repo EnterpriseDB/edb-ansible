@@ -5,10 +5,8 @@ pg_version: 14
 pg_ssl: true
 pg_instance_name: main
 pg_remote_ssl_src: false
-# EFM service information
-efm_version: 4.5
-efm_cluster_name: "{{ pg_instance_name }}"
-efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
+enable_edb_repo: true
+install_edb_postgres_tuner: false
 
 # TDE functionality key
 edb_enable_tde: false
@@ -50,8 +48,6 @@ pg_service: "postgresql-{{ pg_version }}"
 # required & optional directories
 pg_user_home: "/var/lib/pgsql"
 pg_bin_path: "/usr/pgsql-{{ pg_version }}/bin"
-pg_initdb: "{{ pg_bin_path }}/postgresql-{{ pg_version }}-setup initdb"
-pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
 
 # unix socket domain directories
 pg_unix_socket_directories:
@@ -93,12 +89,17 @@ input_password: ""
 # PGD variable
 pgd_version: 5
 install_pgd: false
-pgd_cluster_database: "{{ pg_database }}}}"
-pgd_cluster_database_owner: "{{ pg_superuser }}"
+pgd_cluster_database: "{{ pg_database }}"
+pgd_cluster_database_owner: "{{ pg_owner }}"
 pgd_cluster_database_owner_password: ""
 pgd_replication_user: "pgd_replication_user"
 pgd_replication_user_password: ""
 pgd_cluster_name: "pgd_cluster"
+pgd_local_node_name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+pgd_local_node_created: false
+pgd_cluster_group_joined: false
+pgd_is_configured: false
+initdb_executed: true
 
 # HBA variable
 pg_allow_ip_addresses: []
@@ -107,7 +108,7 @@ pg_allow_ip_addresses: []
 pgd_cluster_nodes: []
 
 # PGD DSN variables
-local_node_dsn: "host={{ hostvars[inventory_hostname].private_ip }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+local_node_dsn: ""
 lead_primary_dsn: ""
 
 etc_hosts_lists: []
@@ -135,3 +136,6 @@ supported_pg_version:
   - 13
   - 14
   - 15
+
+supported_pgd_version:
+  - 5
