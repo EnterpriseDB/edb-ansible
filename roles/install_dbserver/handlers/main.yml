@@ -1,9 +1,4 @@
 ---
-- name: Stop EPAS service
-  ansible.builtin.systemd:
-    name: "{{ epas_service }}"
-    state: stopped
-
 - name: Stop PG service
   ansible.builtin.systemd:
     name: "{{ pg_service }}"

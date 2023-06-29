@@ -63,5 +63,4 @@
     tasks_from: manage_hba_conf
   vars:
     pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
-  when: initdb_executed
   no_log: "{{ disable_logging }}"

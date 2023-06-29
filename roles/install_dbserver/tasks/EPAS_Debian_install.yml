@@ -14,7 +14,7 @@
     update_cache: true
   become: true
   notify:
-    - Stop EPAS service
+    - Stop PG service
     - Drop the default EPAS debian database
 
 - name: "Install EPAS < 14 Packages"

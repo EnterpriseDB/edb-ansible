@@ -13,6 +13,7 @@
   ansible.builtin.set_fact:
     pgd_replication_user_password: "{{ input_password }}"
   when: pgd_replication_user_password|length < 1
+  no_log: "{{ disable_logging }}"
 
 - name: Set postgres PGD replication users's database cluster password
   ansible.builtin.include_role:
@@ -23,7 +24,6 @@
       - name: "{{ pgd_replication_user }}"
         pass: "{{ pgd_replication_user_password }}"
         role_attr_flags: "replication"
-  when: initdb_executed|bool
   no_log: "{{ disable_logging }}"
 
 - name: Assign correct permission to pgd_replication_user
@@ -35,7 +35,11 @@
       - role: "bdr_superuser"
         user: "{{ pgd_replication_user }}"
         grant: present
-  when: initdb_executed|bool
+    pg_grant_privileges:
+      - type: database
+        privileges: CREATE
+        roles: "{{ pgd_replication_user }}"
+        database: "{{ pgd_cluster_database }}"
 
 - name: Update the pgpass with pgd_replication_user password
   ansible.builtin.include_role:

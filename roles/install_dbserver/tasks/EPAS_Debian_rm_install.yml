@@ -1,8 +1,14 @@
 ---
-- name: Stop the service {{ epas_service }}
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Stop the service {{ pg_service }}
   ansible.builtin.systemd:
-    name: "{{ epas_service }}"
+    name: "{{ pg_service }}"
     state: stopped
+  when:
+    - ansible_facts.services[pg_service + '.service'] is defined
+    - ansible_facts.services[pg_service + '.service'].state == 'running'
   become: true
 
 - name: Remove sslutils

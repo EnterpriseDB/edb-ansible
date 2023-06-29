@@ -15,6 +15,7 @@
     pgd_cluster_database_owner_password: "{{ input_password }}"
   when:
     - pgd_cluster_database_owner_password|length < 1
+  no_log: "{{ disable_logging }}"
 
 - name: Set postgres PGD database owners password
   ansible.builtin.include_role:
@@ -25,5 +26,4 @@
       - name: "{{ pgd_cluster_database_owner }}"
         pass: "{{ pgd_cluster_database_owner_password }}"
         role_attr_flags: replication
-  when: initdb_executed
   no_log: "{{ disable_logging }}"

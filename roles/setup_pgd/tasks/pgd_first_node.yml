@@ -1,8 +1,0 @@
----
-- name: Capture PGD lead primary node
-  ansible.builtin.set_fact:
-    lead_primary_node: "{{ lookup('edb_devops.edb_postgres.pgd_lead_primary', hostvars[inventory_hostname].ha_location , wantList=True) }}"
-
-- name: Prepare PGD lead primary DSN
-  ansible.builtin.set_fact:
-    lead_primary_dsn: "host={{ lead_primary_node.private_ip }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"

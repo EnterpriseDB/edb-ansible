@@ -15,7 +15,7 @@
   register: apt_sources
   changed_when: apt_sources.rc == '0'
 
-- name: Check for EDB Repo on RedHat 1.0
+- name: Check for EDB Repo 1.0 on RedHat
   ansible.builtin.assert:
     that:
       - "'EnterpriseDB RPMs' in yum_repolist.stdout"
@@ -26,7 +26,7 @@
     - enable_edb_repo|bool
     - repo_token|length < 1
 
-- name: Check for EDB Repo on RedHat 2.0
+- name: Check for EDB Repo 2.0 on RedHat
   ansible.builtin.assert:
     that:
       - "'enterprisedb-enterprise' in yum_repolist.stdout"

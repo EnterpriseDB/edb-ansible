@@ -1,22 +1,51 @@
 ---
+- name: Run query to check if PGD cluster database exists or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM pg_database WHERE datname = '{{ pgd_cluster_database }}'"
+        db: "{{ pg_database }}"
+
+- name: Store status of pgd_cluster_database
+  ansible.builtin.set_fact:
+    _pgd_db_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+
+- name: Run query to check if PGD bdr extension already created or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM pg_extension WHERE extname = 'bdr'"
+        db: "{{ pgd_cluster_database }}"
+  when: _pgd_db_exists|int == 1
+
+- name: Store status PGD bdr extension
+  ansible.builtin.set_fact:
+    _pgd_extension_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+  when: _pgd_db_exists|int == 1
+
 - name: Run query to check if PGD on server is configured for local node
   ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-      - query: "SELECT node_name FROM bdr.local_node_info;"
+      - query: "SELECT COUNT(1) FROM bdr.local_node_info WHERE node_name = '{{ pgd_local_node_name }}';"
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
-  when: initdb_executed
-
-- name: Verify PGD local node is created or not
-  ansible.builtin.set_fact:
-     pgd_local_node_created: true
   when:
-    - sql_query_output.results[0].query_result[0].node_name is defined
-    - sql_query_output.results[0].query_result[0].node_name == pgd_local_node_name
-    - initdb_executed
+    - _pgd_db_exists|int == 1
+    - _pgd_extension_exists|int == 1
+
+- name: Store PGD local node is created or not
+  ansible.builtin.set_fact:
+    _pgd_local_node_created: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+  when:
+    - _pgd_db_exists|int == 1
+    - _pgd_extension_exists|int == 1
 
 - name: Run query to check if PGD on server had joined PGD group
   ansible.builtin.include_role:
@@ -24,15 +53,16 @@
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-      - query: "SELECT node_group_name FROM bdr.node_group WHERE node_group_name = '{{ pgd_cluster_name }}';"
+      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name = '{{ pgd_cluster_name }}';"
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
-  when: initdb_executed
-
-- name: Verify PGD local node joined group or not
-  ansible.builtin.set_fact:
-     pgd_cluster_group_joined: true
   when:
-    - sql_query_output.results[0].query_result[0].node_group_name is defined
-    - sql_query_output.results[0].query_result[0].node_group_name == pgd_cluster_name
-    - initdb_executed
+    - _pgd_db_exists|int == 1
+    - _pgd_extension_exists|int == 1
+
+- name: VeriStorefy PGD local node joined group or not
+  ansible.builtin.set_fact:
+    _pgd_cluster_group_joined: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+  when:
+    - _pgd_db_exists|int == 1
+    - _pgd_extension_exists|int == 1

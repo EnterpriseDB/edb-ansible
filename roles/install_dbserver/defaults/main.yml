@@ -7,6 +7,7 @@ pg_tuner_version: 1
 pg_owner: "{{ 'enterprisedb' if pg_type == 'EPAS' else 'postgres' }}"
 enable_core_dump: false
 core_dump_directory: "/var/coredumps"
+pg_instance_name: "main"
 
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup
@@ -27,9 +28,8 @@ epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
 deb_cluster_name: "main"
 
 # PG Specific variables
-epas_service: "edb-as@{{ pg_version }}-main"
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
-pg_service: "postgresql@{{ pg_version }}-main"
+pg_service: "{{ lookup('edb_devops.edb_postgres.pg_service') }}"
 pg_ssl: true
 
 sysctl_params:

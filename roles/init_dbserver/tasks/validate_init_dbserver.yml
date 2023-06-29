@@ -49,7 +49,7 @@
     fail_msg: "The service {{ pg_service }} is not running."
     success_msg: "The service {{ pg_service }} is running."
 
-- name: Check if service pg_service is running
+- name: Check if service pg_service is enabled
   ansible.builtin.assert:
     that:
       - ansible_facts.services[pg_service + '.service']['status'] == 'enabled'

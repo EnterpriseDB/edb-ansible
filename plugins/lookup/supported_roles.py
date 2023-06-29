@@ -38,7 +38,6 @@ GROUP_ROLES = {
         'manage_dbpatches',
         'manage_efm',
         'setup_patroni',
-        'setup_pgd',
     ],
     'standby': [
         'setup_repo',
@@ -114,8 +113,8 @@ class LookupModule(LookupBase):
         myvars = getattr(self._templar, '_available_variables', {})
         hostvars = myvars['hostvars'][hostname]
 
-        # BDR roles available
-        bdr_roles = ['primary', 'read_only', 'lead_master', 'witness']
+        # PGD node_kind supported list
+        pgd_node_kinds = ['data', 'subscribe-only', 'standby', 'witness']
 
         for group in variables['group_names']:
             supported_roles = list(
@@ -184,16 +183,17 @@ class LookupModule(LookupBase):
                     | set(['init_dbserver'])
                 )
 
-            # BDR cases
-            if (group in ['primary'] and hostvars.get('bdr')):
-                # BDR nodes are part of the primary group and must have the
-                # 'bdr' hostvar defined as well as the 'bdr.roles' list
-                # should contain at least one of the BDR roles available
-                # (primary, read_only, lead_master, and witness).
-                if len(set(bdr_roles) & set(hostvars['bdr'].get('roles', []))):
+            # PGD cases
+            if (group in ['primary'] and hostvars.get('pgd')):
+                # PGD nodes are a component of the primary group and
+                # must have the 'node_kind' host variable defined.
+                # Additionally, the 'pgd_node_kinds' list should include
+                # at least one of the available PGD node kinds, namely:
+                # data, standby, subscribe-only, and witness.
+                if hostvars['pgd'].get('node_kind') in pgd_node_kinds:
                     supported_roles = list(
                         set(supported_roles)
-                        | set(['setup_bdr'])
+                        | set(['setup_pgd'])
                     )
             # etcd case
             if (group in ['primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
@@ -205,17 +205,20 @@ class LookupModule(LookupBase):
                         set(supported_roles)
                         | set(['setup_etcd'])
                     )
-            # Harp manager case
-            if (group in ['primary'] and hostvars.get('bdr')):
-                # Harp manager is deployed on the primary BDR nodes when the
-                # hostvar harp_manager is set to true.
-                host_bdr_roles = hostvars['bdr'].get('roles', [])
-                harp_manager = hostvars['bdr'].get('harp_manager', False)
-                if (len(set(['primary']) & set(host_bdr_roles)) and harp_manager):  # noqa
-                    supported_roles = list(
-                        set(supported_roles)
-                        | set(['setup_harp_manager'])
-                    )
+            # PGD Proxy  case
+            # Leaving this code for future modification as I start working on
+            # finishing PGD Proxy support in EDB Ansible
+            # if (group in ['primary'] and hostvars.get('bdr')):
+            #    # Harp manager is deployed on the primary BDR nodes when the
+            #    # hostvar harp_manager is set to true.
+            #    host_bdr_roles = hostvars['bdr'].get('roles', [])
+            #    harp_manager = hostvars['bdr'].get('harp_manager', False)
+            #    if (len(set(['primary']) & set(host_bdr_roles)) and harp_manager):  # noqa
+            #        supported_roles = list(
+            #            set(supported_roles)
+            #            | set(['setup_harp_manager'])
+            #        )
+
             # Special case for the primary or standby nodes when the host
             # variable pgbackrest is set to true.
             if (group in ['primary', 'standby'] and hostvars.get('pgbackrest', False)):

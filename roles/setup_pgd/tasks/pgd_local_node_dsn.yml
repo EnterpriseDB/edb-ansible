@@ -1,0 +1,10 @@
+---
+- name: Prepare local dsn based on private ip
+  ansible.builtin.set_fact:
+    local_node_dsn: "host={{ hostvars[inventory_hostname].private_ip }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when: not use_hostname
+
+- name: Prepare local dsn based on hostname
+  ansible.builtin.set_fact:
+    local_node_dsn: "host={{ inventory_hostname }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when: use_hostname

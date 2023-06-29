@@ -1,0 +1,76 @@
+---
+- name: Capture number of PGD nodes
+  ansible.builtin.set_fact:
+    _num_pgd_nodes: "{{ pgd_cluster_nodes | length }}"
+
+- name: Set _twice_pgd_nodes variable
+  ansible.builtin.set_fact:
+    _twice_pgd_nodes: "{{ 2 * (_num_pgd_nodes | int ) }}"
+
+- name: Run query to check get max_wal_senders value
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "show max_wal_senders;"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+
+- name: Store current value of max_wal_senders in local varaible
+  ansible.builtin.set_fact:
+    _current_max_wal_senders: "{{ sql_query_output.results[0].query_result[0].max_wal_senders }}"
+
+- name: Run query to check get max_replication_slots value
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "show max_replication_slots;"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+
+- name: Store current value of max_replication_slots in local varaible
+  ansible.builtin.set_fact:
+    _current_max_replication_slots: "{{ sql_query_output.results[0].query_result[0].max_replication_slots }}"
+
+- name: Run query to check get max_worker_processes value
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "show max_worker_processes;"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+
+- name: Store current value of max_worker_processes in local varaible
+  ansible.builtin.set_fact:
+    _current_max_worker_processes: "{{ sql_query_output.results[0].query_result[0].max_worker_processes }}"
+
+- name: Calculate required setting for max_worker_processes
+  ansible.builtin.set_fact:
+    _base_max_worker_processes: "{{  (_num_pgd_nodes | int + 1*8 + 2*2 + 2 *( _num_pgd_nodes | int - 1 )) + _twice_pgd_nodes | int }}"
+  
+- name: Evaluate the current setting of max_worker_processes, max_replication_slots and max_wal_senders
+  ansible.builtin.set_fact:
+    max_replication_slots: "{{ [ _current_max_replication_slots | int,  _twice_pgd_nodes | int ] | max }}"
+    max_wal_senders: "{{ [ _current_max_wal_senders | int, _twice_pgd_nodes | int ] | max }}"
+    max_worker_processes: "{{ [ _current_max_worker_processes | int, _base_max_worker_processes | int ] | max }}"
+
+- name: Update parameters max_worker_processes, max_replication_slots and max_wal_senders
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_postgres_params
+  vars:
+    pg_postgres_conf_params:
+      - name: max_replication_slots
+        value: "{{ max_replication_slots }}"
+        database: "{{ pgd_cluster_database }}"
+      - name: max_wal_senders
+        value: "{{ max_wal_senders }}"
+        database: "{{ pgd_cluster_database }}"
+      - name: max_worker_processes
+        value: "{{ max_worker_processes }}"
+        database: "{{ pgd_cluster_database }}"

@@ -11,12 +11,12 @@ all:
         barman1.home.virt:
           ansible_host: 10.0.0.3
           private_ip: 10.0.0.3
-          ha_location: PGD_DC1
+          location: PGD_DC1
           pgd: []
         barman2.home.virt:
           ansible_host: 10.0.0.4
           private_ip: 10.0.0.4
-          ha_location: PGD_DC2
+          location: PGD_DC2
           pgd: []
     primary:
       hosts:
@@ -27,7 +27,7 @@ all:
           pem_server_private_ip: 10.0.0.2
           barman: true
           barman_server_private_ip: 10.0.0.3
-          ha_location: PGD_DC1
+          location: PGD_DC1
           pgd:
             node_kind: data
             lead_primary: true
@@ -36,7 +36,7 @@ all:
           private_ip: 10.0.0.6
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC1
+          location: PGD_DC1
           pgd:
             node_kind: data
         pg3.home.virt:
@@ -44,7 +44,7 @@ all:
           private_ip: 10.0.0.7
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC1
+          location: PGD_DC1
           pgd:
             node_kind: subscribe-only
             upstream_node_private_ip: 10.0.0.5
@@ -53,7 +53,7 @@ all:
           private_ip: 10.0.0.8
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC3
+          location: PGD_DC3
           pgd:
             node_kind: witness
         pg5.home.virt:
@@ -63,7 +63,7 @@ all:
           pem_server_private_ip: 10.0.0.2
           barman: true
           barman_server_private_ip: 10.0.0.4
-          ha_location: PGD_DC2
+          location: PGD_DC2
           pgd:
             node_kind: data
             lead_master: True
@@ -72,7 +72,7 @@ all:
           private_ip: 10.0.0.10
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC2
+          location: PGD_DC2
           pgd:
             node_kind: primary
         pg7.home.virt:
@@ -80,9 +80,10 @@ all:
           private_ip: 10.0.0.11
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC2
+          location: PGD_DC2
           pgd:
             node_kind: subscribe-only
+            use_physical_backup: true
             upstream_node_private_ip: 10.0.0.9
     proxy:
       hosts:
@@ -92,25 +93,25 @@ all:
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
           pgd:
-            ha_location: PGD_DC1
+            location: PGD_DC1
         proxy2.home.virt:
           ansible_host: 10.0.0.13
           private_ip: 10.0.0.13
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC1
+          location: PGD_DC1
           pgd: []
         proxy3.home.virt:
           ansible_host: 10.0.0.14
           private_ip: 10.0.0.14
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC2
+          location: PGD_DC2
           pgd: []
         proxy4.home.virt:
           ansible_host: 10.0.0.15
           private_ip: 10.0.0.15
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: PGD_DC2
+          location: PGD_DC2
           pgd: []
