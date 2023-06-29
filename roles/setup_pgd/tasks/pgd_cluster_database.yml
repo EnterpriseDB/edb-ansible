@@ -8,7 +8,6 @@
       - name: "{{ pgd_cluster_database }}"
         owner: "{{ pgd_cluster_database_owner }}"
   when: 
-    - initdb_executed
     - pgd_cluster_database != pg_database
 
 - name: Ensure BDR extension exists in {{ pgd_cluster_database }}
@@ -20,4 +19,3 @@
        - name: bdr
          state: present
          database: "{{ pgd_cluster_database }}"
-  when: initdb_executed

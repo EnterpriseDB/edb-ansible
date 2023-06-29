@@ -13,7 +13,7 @@
           'regexp': '.*\s' + item.inventory_hostname | regex_escape() + '$'
         }
       ] }}
-  loop: "{{ lookup('edb_devops.edb_postgres.all_nodes', wantlist=True) }}"
+  loop: "{{ lookup('edb_devops.edb_postgres.pgd_nodes', wantlist=True) }}"
 
 - name: Update /etc/hosts file, based on variable hosts_lines
   edb_devops.edb_postgres.linesinfile:

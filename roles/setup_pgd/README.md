@@ -1,7 +1,7 @@
-Role Name
+setup_pgd
 =========
 
-A brief description of the role goes here.
+This role helps in configuraiton of PGD Node cluster. This is still in progress
 
 Requirements
 ------------

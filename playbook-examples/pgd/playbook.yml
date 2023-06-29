@@ -1,0 +1,35 @@
+---
+- hosts: all
+  name: Postgres deployment playbook
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  max_fail_percentage: 0
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      ansible.builtin.set_fact:
+        pg_version: 15            # Change the version of Postgres you want to install
+        pg_type: "EPAS"           # Change the pg_type to EPAS if EDB Advanced Server is needed
+        repo_token: "XXXXXXXXX"   # EDB repo 2.0 token
+        edb_enable_tde: false     # Enable TDE
+        edb_key_unwrap_cmd: ""    # EDB Unwrap commad to decrypt EDB master key. Use can use KMS command to get the real key
+        edb_key_wrap_cmd: ""      # EDB Key wrap command to encrypt EDB master key. User can also use KMS commands to get the key
+        edb_master_key: ""        # EDB master key for TDE encryption
+        edb_secure_master_key: "" # EDB key or passphrase to encrypt EDB master key
+        install_pgd: true         # Install PGD flag for installing PGD
+        pgd_version: 5            # Postgres Distributed version
+        enable_pgdg_repo: true    # flag/variable for enabling PGD repo
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: init_dbserver
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgd
+      when: "'setup_pgd' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

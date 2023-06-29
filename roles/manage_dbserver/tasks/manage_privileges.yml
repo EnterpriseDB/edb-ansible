@@ -17,7 +17,7 @@
     state: "{{ line_item.grant | default('present') }}"
     privs: "{{ line_item.privileges }}"
     schema: "{{ line_item.schema | default(omit) }}"
-    objs: "{{ line_item.objects }}"
+    objs: "{{ line_item.objects | default(omit) }}"
     roles: "{{ line_item.roles }}"
     db: "{{ line_item.database }}"
     login_user: "{{ pg_owner }}"

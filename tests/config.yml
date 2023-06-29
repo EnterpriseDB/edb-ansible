@@ -510,3 +510,11 @@ cases:
     os:
     - rocky8
     - almalinux8
+  setup_pgd:
+    pg_version:
+    - 15
+    pg_type:
+    - EPAS
+    os:
+    - rocky8
+    - almalinux8

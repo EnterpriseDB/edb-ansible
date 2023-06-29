@@ -49,7 +49,7 @@
     fail_msg: "The service {{ pg_service }} is not running."
     success_msg: "The service {{ pg_service }} is running."
 
-- name: Check if service pg_service is running
+- name: Check if service pg_service is enabled
   ansible.builtin.assert:
     that:
       - ansible_facts.services[pg_service + '.service']['status'] == 'enabled'
@@ -143,6 +143,46 @@
     - edb_master_key|length > 0
     - pg_version|int >= 15
     - pg_type == 'EPAS'
+
+- name: Capture PGD information for validation
+  ansible.builtin.include_tasks: verify_pgd_node_group.yml
+
+- name: Verify PGD cluster database exists
+  ansible.builtin.assert:
+    that:
+      - _pgd_db_exists|int == 1
+    fail_msg: "PGD cluster database wasn't created successfully"
+    success_msg: "PGD cluster database was created successfully"
+
+- name: Verify PGD extension exists in cluster database exists
+  ansible.builtin.assert:
+    that:
+      - _pgd_extension_exists|int == 1
+    fail_msg: "PGD extension in cluster database wasn't created successfully"
+    success_msg: "PGD extension in cluster database was created successfully"
+
+- name: Verify PGD local node is created or not
+  ansible.builtin.assert:
+    that:
+      - _pgd_local_node_created|int == 1
+
+    fail_msg: "Local PGD node wasn't created successfully"
+    success_msg: "Local PGD node created successfully"
+
+
+- name: Verify PGD local node is created or not
+  ansible.builtin.assert:
+    that:
+      - _pgd_local_node_created|int == 1
+    fail_msg: "Local PGD node wasn't created successfully"
+    success_msg: "Local PGD node created successfully"
+
+- name: Verify PGD local node joined group or not
+  ansible.builtin.set_fact:
+    that:
+      - _pgd_cluster_group_joined|int == 1
+    fail_msg: "Node wasn't joined successfully to PGD group"
+    success_msg: "Local PGD node joined sucessfully to PGD group"
 
 - name: Reset variables
   ansible.builtin.set_fact:

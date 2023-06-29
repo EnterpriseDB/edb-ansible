@@ -1,0 +1,27 @@
+---
+all:
+  children:
+    primary:
+      hosts:
+        primary1:
+          ansible_host: {{ inventory_vars['primary1_ip'] }}
+          private_ip: {{ inventory_vars['primary1_ip'] }}
+          location: PGD_DC1
+          pgd:
+            node_kind: data
+            lead_primary: true
+            clustername: pgdcluster
+        primary2:
+          ansible_host: {{ inventory_vars['primary2_ip'] }}
+          private_ip: {{ inventory_vars['primary2_ip'] }}
+          location: PGD_DC1
+          pgd:
+            node_kind: data
+            clustername: pgdcluster
+        primary3:
+          ansible_host: {{ inventory_vars['primary3_ip'] }}
+          private_ip: {{ inventory_vars['primary3_ip'] }}
+          location: PGD_DC1
+          pgd:
+            node_kind: data
+            clustername: pgdcluster

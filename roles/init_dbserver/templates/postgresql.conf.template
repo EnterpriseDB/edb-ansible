@@ -44,8 +44,9 @@ cluster_name = '{{ pg_instance_name }}'
 # simply ignored if it doesn't apply to anything.
 edb_pg_tuner.autotune = on
 {% if install_pgd|bool %}
-max_worker_processes = 30
+max_worker_processes = 20
 track_commit_timestamp = on
+hot_standby_feedback = on
 {% endif %}
 {% if pg_init_conf_params|length > 0 %}
 {% for item in pg_init_conf_params %}

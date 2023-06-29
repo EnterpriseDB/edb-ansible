@@ -24,6 +24,7 @@
     login_user: "{{ line_item.login_user | default(pg_owner) }}"
     login_password: "{{ line_item.login_password | default('') }}"
     login_unix_socket: "{{ line_item.login_socket | default(pg_unix_socket_directories[0]) }}"
+    autocommit: "{{ line_item.autocommit | default(false) }}"
   become: true
   become_user: "{{ line_item.become_user | default(pg_owner) }}"
   with_items: "{{ pg_query }}"
