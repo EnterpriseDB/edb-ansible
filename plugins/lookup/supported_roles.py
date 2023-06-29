@@ -38,6 +38,7 @@ GROUP_ROLES = {
         'manage_dbpatches',
         'manage_efm',
         'setup_patroni',
+        'setup_pgd',
     ],
     'standby': [
         'setup_repo',

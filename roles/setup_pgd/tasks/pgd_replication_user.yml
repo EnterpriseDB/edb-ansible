@@ -1,0 +1,49 @@
+---
+- name: Generate the pgd_replication_user_password
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pgd_replication_user }}"
+    input_password: "{{ pgd_replication_user_password }}"
+  no_log: "{{ disable_logging }}"
+  when: pgd_replication_user_password|length < 1
+
+- name: Set pgd_replication_user_password
+  ansible.builtin.set_fact:
+    pgd_replication_user_password: "{{ input_password }}"
+  when: pgd_replication_user_password|length < 1
+
+- name: Set postgres PGD replication users's database cluster password
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+  vars:
+    pg_users:
+      - name: "{{ pgd_replication_user }}"
+        pass: "{{ pgd_replication_user_password }}"
+        role_attr_flags: "replication"
+  when: initdb_executed|bool
+  no_log: "{{ disable_logging }}"
+
+- name: Assign correct permission to pgd_replication_user
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_privileges
+  vars:
+    pg_grant_roles:
+      - role: "bdr_superuser"
+        user: "{{ pgd_replication_user }}"
+        grant: present
+  when: initdb_executed|bool
+
+- name: Update the pgpass with pgd_replication_user password
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_pgpass
+  vars:
+    pg_pgpass_values:
+      - user: "{{ pgd_replication_user }}"
+        password: "{{ pgd_replication_user_password }}"
+        create: true
+  no_log: "{{ disable_logging }}"

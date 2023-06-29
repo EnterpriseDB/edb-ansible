@@ -47,3 +47,6 @@ input_password: ""
 
 pg_databases: []
 params_restart_required: false
+
+# ignore query execution error variable
+ignore_query_execution_error: true

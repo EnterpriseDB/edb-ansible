@@ -1,0 +1,55 @@
+---
+- name: Check pg_wal state
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/pg_wal"
+  become: true
+  register: pg_wal_state
+  when: not initdb_executed
+
+- name: Prepare PGD backup command using bdr_init_physical
+  ansible.builtin.set_fact:
+    bdr_init_physical: "{{ bdr_init_physical }} --remote-dsn='{{ lead_primary_dsn }}' --log-file={{ pg_log }}/bdr_init_physicail.log"
+  when: not initdb_executed
+
+- name: Create PGD node using bdr_init_physical
+  ansible.builtin.shell: >
+    PGAPPNAME={{ inventory_hostname }} {{ bdr_init_physical }}
+  args:
+    creates: "{{ pg_data }}/PG_VERSION"
+  become: true
+  become_user: "{{ pg_owner }}"
+  async: 180000
+  poll: 60
+  when: not initdb_executed
+
+- name: Move WAL files to pg_wal and create symbolic link
+  ansible.builtin.shell: |
+    rm -rf {{ pg_wal }}/*
+    rsync -cavr {{ pg_data }}/pg_wal/* {{ pg_wal }}/
+    rm -rf {{ pg_data }}/pg_wal
+    ln -s {{ pg_wal }} {{ pg_data }}/pg_wal
+  become: true
+  become_user: "{{ pg_owner }}"
+  when:
+    - pg_wal|length > 0
+    - pg_data not in pg_wal
+    - pg_wal_state.islnk is defined
+    - not pg_wal_state.islnk
+    - not initdb_executed
+
+- name: Enable and start the service
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  become: true
+
+- name: Update PGD hba config on a new node
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_hba_conf
+  vars:
+    pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
+  no_log: "{{ disable_logging }}"
+  when: not initdb_executed

@@ -15,7 +15,7 @@
   register: apt_sources
   changed_when: apt_sources.rc == '0'
 
-- name: Check for EDB Repo on RedHat
+- name: Check for EDB Repo on RedHat 1.0
   ansible.builtin.assert:
     that:
       - "'EnterpriseDB RPMs' in yum_repolist.stdout"
@@ -24,6 +24,18 @@
   when:
     - ansible_os_family == 'RedHat'
     - enable_edb_repo|bool
+    - repo_token|length < 1
+
+- name: Check for EDB Repo on RedHat 2.0
+  ansible.builtin.assert:
+    that:
+      - "'enterprisedb-enterprise' in yum_repolist.stdout"
+    fail_msg: "Access to the EDB package repository is not configured"
+    success_msg: "Access to the EDB package repository has been configured successfully"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_edb_repo|bool
+    - repo_token|length > 0
 
 - name: Check for PGDG Repo on RedHat
   ansible.builtin.assert:

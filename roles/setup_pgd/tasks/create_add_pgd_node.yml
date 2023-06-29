@@ -1,0 +1,61 @@
+---
+- name: Prepare local dsn based on private ip
+  ansible.builtin.set_fact:
+    local_node_dsn: "host={{ hostvars[inventory_hostname].private_ip }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when: not use_hostname
+
+- name: Prepare local dsn based on hostname
+  ansible.builtin.set_fact:
+    local_node_dsn: "host={{ inventory_hostname }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when: use_hostname
+
+- name: Create local node using bdr.create_node
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT bdr.create_node(node_name := '{{ pgd_local_node_name }}',
+                                       local_dsn := '{{ local_node_dsn }}',
+                                       node_kind := '{{ hostvars[inventory_hostname].pgd.node_kind}}'
+                                       )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when:
+    - not pgd_local_node_created
+    - initdb_executed
+
+- name: Create a group node on PGD lead primay node
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT bdr.create_node_group(node_group_name := '{{ pgd_cluster_name }}',
+                                             join_node_group := TRUE
+                                            )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when:
+    - inventory_hostname == lead_primary_node.inventory_hostname
+    - not pgd_cluster_group_joined
+    - initdb_executed
+
+- name: Join a group node on lead primary
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      throttle: 1
+  vars:
+    pg_query:
+      - query: "SELECT bdr.join_node_group(join_target_dsn := '{{ lead_primary_dsn }}',
+                                           node_group_name := '{{ pgd_cluster_name }}',
+                                           wait_for_completion := true
+                                          )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when:
+    - inventory_hostname != lead_primary_node.inventory_hostname
+    - initdb_executed
+    - not pgd_cluster_group_joined

@@ -14,6 +14,11 @@
           Supported versions are {{ supported_pg_version }}"
   when: pg_version|int not in supported_pg_version
 
+- name: Check PGD version is supported version for Database engine
+  ansible.builtin.fail:
+    msg: "PGD version {{ pgd_version }} is not supported"
+  when: pgd_version not in supported_pgd_version
+
 - name: Verify TDE parameters based on the version and pg_type
   ansible.builtin.include_tasks: verify_tde_vars.yml
   when:
@@ -27,7 +32,7 @@
 - name: Reference ssl variables
   ansible.builtin.include_vars: edb-ssl.yml
   when: pg_ssl
-
+  
 - name: Gather service facts
   ansible.builtin.service_facts:
 
@@ -44,13 +49,6 @@
     - not validate_only|bool
   become: true
 
-- name: Force cleanup based on force_initdb
-  ansible.builtin.include_tasks: rm_initdb.yml
-  when: >
-    ((force_initdb is defined and force_initdb) or
-     (remove_only is defined and remove_only)) and
-      not validate_only|bool
-
 - name: Update /etc/hosts based on use_hostname
   ansible.builtin.import_tasks: linux_update_etc_hosts.yml
   when:
@@ -59,33 +57,48 @@
     - not validate_only|bool
   become: true
 
-- name: Set run_initdb to False if it's a PGD server and has use_physical_backup
+- name: Capture nodes in PGD cluster
+  ansible.builtin.set_fact:
+    pgd_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pgd_nodes', hostvars[inventory_hostname].ha_location , wantList=True) }}"
+
+- name: Set initdb_executed to false if cluster was already initialized
   set_fact:
-     run_initdb: False
+     initdb_executed: false
   when:
     - hostvars[inventory_hostname].pgd.use_physical_backup is defined
     - hostvars[inventory_hostname].pgd.use_physical_backup|bool
+    - not validate_only|bool
 
-- name: Check and configure the node as primary or pemserver
+- name: Check and setup PGD cluster if cluster was already initialized
   when:
     - not validate_only|bool
-    - run_initdb|bool
   become: true
   block:
     - name: Create require directories
       ansible.builtin.import_tasks: create_directories.yml
+    - name: Capture PGD lead primary information
+      ansible.builtin.import_tasks: pgd_lead_primary_node.yml
     - name: Setup systemd for PG
       ansible.builtin.import_tasks: pg_setup_systemd.yml
-    - name: Call initdb command
-      ansible.builtin.import_tasks: pg_initdb.yml
-    - name: Set superuser password
-      ansible.builtin.import_tasks: pg_set_superuser_password.yml
+    - name: Create PGD cluster database owner
+      ansible.builtin.import_tasks: pgd_cluster_database_owner.yml
+    - name: Ensure PGD database and PGD extension exists
+      ansible.builtin.import_tasks: pgd_cluster_database.yml
+    - name: Create PGD replication user and assign correct privielges
+      ansible.builtin.import_tasks: pgd_replication_user.yml
+    - name: Update HBA config to allow connections from nodes
+      ansible.builtin.import_tasks: update_hba_config.yml
+    - name: Get the stats of each node for verification
+      ansible.builtin.import_tasks: verify_pgd_node_group.yml
+    - name: Configure PGD Cluster
+      ansible.builtin.import_tasks: create_add_pgd_node.yml
+    - name: Add node using phycal backup bsaed on initdb_executed
+      ansible.builtin.import_tasks: bdr_init_physical.yml
 
 - name: Configure ssl based on pg_ssl parameter
   when:
     - pg_ssl
     - not validate_only|bool
-    - run_initdb
   become: true
   block:
     - name: Send pg_ssl_file if defined
@@ -96,7 +109,6 @@
       ansible.builtin.import_tasks: pg_ssl_config.yml
 
 - name: Import validate tasks
-  ansible.builtin.import_tasks: validate_init_dbserver.yml
+  ansible.builtin.import_tasks: validate_setup_pgd.yml
   when:
     - validate_only|bool or use_validation|bool
-    - run_initdb

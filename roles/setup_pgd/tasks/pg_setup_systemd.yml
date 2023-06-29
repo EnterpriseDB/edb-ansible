@@ -1,0 +1,42 @@
+---
+- name: Copy global systemd unit file to /etc/systemd/system
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ pg_systemd_global_unit_file }}"
+    dest: "/etc/systemd/system/{{ pg_service }}.service"
+    mode: "0600"
+    owner: root
+    group: root
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
+
+- name: Update systemd unit file
+  edb_devops.edb_postgres.linesinfile:
+    path: "/etc/systemd/system/{{ pg_service }}.service"
+    lines:
+      - line: "Description=Database server {{ pg_type }} {{ pg_version }} - Instance: {{ pg_instance_name }}"
+        regexp: "^Description=.*"
+      - line: "Environment=PGDATA={{ pg_default_data }}"
+        regexp: "^Environment=PGDATA.*"
+      - line: "PIDFile={{ pg_default_data }}/postmaster.pid"
+        regexp: "^PIDFile=.*"
+        insertafter: "^\\[Service\\]$"
+      - line: "ExecStopPost=+/usr/bin/systemctl daemon-reload"
+        regexp: "^ExecStopPost=.*"
+        insertafter: "^\\[Service\\]$"
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
+
+- name: Add LimitCORE in systemd file
+  edb_devops.edb_postgres.linesinfile:
+    path: "/etc/systemd/system/{{ pg_service }}.service"
+    lines:
+      - line: "LimitCORE=infinity"
+        regexp: "^LimitCORE=.*"
+        insertafter: "^\\[Service\\]$"
+  become: true
+  when:
+    - enable_core_dump|bool
+    - ansible_os_family == 'RedHat'
