@@ -102,7 +102,7 @@
 - name: Check that replication was successful on primary
   ansible.builtin.assert:
     that:
-      - patroni_stat_query_result..results[0].query_result|length == patroni_standby_list|length
+      - patroni_stat_query_result.results[0].query_result|length == patroni_standby_list|length
     fail_msg: "Replication was not successful on primary"
     success_msg: "Replication was successful on primary"
   when: patroni_standby_list|length > 0

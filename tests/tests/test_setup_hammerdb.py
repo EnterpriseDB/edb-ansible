@@ -8,6 +8,7 @@ from conftest import (
     os_family,
 )
 
+
 def test_setup_hammerdb_dir():
     ansible_vars = load_ansible_vars()
     hammerdb_version = ansible_vars['hammerdb_version']
@@ -16,6 +17,7 @@ def test_setup_hammerdb_dir():
     
     assert host.file(hammerdb_file).exists, \
         "HammerDB wasn't sucessfully installed"
+
 
 def test_setup_hammerdb_install_file():
     ansible_vars = load_ansible_vars()
@@ -26,7 +28,9 @@ def test_setup_hammerdb_install_file():
         ext = 'RHEL%s' % get_os_version()
     else:
         ext = 'Linux'
-    
-    assert host.file('HammerDB-%s-%s.tar.gz' % (hammerdb_version, ext)).exists, \
+
+    hammerdb_install_file = '/home/hammerdb/HammerDB-%s-%s.tar.gz' % (hammerdb_version, ext)
+
+    assert host.file(hammerdb_install_file).exists, \
         "HammerDB install file wasn't downloaded"
 
