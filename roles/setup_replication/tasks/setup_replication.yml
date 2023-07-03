@@ -64,7 +64,9 @@
 
 - name: Prepare host ip lists based on allow_node_ips
   ansible.builtin.include_tasks: prepare_hba_value_list.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Prepare synchronous_standby_names
   ansible.builtin.set_fact:
@@ -77,6 +79,7 @@
     - node.replication_type == 'synchronous'
     - synchronous_standby_names|length < 1
     - not validate_only|bool
+    - not remove_only|bool
   no_log: "{{ disable_logging }}"
   run_once: true
 
@@ -84,7 +87,9 @@
   ansible.builtin.import_tasks: primary_settings.yml
   run_once: true
   no_log: "{{ disable_logging }}"
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
   delegate_to: "{{ primary_inventory_hostname }}"
 
 - name: Update /etc/hosts based on use_hostname
@@ -95,17 +100,21 @@
     - use_hostname|bool
     - update_etc_file|bool
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Call upstream update based on the upstream node
   ansible.builtin.import_tasks: upstream_node.yml
   when:
     - hostvars[inventory_hostname].upstream_node_private_ip is defined
     - not validate_only|bool
+    - remove_only is defined and not remove_only|bool
   no_log: "{{ disable_logging }}"
 
 - name: Build standby service check
   become: true
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
   block:
     - name: Create directories if not exists
       ansible.builtin.import_tasks: create_directories.yml
@@ -124,6 +133,7 @@
       _synchronous_standbys is defined and (
       _synchronous_standbys|length > 0
       or synchronous_standby_names|length > 0 ) and not validate_only|bool
+      and not remove_only|bool
   run_once: true
   delegate_to: "{{ primary_inventory_hostname }}"
   no_log: "{{ disable_logging }}"
@@ -132,6 +142,7 @@
   ansible.builtin.import_tasks: validate_setup_replication.yml
   when:
     - validate_only|bool or use_validation|bool
+    - not remove_only|bool
 
 - name: Reset the variables based on the user input
   ansible.builtin.set_fact:

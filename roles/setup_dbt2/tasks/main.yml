@@ -12,24 +12,36 @@
 
 - name: Include DBT-2 client systems into pg_hba
   ansible.builtin.include_tasks: dbt2_update_pg_hba.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include DBT-2 installation
   ansible.builtin.include_tasks: dbt2_install_packages_db.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include DBT-2 .pgpass configuration
   ansible.builtin.include_tasks: dbt2_configure_pgpass.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include DBT-2 user setup configuration
   ansible.builtin.include_tasks: dbt2_setup_db_user.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include DBT-2 environment configuration
   ansible.builtin.include_tasks: dbt2_setup_env.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include validate_setup_dbt2 tasks
   ansible.builtin.include_tasks: validate_setup_dbt2.yml
-  when: validate_only|bool or use_validation|bool
+  when:
+    - validate_only|bool or use_validation|bool
+    - not remove_only|bool

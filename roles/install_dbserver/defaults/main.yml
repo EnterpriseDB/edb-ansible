@@ -13,6 +13,7 @@ core_dump_directory: "/var/coredumps"
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false
 use_validation: true
+remove_only: false
 
 install_edb_postgres_tuner: false
 edb_tuner_package: "edb-{{ 'as' if pg_type == 'EPAS' else 'pg' }}\

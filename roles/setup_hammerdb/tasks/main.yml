@@ -16,7 +16,9 @@
     name: "{{ hammerdb_group }}"
     state: present
   become: true
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Create hammerdb system user {{ hammerdb_user }}
   ansible.builtin.user:
@@ -26,7 +28,9 @@
     state: present
     create_home: true
   become: true
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Install packages required for installing and running HammerDB
   ansible.builtin.package:
@@ -34,7 +38,9 @@
       - curl
       - libpq
   become: true
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
   failed_when: false
 
 - name: Download HammerDB
@@ -44,7 +50,9 @@
     mode: '0644'
   become: true
   become_user: "{{ hammerdb_user }}"
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Install HammerDB
   ansible.builtin.unarchive:
@@ -53,7 +61,9 @@
     remote_src: true
   become: true
   become_user: "{{ hammerdb_user }}"
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Install Oracle Instant Client Repository
   ansible.builtin.package:
@@ -62,6 +72,7 @@
   when:
     - ansible_facts["distribution"] == "OracleLinux"
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Install Oracle Instant Client Packages (repo)
   ansible.builtin.package:
@@ -72,6 +83,7 @@
   when:
     - ansible_facts["distribution"] == "OracleLinux"
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Install Oracle Instant Client Packages (url)
   ansible.builtin.package:
@@ -84,7 +96,10 @@
     - ansible_os_family == "RedHat"
     - ansible_distribution_major_version == "8"
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the validate_setup_hammerdb tasks
   ansible.builtin.include_tasks: validate_setup_hammerdb.yml
-  when: validate_only|bool or use_validation|bool
+  when:
+    - validate_only|bool or use_validation|bool
+    - not remove_only|bool

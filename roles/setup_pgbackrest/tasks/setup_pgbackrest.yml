@@ -47,6 +47,7 @@
   when:
     - pg_type == 'PG'
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include EPAS installation
   ansible.builtin.include_role:
@@ -55,37 +56,54 @@
   when:
     - pg_type == 'EPAS'
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the define_node_variables tasks
   ansible.builtin.include_tasks: define_node_variables.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the SSH keys generation tasks
   ansible.builtin.include_tasks: generate_ssh_keys.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the SSH keys exchange tasks
   ansible.builtin.include_tasks: exchange_ssh_keys.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the pgBackRest configuration tasks
   ansible.builtin.include_tasks: configure_pgbackrest.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the Postgres configuration tasks for primary
   ansible.builtin.import_tasks: configure_pg_settings.yml
   delegate_to: "{{ primary_node_hostname[0] }}"
   run_once: true
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the pgbackrest backup configuration tasks
   ansible.builtin.include_tasks: configure_pg_backup.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the pgbackrest post configuration tasks
   ansible.builtin.include_tasks: post_configure_pgbackrest.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include the validate setup_pgbackrest tasks
   ansible.builtin.include_tasks: validate_setup_pgbackrest.yml
-  when: validate_only|bool or use_validation|bool
+  when:
+    - validate_only|bool or use_validation|bool
+    - not remove_only|bool

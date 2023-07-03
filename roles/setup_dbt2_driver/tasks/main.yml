@@ -14,17 +14,23 @@
   ansible.builtin.include_role:
     name: setup_dbt2
     tasks_from: dbt2_install_packages_driver
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include DBT-2 user creation
   ansible.builtin.include_tasks: dbt2_setup_user.yml
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include DBT-2 .pgpass configuration
   ansible.builtin.include_role:
     name: setup_dbt2
     tasks_from: dbt2_configure_pgpass
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
 
 - name: Make a list of DBT-2 client system addresses
   ansible.builtin.set_fact:
@@ -33,6 +39,7 @@
   when:
     - "'dbt2_client' in groups"
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Make a list of database system addresses
   ansible.builtin.set_fact:
@@ -41,12 +48,15 @@
   when:
     - "'primary' in groups"
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Gather SSH public keys from DBT-2 client and database systems.
   ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ item }}
   register: ssh_keyscan
   loop: "{{ ssh_targets }}"
-  when: not validate_only|bool
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
   changed_when: false
 
 - name: Add DBT-2 client servers and database systems to known_hosts
@@ -59,6 +69,7 @@
   when:
     - ssh_port == 22
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Add DBT-2 client servers and database systems to known_hosts
   ansible.builtin.known_hosts:
@@ -70,7 +81,10 @@
   when:
     - ssh_port != 22
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Include validate_setup_dbt2_driver tasks
   ansible.builtin.include_tasks: validate_setup_dbt2_driver.yml
-  when: validate_only|bool or use_validation|bool
+  when:
+    - validate_only|bool or use_validation|bool
+    - not remove_only|bool
