@@ -61,6 +61,7 @@
     - ansible_distribution_major_version == '8'
     - enable_epel_repo|bool
 
+# for RedHat8, use subscription-manager to enable codeready-builder repo, if required.
 - name: Enable powertools for EL8
   ansible.builtin.command: >
     dnf config-manager --set-enabled powertools
@@ -68,6 +69,7 @@
   changed_when: true
   when:
     - ansible_distribution_major_version == '8'
+    - os not in ['RedHat8']
     - enable_epel_repo|bool
 
 - name: Install EPEL repo for EL8
