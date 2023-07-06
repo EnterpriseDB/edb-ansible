@@ -57,7 +57,7 @@ def load_configuration(configuration):
 
 
 def exec_test_case(case_name, case_config, edb_repo_username,
-                   edb_repo_password, pg_version_list, pg_type_list, os_list,
+                   edb_repo_password, edb_repo_token, pg_version_list, pg_type_list, os_list,
                    edb_enable_repo, ansible_core_version_list):
     n_success = 0
     n_executed = 0
@@ -78,6 +78,7 @@ def exec_test_case(case_name, case_config, edb_repo_username,
                         case_name,
                         edb_repo_username,
                         edb_repo_password,
+                        edb_repo_token,
                         os,
                         pg_type,
                         pg_version,
@@ -90,12 +91,13 @@ def exec_test_case(case_name, case_config, edb_repo_username,
     return (n_success, n_executed)
 
 
-def exec_test(case_name, edb_repo_username, edb_repo_password, os, pg_type,
+def exec_test(case_name, edb_repo_username, edb_repo_password, edb_repo_token, os, pg_type,
               pg_version, edb_enable_repo, ansible_core_version):
     env = os_.environ.copy()
     env.update({
         'EDB_REPO_USERNAME': edb_repo_username,
         'EDB_REPO_PASSWORD': edb_repo_password,
+        'EDB_REPO_TOKEN': edb_repo_token,
         'EDB_ENABLE_REPO': edb_enable_repo,
         'EDB_PG_VERSION': pg_version,
         'EDB_PG_TYPE': pg_type,
@@ -197,14 +199,21 @@ if __name__ == '__main__':
         dest='edb_repo_username',
         type=str,
         default='',
-        help="EDB package repository username",
+        help="EDB package repository 1.0 username",
     )
     parser.add_argument(
         '--edb-repo-password',
         dest='edb_repo_password',
         type=str,
         default='',
-        help="EDB package repository password",
+        help="EDB package repository 1.0 password",
+    )
+    parser.add_argument(
+        '--edb-repo-token',
+        dest='edb_repo_token',
+        type=str,
+        default='',
+        help="EDB package repository 2.0 token",
     )
     parser.add_argument(
         '--edb-enable-repo',
@@ -263,7 +272,7 @@ if __name__ == '__main__':
             continue
 
         test_cases.append(
-            (name, config, env.edb_repo_username, env.edb_repo_password,
+            (name, config, env.edb_repo_username, env.edb_repo_password, env.edb_repo_token,
              env.pg_version, env.pg_type, env.os, env.edb_enable_repo,
              env.ansible_core_version)
         )
