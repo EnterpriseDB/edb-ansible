@@ -108,7 +108,7 @@ Usage:
 
 ```shell
 usage: test-runner.py [-h] [-j JOBS] [--configuration CONFIGURATION] --edb-repo-username EDB_REPO_USERNAME --edb-repo-password
-                      EDB_REPO_PASSWORD [--pg-version PG_VERSION [PG_VERSION ...]] [--pg-type PG_TYPE [PG_TYPE ...]]
+                      EDB_REPO_PASSWORD [--edb-repo-token EDB_REPO_TOKEN] [--pg-version PG_VERSION [PG_VERSION ...]] [--pg-type PG_TYPE [PG_TYPE ...]]
                       [--ansible-core-version ANSIBLE_CORE_VERSION [ANSIBLE_CORE_VERSION ...]]
                       [--os OS [OS ...]] [-k KEYWORD [KEYWORD ...]]
 
@@ -118,9 +118,11 @@ optional arguments:
   --configuration CONFIGURATION
                         Configuration file
   --edb-repo-username EDB_REPO_USERNAME
-                        EDB package repository username
+                        EDB package repository 1.0 username
   --edb-repo-password EDB_REPO_PASSWORD
-                        EDB package repository password
+                        EDB package repository 1.0 password
+  --edb-repo-token EDB_REPO_TOKEN
+                        EDB package repository 2.0 token
   --pg-version PG_VERSION [PG_VERSION ...]
                         Postgres versions list. Default: ['14']
   --pg-type PG_TYPE [PG_TYPE ...]
@@ -179,6 +181,7 @@ $ export EDB_PG_TYPE=<pg-type>
 $ export EDB_PG_VERSION=<pg-version>
 $ export EDB_REPO_USERNAME=<edb-repo-username>
 $ export EDB_REPO_PASSWORD=<edb-repo-password>
+$ export EDB_REPO_TOKEN=<edb-repo-token>
 $ export ANSIBLE_CORE_VERSION=<ansible-core-version>
 $ make -C cases/<test-case> <os>
 ```
@@ -191,6 +194,7 @@ $ export EDB_PG_TYPE=PG
 $ export EDB_PG_VERSION=14
 $ export EDB_REPO_USERNAME=<edb-repo-username>
 $ export EDB_REPO_PASSWORD=<edb-repo-password>
+$ export EDB_REPO_TOKEN=<edb-repo-token>
 $ export ANSIBLE_CORE_VERSION=2.13
 $ make -C cases/init_dbserver rocky8
 ```
