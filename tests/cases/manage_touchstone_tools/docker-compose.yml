@@ -10,6 +10,7 @@ services:
     environment:
     - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
     - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
+    - EDB_REPO_TOKEN="${EDB_REPO_TOKEN:- }"
     - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
     - EDB_PG_TYPE
     - EDB_PG_VERSION
