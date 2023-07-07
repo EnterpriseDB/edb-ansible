@@ -44,6 +44,7 @@
     - tpa_subscription_token | length < 1
     - pgd_node_ips is defined and pgd_nodes_ips | length > 0
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Cleanup the repos based on force_repo
   ansible.builtin.include_tasks: "PG_{{ ansible_os_family }}_rm_repos.yml"
@@ -56,8 +57,10 @@
   ansible.builtin.include_tasks: "PG_{{ ansible_os_family }}_setuprepos.yml"
   when:
     - not validate_only|bool
+    - not remove_only|bool
 
 - name: Validate Postgres repositories
   ansible.builtin.include_tasks: validate_setup_repo.yml
   when:
     - validate_only|bool or use_validation|bool
+    - not remove_only|bool

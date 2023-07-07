@@ -13,6 +13,7 @@ pg_instance_name: "main"
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false
 use_validation: true
+remove_only: false
 
 # PGD Specific varaibles
 pgd_version: 5

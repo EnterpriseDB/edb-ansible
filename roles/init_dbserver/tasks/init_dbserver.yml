@@ -64,11 +64,13 @@
     - use_hostname|bool
     - update_etc_file|bool
     - not validate_only|bool
+    - not remove_only|bool
   become: true
 
 - name: Check and configure the node as primary or pemserver
   when:
     - not validate_only|bool
+    - not remove_only|bool
     - run_initdb|bool
   become: true
   block:
@@ -85,6 +87,7 @@
   when:
     - pg_ssl
     - not validate_only|bool
+    - not remove_only|bool
     - run_initdb
   become: true
   block:
@@ -99,4 +102,5 @@
   ansible.builtin.import_tasks: validate_init_dbserver.yml
   when:
     - validate_only|bool or use_validation|bool
+    - not remove_only|bool
     - run_initdb

@@ -32,6 +32,7 @@ pg_allow_ip_addresses: []
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false
 use_validation: true
+remove_only: false
 
 efm_port: 7800
 efm_admin_port: 7809

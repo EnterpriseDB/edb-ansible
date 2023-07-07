@@ -28,6 +28,7 @@ edb_secure_master_key_file: "{{ edb_master_key_location }}/master_secure_key.key
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false
 use_validation: true
+remove_only: false
 
 pg_instance_name: main
 

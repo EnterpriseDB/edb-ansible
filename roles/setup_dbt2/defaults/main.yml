@@ -20,6 +20,7 @@ pg_user_home: ""
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false
 use_validation: true
+remove_only: false
 
 supported_os:
   - CentOS8

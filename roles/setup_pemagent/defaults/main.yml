@@ -19,6 +19,7 @@ use_patroni: false
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false
 use_validation: true
+remove_only: false
 
 node_ssh_to_pemserver: true
 enable_pemagent_monitor_barman: false

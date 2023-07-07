@@ -27,6 +27,7 @@ enable_epel_repo: true
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false
 use_validation: true
+remove_only: false
 
 # EDB RPM Repo
 edb_rpm_repo: "http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm"
