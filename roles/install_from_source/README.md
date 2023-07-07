@@ -19,11 +19,13 @@ When executing the role via Ansible these are the required variables:
   Defines what is being downloaded:
 
     * ***git*** - Use a git repository.
+    * ***local*** - Copy a directory from the local system.
     * ***tarball*** - An archived file containing the source.
 
   * ***url***
 
-  The URL pointing to the location of the source to be downloaded.
+  The URL pointing to the location of the source to be downloaded.  This is
+  simply a path when **src_type** is `local`.
 
 When executing the role via Ansible these are the optional variables:
 
@@ -105,6 +107,36 @@ from a source tarball:
           - world
         src_type: "git"
         url: "https://github.com/postgres/postgres.git"
+
+  roles:
+    - install_from_source
+```
+
+Below is an example of how to include this role to install a local postgres
+source directory:
+
+```
+---
+- hosts: all
+  name: test install from source
+  become: true
+  gather_facts: true
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize variables
+      set_fact:
+        configure_args:
+          - --prefix=/usr/pgsql
+          - --without-icu
+          - --without-readline
+          - --without-zlib
+        make_args:
+          - world
+        src_type: "local"
+        url: "/tmp/postgres"
 
   roles:
     - install_from_source
