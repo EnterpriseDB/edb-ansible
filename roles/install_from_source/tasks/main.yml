@@ -24,6 +24,14 @@
   when: src_type == "git"
   register: git
 
+- name: Copy source to remote system (local)
+  ansible.builtin.copy:
+    src: "{{ url }}"
+    dest: "{{ srcdir }}/{{ url | ansible.builtin.basename }}"
+    owner: root
+    group: root
+  when: src_type == "local"
+
 - name: Download source (tarball)
   ansible.builtin.get_url:
     url: "{{ url }}"
