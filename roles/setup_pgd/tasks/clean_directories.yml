@@ -1,0 +1,104 @@
+---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Stop the efm_service
+  ansible.builtin.systemd:
+    name: "{{ efm_service }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[efm_service + '.service'] is defined
+    - ansible_facts.services[efm_service + '.service'].state == 'running'
+  become: true
+
+- name: Stop pg service if running
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services[pg_service + '.service'] is defined
+    - ansible_facts.services[pg_service + '.service'].state == 'running'
+  become: true
+
+- name: Remove configuration directory on Debian family
+  ansible.builtin.file:
+    path: "/etc/edb-as/{{ pg_version }}/{{ pg_instance_name }}/"
+    state: absent
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+
+- name: Remove configuration directory on Debian family
+  ansible.builtin.file:
+    path: "/etc/postgresql/{{ pg_version }}/{{ pg_instance_name }}/"
+    state: absent
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+
+- name: Remove postgres data directory if exists
+  ansible.builtin.file:
+    path: "{{ pg_data }}"
+    state: absent
+  become: true
+  when:
+    - force_rm_pg_data is defined
+    - force_rm_pg_data
+
+- name: Remove postgres log directory if exists
+  ansible.builtin.file:
+    path: "{{ pg_log }}"
+    state: absent
+  become: true
+  when: pg_log|length > 0
+
+- name: Remove postgres wal directory if exists
+  ansible.builtin.file:
+    path: "{{ pg_wal }}"
+    state: absent
+  become: true
+  when:
+    - pg_wal|length > 0
+    - force_rm_pg_wal is defined
+    - force_rm_pg_wal
+
+- name: Remove postgres local wal archive directory if exists
+  ansible.builtin.file:
+    path: "{{ pg_local_wal_archive_dir }}"
+    state: absent
+  become: true
+  when: pg_local_wal_archive_dir|length > 0
+
+- name: Create unix socket domain directories
+  ansible.builtin.file:
+    path: "{{ line_item }}"
+    state: absent
+  with_items: "{{ pg_unix_socket_directories }}"
+  loop_control:
+    loop_var: line_item
+  become: true
+  when: pg_unix_socket_directories|length > 0
+
+# TDE specific files clean up
+- name: Remove master key's secure key file if file exists
+  ansible.builtin.file:
+    path: "{{ edb_secure_master_key_file }}"
+    state: absent
+  become: true
+  when: edb_secure_master_key_file|length > 0
+
+- name: Remove master key file if file exists
+  ansible.builtin.file:
+    path: "{{ edb_master_key_plain_file }}"
+    state: absent
+  become: true
+  when: edb_master_key_plain_file|length > 0
+
+- name: Remove master key directory if directory exists
+  ansible.builtin.file:
+    path: "{{ edb_master_key_location }}"
+    state: absent
+  become: true
+  when: edb_master_key_location|length > 0

@@ -1,8 +1,14 @@
 ---
-- name: Stop the PG service if it's running
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Stop the service {{ pg_service }}
   ansible.builtin.systemd:
-    name: postgresql-{{ pg_version }}
+    name: "{{ pg_service }}"
     state: stopped
+  when:
+    - ansible_facts.services[pg_service + '.service'] is defined
+    - ansible_facts.services[pg_service + '.service'].state == 'running'
   become: true
 
 - name: Remove require python package on EL7

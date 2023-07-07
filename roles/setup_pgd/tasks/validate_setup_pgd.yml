@@ -1,0 +1,195 @@
+---
+- name: Stat to pg_data
+  ansible.builtin.stat:
+    path: "{{ pg_data }}"
+  register: data_check
+  become: true
+
+- name: Stat to pg_data/pg_wal
+  ansible.builtin.stat:
+    path: "{{ pg_data }}/pg_wal"
+  register: data_wal_check
+  become: true
+
+- name: Stat to pg_wal
+  ansible.builtin.stat:
+    path: "{{ pg_wal }}"
+  register: wal_check
+  become: true
+  when: pg_wal|length > 0 and pg_data not in pg_wal
+
+- name: Check that pg_data was configured correctly
+  ansible.builtin.assert:
+    that:
+      - data_check.stat['gr_name'] == pg_group
+      - data_check.stat['pw_name'] == pg_owner
+      - data_check.stat['isdir']|bool
+    fail_msg: "The directory {{ pg_data }} is not configured correctly."
+    success_msg: "The directory {{ pg_data }} is configured correctly."
+
+- name: Check that pg_wal was configured correctly
+  ansible.builtin.assert:
+    that:
+      - wal_check.stat['pw_name'] == pg_owner
+      - wal_check.stat['isdir']|bool
+      - data_wal_check.stat['islnk']|bool
+      - data_wal_check.stat['lnk_source'] == pg_wal
+    fail_msg: "The directory {{ pg_wal }} is not configured correctly."
+    success_msg: "The directory {{ pg_wal }} is configured correctly."
+  when: pg_wal|length > 0 and pg_data not in pg_wal
+
+# check if service pg_service is running
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Check if service pg_service is running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[pg_service + '.service']['state'] == 'running'
+    fail_msg: "The service {{ pg_service }} is not running."
+    success_msg: "The service {{ pg_service }} is running."
+
+- name: Check if service pg_service is enabled
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[pg_service + '.service']['status'] == 'enabled'
+    fail_msg: "The service {{ pg_service }} is not enabled."
+    success_msg: "The service {{ pg_service }} is enabled."
+  when: ansible_os_family == 'RedHat'
+
+# check if sockets are listening
+- name: Get stat info for pg_unix_socket_directories
+  ansible.builtin.stat:
+    path: "{{ pg_unix_socket_directories[0] }}/.s.PGSQL.{{ pg_port }}"
+  register: unix_stat
+
+- name: Check that port is listening
+  ansible.builtin.wait_for:
+    port: "{{ pg_port }}"
+    state: started
+    msg: "Port {{ pg_port }} is not listening."
+  become: true
+
+- name: Check pg_unix_socket_directories socket
+  ansible.builtin.assert:
+    that:
+      - unix_stat.stat['issock']|bool
+    fail_msg: "The socket {{ pg_unix_socket_directories[0] }} is not enabled."
+    success_msg: "The socket {{ pg_unix_socket_directories[0] }} is enabled."
+
+# check if pg_settings data_directory is linked to pg_data
+- name: Run query to check if pg_settings data_directory is linked to pg_data
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT setting FROM pg_settings WHERE name = 'data_directory'"
+        db: "{{ pg_database }}"
+
+- name: Set init_data_query_res with sql_query_output
+  ansible.builtin.set_fact:
+    init_data_query_res: "{{ sql_query_output }}"
+  become: true
+
+- name: Get stat info for data_directory
+  ansible.builtin.stat:
+    path: "{{ init_data_query_res.results[0].query_result[0].setting }}"
+  register: data_dir_stat
+
+- name: Check that the data_directory result is linked to pg_data
+  ansible.builtin.assert:
+    that:
+      - data_dir_stat.stat['islnk']|bool
+      - data_dir_stat.stat['lnk_target'] == pg_data
+    fail_msg: "Postgres data_directory is not linked to {{ pg_data }}"
+    success_msg: "Postgres data_directory is linked to {{ pg_data }}"
+  when:
+    - init_data_query_res.results[0].query_result[0].setting != pg_data
+
+# test if TDE is enabled or not
+- name: Run query to check if TDE on standbys or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT data_encryption_version FROM pg_control_init"
+        db: "{{ pg_database }}"
+  when:
+    - edb_enable_tde
+    - edb_master_key|length > 0
+    - pg_version|int >= 15
+    - pg_type == 'EPAS'
+
+- name: Set pg_tde_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    pg_tde_query_result: "{{ sql_query_output }}"
+  when:
+    - edb_enable_tde
+    - edb_master_key|length > 0
+    - pg_version|int >= 15
+    - pg_type == 'EPAS'
+  become: true
+
+- name: Check if TDE is enabled or not
+  ansible.builtin.assert:
+    that:
+      - pg_tde_query_result.results[0].query_result[0]['data_encryption_version'] == 1
+    fail_msg: "TDE is not enabled"
+    success_msg: "TDE is enabled on Primary"
+  when:
+    - edb_enable_tde
+    - edb_master_key|length > 0
+    - pg_version|int >= 15
+    - pg_type == 'EPAS'
+
+- name: Capture PGD information for validation
+  ansible.builtin.include_tasks: verify_pgd_node_group.yml
+
+- name: Verify PGD cluster database exists
+  ansible.builtin.assert:
+    that:
+      - _pgd_db_exists|int == 1
+    fail_msg: "PGD cluster database wasn't created successfully"
+    success_msg: "PGD cluster database was created successfully"
+
+- name: Verify PGD extension exists in cluster database exists
+  ansible.builtin.assert:
+    that:
+      - _pgd_extension_exists|int == 1
+    fail_msg: "PGD extension in cluster database wasn't created successfully"
+    success_msg: "PGD extension in cluster database was created successfully"
+
+- name: Verify PGD local node is created or not
+  ansible.builtin.assert:
+    that:
+      - _pgd_local_node_created|int == 1
+
+    fail_msg: "Local PGD node wasn't created successfully"
+    success_msg: "Local PGD node created successfully"
+
+
+- name: Verify PGD local node is created or not
+  ansible.builtin.assert:
+    that:
+      - _pgd_local_node_created|int == 1
+    fail_msg: "Local PGD node wasn't created successfully"
+    success_msg: "Local PGD node created successfully"
+
+- name: Verify PGD local node joined group or not
+  ansible.builtin.set_fact:
+    that:
+      - _pgd_cluster_group_joined|int == 1
+    fail_msg: "Node wasn't joined successfully to PGD group"
+    success_msg: "Local PGD node joined sucessfully to PGD group"
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    data_check: null
+    data_wal_check: null
+    wal_check: null
+    data_dir_stat: null
+    init_data_query_res: null
+    unix_stat: null
+    pg_tde_query_result: null

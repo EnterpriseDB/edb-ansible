@@ -1,0 +1,108 @@
+---
+- name: Set the os variable
+  ansible.builtin.set_fact:
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  ansible.builtin.fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported versions for Database engine
+  ansible.builtin.fail:
+    msg: "Database Engine Version = {{ pg_version }} not supported.
+          Supported versions are {{ supported_pg_version }}"
+  when: pg_version|int not in supported_pg_version
+
+- name: Check PGD version is supported version for Database engine
+  ansible.builtin.fail:
+    msg: "PGD version {{ pgd_version }} is not supported"
+  when: pgd_version|int not in supported_pgd_version
+
+- name: Verify TDE parameters based on the version and pg_type
+  ansible.builtin.include_tasks: verify_tde_vars.yml
+  when:
+    - edb_enable_tde
+    - pg_type == 'EPAS'
+    - pg_version|int >= 15
+
+- name: Reference pg_type variables
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
+- name: Reference ssl variables
+  ansible.builtin.include_vars: edb-ssl.yml
+  when: pg_ssl
+  
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Open Postgres TCP port {{ pg_port }}
+  ansible.posix.firewalld:
+    port: "{{ pg_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+    - not validate_only|bool
+  become: true
+
+- name: Set initdb_executed to false if cluster was already initialized
+  set_fact:
+     initdb_executed: false
+  when:
+    - hostvars[inventory_hostname].pgd.use_physical_backup is defined
+    - hostvars[inventory_hostname].pgd.use_physical_backup|bool
+    - not validate_only|bool
+
+- name: Force cleanup based on force_initdb/pgd
+  ansible.builtin.include_tasks: rm_pgd.yml
+  when: >
+    ((force_initdb is defined and force_initdb) or
+     (force_pgd is defined and force_pgd) or
+     (remove_only is defined and remove_only)) and
+      not validate_only|bool
+
+- name: Update /etc/hosts based on use_hostname
+  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
+  when:
+    - use_hostname|bool
+    - update_etc_file|bool
+    - not validate_only|bool
+  become: true
+
+- name: Capture nodes in PGD cluster
+  ansible.builtin.set_fact:
+    pgd_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pgd_nodes', hostvars[inventory_hostname].location , wantList=True) }}"
+
+- name: Check and setup PGD cluster if cluster was already initialized
+  when:
+    - not validate_only|bool
+  become: true
+  block:
+    - name: Capture PGD lead primary information
+      ansible.builtin.import_tasks: pgd_lead_primary_node.yml
+    - name: Configure PGD cluster when initdb_executed is true
+      ansible.builtin.import_tasks: create_add_pgd_node.yml
+    - name: Add node using phycal backup bsaed when initdb_executed is false
+      ansible.builtin.import_tasks: bdr_init_physical.yml
+
+- name: Configure ssl based on pg_ssl parameter
+  when:
+    - pg_ssl
+    - not validate_only|bool
+  become: true
+  block:
+    - name: Send pg_ssl_file if defined
+      ansible.builtin.import_tasks: pg_ssl_send_files.yml
+    - name: Check if we have SSL configured
+      ansible.builtin.import_tasks: pg_ssl_check.yml
+    - name: Configure SSL if not exists
+      ansible.builtin.import_tasks: pg_ssl_config.yml
+
+- name: Import validate tasks
+  ansible.builtin.import_tasks: validate_setup_pgd.yml
+  when:
+    - validate_only|bool or use_validation|bool

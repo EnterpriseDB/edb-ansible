@@ -1,0 +1,40 @@
+---
+- name: Capture PGD lead primary node
+  ansible.builtin.set_fact:
+    lead_primary_node: "{{ lookup('edb_devops.edb_postgres.pgd_lead_primary', hostvars[inventory_hostname].location , wantList=True) }}"
+
+- name: Prepare PGD lead primary DSN using private_ip
+  ansible.builtin.set_fact:
+    lead_primary_dsn: "host={{ lead_primary_node.private_ip }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when: not use_hostname
+
+- name: Prepare PGD lead primary DSN using hostname
+  ansible.builtin.set_fact:
+    lead_primary_dsn: "host={{ lead_primary_node.inventory_hostname }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when: use_hostname
+
+- name: Capture lead primary information based on upstream_node_private_ip
+  ansible.builtin.set_fact:
+    _upstream_node_details: "{{ node }}"
+  when:
+    - hostvars[inventory_hostname].pgd.upstream_node_private_ip is defined
+    - hostvars[inventory_hostname].pgd.upstream_node_private_ip == node.private_ip
+  with_items: "{{ pgd_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+
+- name: Set upstream_primary_dsn private_ip if upstream_node_details is defined
+  ansible.builtin.set_fact:
+    lead_primary_dsn: "host={{ _upstream_node_details.private_ip }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when:
+    - hostvars[inventory_hostname].pgd.upstream_node_private_ip is defined
+    - _upstream_node_details is defined
+    - not use_hostname
+
+- name: Set upstream_primary_dsn using hostname if upstream_node_details is defined
+  ansible.builtin.set_fact:
+    lead_primary_dsn: "host={{ _upstream_node_details.inventory_hostname }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+  when:
+    - hostvars[inventory_hostname].pgd.upstream_node_private_ip is defined
+    - _upstream_node_details is defined
+    - use_hostname

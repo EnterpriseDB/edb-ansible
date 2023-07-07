@@ -1,0 +1,29 @@
+---
+- name: Generate the pgd_cluster_database_owner_password
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: generate_password
+  vars:
+    input_user: "{{ pgd_cluster_database_owner }}"
+    input_password: "{{ pgd_cluster_database_owner_password }}"
+  no_log: "{{ disable_logging }}"
+  when:
+    - pgd_cluster_database_owner_password|length < 1
+
+- name: Set pgd_cluster_database_owner_password
+  ansible.builtin.set_fact:
+    pgd_cluster_database_owner_password: "{{ input_password }}"
+  when:
+    - pgd_cluster_database_owner_password|length < 1
+  no_log: "{{ disable_logging }}"
+
+- name: Set postgres PGD database owners password
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_users
+  vars:
+    pg_users:
+      - name: "{{ pgd_cluster_database_owner }}"
+        pass: "{{ pgd_cluster_database_owner_password }}"
+        role_attr_flags: replication
+  no_log: "{{ disable_logging }}"

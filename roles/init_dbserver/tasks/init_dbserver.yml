@@ -44,6 +44,13 @@
     - not validate_only|bool
   become: true
 
+- name: Set run_initdb to false if it's a PGD server and has use_physical_backup
+  ansible.builtin.set_fact:
+    run_initdb: false
+  when:
+    - hostvars[inventory_hostname].pgd.use_physical_backup is defined
+    - hostvars[inventory_hostname].pgd.use_physical_backup|bool
+
 - name: Force cleanup based on force_initdb
   ansible.builtin.include_tasks: rm_initdb.yml
   when: >
@@ -64,6 +71,7 @@
   when:
     - not validate_only|bool
     - not remove_only|bool
+    - run_initdb|bool
   become: true
   block:
     - name: Create require directories
@@ -80,6 +88,7 @@
     - pg_ssl
     - not validate_only|bool
     - not remove_only|bool
+    - run_initdb
   become: true
   block:
     - name: Send pg_ssl_file if defined
@@ -94,3 +103,4 @@
   when:
     - validate_only|bool or use_validation|bool
     - not remove_only|bool
+    - run_initdb

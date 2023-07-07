@@ -3,7 +3,7 @@
 unix_socket_directories = '{{ pg_unix_socket_directories | join(",") }}'
 port = {{ pg_port }}
 listen_addresses = '*'
-wal_level = replica
+wal_level = logical
 max_wal_senders = 10
 hot_standby = on
 max_replication_slots = 10
@@ -34,12 +34,20 @@ idle_in_transaction_session_timeout = 10min
 {% if enable_edb_repo|bool and install_edb_postgres_tuner|bool and pg_version|int >= 11 %}
 {{ pg_shared_libraries_list.append('$libdir/edb_pg_tuner') }}
 {% endif %}
+{% if install_pgd|bool %}
+{{ pg_shared_libraries_list.append('$libdir/bdr') }}
+{% endif %}
 shared_preload_libraries = '{{ pg_shared_libraries_list | join(",") }}'
 cluster_name = '{{ pg_instance_name }}'
 # For ease of configuration, we can always add edb_pg_tuner.autotune whether
 # the extension is installed or not, because these types or settings will be
 # simply ignored if it doesn't apply to anything.
 edb_pg_tuner.autotune = on
+{% if install_pgd|bool %}
+max_worker_processes = 20
+track_commit_timestamp = on
+hot_standby_feedback = on
+{% endif %}
 {% if pg_init_conf_params|length > 0 %}
 {% for item in pg_init_conf_params %}
 {{ item.name }} = '{{ item.value }}'

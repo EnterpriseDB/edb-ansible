@@ -11,15 +11,13 @@ all:
         barman1.home.virt:
           ansible_host: 10.0.0.3
           private_ip: 10.0.0.3
-          etcd: true
-          ha_location: BDRDC1
-          bdr: []
+          location: PGD_DC1
+          pgd: []
         barman2.home.virt:
           ansible_host: 10.0.0.4
           private_ip: 10.0.0.4
-          etcd: true
-          ha_location: BDRDC2
-          bdr: []
+          location: PGD_DC2
+          pgd: []
     primary:
       hosts:
         pg1.home.virt:
@@ -29,41 +27,35 @@ all:
           pem_server_private_ip: 10.0.0.2
           barman: true
           barman_server_private_ip: 10.0.0.3
-          ha_location: BDRDC1
-          bdr:
-            harp_manager: true
-            roles:
-            - primary
-            - lead_master
+          location: PGD_DC1
+          pgd:
+            node_kind: data
+            lead_primary: true
         pg2.home.virt:
           ansible_host: 10.0.0.6
           private_ip: 10.0.0.6
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: BDRDC1
-          bdr:
-            harp_manager: true
-            roles:
-            - primary
+          location: PGD_DC1
+          pgd:
+            node_kind: data
         pg3.home.virt:
           ansible_host: 10.0.0.7
           private_ip: 10.0.0.7
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: BDRDC1
-          bdr:
-            roles:
-            - read_only
+          location: PGD_DC1
+          pgd:
+            node_kind: subscribe-only
             upstream_node_private_ip: 10.0.0.5
         pg4.home.virt:
           ansible_host: 10.0.0.8
           private_ip: 10.0.0.8
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: BDRDC3
-          bdr:
-            roles:
-            - witness
+          location: PGD_DC3
+          pgd:
+            node_kind: witness
         pg5.home.virt:
           ansible_host: 10.0.0.9
           private_ip: 10.0.0.9
@@ -71,31 +63,27 @@ all:
           pem_server_private_ip: 10.0.0.2
           barman: true
           barman_server_private_ip: 10.0.0.4
-          ha_location: BDRDC2
-          bdr:
-            harp_manager: true
-            roles:
-            - primary
-            - lead_master
+          location: PGD_DC2
+          pgd:
+            node_kind: data
+            lead_master: True
         pg6.home.virt:
           ansible_host: 10.0.0.10
           private_ip: 10.0.0.10
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: BDRDC2
-          bdr:
-            harp_manager: true
-            roles:
-            - primary
+          location: PGD_DC2
+          pgd:
+            node_kind: primary
         pg7.home.virt:
           ansible_host: 10.0.0.11
           private_ip: 10.0.0.11
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          ha_location: BDRDC2
-          bdr:
-            roles:
-            - read_only
+          location: PGD_DC2
+          pgd:
+            node_kind: subscribe-only
+            use_physical_backup: true
             upstream_node_private_ip: 10.0.0.9
     proxy:
       hosts:
@@ -104,30 +92,26 @@ all:
           private_ip: 10.0.0.12
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          etcd: true
-          bdr:
-            ha_location: BDRDC1
+          pgd:
+            location: PGD_DC1
         proxy2.home.virt:
           ansible_host: 10.0.0.13
           private_ip: 10.0.0.13
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          etcd: true
-          ha_location: BDRDC1
-          bdr: []
+          location: PGD_DC1
+          pgd: []
         proxy3.home.virt:
           ansible_host: 10.0.0.14
           private_ip: 10.0.0.14
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          etcd: true
-          ha_location: BDRDC2
-          bdr: []
+          location: PGD_DC2
+          pgd: []
         proxy4.home.virt:
           ansible_host: 10.0.0.15
           private_ip: 10.0.0.15
           pem_agent: true
           pem_server_private_ip: 10.0.0.2
-          etcd: true
-          ha_location: BDRDC2
-          bdr: []
+          location: PGD_DC2
+          pgd: []

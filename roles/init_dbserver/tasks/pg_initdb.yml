@@ -8,7 +8,9 @@
 - name: Verify pg_wal and accordingly add in initdb
   ansible.builtin.set_fact:
     pg_initdb_options: "{{ pg_initdb_options + ' --waldir=' + pg_wal }}"
-  when: pg_wal|length > 0  and not pg_data in pg_wal
+  when:
+    - pg_wal|length > 0
+    - not pg_data in pg_wal
 
 - name: Include setup_tde tasks
   ansible.builtin.include_tasks: setup_tde.yml
@@ -47,7 +49,8 @@
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
     mode: "0600"
-  when: not pg_version_stat.stat.exists
+  when:
+    - not pg_version_stat.stat.exists
   become: true
 
 - name: Enable and start systemd service

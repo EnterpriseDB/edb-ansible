@@ -1,0 +1,32 @@
+---
+all:
+  children:
+    primary:
+      hosts:
+        edb-primary1:
+          ansible_host: 172.17.0.3
+          private_ip: 172.17.0.3
+          location: PGD_DC1
+          pgd:
+            node_kind: data
+            lead_primary: true
+            clustername: pgdcluster
+        edb-primary2:
+          ansible_host: 172.17.0.4
+          private_ip: 172.17.0.4
+          location: PGD_DC1
+          pgd:
+            node_kind: data
+            lead_primary: false
+            clustername: pgdcluster
+            use_physical_backup: true
+            upstream_node_private_ip: 172.17.0.3
+        edb-primary3:
+          ansible_host: 172.17.0.5
+          private_ip: 172.17.0.5
+          location: PGD_DC1
+          pgd:
+            node_kind: data
+            lead_primary: false
+            clustername: pgdcluster
+            use_physical_backup: false

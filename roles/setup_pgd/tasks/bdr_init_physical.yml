@@ -1,0 +1,173 @@
+---
+- name: Include PGD local node DSN
+  ansible.builtin.include_tasks: pgd_local_node_dsn.yml
+
+- name: Create PGD node using bdr_init_physical command
+  when:
+    - not initdb_executed|bool
+  block:
+    - name: Create require directories
+      ansible.builtin.include_tasks: create_directories.yml
+
+    - name: Check pg_wal state
+      ansible.builtin.stat:
+        path: "{{ pg_data }}/pg_wal"
+      become: true
+      register: pg_wal_state
+
+    - name: Prepare PGD backup command using bdr_init_physical
+      ansible.builtin.set_fact:
+        bdr_init_physical: "{{ bdr_init_physical }} --remote-dsn='{{ lead_primary_dsn }}' --log-file={{ pg_log }}/bdr_init_physical.log"
+
+    - name: Set upstream node to lead_primary_node if upstream_node_detail is not defined
+      ansible.builtin.set_fact:
+        _upstream_node_details: "{{ lead_primary_node }}"
+      when: _upstream_node_details is not defined
+
+    - name: Switch WAL files and perform CHECKPOINT before running PGD bdr_init_physical
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+        apply:
+          delegate_to: "{{ _upstream_node_details.inventory_hostname }}"
+      vars:
+        pg_query:
+          - query: "SELECT pg_catalog.pg_switch_wal();"
+            db: "{{ pgd_cluster_database }}"
+            autocommit: true
+          - query: "CHECKPOINT;"
+            db: "{{ pgd_cluster_database }}"
+            autocommit: true
+        ignore_query_execution_error: false
+
+    - name: Temporarily make PGD replication user a superuser
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: manage_users
+        apply:
+          delegate_to: "{{ _upstream_node_details.inventory_hostname }}"
+      vars:
+        pg_users:
+          - name: "{{ pgd_replication_user }}"
+            role_attr_flags: "replication,superuser"
+      no_log: "{{ disable_logging }}"
+
+    - name: Get pgd_replication_user_password
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: generate_password
+      vars:
+        input_user: "{{ pgd_replication_user }}"
+        input_password: "{{ pgd_replication_user_password }}"
+      no_log: "{{ disable_logging }}"
+      when: pgd_replication_user_password|length < 1
+
+    - name: Set password in pgd_replication_user_password
+      ansible.builtin.set_fact:
+        pgd_replication_user_password: "{{ input_password }}"
+      when: pgd_replication_user_password|length < 1
+      no_log: "{{ disable_logging }}"
+
+    - name: Store pgd_replication_user password in pgpass
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: manage_pgpass
+      vars:
+        pg_pgpass_values:
+          - user: "{{ pgd_replication_user }}"
+            password: "{{ pgd_replication_user_password }}"
+            create: true
+      no_log: "{{ disable_logging }}"
+
+    - name: Create PGD node using bdr_init_physical
+      ansible.builtin.shell: >
+        PGAPPNAME={{ inventory_hostname }} {{ bdr_init_physical }}
+        && {{ pg_bin_path }}/pg_ctl stop --pgdata={{ pg_data }} --mode=fast
+      args:
+        creates: "{{ pg_data }}/PG_VERSION"
+      become: true
+      become_user: "{{ pg_owner }}"
+
+    - name: Move WAL files to pg_wal and create symbolic link
+      when:
+        - pg_wal|length > 0
+        - pg_data not in pg_wal
+        - pg_wal_state.islnk is defined
+        - not pg_wal_state.islnk
+      become: true
+      block:
+      #  - name: Ensure pg_wal directory is empty
+      #    ansible.builtin.command: rm -rf {{ pg_wal }}/*
+      #  - name: Copy WAL files from pg_data/pg_wal to pg_wal
+      #    ansible.builtin.command: rsync -cavr {{ pg_data }}/pg_wal/* {{ pg_wal }}
+        - name: Synchronoize pg_data/pg_wal file with pg_wal
+          ansible.builtin.synchronize:
+            src: "{{ pg_data }}/pg_wal/"
+            dest: "{{ pg_wal }}/"
+            delete: true
+            recurse: true
+            checksum: true
+          delegate_to: "{{ inventory_hostname }}"
+          become: true
+          become_user: "{{ pg_owner }}"
+        - name: Remove pg_wal from pg_data directory
+          ansible.builtin.file:
+            path: "{{ pg_data }}/pg_wal"
+            state: absent
+        - name: Create pg_wal as symbolic link in pg_data
+          ansible.builtin.file:
+            src: "{{ pg_wal }}"
+            dest: "{{ pg_data }}/pg_wal"
+            owner: "{{ pg_owner }}"
+            group: "{{ pg_group }}"
+            mode: "0700"
+            state: link
+          become_user: "{{ pg_owner }}"
+
+    - name: Setup systemd for PG
+      ansible.builtin.import_tasks: pg_setup_systemd.yml
+
+    - name: Include setup_tde tasks
+      ansible.builtin.include_tasks: setup_tde.yml
+      when:
+        - edb_enable_tde
+        - pg_version|int >= 15
+        - pg_type == 'EPAS'
+
+    - name: Enable and start the service
+      ansible.builtin.systemd:
+        name: "{{ pg_service }}"
+        daemon_reload: true
+        state: started
+        enabled: true
+      become: true
+
+    - name: Ensure PGD hba config on a new node
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: manage_hba_conf
+      vars:
+        pg_hba_ip_addresses: "{{ pg_allow_ip_addresses }}"
+      no_log: "{{ disable_logging }}"
+
+    - name: Remove superuser privs from PGD replication user
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: manage_users
+        apply:
+          delegate_to: "{{ _upstream_node_details.inventory_hostname }}"
+      vars:
+        pg_users:
+          - name: "{{ pgd_replication_user }}"
+            role_attr_flags: "replication"
+      no_log: "{{ disable_logging }}"
+
+    - name: Remove superuser privs from PGD replication user
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: manage_users
+      vars:
+        pg_users:
+          - name: "{{ pgd_replication_user }}"
+            role_attr_flags: "replication"
+      no_log: "{{ disable_logging }}"

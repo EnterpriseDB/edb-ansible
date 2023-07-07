@@ -27,16 +27,16 @@
     path: "/etc/edb-as/{{ pg_version }}/{{ pg_instance_name }}/"
     state: absent
   when:
-    - "ansible_os_family == 'Debian'"
-    - "pg_type == 'EPAS'"
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
 
 - name: Remove configuration directory on Debian family
   ansible.builtin.file:
     path: "/etc/postgresql/{{ pg_version }}/{{ pg_instance_name }}/"
     state: absent
   when:
-    - "ansible_os_family == 'Debian'"
-    - "pg_type == 'PG'"
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
 
 - name: Remove postgres data directory if exists
   ansible.builtin.file:
@@ -80,22 +80,6 @@
     loop_var: line_item
   become: true
   when: pg_unix_socket_directories|length > 0
-
-- name: Remove systemd configuration file on RedHat
-  ansible.builtin.file:
-    path: "{{ pg_systemd_global_unit_file }}"
-    state: absent
-  become: true
-  when:
-    - ansible_os_family == 'RedHat'
-
-- name: Remove systemd unit file on RedHat
-  ansible.builtin.file:
-    path: "/etc/systemd/system/{{ pg_service }}.service"
-    state: absent
-  become: true
-  when:
-    - ansible_os_family == 'RedHat'
 
 # TDE specific files clean up
 - name: Remove master key's secure key file if file exists

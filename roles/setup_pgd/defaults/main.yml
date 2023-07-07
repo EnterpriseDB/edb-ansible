@@ -1,0 +1,115 @@
+---
+os: ""
+pg_type: PG
+pg_version: 14
+pg_ssl: true
+pg_instance_name: main
+pg_remote_ssl_src: false
+enable_edb_repo: true
+install_edb_postgres_tuner: false
+
+# TDE functionality key
+edb_enable_tde: false
+edb_key_unwrap_cmd: ""
+edb_key_wrap_cmd: ""
+edb_master_key: ""
+edb_secure_master_key: ""
+edb_master_key_location: "/etc/edb/keyloc"
+edb_master_key_plain_file: "{{ edb_master_key_location }}/master_key.plain"
+edb_secure_master_key_file: "{{ edb_master_key_location }}/master_secure_key.key"
+
+disable_logging: true
+use_replication_slots: true
+use_hostname: true
+update_etc_file: true
+enable_core_dump: false
+
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
+
+pass_dir: "~/.edb"
+
+pg_local_wal_archive_dir: ""
+edb_audit_directory: ""
+
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+# initial configuration for starting postgres
+# example:
+# pg_init_conf_params:
+# - name: "edb_filter_log.redact_password_commands"
+#   value: "true"
+
+pg_init_conf_params: []
+# postgres port
+pg_port: 5432
+
+# postgres database
+pg_database: "postgres"
+
+# postgres user
+pg_owner: "postgres"
+pg_group: "postgres"
+
+# postgres superuser
+pg_random_password: true
+
+# Local path to SSL server key and certificate to be sent to the server
+# if empty, they are generated
+pg_ssl_key_file: ""
+pg_ssl_cert_file: ""
+pg_ssl_ca_file: ""
+pg_ssl_crl_file: ""
+
+# Input variables
+input_user: ""
+input_password: ""
+
+# PGD variable
+pgd_version: 5
+install_pgd: false
+pgd_cluster_database: "{{ pg_database }}"
+pgd_cluster_database_owner: "{{ pg_owner }}"
+pgd_cluster_database_owner_password: ""
+pgd_replication_user: "pgd_replication_user"
+pgd_replication_user_password: ""
+pgd_cluster_name: "pgd_cluster"
+pgd_local_node_name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+initdb_executed: true
+
+# HBA variable
+pg_allow_ip_addresses: []
+
+# PGD Cluster Nodes
+pgd_cluster_nodes: []
+
+# PGD DSN variables
+local_node_dsn: ""
+lead_primary_dsn: ""
+
+etc_hosts_lists: []
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Rocky8
+  - AlmaLinux8
+  - OracleLinux7
+
+supported_pg_type:
+  - EPAS
+  - PG
+
+supported_pg_version:
+  - 14
+  - 15
+
+supported_pgd_version:
+  - 5

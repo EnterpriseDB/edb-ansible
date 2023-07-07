@@ -5,10 +5,18 @@ pg_version: 14
 pg_ssl: true
 pg_instance_name: main
 pg_remote_ssl_src: false
+
+# This parameter define if we want to run pg_initdb command on a server or not
+run_initdb: true
+
 # EFM service information
 efm_version: 4.5
 efm_cluster_name: "{{ pg_instance_name }}"
 efm_service: "edb-efm-{{ efm_cluster_name }}-{{ efm_version }}"
+
+# PGD specific variable
+pgd_version: 5
+install_pgd: false
 
 # TDE functionality key
 edb_enable_tde: false
