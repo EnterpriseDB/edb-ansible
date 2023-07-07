@@ -7,7 +7,24 @@
     - src_type
     - url
 
-- name: Download source
+- name: Install packages we absolutely know we need (git)
+  ansible.builtin.package:
+    name:
+      - git
+    state: present
+  become: true
+  when: src_type == "git"
+
+- name: Clone source respository (git)
+  ansible.builtin.git:
+    repo: "{{ url }}"
+    dest: "{{ srcdir }}/{{ url | ansible.builtin.basename }}"
+    single_branch: true
+    depth: 1
+  when: src_type == "git"
+  register: git
+
+- name: Download source (tarball)
   ansible.builtin.get_url:
     url: "{{ url }}"
     dest: "{{ tmpdir }}"

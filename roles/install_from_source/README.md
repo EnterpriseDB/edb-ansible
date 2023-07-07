@@ -18,6 +18,7 @@ When executing the role via Ansible these are the required variables:
 
   Defines what is being downloaded:
 
+    * ***git*** - Use a git repository.
     * ***tarball*** - An archived file containing the source.
 
   * ***url***
@@ -74,6 +75,36 @@ from a source tarball:
           - world
         src_type: "tarball"
         url: "https://ftp.postgresql.org/pub/source/v9.6.24/postgresql-9.6.24.tar.bz2"
+
+  roles:
+    - install_from_source
+```
+
+Below is an example of how to include this role to install PostgreSQL v9.6.24
+from a source tarball:
+
+```
+---
+- hosts: all
+  name: test install from source
+  become: true
+  gather_facts: true
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize variables
+      set_fact:
+        configure_args:
+          - --prefix=/usr/pgsql-git
+          - --without-icu
+          - --without-readline
+          - --without-zlib
+        make_args:
+          - world
+        src_type: "git"
+        url: "https://github.com/postgres/postgres.git"
 
   roles:
     - install_from_source
