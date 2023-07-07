@@ -1,0 +1,45 @@
+---
+- name: Check that required variables are defined
+  fail:
+    msg: "{{ item }} is not defined"
+  when: item is not in hostvars[inventory_hostname]
+  with_items:
+    - src_type
+    - url
+
+- name: Download source
+  ansible.builtin.get_url:
+    url: "{{ url }}"
+    dest: "{{ tmpdir }}"
+  when: src_type == "tarball"
+
+- name: Create a known location to unpack soucce based on the URL
+  ansible.builtin.file:
+    path: "{{ srcdir }}/{{ url | ansible.builtin.basename }}"
+    state: "directory"
+  when: src_type == "tarball"
+
+- name: Unpack source
+  ansible.builtin.unarchive:
+    src: "{{ tmpdir }}/{{ url | ansible.builtin.basename }}"
+    dest: "{{ srcdir }}/{{ url | ansible.builtin.basename }}"
+    extra_opts:
+      - --strip-components=1
+    remote_src: true
+  when: src_type == "tarball"
+  register: source
+
+- name: Configure
+  ansible.builtin.shell:
+    chdir: "{{ srcdir }}/{{ url | ansible.builtin.basename }}"
+    cmd: ./configure {{ configure_args | join(' ') }}
+
+- name: Compile
+  ansible.builtin.shell:
+    chdir: "{{ srcdir }}/{{ url | ansible.builtin.basename }}"
+    cmd: make -j {{ ansible_processor_nproc }} {{ make_args | join(' ') }}
+
+- name: Install
+  ansible.builtin.shell:
+    chdir: "{{ srcdir }}/{{ url | ansible.builtin.basename }}"
+    cmd: make -j {{ ansible_processor_nproc }} install
