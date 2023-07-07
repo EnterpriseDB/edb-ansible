@@ -1,0 +1,5 @@
+---
+configure_args: ""
+make_args: ""
+srcdir: "/usr/local/src"
+tmpdir: "/tmp"
