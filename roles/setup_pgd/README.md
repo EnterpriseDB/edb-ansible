@@ -27,7 +27,7 @@ Version of PGD to install and configure. Default: `5`
 
 ### `install_pgd`
 
-Flag for installing PGD packaged. Default: `false`.
+Flag for installing PGD packages. Default: `false`.
 
 ### `pgd_cluster_database`
 
