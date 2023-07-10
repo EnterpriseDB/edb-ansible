@@ -172,7 +172,7 @@
     enabled: true
   when:
     - enable_edb_repo|bool
-    - repo_token|length > 0
+    - repo_token|length > 1
     - install_pgd|bool
     - pg_version|int >= 15
     - pgd_version|int >= 5
@@ -191,4 +191,4 @@
   changed_when: reposub.rc == '0'
   when:
     - enable_edb_repo|bool
-    - repo_token|length > 0
+    - repo_token|length > 1
