@@ -1,9 +1,7 @@
 import pytest
 
 from conftest import (
-    load_ansible_vars,
     get_pg_type,
-    get_pg_version,
     get_primary,
     get_pg_unix_socket_dir
 )
@@ -12,10 +10,12 @@ from conftest import (
 def test_setup_dbt2_packages():
     host = get_primary()
     packages = [
-        'dbt2-db',
-        'dbt2-pgsql-c_14',
-        'dbt2-pgsql-plpgsql',
-        'dbt2-scripts'
+        'perf',
+        'rsync',
+        'tmux',
+        'fuse',
+        'fuse-libs',
+        'sysstat'
     ]
 
     for package in packages:
@@ -23,8 +23,15 @@ def test_setup_dbt2_packages():
             "Package %s not installed" % packages
 
 
+def test_setup_dbt2_appimage():
+    host = get_primary()
+    appimage_location = "/usr/bin/dbt2"
+
+    assert host.file(appimage_location).exists, \
+        "DBT-2 AppImage not installed correctly on primary."
+
+
 def test_setup_dbt2_user():
-    ansible_vars = load_ansible_vars()
     pg_user = 'postgres'
     pg_group = 'postgres'
     pg_port = '5432'

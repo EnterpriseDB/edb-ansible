@@ -35,7 +35,7 @@
   when:
     - ansible_os_family == 'RedHat'
     - enable_edb_repo|bool
-    - repo_token|length > 0
+    - repo_token|length > 1
 
 - name: Check for PGDG Repo on RedHat
   ansible.builtin.assert:

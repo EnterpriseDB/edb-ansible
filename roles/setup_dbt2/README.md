@@ -7,7 +7,8 @@ components on the database server.
 
 Following are the requirements of this role.
   1. Ansible
-  2. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository
+  2. An already initialized database cluster, or the roles required to do so within the same playbook.
+  3. `edb_devops.edb_postgres` -> `setup_repo` role for setting the repository
      on the systems.
 
 ## Role Variables
@@ -16,22 +17,19 @@ When executing the role via ansible these are the required variables:
 
   * ***dbt2_version***
 
-  These playbooks can install any version of DBT-2 that is packaged from GitHub.
+  These playbooks can install any version of DBT-2 that is packaged into an AppImage from GitHub.
   See the following link for available versions:
-  https://github.com/osdldbt/dbt2-packaging/releases
+  https://github.com/osdldbt/dbt2/releases
 
-  * ***dbttools_version***
+  * ***dbt2_path***
 
-  These playbooks can install any version of DBT Tools that is packaged from
-  GitHub but specific versions may be required depending on the version of DBT-2
-  used.  Unless you have a specific reason to install a specific version, you
-  will generally want to use the latest avaialble versions.  See the following
-  link for available versions:
-  https://github.com/osdldbt/dbttools-packaging/releases
+  This is the location where the DBT-2 AppImage will be installed.
+  For ease of use, try to set this location within a directory along the executable `PATH`.
+  Unless necessary, there shouldn't be any reason to change this default.
 
   * ***pg_version***
 
-  Postgres Versions supported are: 10, 11, 12, 13 and 14
+  Postgres Versions supported are: 10, 11, 12, 13, 14 and 15.
 
   * ***pg_dbt2_dbname***
 

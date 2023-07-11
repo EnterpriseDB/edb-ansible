@@ -1,10 +1,13 @@
 ---
-dbt2_version: "0.48.7"
-dbttools_version: "0.3.1"
+dbt2_version: "0.53.2"
 driver_pub_key: ""
 pg_dbt2_dbname: dbt2
-pg_version: 14
 use_patroni: false
+
+# DBT-2 AppImage information
+dbt2_appimage: "https://github.com/osdldbt/dbt2/releases/download/v{{ dbt2_version }}/dbt2-{{ dbt2_version }}-x86_64.AppImage"
+dbt2_checksum: "https://github.com/osdldbt/dbt2/releases/download/v{{ dbt2_version }}/dbt2-{{ dbt2_version }}-x86_64.AppImage.sha256"
+dbt2_path: "/usr/bin/dbt2"
 
 # These variables are set in respective vars files.
 pg_data: ""

@@ -1,14 +1,14 @@
 ---
-# validate dbt2 driver packages
-- name: Set dbt2 package name
+# validate dbt2 driver packages installation
+- name: Set dbt2_driver_package_list
   ansible.builtin.set_fact:
-    dbt2_driver_package_list: ['dbt2-driver', 'dbt2-exec', 'dbt2-scripts']
+    dbt2_driver_package_list: ['perf', 'rsync', 'tmux', 'fuse', 'fuse-libs', 'sysstat']
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
     strategy: "all"
 
-- name: Check that all DBT2 packages have been installed
+- name: Check that all packages in dbt2_driver_package_list has been installed
   ansible.builtin.assert:
     that:
       - "{{ ansible_facts.packages[package] }} is defined"
@@ -17,6 +17,20 @@
   loop: "{{ dbt2_driver_package_list }}"
   loop_control:
     loop_var: package
+
+# ensure the DBT-2 AppImage has been installed to the proper location
+- name: Stat to dbt2_path
+  ansible.builtin.stat:
+    path: "{{ dbt2_path }}"
+  register: dbt2_path_driver_stat
+  become: true
+
+- name: Check if DBT-2 AppImage was installed properly on driver
+  ansible.builtin.assert:
+    that:
+      - dbt2_path_driver_stat.stat['exists']|bool
+    fail_msg: "DBT-2 AppImage at {{ dbt2_path }} was not created properly"
+    success_msg: "DBT-2 AppImage at {{ dbt2_path }} was created successfully"
 
 # validate dbt2 driver sudo user
 - name: Run command to check DBT-2 driver sudo user was configured properly
@@ -43,5 +57,5 @@
 - name: Reset variables
   ansible.builtin.set_fact:
     dbt2_driver_package_list: null
-    user_query_result: null
+    dbt2_path_driver_stat: null
     dbt2_driver_sudo_res: null

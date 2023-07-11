@@ -124,4 +124,4 @@
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
   changed_when: reposub.rc == '0'
   when: >
-    enable_edb_repo|bool and repo_token|length > 0
+    enable_edb_repo|bool and repo_token|length > 1

@@ -6,8 +6,10 @@ supported_os:
   - Rocky8
   - AlmaLinux8
 
-dbt2_version: "0.48.7"
-dbttools_version: "0.3.1"
+dbt2_version: "0.53.2"
+
+# DBT-2 AppImage path
+dbt2_path: "/usr/bin/dbt2"
 
 # These variables are set in the respective vars file.
 pg_data: ""
