@@ -72,7 +72,7 @@ The role of node to initialize within PGD. Options are `data`, `subscribe-only`,
 
 ### `use_physical_backup`
 
-Set to `true` if you want to enable physical streaming replication of node.
+Set to `true` if you want to initialize non-lead-primary nodes from physical backup.
 
 ### `clustername`
 
