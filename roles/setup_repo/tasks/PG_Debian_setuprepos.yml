@@ -3,8 +3,10 @@
   ansible.builtin.stat:
     path: "{{ edb_auth_conf }}"
   register: auth_conf
-  when: >
-    os != 'Debian9' and enable_edb_repo|bool and repo_token|length < 1
+  when:
+    - os != 'Debian9'
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
   become: true
 
 - name: Build EDB auth conf
@@ -17,7 +19,7 @@
     mode: "0600"
   when:
     - os != 'Debian9'
-    - enable_edb_repo|bool and repo_token|length < 1
+    - enable_edb_repo|bool and repo_token|length <= 1
     - not auth_conf.stat.exists or auth_conf.stat.size == 0
   become: true
 
@@ -33,21 +35,30 @@
     state: present
   become: true
 
+- name: Install curl
+  ansible.builtin.package:
+    name: curl
+    state: present
+  become: true
+
 - name: Add EDB GPGP Debian keys
   ansible.builtin.apt_key:
     url: "{{ edb_deb_keys }}"
     state: present
   become: true
-  when: >
-    enable_edb_repo|bool and repo_token|length < 1
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
 
 - name: Add EDB Debian repo
   ansible.builtin.apt_repository:
     repo: "{{ edb_deb_repo_url }}"
     state: present
     filename: "edb-{{ ansible_distribution_release }}"
-  when: >
-    os != 'Debian9' and enable_edb_repo|bool and repo_token|length < 1
+  when:
+    - os != 'Debian9'
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
   become: true
 
 - name: Install apt-transport-https
@@ -63,8 +74,10 @@
     repo: "{{ edb_deb_9_repo_url }}"
     state: present
     filename: "edb-{{ ansible_distribution_release }}"
-  when: >
-      os == 'Debian9' and enable_edb_repo|bool and repo_token|length < 1
+  when:
+    - os == 'Debian9'
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
   become: true
 
 - name: Add PG Debian keys
@@ -106,10 +119,10 @@
   failed_when: >
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
   changed_when: reposub.rc == '0'
-  when: >
-    tpa_subscription_token|length > 0
-    and install_pgd|bool
-    and pg_version|int == 14
+  when:
+    - tpa_subscription_token|length > 0
+    - install_pgd|bool
+    - pg_version|int == 14
   loop: "{{ edb_2q_repositories }}"
 
 - name: Install EDB repository 2.0
@@ -123,5 +136,6 @@
   failed_when: >
     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
   changed_when: reposub.rc == '0'
-  when: >
-    enable_edb_repo|bool and repo_token|length > 1
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length > 1

@@ -27,7 +27,6 @@
       - python3-psycopg2
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
-      - edb-as{{ pg_version }}-server-edb-modules
       - edb-as{{ pg_version }}-server-client
       - edb-as{{ pg_version }}-server-indexadvisor
       - edb-as{{ pg_version }}-server-sqlprofiler
@@ -35,6 +34,26 @@
     state: absent
     update_cache: true
   become: true
+
+- name: Remove edb-modules for EPAS < 14
+  ansible.builtin.package:
+    name:
+      - edb-as{{ pg_version }}-server-edb-modules
+    state: absent
+    update_cache: true
+  become: true
+  when:
+    - pg_version|int < 14
+
+- name: Remove edb-wait-states for EPAS >= 14
+  ansible.builtin.package:
+    name:
+      - edb-as{{ pg_version }}-server-edb-wait-states
+    state: absent
+    update_cache: true
+  become: true
+  when:
+    - pg_version|int >= 14
 
 - name: Remove python-psycopg2
   ansible.builtin.package:

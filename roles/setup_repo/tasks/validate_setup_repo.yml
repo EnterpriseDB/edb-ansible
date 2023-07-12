@@ -24,7 +24,7 @@
   when:
     - ansible_os_family == 'RedHat'
     - enable_edb_repo|bool
-    - repo_token|length < 1
+    - repo_token|length <= 1
 
 - name: Check for EDB Repo 2.0 on RedHat
   ansible.builtin.assert:

@@ -32,28 +32,10 @@
       - edb-as{{ pg_version }}-server-sqlprotect
     state: present
   become: true
-  when: >-
-    pg_version|int < 11
+  when:
+    - pg_version|int < 11
 
-- name: "Install EPAS 11,12,13 packages"
-  ansible.builtin.package:
-    name:
-      - edb-as{{ pg_version }}-server
-      - edb-as{{ pg_version }}-server-core
-      - edb-as{{ pg_version }}-server-edb-modules
-      - edb-as{{ pg_version }}-server-contrib
-      - edb-as{{ pg_version }}-server-libs
-      - edb-as{{ pg_version }}-server-client
-      - edb-as{{ pg_version }}-server-llvmjit
-      - edb-as{{ pg_version }}-server-indexadvisor
-      - edb-as{{ pg_version }}-server-sqlprofiler
-      - edb-as{{ pg_version }}-server-sqlprotect
-    state: present
-  become: true
-  when: >-
-    pg_version|int > 10 and pg_version|int < 14
-
-- name: "Install EPAS >= 14 packages"
+- name: "Install EPAS >= 11 packages"
   ansible.builtin.package:
     name:
       - edb-as{{ pg_version }}-server
@@ -68,8 +50,8 @@
       - edb-as{{ pg_version }}-server-edb_wait_states
     state: present
   become: true
-  when: >-
-    pg_version|int >= 14
+  when:
+    - pg_version|int >= 11
 
 - name: "Install PGD packages for EPAS >= 14"
   ansible.builtin.package:
@@ -78,9 +60,9 @@
       - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
     state: present
   become: true
-  when: >-
-    pg_version|int >= 14
-    and install_pgd|bool
+  when:
+    - pg_version|int >= 14
+    - install_pgd|bool
 
 - name: Install sslutils
   ansible.builtin.package:
