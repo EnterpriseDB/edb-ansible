@@ -24,16 +24,24 @@
     name:
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
-      - edb-as{{ pg_version }}-server-edb_wait_states
       - edb-as{{ pg_version }}-server-contrib
       - edb-as{{ pg_version }}-server-libs
       - edb-as{{ pg_version }}-server-client
-      - edb-as{{ pg_version }}-server-llvmjit
       - edb-as{{ pg_version }}-server-indexadvisor
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
     state: absent
   become: true
+
+- name: Remove EPAS >= 11 packages
+  ansible.builtin.package:
+    name:
+      - edb-as{{ pg_version }}-server-edb_wait_states
+      - edb-as{{ pg_version }}-server-llvmjit
+    state: absent
+  become: true
+  when:
+    - pg_version|int >= 11
 
 - name: Remove python packages on EL7
   ansible.builtin.package:

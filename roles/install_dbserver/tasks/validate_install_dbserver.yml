@@ -47,7 +47,7 @@
         'edb-as' + pg_version | string + '-server', 'edb-as' + pg_version | string + '-server-core',
         'edb-as' + pg_version | string + '-server-contrib', 'edb-as' + pg_version | string + '-server-libs',
         'edb-as' + pg_version | string + '-server-client', 'edb-as' + pg_version | string + '-server-indexadvisor',
-        'edb-as' + pg_version | string + '-server-sqlprofiler', 'edb-as' + pg_version | string + '-server-sqlprotect',
+        'edb-as' + pg_version | string + '-server-sqlprofiler', 'edb-as' + pg_version | string + '-server-sqlprotect'
       ] }}
   when:
     - ansible_os_family == 'RedHat'
