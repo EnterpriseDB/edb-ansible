@@ -41,9 +41,9 @@
       - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
     state: present
   become: true
-  when: >-
-    pg_version|int >= 14
-    and install_pgd|bool
+  when:
+    - pg_version|int >= 14
+    - install_pgd|bool
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

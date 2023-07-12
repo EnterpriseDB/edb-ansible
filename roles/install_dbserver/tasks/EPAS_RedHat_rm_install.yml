@@ -24,7 +24,7 @@
     name:
       - edb-as{{ pg_version }}-server
       - edb-as{{ pg_version }}-server-core
-      - edb-as{{ pg_version }}-server-edb-modules
+      - edb-as{{ pg_version }}-server-edb_wait_states
       - edb-as{{ pg_version }}-server-contrib
       - edb-as{{ pg_version }}-server-libs
       - edb-as{{ pg_version }}-server-client
