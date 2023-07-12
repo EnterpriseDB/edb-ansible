@@ -47,7 +47,8 @@
         'edb-as' + pg_version | string + '-server', 'edb-as' + pg_version | string + '-server-core',
         'edb-as' + pg_version | string + '-server-contrib', 'edb-as' + pg_version | string + '-server-libs',
         'edb-as' + pg_version | string + '-server-client', 'edb-as' + pg_version | string + '-server-indexadvisor',
-        'edb-as' + pg_version | string + '-server-sqlprofiler', 'edb-as' + pg_version | string + '-server-sqlprotect'
+        'edb-as' + pg_version | string + '-server-sqlprofiler', 'edb-as' + pg_version | string + '-server-sqlprotect',
+        'edb-as' + pg_version | string + '-server-edb_wait_states'
       ] }}
   when:
     - ansible_os_family == 'RedHat'
@@ -92,25 +93,6 @@
     - pg_type == 'EPAS'
     - ansible_os_family == 'RedHat'
     - pg_version|int > 10
-
-- name: Add 10 < pg_version < 14 packages to EPAS RedHat package_list
-  ansible.builtin.set_fact:
-    package_list: >-
-      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-edb-modules'] }}
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'RedHat'
-    - pg_version|int > 10
-    - pg_version|int < 14
-
-- name: Add pg_version >= 14 packages to EPAS RedHat package_list
-  ansible.builtin.set_fact:
-    package_list: >-
-      {{ package_list | default([]) + ['edb-as' + pg_version | string + '-server-edb_wait_states'] }}
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'RedHat'
-    - pg_version|int >= 14
 
 - name: Install python-apt package
   ansible.builtin.package:

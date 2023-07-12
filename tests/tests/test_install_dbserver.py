@@ -64,6 +64,7 @@ def test_install_dbserver_epas_centos():
         'edb-as%s-server-sqlprofiler' % pg_version,
         'edb-as%s-server-sqlprotect' % pg_version,
         'edb-as%s-server-sslutils' % pg_version,
+        'edb-as%s-server-edb_wait_states' % pg_version,
     ]
     if get_os() in ['centos7', 'oraclelinux7']:
         packages += [
@@ -79,14 +80,6 @@ def test_install_dbserver_epas_centos():
     if pg_version > 10:
         packages += [
             'edb-as%s-server-llvmjit' % pg_version,
-        ]
-    if pg_version > 10 and pg_version < 14:
-        packages += [
-            'edb-as%s-server-edb-modules' % pg_version,
-        ]
-    elif pg_version >= 14:
-        packages += [
-            'edb-as%s-server-edb_wait_states' % pg_version,
         ]
     for package in packages:
         assert host.package(package).is_installed, \

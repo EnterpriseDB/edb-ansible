@@ -4,7 +4,7 @@
     path: "{{ edb_auth_conf }}"
   register: auth_conf
   when: >
-    os != 'Debian9' and enable_edb_repo|bool and repo_token|length < 1
+    os != 'Debian9' and enable_edb_repo|bool and repo_token|length <= 1
   become: true
 
 - name: Build EDB auth conf
@@ -17,7 +17,7 @@
     mode: "0600"
   when:
     - os != 'Debian9'
-    - enable_edb_repo|bool and repo_token|length < 1
+    - enable_edb_repo|bool and repo_token|length <= 1
     - not auth_conf.stat.exists or auth_conf.stat.size == 0
   become: true
 
@@ -39,7 +39,7 @@
     state: present
   become: true
   when: >
-    enable_edb_repo|bool and repo_token|length < 1
+    enable_edb_repo|bool and repo_token|length <= 1
 
 - name: Add EDB Debian repo
   ansible.builtin.apt_repository:
@@ -47,7 +47,7 @@
     state: present
     filename: "edb-{{ ansible_distribution_release }}"
   when: >
-    os != 'Debian9' and enable_edb_repo|bool and repo_token|length < 1
+    os != 'Debian9' and enable_edb_repo|bool and repo_token|length <= 1
   become: true
 
 - name: Install apt-transport-https
@@ -64,7 +64,7 @@
     state: present
     filename: "edb-{{ ansible_distribution_release }}"
   when: >
-      os == 'Debian9' and enable_edb_repo|bool and repo_token|length < 1
+      os == 'Debian9' and enable_edb_repo|bool and repo_token|length <= 1
   become: true
 
 - name: Add PG Debian keys

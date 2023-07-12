@@ -98,7 +98,7 @@
   become: true
   when:
     - enable_edb_repo|bool
-    - repo_token|length < 1
+    - repo_token|length <= 1
 
 - name: Set Credentials for EDB Yum Repo
   ansible.builtin.replace:
@@ -108,7 +108,7 @@
   become: true
   when:
     - enable_edb_repo|bool
-    - repo_token|length < 1
+    - repo_token|length <= 1
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:
