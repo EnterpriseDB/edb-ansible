@@ -1,1 +1,45 @@
 ---
+old_pg_bin_path: "/usr/edb/as{{ old_pg_version }}/bin"
+new_pg_bin_path: "/usr/edb/as{{ new_pg_version }}/bin"
+
+old_pg_data: "/var/lib/edb/as{{ old_pg_version }}/{{ pg_instance_name }}/data"
+new_pg_data: "/var/lib/edb/as{{ new_pg_version }}/{{ pg_instance_name }}/data"
+
+old_pg_default_data: "/var/lib/edb/as{{ old_pg_version }}/{{ pg_instance_name }}/data"
+new_pg_default_data: "/var/lib/edb/as{{ new_pg_version }}/{{ pg_instance_name }}/data"
+
+old_pg_port: 5444
+new_pg_port: 5444
+
+old_pg_service: "edb-as@{{ old_pg_version }}-{{ pg_instance_name }}"
+new_pg_service: "edb-as@{{ new_pg_version }}-{{ pg_instance_name }}"
+
+# wal directory is only needed for initializing new cluster
+new_pg_wal: ""
+
+# log directory and filename for the new cluster
+pg_log: "/var/log/edb"
+pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
+
+new_pg_initdb: "{{ new_pg_bin_path }}/edb-as-{{ new_pg_version }}-setup initdb"
+new_pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/edb/as{{ new_pg_version }}"
+
+# postgres user
+pg_owner: "enterprisedb"
+pg_group: "enterprisedb"
+pg_user_home: "/var/lib/edb"
+
+# postgres superuser
+pg_superuser: "enterprisedb"
+pg_shared_libraries_list:
+  - "$libdir/dbms_pipe"
+  - "$libdir/edb_gen"
+  - "$libdir/dbms_aq"
+  - "$libdir/edb_wait_states"
+  - "$libdir/sql-profiler"
+  - "$libdir/index_advisor"
+  - "$libdir/pg_stat_statements"
