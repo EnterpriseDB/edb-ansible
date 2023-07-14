@@ -1,0 +1,36 @@
+---
+galaxy_info:
+  role_name: execute_binary_upgrade
+  namespace: edb_postgres
+  author: EDB
+  description: execute pg_upgrade
+  company: "EnterpriseDB"
+
+  license: BSD
+
+  min_ansible_version: "2.11"
+
+  platforms:
+    - name: EL
+      versions:
+        - "7"
+        - "8"
+    - name: OracleLinux
+      versions:
+        - "7"
+    - name: Debian
+      versions:
+        - "buster"
+    - name: Ubuntu
+      versions:
+        - "jammy"
+
+  galaxy_tags:
+    - database
+    - postgresql
+    - postgres
+    - edb
+    - backup
+    - pgbackrest
+
+dependencies: []

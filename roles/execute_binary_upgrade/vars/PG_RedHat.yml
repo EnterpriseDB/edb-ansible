@@ -1,0 +1,44 @@
+---
+old_pg_bin_path: "/usr/pgsql-{{ old_pg_version }}/bin"
+new_pg_bin_path: "/usr/pgsql-{{ new_pg_version }}/bin"
+
+old_pg_data: "/var/lib/pgsql/{{ old_pg_version }}/{{ pg_instance_name }}/data"
+new_pg_data: "/var/lib/pgsql/{{ new_pg_version }}/{{ pg_instance_name }}/data"
+
+old_pg_default_data: "/var/lib/pgsql/{{ old_pg_version }}/{{ pg_instance_name }}/data"
+new_pg_default_data: "/var/lib/pgsql/{{ new_pg_version }}/{{ pg_instance_name }}/data"
+
+old_pg_port: 5432
+new_pg_port: 5432
+
+old_pg_service: "postgresql-{{ old_pg_version }}"
+new_pg_service: "postgresql-{{ new_pg_version }}"
+
+old_pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ old_pg_version }}.service"
+new_pg_systemd_global_unit_file: "/usr/lib/systemd/system/postgresql-{{ new_pg_version }}.service"
+
+# wal directory is only needed for initializing new cluster
+new_pg_wal: ""
+
+# log directory and filename for the new cluster
+pg_log: "/var/log/postgres"
+pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
+
+new_pg_initdb: "{{ new_pg_bin_path }}/postgresql-{{ new_pg_version }}-setup initdb"
+new_pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+pg_init_conf_params: []
+
+# postgres user
+pg_owner: "postgres"
+pg_group: "postgres"
+pg_user_home: "/var/lib/pgsql"
+
+# postgres superuser
+pg_superuser: "postgres"
+pg_shared_libraries_list:
+  - "$libdir/pg_stat_statements"

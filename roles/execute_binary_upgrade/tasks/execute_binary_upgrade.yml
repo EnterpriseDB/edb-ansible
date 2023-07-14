@@ -1,0 +1,64 @@
+---
+- name: Reference pg_type variables
+  ansible.builtin.include_vars: "{{ pg_type }}_{{ ansible_os_family }}.yml"
+
+- name: Set the os variable
+  ansible.builtin.set_fact:
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+
+- name: Check support for Operating System
+  ansible.builtin.fail:
+    msg: "Operating System = {{ os }} not supported."
+  when: os not in supported_os
+
+- name: Check supported old version for Database engine
+  ansible.builtin.fail:
+    msg: "Database Engine Version = {{ old_pg_version }} not supported.
+          Supported versions are {{ supported_old_pg_version }}"
+  when: old_pg_version|int not in supported_old_pg_version
+
+- name: Check supported new version for Database engine
+  ansible.builtin.fail:
+    msg: "Database Engine Version = {{ new_pg_version }} not supported.
+          Supported versions are {{ supported_new_pg_version }}"
+  when: new_pg_version|int not in supported_new_pg_version
+
+- name: Debug
+  ansible.builtin.debug:
+    var: pg_upgrade_options
+
+- name: Check that old_pg_version and new_pg_version are compatible with each other
+  ansible.builtin.fail:
+    msg: "old_pg_version = {{ old_pg_version }} must be less than new_pg_version = {{ new_pg_version }}"
+  when: old_pg_version|int >= new_pg_version|int
+
+- name: Install new Postgres binaries
+  ansible.builtin.include_tasks: "{{ pg_type }}_install.yml"
+  when:
+    - not validate_only|bool
+
+- name: Create new Postgres directories
+  ansible.builtin.include_tasks: create_directories.yml
+  when:
+    - not validate_only|bool
+
+- name: Setup systemd on RedHat
+  ansible.builtin.include_tasks: setup_systemd.yml
+  when:
+    - not validate_only|bool
+    - ansible_os_family == 'RedHat'
+
+- name: Initialize new Postgres cluster
+  ansible.builtin.include_tasks: init_new_dbserver.yml
+  when:
+    - not validate_only|bool
+
+- name: Execute pg_upgrade
+  ansible.builtin.include_tasks: pg_upgrade.yml
+  when:
+    - not validate_only|bool
+
+- name: Import validation tasks
+  ansible.builtin.import_tasks: validate_execute_binary_upgrade.yml
+  when:
+    - validate_only|bool or use_validation|bool
