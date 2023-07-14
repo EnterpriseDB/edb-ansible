@@ -21,7 +21,6 @@ pg_upgrade_options: >-
   --old-port {{ old_pg_port }} --new-port {{ new_pg_port }}
   --socketdir "{{ pg_unix_socket_directories[0] }}" -U {{ pg_owner }}
 
-
 pg_type: PG
 pg_instance_name: main
 disable_logging: true

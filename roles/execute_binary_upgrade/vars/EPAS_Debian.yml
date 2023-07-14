@@ -2,3 +2,48 @@
 # Vars for dropping the default installed cluster
 epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
 default_cluster_name: "main"
+
+old_pg_bin_path: "/usr/lib/edb-as/{{ old_pg_version }}/bin"
+new_pg_bin_path: "/usr/lib/edb-as/{{ new_pg_version }}/bin"
+
+old_pg_data: "/var/lib/edb-as/{{ old_pg_version }}/{{ pg_instance_name }}"
+new_pg_data: "/var/lib/edb-as/{{ new_pg_version }}/{{ pg_instance_name }}"
+
+old_pg_default_data: "/var/lib/edb-as/{{ old_pg_version }}/{{ pg_instance_name }}"
+new_pg_default_data: "/var/lib/edb-as/{{ new_pg_version }}/{{ pg_instance_name }}"
+
+old_pg_port: 5444
+new_pg_port: 5444
+
+old_pg_service: "edb-as@{{ old_pg_version }}-{{ pg_instance_name }}"
+new_pg_service: "edb-as@{{ new_pg_version }}-{{ pg_instance_name }}"
+
+# wal directory is only needed for initializing new cluster
+new_pg_wal: ""
+
+# log directory and filename for the new cluster
+pg_log: "/var/log/edb"
+pg_log_filename: "{{ pg_instance_name }}-edb-%a.log"
+
+new_pg_initdb: "/usr/bin/epas_createcluster -s {{ pg_unix_socket_directories[0] }} {{ new_pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
+new_pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/edb-as"
+
+# postgres user
+pg_owner: "enterprisedb"
+pg_group: "enterprisedb"
+pg_user_home: "/var/lib/edb-as"
+
+# postgres superuser
+pg_superuser: "enterprisedb"
+pg_shared_libraries_list:
+  - "$libdir/dbms_pipe"
+  - "$libdir/edb_gen"
+  - "$libdir/dbms_aq"
+  - "$libdir/edb_wait_states"
+  - "$libdir/sql-profiler"
+  - "$libdir/index_advisor"
+  - "$libdir/pg_stat_statements"

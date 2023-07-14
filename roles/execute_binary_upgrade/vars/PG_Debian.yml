@@ -2,3 +2,42 @@
 # Vars for dropping the default Debian cluster
 pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
 default_cluster_name: "main"
+
+old_pg_bin_path: "/usr/lib/postgresql/{{ old_pg_version }}/bin"
+new_pg_bin_path: "/usr/lib/postgresql/{{ new_pg_version }}/bin"
+
+old_pg_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}/data"
+new_pg_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}/data"
+
+old_pg_default_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}/data"
+new_pg_default_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}/data"
+
+old_pg_port: 5432
+new_pg_port: 5432
+
+old_pg_service: "postgresql@{{ old_pg_version }}-{{ pg_instance_name }}"
+new_pg_service: "postgresql@{{ new_pg_version }}-{{ pg_instance_name }}"
+
+# wal directory is only needed for initializing new cluster
+new_pg_wal: ""
+
+# log directory and filename for the new cluster
+pg_log: "/var/log/postgres"
+pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
+
+new_pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ new_pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
+new_pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer"
+
+# unix socket domain directories
+pg_unix_socket_directories:
+  - "/var/run/postgresql"
+
+# postgres user
+pg_owner: "postgres"
+pg_group: "postgres"
+pg_user_home: "/var/lib/postgresql"
+
+# postgres superuser
+pg_superuser: "postgres"
+pg_shared_libraries_list:
+  - "$libdir/pg_stat_statements"

@@ -31,8 +31,6 @@ new_pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
 pg_unix_socket_directories:
   - "/var/run/postgresql"
 
-pg_init_conf_params: []
-
 # postgres user
 pg_owner: "postgres"
 pg_group: "postgres"
