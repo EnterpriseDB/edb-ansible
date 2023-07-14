@@ -518,3 +518,21 @@ cases:
     os:
     - rocky8
     - almalinux8
+  execute_binary_upgrade:
+    pg_version:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - centos7
+    - rocky8
+    - almalinux8
+    - debian10
+    - ubuntu20
+    - oraclelinux7

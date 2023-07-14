@@ -1,0 +1,45 @@
+---
+- name: Stop old pg_service
+  ansible.builtin.systemd:
+    name: "{{ old_pg_service }}"
+    state: stopped
+  become: true
+
+- name: Stop new pg_service
+  ansible.builtin.systemd:
+    name: "{{ new_pg_service }}"
+    state: stopped
+  become: true
+
+- name: Set link method if use_link_method
+  ansible.builtin.set_fact:
+    pg_upgrade_options: "{{ pg_upgrade_options + ' --link' }}"
+  when: use_link_method
+
+- name: Check the pg_upgrade compatibility
+  ansible.builtin.shell: >
+    {{ pg_upgrade_cmd }} {{ pg_upgrade_options }} --check
+  args:
+    executable: /bin/bash
+  register: pg_upgrade_check
+  become: true
+  become_user: "{{ pg_owner }}"
+
+- name: Check the clusters are comptabile
+  ansible.builtin.fail:
+    msg: "Clusters are not compatible. Check configuration settings provided
+          {{ pg_upgrade_check.stdout_lines }}"
+  when: '"*Clusters are compatible*" not in pg_upgrade_check.stdout_lines'
+
+- name: Run pg_upgrade
+  ansible.builtin.shell: >
+    {{ pg_upgrade_cmd }} {{ pg_upgrade_options }}
+  args:
+    executable: /bin/bash
+  register: pg_upgrade_execute
+  become: true
+  become_user: "{{ pg_owner }}"
+
+- name: Debug
+  ansible.builtin.debug:
+    var: pg_upgrade_execute

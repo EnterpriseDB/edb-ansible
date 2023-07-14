@@ -1,0 +1,46 @@
+---
+- name: Check if we have PG_VERSION in new_pg_data
+  ansible.builtin.stat:
+    path: "{{ new_pg_data }}/PG_VERSION"
+  become: true
+  register: new_pg_version_stat
+
+- name: Verify new_pg_wal and accordingly add in initdb
+  ansible.builtin.set_fact:
+    new_pg_initdb_options: "{{ new_pg_initdb_options + ' --waldir=' + new_pg_wal }}"
+  when:
+    - new_pg_wal|length > 0
+    - not new_pg_data in new_pg_wal
+
+- name: Initialize database postgres service on RedHat
+  ansible.builtin.shell: >
+    {{ new_pg_initdb }} {{ new_pg_service }}
+  args:
+    executable: /bin/bash
+    creates: "{{ new_pg_data }}/PG_VERSION"
+  environment:
+    PGSETUP_INITDB_OPTIONS: "{{ new_pg_initdb_options }}"
+  when: ansible_os_family == 'RedHat'
+  become: true
+
+- name: Initialize database postgres service on Debian
+  ansible.builtin.shell: >
+    {{ new_pg_initdb }}
+  args:
+    executable: /bin/bash
+    creates: "{{ new_pg_data }}/PG_VERSION"
+  environment:
+    PGSETUP_INITDB_OPTIONS: "{{ new_pg_initdb_options }}"
+  when: ansible_os_family == 'Debian'
+  become: true
+
+- name: Copy the new postgresql.conf.template to the server
+  ansible.builtin.template:
+    src: postgresql.conf.template
+    dest: "{{ new_pg_data }}/postgresql.auto.conf"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0600"
+  when:
+    - not new_pg_version_stat.stat.exists
+  become: true

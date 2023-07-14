@@ -1,0 +1,104 @@
+---
+# RedHat installation
+- name: Disable builtin postgresql module on RedHat
+  ansible.builtin.shell: >
+    dnf -qy module disable postgresql
+  args:
+    executable: /bin/bash
+  register: disable_builtin_postgres
+  changed_when: disable_builtin_postgres.rc == 0
+  failed_when: disable_builtin_postgres.rc != 0
+  ignore_errors: true
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+
+- name: Install require python package on EL7
+  ansible.builtin.package:
+    name:
+      - python-pycurl
+      - libselinux-python
+      - python2-psycopg2
+      - python-ipaddress
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
+  become: true
+
+- name: Install require python package on EL8
+  ansible.builtin.package:
+    name:
+      - python3-pycurl
+      - python3-libselinux
+      - python3-psycopg2
+    state: present
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+
+- name: Install Postgres on RedHat
+  ansible.builtin.package:
+    name:
+      - glibc-common
+      - ca-certificates
+      - postgresql{{ new_pg_version }}
+      - postgresql{{ new_pg_version }}-server
+      - postgresql{{ new_pg_version }}-contrib
+    state: present
+  become: true
+  when: ansible_os_family == 'RedHat'
+
+- name: Install sslutils on RedHat
+  ansible.builtin.package:
+    name:
+      - sslutils_{{ new_pg_version }}
+    state: present
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_ssl
+
+# Debian install
+- name: Install Postgres on Debian
+  ansible.builtin.package:
+    name:
+      - ca-certificates
+      - python3-pycurl
+      - python3-psycopg2
+      - postgresql-{{ new_pg_version }}
+      - postgresql-{{ new_pg_version }}
+      - postgresql-server-dev-{{ new_pg_version }}
+    state: present
+    update_cache: true
+  become: true
+  when: ansible_os_family == 'Debian'
+  notify:
+    - Stop the new PG service
+    - Drop the default new PG debian database
+
+- name: Install sslutils on Debian
+  ansible.builtin.package:
+    name:
+      - postgresql-{{ pg_version }}-sslutils
+    state: present
+    update_cache: true
+  become: true
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_ssl
+
+- name: Install python-psycopg2 on Debian
+  ansible.builtin.package:
+    name:
+      - python-psycopg2
+      - python-ipaddress
+    state: present
+    update_cache: true
+  when: os in ['Ubuntu18','Debian9','Debian10']
+  become: true
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

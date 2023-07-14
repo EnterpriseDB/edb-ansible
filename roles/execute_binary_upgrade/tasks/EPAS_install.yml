@@ -1,0 +1,118 @@
+---
+# RedHat install
+- name: Install python packages on EL7
+  ansible.builtin.package:
+    name:
+      - python-pip
+      - python2-psycopg2
+      - python-ipaddress
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
+  become: true
+
+- name: Install python packages on EL8
+  ansible.builtin.package:
+    name:
+      - python3-pip
+      - python3-psycopg2
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+  become: true
+
+- name: Install EPAS >= 11 packages on RedHat
+  ansible.builtin.package:
+    name:
+      - edb-as{{ new_pg_version }}-server
+      - edb-as{{ new_pg_version }}-server-core
+      - edb-as{{ new_pg_version }}-server-contrib
+      - edb-as{{ new_pg_version }}-server-libs
+      - edb-as{{ new_pg_version }}-server-client
+      - edb-as{{ new_pg_version }}-server-llvmjit
+      - edb-as{{ new_pg_version }}-server-indexadvisor
+      - edb-as{{ new_pg_version }}-server-sqlprofiler
+      - edb-as{{ new_pg_version }}-server-sqlprotect
+      - edb-as{{ new_pg_version }}-server-edb_wait_states
+    state: present
+  become: true
+  when:
+    - new_pg_version|int >= 11
+    - ansible_os_family == 'RedHat'
+
+- name: Install sslutils on RedHat
+  ansible.builtin.package:
+    name:
+      - edb-as{{ new_pg_version }}-server-sslutils
+    state: present
+  become: true
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_ssl
+
+# Debian install
+- name: Install EPAS Packages on Debian
+  ansible.builtin.package:
+    name:
+      - python3-pip
+      - python3-psycopg2
+      - edb-as{{ new_pg_version }}-server
+      - edb-as{{ new_pg_version }}-server-core
+      - edb-as{{ new_pg_version }}-server-client
+      - edb-as{{ new_pg_version }}-server-indexadvisor
+      - edb-as{{ new_pg_version }}-server-sqlprofiler
+      - edb-as{{ new_pg_version }}-server-sqlprotect
+    state: present
+    update_cache: true
+  become: true
+  when: ansible_os_family == 'Debian'
+  notify:
+    - Stop the new PG service
+    - Drop the default new EPAS debian database
+
+- name: Install EPAS < 14 Packages on Debian
+  ansible.builtin.package:
+    name:
+      - edb-as{{ new_pg_version }}-server-edb-modules
+    state: present
+    update_cache: true
+  become: true
+  when:
+    - ansible_os_family == 'Debian'
+    - new_pg_version|int < 14
+
+- name: Install EPAS >= 14 Packages on Debian
+  ansible.builtin.package:
+    name:
+      - edb-as{{ new_pg_version }}-server-edb-wait-states
+    state: present
+    update_cache: true
+  become: true
+  when:
+    - ansible_os_family == 'Debian'
+    - new_pg_version|int >= 14
+
+- name: Install sslutils on Debian
+  ansible.builtin.package:
+    name:
+      - edb-as{{ new_pg_version }}-server-sslutils
+    state: present
+  become: true
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_ssl
+
+- name: Install python-psycopg2
+  ansible.builtin.package:
+    name:
+      - python-psycopg2
+      - python-ipaddress
+    state: present
+    update_cache: true
+  when: os in ['Ubuntu18', 'Debian9', 'Debian10']
+  become: true
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

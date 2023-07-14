@@ -38,6 +38,7 @@ GROUP_ROLES = {
         'manage_dbpatches',
         'manage_efm',
         'setup_patroni',
+        'execute_binary_upgrade'
     ],
     'standby': [
         'setup_repo',
@@ -50,6 +51,7 @@ GROUP_ROLES = {
         'manage_dbpatches',
         'manage_efm',
         'setup_patroni',
+        'execute_binary_upgrade'
     ],
     'pemserver': [
         'setup_repo',

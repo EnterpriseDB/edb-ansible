@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  ansible-tester:
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.ansible-tester
+      args:
+        ansible_core_version: "${ANSIBLE_CORE_VERSION}"
+    environment:
+    - EDB_REPO_USERNAME="${EDB_REPO_USERNAME:- }"
+    - EDB_REPO_PASSWORD="${EDB_REPO_PASSWORD:- }"
+    - EDB_REPO_TOKEN="${EDB_REPO_TOKEN:- }"
+    - EDB_ENABLE_REPO=${EDB_ENABLE_REPO:-true}
+    - EDB_PG_TYPE
+    - EDB_PG_VERSION
+    - CASE_NAME=execute_binary_upgrade
+    - EDB_OS
+    - ANSIBLE_CORE_VERSION="${ANSIBLE_CORE_VERSION:-2.13}"
+    volumes:
+    - ../../..:/workspace
+    command: "/workspace/tests/docker/exec-tests.sh"
+  primary1-rocky8:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky8
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init

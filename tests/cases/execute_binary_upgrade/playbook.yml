@@ -1,0 +1,24 @@
+---
+- hosts: all
+  name: Postgres deployment playbook
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+
+  collections:
+    - edb_devops.edb_postgres
+
+  pre_tasks:
+    - name: Initialize the user defined variables
+      ansible.builtin.set_fact:
+        disable_logging: false
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: init_dbserver
+      when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: execute_binary_upgrade
+      when: "'execute_binary_upgrade' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"

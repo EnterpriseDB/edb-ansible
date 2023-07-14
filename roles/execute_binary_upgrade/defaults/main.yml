@@ -1,0 +1,64 @@
+---
+# by default, pg_upgrade uses copy method to duplicate pg_data files
+# the link method, in contrast, uses the same data files and links the new cluster to the old data
+# this method has its limitations and setting to true should be thought through carefully
+# for example, if pg_upgrade is unsuccessful while using link method, the old cluster cannot be restarted
+# see https://www.postgresql.org/docs/current/pgupgrade.html for more information on selecting upgrade method
+use_link_method: false
+
+# if after a successful pg_upgrade you want old cluster deleted, set true
+delete_old_cluster: false
+
+# old_pg_version is the pg_version that the existing cluster uses
+# new_pg_version is the pg_version that you are upgrading to
+old_pg_version: 13
+new_pg_version: 15
+
+pg_upgrade_cmd: "{{ new_pg_bin_path }}/pg_upgrade"
+pg_upgrade_options: >-
+  --old-datadir "{{ old_pg_data }}" --new-datadir "{{ new_pg_data }}"
+  --old-bindir "{{ old_pg_bin_path }}" --new-bindir "{{ new_pg_bin_path }}"
+  --old-port {{ old_pg_port }} --new-port {{ new_pg_port }}
+  --socketdir "{{ pg_unix_socket_directories[0] }}" -U {{ pg_owner }}
+
+
+pg_type: PG
+pg_instance_name: main
+disable_logging: true
+use_hostname: true
+
+# postgres database
+pg_database: "postgres"
+
+pg_init_conf_params: []
+
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
+
+supported_os:
+  - CentOS7
+  - CentOS8
+  - RedHat7
+  - RedHat8
+  - Ubuntu20
+  - Debian9
+  - Debian10
+  - Rocky8
+  - AlmaLinux8
+  - OracleLinux7
+
+supported_old_pg_version:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+
+supported_new_pg_version:
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
