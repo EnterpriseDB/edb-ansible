@@ -1,0 +1,4 @@
+---
+# Vars for dropping the default installed cluster
+epas_deb_drop_cluster: "/usr/bin/epas_dropcluster"
+default_cluster_name: "main"

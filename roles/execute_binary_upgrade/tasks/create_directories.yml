@@ -1,0 +1,38 @@
+---
+- name: Ensure new postgres data directory exists
+  ansible.builtin.file:
+    path: "{{ new_pg_data }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+    state: directory
+  become: true
+
+- name: Ensure new postgres default data directory exists
+  ansible.builtin.file:
+    path: "{{ new_pg_default_data }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+    state: directory
+  become: true
+
+- name: Ensure postgres log directory exists
+  ansible.builtin.file:
+    path: "{{ pg_log }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+    state: directory
+  become: true
+  when: pg_log|length > 0 and pg_data not in pg_log
+
+- name: Ensure new postgres wal directory exists
+  ansible.builtin.file:
+    path: "{{ new_pg_wal }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+    state: directory
+  become: true
+  when: new_pg_wal|length > 0 and new_pg_data not in new_pg_wal

@@ -1,0 +1,26 @@
+---
+- name: Copy new global systemd unit file to /etc/systemd/system
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ new_pg_systemd_global_unit_file }}"
+    dest: "/etc/systemd/system/{{ new_pg_service }}.service"
+    mode: "0600"
+    owner: root
+    group: root
+  become: true
+
+- name: Update new systemd unit file
+  edb_devops.edb_postgres.linesinfile:
+    path: "/etc/systemd/system/{{ new_pg_service }}.service"
+    lines:
+      - line: "Description=Database server {{ pg_type }} {{ new_pg_version }} - Instance: {{ pg_instance_name }}"
+        regexp: "^Description=.*"
+      - line: "Environment=PGDATA={{ new_pg_default_data }}"
+        regexp: "^Environment=PGDATA.*"
+      - line: "PIDFile={{ new_pg_default_data }}/postmaster.pid"
+        regexp: "^PIDFile=.*"
+        insertafter: "^\\[Service\\]$"
+      - line: "ExecStopPost=+/usr/bin/systemctl daemon-reload"
+        regexp: "^ExecStopPost=.*"
+        insertafter: "^\\[Service\\]$"
+  become: true

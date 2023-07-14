@@ -1,0 +1,4 @@
+---
+# Vars for dropping the default Debian cluster
+pg_deb_drop_cluster: "/usr/bin/pg_dropcluster"
+default_cluster_name: "main"

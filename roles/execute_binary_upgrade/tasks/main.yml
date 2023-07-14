@@ -1,0 +1,4 @@
+---
+# Entry point of the execute_binary_upgrade role
+- name: Include the execute_binary_upgrade.yml
+  ansible.builtin.include_tasks: execute_binary_upgrade.yml

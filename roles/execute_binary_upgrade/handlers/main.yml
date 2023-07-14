@@ -1,0 +1,17 @@
+---
+- name: Stop the new PG service
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    state: stopped
+
+- name: Drop the default new EPAS debian database
+  ansible.builtin.shell: >
+    {{ epas_deb_drop_cluster }} --stop {{ new_pg_version }} {{ default_cluster_name }}
+  changed_when: true
+
+- name: Drop the default new PG debian database
+  ansible.builtin.shell: >
+    {{ pg_deb_drop_cluster }} {{ new_pg_version }} {{ default_cluster_name }}
+  args:
+    executable: /bin/bash
+  changed_when: true
