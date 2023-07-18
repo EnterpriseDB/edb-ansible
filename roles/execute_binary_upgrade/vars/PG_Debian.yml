@@ -6,17 +6,21 @@ default_cluster_name: "main"
 old_pg_bin_path: "/usr/lib/postgresql/{{ old_pg_version }}/bin"
 new_pg_bin_path: "/usr/lib/postgresql/{{ new_pg_version }}/bin"
 
-old_pg_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}/data"
-new_pg_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}/data"
+old_pg_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}"
+new_pg_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}"
 
-old_pg_default_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}/data"
-new_pg_default_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}/data"
+old_pg_default_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}"
+new_pg_default_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}"
 
 old_pg_port: 5432
 new_pg_port: 5432
 
 old_pg_service: "postgresql@{{ old_pg_version }}-{{ pg_instance_name }}"
 new_pg_service: "postgresql@{{ new_pg_version }}-{{ pg_instance_name }}"
+
+# only needed on Debian OS since configuration directory is not data directory
+old_pg_config_dir: "/etc/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}"
+new_pg_config_dir: "/etc/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}"
 
 # wal directory is only needed for initializing new cluster
 new_pg_wal: ""
@@ -27,6 +31,14 @@ pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
 
 new_pg_initdb: "/usr/bin/pg_createcluster -s {{ pg_unix_socket_directories[0] }} {{ new_pg_version }} {{ pg_instance_name }} -- ${PGSETUP_INITDB_OPTIONS}"
 new_pg_initdb_options: "-k -A scram-sha-256 --encoding=UTF-8 --locale=C.UTF-8 --auth-local=peer"
+
+# pg_upgrade command and options
+pg_upgrade_cmd: "{{ new_pg_bin_path }}/pg_upgrade"
+pg_upgrade_options: >-
+  --old-datadir "{{ old_pg_config_dir }}" --new-datadir "{{ new_pg_config_dir }}"
+  --old-bindir "{{ old_pg_bin_path }}" --new-bindir "{{ new_pg_bin_path }}"
+  --old-port {{ old_pg_port }} --new-port {{ new_pg_port }}
+  --socketdir "{{ pg_unix_socket_directories[0] }}" -U {{ pg_owner }}
 
 # unix socket domain directories
 pg_unix_socket_directories:

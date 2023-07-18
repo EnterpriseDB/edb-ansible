@@ -8,6 +8,7 @@
     owner: root
     group: root
   become: true
+  when: ansible_os_family == 'RedHat'
 
 - name: Update new systemd unit file
   edb_devops.edb_postgres.linesinfile:
@@ -24,3 +25,4 @@
         regexp: "^ExecStopPost=.*"
         insertafter: "^\\[Service\\]$"
   become: true
+  when: ansible_os_family == 'RedHat'
