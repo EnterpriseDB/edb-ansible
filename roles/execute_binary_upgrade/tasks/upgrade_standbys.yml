@@ -1,0 +1,47 @@
+---
+- name: Install rsync on primary
+  ansible.builtin.package:
+    name:
+      - rsync
+    state: present
+    update_cache: true
+  become: true
+  when: "'primary' in group_names"
+
+- name: Include the setup_systemd tasks for RedHat
+  ansible.builtin.include_tasks: setup_systemd.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Stop old_pg_service
+  ansible.builtin.systemd:
+    name: "{{ old_pg_service }}"
+    state: stopped
+    enabled: false
+  become: true
+  when:
+    - "'standby' in group_names"
+
+- name: Save postgresql.conf to tmp
+  ansible.builtin.copy:
+    src: "{{ old_pg_data }}/postgresql.conf"
+    dest: /tmp/pgupgrade/postgresql.conf
+    mode: preserve
+  become: true
+  when: "'standby' in group_names"
+
+- name: Save postgresql.auto.conf to tmp
+  ansible.builtin.copy:
+    src: "{{ old_pg_data }}/postgresql.auto.conf"
+    dest: /tmp/pgupgrade/postgresql.auto.conf
+    mode: preserve
+  become: true
+  when: "'standby' in group_names"
+
+- name: Save pg_hba.conf to tmp
+  ansible.builtin.copy:
+    src: "{{ old_pg_data }}/pg_hba.conf"
+    dest: /tmp/pgupgrade/pg_hba.conf
+    mode: preserve
+  become: true
+  when: "'standby' in group_names"
+

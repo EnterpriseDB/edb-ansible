@@ -1,1 +1,252 @@
 ---
+# verify new pg packages are installed
+- name: Initialize package_list
+  ansible.builtin.set_fact:
+    package_list: []
+  become: true
+
+- name: Set package list for EL7 PG
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python-pycurl', 'libselinux-python', 'python2-psycopg2', 'python-ipaddress'
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
+    - pg_type == 'PG'
+
+- name: Set package list for EL8 PG
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python3-pycurl', 'python3-libselinux', 'python3-psycopg2'
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+    - pg_type == 'PG'
+
+- name: Set package list for EL PG
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'glibc-common', 'ca-certificates', 'postgresql' + new_pg_version | string,
+        'postgresql' + new_pg_version | string + '-server',
+        'postgresql' + new_pg_version | string + '-contrib'
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+
+- name: Set package list for EL PG with pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'sslutils_' + new_pg_version | string
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'PG'
+    - pg_ssl
+
+- name: Set package list for Debian PG
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'ca-certificates', 'python3-pycurl', 'python3-psycopg2',
+        'postgresql-' + new_pg_version | string,
+        'postgresql-server-dev-' + new_pg_version | string
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+
+- name: Set package list for Debian PG with pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'postgresql-' + new_pg_version | string + '-sslutils'
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+    - pg_ssl
+
+- name: Set package list for Debian PG
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python-psycopg2', 'python-ipaddress'
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'PG'
+    - os in ['Ubuntu18','Debian9','Debian10']
+
+- name: Set package list for EL7 EPAS
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python-pip', 'python2-psycopg2', 'python-ipaddress'
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '7'
+    - pg_type == 'EPAS'
+
+- name: Set package list for EL7 EPAS
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python3-pip', 'python3-psycopg2'
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '8'
+    - pg_type == 'EPAS'
+
+- name: Set package list for EL EPAS
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'edb-as' + new_pg_version | string + '-server',
+        'edb-as' + new_pg_version | string + '-server-core',
+        'edb-as' + new_pg_version | string + '-server-contrib',
+        'edb-as' + new_pg_version | string + '-server-libs',
+        'edb-as' + new_pg_version | string + '-server-client',
+        'edb-as' + new_pg_version | string + '-server-llvmjit',
+        'edb-as' + new_pg_version | string + '-server-indexadvisor',
+        'edb-as' + new_pg_version | string + '-server-sqlprofiler',
+        'edb-as' + new_pg_version | string + '-server-sqlprotect',
+        'edb-as' + new_pg_version | string + '-server-edb_wait_states'
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+    - new_pg_version|int >= 11
+
+- name: Set package list for EL EPAS with pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'edb-as' + new_pg_version | string + '-server-sslutils'
+      ] }}
+  when:
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+    - pg_ssl
+
+- name: Set package list for Debian EPAS
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python3-pip', 'python3-psycopg2', 
+        'edb-as' + new_pg_version | string + '-server',
+        'edb-as' + new_pg_version | string + '-server-core',
+        'edb-as' + new_pg_version | string + '-server-client',
+        'edb-as' + new_pg_version | string + '-server-indexadvisor',
+        'edb-as' + new_pg_version | string + '-server-sqlprofiler',
+        'edb-as' + new_pg_version | string + '-server-sqlprotect'
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+
+- name: Set package list for Debian EPAS new_pg_version < 14
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'edb-as' + new_pg_version | string + '-server-edb-modules'
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+    - new_pg_version|int < 14
+
+- name: Set package list for Debian EPAS new_pg_version >= 14
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'edb-as' + new_pg_version | string + '-server-edb-wait-states'
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+    - new_pg_version|int >= 14
+
+- name: Set package list for Debian EPAS pg_ssl
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'edb-as' + new_pg_version | string + '-server-sslutils'
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+    - pg_ssl
+
+- name: Set package list for Debian EPAS Ubuntu18 Debian9 Debian10
+  ansible.builtin.set_fact:
+    package_list: >-
+      {{ package_list | default([]) + [
+        'python-psycopg2', 'python-ipaddress'
+      ] }}
+  when:
+    - ansible_os_family == 'Debian'
+    - pg_type == 'EPAS'
+    - os in ['Ubuntu18', 'Debian9', 'Debian10']
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    strategy: "all"
+
+- name: Check that all required packages have been installed
+  ansible.builtin.assert:
+    that:
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ package_list }}"
+  loop_control:
+    loop_var: package
+
+# verify that new_pg_service is running
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Check if service new_pg_service is running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[new_pg_service + '.service']['state'] == 'running'
+    fail_msg: "The service {{ new_pg_service }} is not running."
+    success_msg: "The service {{ new_pg_service }} is running."
+
+- name: Check if service new_pg_service is enabled
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services[new_pg_service + '.service']['status'] == 'enabled'
+    fail_msg: "The service {{ new_pg_service }} is not enabled."
+    success_msg: "The service {{ new_pg_service }} is enabled."
+  when: ansible_os_family == 'RedHat'
+
+# verify that new_pg_data was set up correctly
+- name: Stat to new_pg_data
+  ansible.builtin.stat:
+    path: "{{ new_pg_data }}"
+  register: new_data_check
+  become: true
+
+- name: Check that new_pg_data was configured correctly
+  ansible.builtin.assert:
+    that:
+      - new_data_check.stat['gr_name'] == pg_group
+      - new_data_check.stat['pw_name'] == pg_owner
+      - new_data_check.stat['isdir']|bool
+    fail_msg: "The directory {{ new_pg_data }} is not configured correctly."
+    success_msg: "The directory {{ new_pg_data }} is configured correctly."
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    package_list: null
+    new_data_check: null
