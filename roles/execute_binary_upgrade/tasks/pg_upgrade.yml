@@ -3,6 +3,7 @@
   ansible.builtin.systemd:
     name: "{{ old_pg_service }}"
     state: stopped
+    enabled: false
   become: true
 
 - name: Stop new pg_service
@@ -39,7 +40,3 @@
   register: pg_upgrade_execute
   become: true
   become_user: "{{ pg_owner }}"
-
-- name: Debug
-  ansible.builtin.debug:
-    var: pg_upgrade_execute

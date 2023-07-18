@@ -69,7 +69,6 @@
       - python3-pycurl
       - python3-psycopg2
       - postgresql-{{ new_pg_version }}
-      - postgresql-{{ new_pg_version }}
       - postgresql-server-dev-{{ new_pg_version }}
     state: present
     update_cache: true
@@ -82,7 +81,7 @@
 - name: Install sslutils on Debian
   ansible.builtin.package:
     name:
-      - postgresql-{{ pg_version }}-sslutils
+      - postgresql-{{ new_pg_version }}-sslutils
     state: present
     update_cache: true
   become: true

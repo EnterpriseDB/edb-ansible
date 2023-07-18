@@ -23,10 +23,6 @@
           Supported versions are {{ supported_new_pg_version }}"
   when: new_pg_version|int not in supported_new_pg_version
 
-- name: Debug
-  ansible.builtin.debug:
-    var: pg_upgrade_options
-
 - name: Check that old_pg_version and new_pg_version are compatible with each other
   ansible.builtin.fail:
     msg: "old_pg_version = {{ old_pg_version }} must be less than new_pg_version = {{ new_pg_version }}"
@@ -37,26 +33,54 @@
   when:
     - not validate_only|bool
 
-- name: Create new Postgres directories
-  ansible.builtin.include_tasks: create_directories.yml
+- name: Initialize and run pg_upgrade on primary nodes
   when:
+    - not validate_only|bool
+    - "'primary' in group_names"
+  become: true
+  block:
+    - name: Create new Postgres directories
+      ansible.builtin.include_tasks: create_directories.yml
+    - name: Setup systemd on RedHat
+      ansible.builtin.include_tasks: setup_systemd.yml
+    - name: Initialize new Postgres cluster
+      ansible.builtin.include_tasks: init_new_dbserver.yml
+    - name: Execute pg_upgrade
+      ansible.builtin.include_tasks: pg_upgrade.yml
+
+- name: Enable and start systemd service when not use_link_method
+  ansible.builtin.systemd:
+    name: "{{ new_pg_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  become: true
+  when:
+    - "'primary' in group_names"
+    - not use_link_method|bool
     - not validate_only|bool
 
-- name: Setup systemd on RedHat
-  ansible.builtin.include_tasks: setup_systemd.yml
+- name: Stop old_pg_service
+  ansible.builtin.systemd:
+    name: "{{ old_pg_service }}"
+    state: stopped
+    enabled: false
+  become: true
   when:
-    - not validate_only|bool
-    - ansible_os_family == 'RedHat'
+    - not use_link_method|bool
+    - "'standby' in group_names"
 
-- name: Initialize new Postgres cluster
-  ansible.builtin.include_tasks: init_new_dbserver.yml
+- name: Include setup_replication role for standby's when not use_link_method
+  ansible.builtin.include_role:
+    name: setup_replication
+  vars:
+    pg_version: "{{ new_pg_version }}"
+    pg_service: "{{ new_pg_service }}"
+    use_validation: false
   when:
+    - not use_link_method|bool
     - not validate_only|bool
-
-- name: Execute pg_upgrade
-  ansible.builtin.include_tasks: pg_upgrade.yml
-  when:
-    - not validate_only|bool
+    - "'standby' in group_names"
 
 - name: Import validation tasks
   ansible.builtin.import_tasks: validate_execute_binary_upgrade.yml
