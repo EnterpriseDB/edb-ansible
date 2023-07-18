@@ -20,5 +20,7 @@
       when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: init_dbserver
       when: "'init_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_replication
+      when: "'setup_replication' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
     - role: execute_binary_upgrade
       when: "'execute_binary_upgrade' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
