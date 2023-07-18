@@ -1,5 +1,4 @@
 {
   "use_hostname": false,
-  "pg_data": "/var/lib/pgsql/13/main/data",
   "pg_ssl": false
 }
