@@ -14,22 +14,20 @@ delete_old_cluster: false
 old_pg_version: 13
 new_pg_version: 15
 
-pg_upgrade_cmd: "{{ new_pg_bin_path }}/pg_upgrade"
-pg_upgrade_options: >-
-  --old-datadir "{{ old_pg_data }}" --new-datadir "{{ new_pg_data }}"
-  --old-bindir "{{ old_pg_bin_path }}" --new-bindir "{{ new_pg_bin_path }}"
-  --old-port {{ old_pg_port }} --new-port {{ new_pg_port }}
-  --socketdir "{{ pg_unix_socket_directories[0] }}" -U {{ pg_owner }}
-
 pg_type: PG
 pg_instance_name: main
 disable_logging: true
 use_hostname: true
+ssh_port: 22
 
 # postgres database
 pg_database: "postgres"
 
 pg_init_conf_params: []
+
+# if using link method, replication slots are not preserved.
+# setting to true will recreate these slots
+use_replication_slots: true
 
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup

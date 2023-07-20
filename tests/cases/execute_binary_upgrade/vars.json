@@ -1,4 +1,5 @@
 {
   "use_hostname": false,
-  "pg_ssl": false
+  "pg_ssl": false,
+  "use_link_method": true
 }

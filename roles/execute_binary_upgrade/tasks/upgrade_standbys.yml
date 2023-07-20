@@ -1,16 +1,12 @@
 ---
-- name: Install rsync on primary
-  ansible.builtin.package:
-    name:
-      - rsync
-    state: present
-    update_cache: true
+- name: Enable and start systemd service on primary
+  ansible.builtin.systemd:
+    name: "{{ new_pg_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
   become: true
   when: "'primary' in group_names"
-
-- name: Include the setup_systemd tasks for RedHat
-  ansible.builtin.include_tasks: setup_systemd.yml
-  when: ansible_os_family == 'RedHat'
 
 - name: Stop old_pg_service
   ansible.builtin.systemd:
@@ -18,30 +14,15 @@
     state: stopped
     enabled: false
   become: true
-  when:
-    - "'standby' in group_names"
-
-- name: Save postgresql.conf to tmp
-  ansible.builtin.copy:
-    src: "{{ old_pg_data }}/postgresql.conf"
-    dest: /tmp/pgupgrade/postgresql.conf
-    mode: preserve
-  become: true
   when: "'standby' in group_names"
 
-- name: Save postgresql.auto.conf to tmp
-  ansible.builtin.copy:
-    src: "{{ old_pg_data }}/postgresql.auto.conf"
-    dest: /tmp/pgupgrade/postgresql.auto.conf
-    mode: preserve
-  become: true
-  when: "'standby' in group_names"
-
-- name: Save pg_hba.conf to tmp
-  ansible.builtin.copy:
-    src: "{{ old_pg_data }}/pg_hba.conf"
-    dest: /tmp/pgupgrade/pg_hba.conf
-    mode: preserve
-  become: true
+- name: Include setup_replication role for standby's when not use_link_method
+  ansible.builtin.include_role:
+    name: setup_replication
+  vars:
+    pg_version: "{{ new_pg_version }}"
+    pg_service: "{{ new_pg_service }}"
+    pg_data: "{{ new_pg_data }}"
+    use_validation: false
   when: "'standby' in group_names"
 

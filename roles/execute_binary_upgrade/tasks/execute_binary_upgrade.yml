@@ -28,6 +28,53 @@
     msg: "old_pg_version = {{ old_pg_version }} must be less than new_pg_version = {{ new_pg_version }}"
   when: old_pg_version|int >= new_pg_version|int
 
+- name: Gather the cluster_nodes information
+  ansible.builtin.set_fact:
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+    _standby_private_ip: []
+    _standby_inventory_hostname: []
+
+- name: Get the standby information
+  ansible.builtin.set_fact:
+    _standby_private_ip: "{{ _standby_private_ip | default([]) + [node.private_ip] }}"
+    _standby_inventory_hostname: "{{ _standby_inventory_hostname | default([]) + [node.inventory_hostname] }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when: node.node_type == 'standby'
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+# check the latest checkpoint location is the same on all servers
+- name: Check the pg_upgrade compatibility
+  ansible.builtin.shell: |
+    set -o pipefail
+    {{ old_pg_bin_path }}/pg_controldata -D {{ old_pg_data }} | grep 'Latest checkpoint location'
+  args:
+    executable: /bin/bash
+  register: pg_controldata_check
+  become: true
+  become_user: "{{ pg_owner }}"
+  when:
+    - _standby_private_ip|length > 0
+
+- name: Debug
+  ansible.builtin.debug:
+    var: pg_controldata_check
+
+- name: Check that all latest checkpoint locations are the same
+  ansible.builtin.assert:
+    that:
+      - hostvars[node.inventory_hostname]['pg_controldata_check'].stdout == pg_controldata_check.stdout
+    fail_msg: "Nodes are not all up to date. Are all nodes running?"
+    quiet: true
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  when:
+    - _standby_private_ip|length > 0
+
 - name: Install new Postgres binaries
   ansible.builtin.include_tasks: "{{ pg_type }}_install.yml"
   when:
@@ -48,39 +95,25 @@
     - name: Execute pg_upgrade
       ansible.builtin.include_tasks: pg_upgrade.yml
 
-- name: Enable and start systemd service when not use_link_method
-  ansible.builtin.systemd:
-    name: "{{ new_pg_service }}"
-    daemon_reload: true
-    state: started
-    enabled: true
-  become: true
-  when:
-    - "'primary' in group_names"
-    - not use_link_method|bool
-    - not validate_only|bool
-
-- name: Stop old_pg_service
-  ansible.builtin.systemd:
-    name: "{{ old_pg_service }}"
-    state: stopped
-    enabled: false
-  become: true
-  when:
-    - not use_link_method|bool
-    - "'standby' in group_names"
-
-- name: Include setup_replication role for standby's when not use_link_method
-  ansible.builtin.include_role:
-    name: setup_replication
-  vars:
-    pg_version: "{{ new_pg_version }}"
-    pg_service: "{{ new_pg_service }}"
-    use_validation: false
+- name: Include upgrade_standbys when not use_link_method
+  ansible.builtin.include_tasks: upgrade_standbys.yml
   when:
     - not use_link_method|bool
     - not validate_only|bool
-    - "'standby' in group_names"
+    - _standby_private_ip|length > 0
+
+- name: Include upgrade_standbys_link when use_link_method
+  ansible.builtin.include_tasks: "upgrade_standbys_link_{{ ansible_os_family }}.yml"
+  when:
+    - use_link_method|bool
+    - not validate_only|bool
+    - _standby_private_ip|length > 0
+
+- name: Delete old cluster information
+  ansible.builtin.include_tasks: delete_old_cluster.yml
+  when:
+    - delete_old_cluster|bool
+    - not validate_only|bool
 
 - name: Import validation tasks
   ansible.builtin.import_tasks: validate_execute_binary_upgrade.yml
