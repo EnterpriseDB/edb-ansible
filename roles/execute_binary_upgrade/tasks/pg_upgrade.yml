@@ -1,4 +1,22 @@
 ---
+## if edb_wait_states is not shut off, it will break the pg_upgrade command
+## it will detect a user accessing the database and will abort upgrade
+#- name: Shut down edb_wait_states if EPAS
+#  ansible.builtin.include_role:
+#    name: manage_dbserver
+#    tasks_from: manage_postgres_params
+#  vars:
+#    pg_postgres_conf_params:
+#      - name: edb_wait_states.enable_collection
+#        value: "OFF"
+#    pg_service: "{{ old_pg_service }}"
+#    pg_unix_socket_directories: "{{ old_pg_unix_socket_directories }}"
+#    pg_port: "{{ old_pg_port }}"
+#  no_log: "{{ disable_logging }}"
+#  when:
+#    - pg_type == 'EPAS'
+#    - _standby_private_ip|length > 0
+
 - name: Stop old pg_service
   ansible.builtin.systemd:
     name: "{{ old_pg_service }}"
@@ -40,3 +58,7 @@
   register: pg_upgrade_execute
   become: true
   become_user: "{{ pg_owner }}"
+
+- name: Show pg_upgrade output
+  ansible.builtin.debug:
+    var: pg_upgrade_execute

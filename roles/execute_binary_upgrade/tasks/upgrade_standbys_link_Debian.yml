@@ -1,0 +1,163 @@
+---
+# generate ssh keys to execute rsync commands
+- name: Include the SSH keys generation tasks
+  ansible.builtin.include_tasks: generate_ssh_keys.yml
+
+- name: Include the SSH keys exchange tasks
+  ansible.builtin.include_tasks: exchange_ssh_keys.yml
+
+- name: Install rsync on primary
+  ansible.builtin.package:
+    name:
+      - rsync
+    state: present
+    update_cache: true
+  become: true
+
+- name: Stop old_pg_service
+  ansible.builtin.systemd:
+    name: "{{ old_pg_service }}"
+    state: stopped
+    enabled: false
+  become: true
+  when:
+    - "'standby' in group_names"
+
+- name: Create /tmp/pgupgrade directory
+  ansible.builtin.file:
+    path: /tmp/pgupgrade
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+    state: directory
+  become: true
+
+- name: Save postgresql.auto.conf to tmp/pgupgrade
+  ansible.builtin.copy:
+    src: "{{ old_pg_data }}/postgresql.auto.conf"
+    dest: /tmp/pgupgrade/postgresql.auto.conf
+    mode: preserve
+    remote_src: true
+  become: true
+  when:
+    - "'standby' in group_names"
+
+- name: Save files to tmp/pgupgrade
+  ansible.builtin.copy:
+    src: "{{ old_pg_config_dir }}/{{ item }}"
+    dest: "/tmp/pgupgrade/{{ item }}"
+    mode: preserve
+    remote_src: true
+  become: true
+  when:
+    - "'standby' in group_names"
+  loop:
+    - postgresql.conf
+    - pg_hba.conf
+
+# run command for each standby node
+# chdir to / because paths passed in are all relative to / directory
+- name: Run rsync command for pg_config
+  ansible.builtin.shell: >
+    rsync {{ rsync_options }} {{ rsync_config_directories }} {{ pg_owner }}@{{ standby_node }}:{{ base_pg_config }}
+  args:
+    executable: /bin/bash
+    chdir: /
+  become: true
+  become_user: "{{ pg_owner }}"
+  run_once: true
+  loop: "{{ _standby_private_ip }}"
+  loop_control:
+    loop_var: standby_node
+  when:
+    - "'primary' in group_names"
+
+# run rsync command for pg_wal directory if new_pg_data not in new_pg_wal
+- name: Run rsync command for pg_wal
+  ansible.builtin.shell: >
+    rsync {{ rsync_options }} {{ old_pg_wal }} {{ new_pg_wal }} {{ pg_owner }}@{{ standby_node }}:{{ base_pg_wal }}
+  args:
+    executable: /bin/bash
+    chdir: /
+  become: true
+  become_user: "{{ pg_owner }}"
+  loop: "{{ _standby_private_ip }}"
+  loop_control:
+    loop_var: standby_node
+  run_once: true
+  when:
+    - "'primary' in group_names"
+    - new_pg_data not in new_pg_wal
+    - base_pg_wal | length > 1
+
+# recreate SR slots
+# service needs to be running to create slots
+- name: Enable and start systemd service on primary
+  ansible.builtin.systemd:
+    name: "{{ new_pg_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  become: true
+  when:
+    - "'primary' in group_names"
+
+# tasks in setup_replication delegated to upstream_inventory_hostname, in this case the primary
+# _standby_inventory_hostname list created in tasK 'Get the standby information' in execute_binary_upgrade.yml
+- name: Create physical slots of the standbys
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_slots
+  vars:
+    pg_slots:
+      - name: "{{ standby_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
+        slot_type: physical
+  no_log: "{{ disable_logging }}"
+  loop: "{{ _standby_inventory_hostname }}"
+  loop_control:
+    loop_var: standby_hostname
+  run_once: true
+  when:
+    - use_replication_slots
+    - "'primary' in group_names"
+
+# replace stored files from /tmp/pgupgrade
+- name: Move files to new_pg_config_dir directory on Debian
+  ansible.builtin.copy:
+    src: "/tmp/pgupgrade/{{ item }}"
+    dest: "{{ new_pg_config_dir }}/{{ item }}"
+    mode: preserve
+    remote_src: true
+  become: true
+  when:
+    - "'standby' in group_names"
+  loop:
+    - postgresql.conf
+    - pg_hba.conf
+
+- name: Move postgresql.auto.conf from tmp/pgupgrade to new_pg_data on Debian /tmp/pgupgrade/postgresql.auto.conf
+  ansible.builtin.copy:
+    src: /tmp/pgupgrade/postgresql.auto.conf
+    dest: "{{ new_pg_data }}/postgresql.auto.conf"
+    mode: preserve
+    remote_src: true
+  become: true
+  when:
+    - "'standby' in group_names"
+
+- name: Remove /tmp/pgupgrade
+  ansible.builtin.file:
+    path: /tmp/pgupgrade
+    state: absent
+  become: true
+  when: "'standby' in group_names"
+
+- name: Enable and start systemd service on standby's
+  ansible.builtin.systemd:
+    name: "{{ new_pg_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  become: true
+  when:
+    - "'standby' in group_names"
