@@ -1,0 +1,134 @@
+---
+- name: Gather the cluster_nodes information
+  ansible.builtin.set_fact:
+    pg_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pg_sr_cluster_nodes', wantlist=True) }}"
+
+- name: Get the primary information
+  ansible.builtin.set_fact:
+    _primary_server_info: "{{ node }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when: node.node_type == 'primary'
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Set _primary_server_inventory_hostname
+  ansible.builtin.set_fact:
+    _primary_server_inventory_hostname: "{{ _primary_server_info.inventory_hostname }}"
+
+- name: Set _pg_host and _primary_host when not using hostname
+  ansible.builtin.set_fact:
+    _pg_host: "{{ hostvars[inventory_hostname].private_ip }}"
+    _primary_host: "{{ _primary_server_info.private_ip }}"
+  when:
+    - "not use_hostname|bool"
+
+- name: Set _pg_host and _primary_host when using hostname
+  ansible.builtin.set_fact:
+    _pg_host: "{{ inventory_hostname }}"
+    _primary_host: "{{ _primary_server_info.inventory_hostname }}"
+  when:
+    - use_hostname|bool
+
+- name: Fetch barman server SSH public key
+  ansible.builtin.slurp:
+    src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
+  delegate_to: "{{ _primary_server_inventory_hostname }}"
+  register: _primary_server_ssh_public_key_b64
+  become: true
+
+- name: Set _primary_server_ssh_public_key
+  ansible.builtin.set_fact:
+    _primary_server_ssh_public_key: "{{ _primary_server_ssh_public_key_b64.content | b64decode | trim }}"
+
+- name: Fetch pg_owner SSH public key
+  ansible.builtin.slurp:
+    src: "{{ pg_user_home + '/.ssh/id_rsa.pub' }}"
+  register: _pg_ssh_public_key_b64
+  become: true
+
+- name: Set _pg_ssh_public_key
+  ansible.builtin.set_fact:
+    _pg_ssh_public_key: "{{ _pg_ssh_public_key_b64.content | b64decode | trim }}"
+
+- name: Ensure pg_owner SSH public key is on the primary server
+  ansible.builtin.lineinfile:
+    path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0600"
+    line: "{{ _pg_ssh_public_key }}"
+    create: true
+  delegate_to: "{{ _primary_server_inventory_hostname }}"
+  become: true
+
+- name: Ensure barman_user SSH public key is on the Postgres server
+  ansible.builtin.lineinfile:
+    path: "{{ pg_user_home + '/.ssh/authorized_keys' }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0600"
+    line: "{{ _primary_server_ssh_public_key }}"
+    create: true
+
+- name: Run ssh-keyscan from the Primary server
+  ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _pg_host }}
+  register: _primary_ssh_keyscan_output
+  delegate_to: "{{ _primary_server_inventory_hostname }}"
+  become: true
+  changed_when: false
+
+# The SSH key name format used by the known_hosts module differs if the SSH
+# port value is equal to the default value (22) or not.
+# When the SSH port value is not the default value, format is: [hostname]:port
+- name: Set _ssh_pg_keyname and _ssh_primary_keyname when SSH port is 22
+  ansible.builtin.set_fact:
+    _ssh_pg_keyname: "{{ _pg_host }}"
+    _ssh_primary_keyname: "{{ _primary_host }}"
+  when:
+    - ssh_port == 22
+
+- name: Set _ssh_pg_keyname and _ssh_primary_keyname when SSH port is different than 22
+  ansible.builtin.set_fact:
+    _ssh_pg_keyname: "[{{ _pg_host }}]:{{ ssh_port }}"
+    _ssh_primary_keyname: "[{{ _primary_host }}]:{{ ssh_port }}"
+  when:
+    - ssh_port != 22
+
+- name: Add pg_owner SSH public key into Primary server known hosts
+  ansible.builtin.known_hosts:
+    path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
+    name: "{{ _ssh_pg_keyname }}"
+    key: "{{ _item }}"
+  with_items: "{{ _primary_ssh_keyscan_output.stdout_lines }}"
+  loop_control:
+    loop_var: _item
+  delegate_to: "{{ _primary_server_inventory_hostname }}"
+  become: true
+  become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Run ssh-keyscan from the Postgres server
+  ansible.builtin.command: ssh-keyscan -p {{ ssh_port }} {{ _primary_host }}
+  register: _pg_ssh_keyscan_output
+  become: true
+  changed_when: false
+
+- name: Add barman_user SSH public key into Postgres server known hosts
+  ansible.builtin.known_hosts:
+    path: "{{ pg_user_home + '/.ssh/known_hosts' }}"
+    name: "{{ _ssh_primary_keyname }}"
+    key: "{{ _item }}"
+  with_items: "{{ _pg_ssh_keyscan_output.stdout_lines }}"
+  loop_control:
+    loop_var: _item
+  become: true
+  become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Reset local variables
+  ansible.builtin.set_fact:
+    _primary_server_info: ""
+    _pg_host: null
+    _primary_host: null
