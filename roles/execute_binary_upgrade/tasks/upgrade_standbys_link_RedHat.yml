@@ -40,6 +40,7 @@
     dest: "/tmp/pgupgrade/{{ item }}"
     mode: preserve
     remote_src: true
+    backup: true
   become: true
   when: "'standby' in group_names"
   loop:
@@ -81,6 +82,23 @@
     - "'primary' in group_names"
     - new_pg_data not in new_pg_wal
     - base_pg_wal | length > 1
+
+# run rsync command for pg_tblspc directory if given
+- name: Run rsync command for pg_tblspc
+  ansible.builtin.shell: >
+    rsync {{ rsync_options }} {{ rsync_tblspc_directories }} {{ pg_owner }}@{{ standby_node }}:{{ new_pg_tblspc }}
+  args:
+    executable: /bin/bash
+    chdir: /
+  become: true
+  become_user: "{{ pg_owner }}"
+  loop: "{{ _standby_private_ip }}"
+  loop_control:
+    loop_var: standby_node
+  run_once: true
+  when:
+    - "'primary' in group_names"
+    - new_pg_tblspc | length > 1
 
 # recreate SR slots
 # service needs to be running to create slots

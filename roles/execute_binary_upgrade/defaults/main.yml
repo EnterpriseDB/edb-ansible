@@ -25,6 +25,8 @@ pg_database: "postgres"
 
 pg_init_conf_params: []
 
+pg_upgrade_additional_params: ""
+
 # if using link method, replication slots are not preserved.
 # setting to true will recreate these slots
 use_replication_slots: true
