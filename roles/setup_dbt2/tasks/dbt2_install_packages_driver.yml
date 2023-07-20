@@ -1,18 +1,4 @@
 ---
-- name: Download stackcollapse-perf.pl
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/brendangregg/FlameGraph/master/stackcollapse-perf.pl
-    dest: /usr/bin/stackcollapse-perf.pl
-    mode: '0755'
-  become: true
-
-- name: Download flamegraph.pl
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/brendangregg/FlameGraph/master/flamegraph.pl
-    dest: /usr/bin/flamegraph.pl
-    mode: '0755'
-  become: true
-
 - name: Install DBT-2 Driver supporting packages
   ansible.builtin.package:
     name:
