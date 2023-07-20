@@ -196,14 +196,20 @@
   when:
     - "'standby' in group_names"
 
-- name: Remove /tmp/pgupgrade
+- name: Remove /tmp/pgupgrade and sudoers file
   ansible.builtin.file:
-    path: /tmp/pgupgrade
+    path: "{{ item }}"
     state: absent
   become: true
   loop:
     - /tmp/pgupgrade
     - /etc/sudoers.d/postgres
+  when:
+    - "'standby' in group_names"
+
+- name: Force systemd to reread sudoers.d config file
+  ansible.builtin.systemd:
+    daemon_reload: true
   when:
     - "'standby' in group_names"
 
