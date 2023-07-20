@@ -57,6 +57,64 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
+- name: Prepare hba non ssl list for user - enterprisedb_user
+  ansible.builtin.set_fact:
+    pg_allow_ip_addresses: >-
+      {{ pg_allow_ip_addresses | default([]) + [
+        {
+          "contype": "host",
+          "users": enterprisedb_user,
+          "source": node.private_ip + "/32",
+          "databases": "postgres"
+          },
+        {
+          "contype": "host",
+          "users": enterprisedb_user,
+          "source": node.private_ip + "/32",
+          "databases": "postgres"
+          },
+          {
+           "contype": "host",
+           "users": enterprisedb_user,
+           "source": node.private_ip + "/32",
+           "databases": "postgres"
+           }
+        ] }}
+  when: not pg_ssl
+  loop: "{{ pgd_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+- name: Prepare hba ssl list for user - enterprisedb_user
+  ansible.builtin.set_fact:
+    pg_allow_ip_addresses: >-
+      {{ pg_allow_ip_addresses | default([]) + [
+        {
+          "users": enterprisedb_user,
+          "source": node.private_ip + "/32",
+          "databases": "postgres"
+          },
+          {
+          "contype": "host",
+          "users": enterprisedb_user,
+          "source": node.private_ip + "/32",
+          "databases": "postgres"
+          },
+          {
+           "users": enterprisedb_user,
+           "source": node.private_ip + "/32",
+           "databases": "postgres"
+           }
+        ] }}
+  when: pg_ssl
+  loop: "{{ pgd_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
 - name: Update PGD node hba config
   ansible.builtin.include_role:
     name: manage_dbserver

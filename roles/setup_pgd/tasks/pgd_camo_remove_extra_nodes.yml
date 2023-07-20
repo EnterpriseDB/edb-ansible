@@ -1,0 +1,55 @@
+---
+- name: Part node using bdr.drop_node
+  block:
+    - name: Part node using bdr.part_node
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:
+          - query: "SELECT bdr.part_node('{{ node }}',
+                                          true,
+                                          true
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when: configure_pgd_commitscopes|bool
+      loop: "{{ pgd_node_names_to_remove }}"
+      loop_control:
+        loop_var: node
+      run_once: true
+      
+    - name: Drop node using bdr.drop_node
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:
+          - query: "SELECT bdr.drop_node('{{ node }}',
+                                          true,
+                                          true
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when: configure_pgd_commitscopes|bool
+      loop: "{{ pgd_node_names_to_remove }}"
+      loop_control:
+        loop_var: node
+      run_once: true
+      
+    - name: Configure PGD Cluster with a CAMO Commit Scope
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+        apply:
+          throttle: 1
+      vars:
+        pg_query:
+          - query: "SELECT bdr.add_commit_scope(commit_scope_name := '{{ lead_primary_dsn }}',
+                                              origin_node_group := '{{ pgd_cluster_name }}',
+                                              rule := 'ALL (pgd_cluster) CAMO DEGRADE ON (timeout=500ms) TO ASYNC'
+                                              )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when: configure_pgd_commitscopes|bool
+      run_once: true      

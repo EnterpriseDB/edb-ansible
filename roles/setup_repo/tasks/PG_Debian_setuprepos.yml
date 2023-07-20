@@ -29,6 +29,14 @@
     state: present
   become: true
 
+# Exclusive to pgd setup authentication
+# Package is used for ident authentication
+- name: Install oidentd package if not available
+  ansible.builtin.package:
+    name: oidentd
+    state: present
+  become: true
+  
 - name: Install acl
   ansible.builtin.package:
     name: acl

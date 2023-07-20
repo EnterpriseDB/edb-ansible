@@ -106,3 +106,18 @@
   ansible.builtin.import_tasks: validate_setup_pgd.yml
   when:
     - validate_only|bool or use_validation|bool
+
+# Exclusive to pgd setup authentication
+- name: Start service oidentd, if not started
+  ansible.builtin.service:
+    name: oidentd
+    state: started
+
+# Remove extra nodes from architecture
+- name: Remove extra nodes from architecture
+  when:
+    - not validate_only|bool
+  become: true
+  block:
+    - name: Remove extra nodes from PGD cluster
+      ansible.builtin.import_tasks: pgd_camo_remove_extra_nodes.yml    
