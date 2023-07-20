@@ -246,7 +246,54 @@
     fail_msg: "The directory {{ new_pg_data }} is not configured correctly."
     success_msg: "The directory {{ new_pg_data }} is configured correctly."
 
+# test if replication slots were created correctly if standby nodes exist
+# get the primary inventory hostname
+- name: Get the primary information
+  ansible.builtin.set_fact:
+    primary_inventory_hostname: "{{ node.inventory_hostname }}"
+  loop: "{{ pg_cluster_nodes }}"
+  loop_control:
+    loop_var: node
+  when: node.node_type == 'primary'
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
+# get number of standby nodes in cluster
+- name: Get the standby information
+  ansible.builtin.set_fact:
+    standby_node_info: "{{ pg_cluster_nodes | selectattr('node_type', 'equalto', 'standby') | default([]) | list }}"
+  when: _standby_private_ip|length > 0
+
+- name: Run query to check replication slots were created correctly
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      delegate_to: "{{ primary_inventory_hostname }}"
+      run_once: true
+  when: _standby_private_ip|length > 0
+  vars:
+    pg_query:
+      - query: "Select * from pg_replication_slots"
+        db: "{{ pg_database }}"
+
+- name: Set repslots_query_result with sql_query_output
+  ansible.builtin.set_fact:
+    repslots_query_result: "{{ sql_query_output }}"
+  become: true
+  when: _standby_private_ip|length > 0
+
+- name: Check if replication slots were created correctly
+  ansible.builtin.assert:
+    that:
+      - repslots_query_result.results[0].query_result|length == standby_node_info|length
+    fail_msg: "Replication did not create replication slots"
+    success_msg: "Replication created replication slots successfully"
+  run_once: true
+  when: _standby_private_ip|length > 0
+
 - name: Reset variables
   ansible.builtin.set_fact:
     package_list: null
     new_data_check: null
+    repslots_query_result: null

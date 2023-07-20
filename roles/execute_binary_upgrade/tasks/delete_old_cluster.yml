@@ -1,0 +1,19 @@
+---
+- name: Remove systemd unit file
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  become: true
+  when: ansible_os_family == 'RedHat'
+  loop:
+    - "{{ old_pg_systemd_global_unit_file }}"
+    - "/etc/systemd/system/{{ old_pg_service }}.service"
+
+- name: Remove old bin and data files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  become: true
+  loop:
+    - "{{ old_pg_bin_path | dirname }}"
+    - "{{ old_pg_data | dirname }}"
