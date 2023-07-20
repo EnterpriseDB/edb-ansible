@@ -530,9 +530,7 @@ cases:
     - PG
     - EPAS
     os:
-    - centos7
     - rocky8
     - almalinux8
     - debian10
     - ubuntu20
-    - oraclelinux7
