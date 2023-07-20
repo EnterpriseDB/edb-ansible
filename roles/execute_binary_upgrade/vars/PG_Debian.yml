@@ -8,6 +8,8 @@ new_pg_bin_path: "/usr/lib/postgresql/{{ new_pg_version }}/bin"
 
 old_pg_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}"
 new_pg_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}"
+# base directory used during rsync command, must be above both the old and new cluster pg_data
+base_pg_data: "/var/lib/postgresql"
 
 old_pg_default_data: "/var/lib/postgresql/{{ old_pg_version }}/{{ pg_instance_name }}"
 new_pg_default_data: "/var/lib/postgresql/{{ new_pg_version }}/{{ pg_instance_name }}"
@@ -30,6 +32,9 @@ new_pg_wal: ""
 # base directory used during rsync command, must be above both the old and new cluster pg_wal
 base_pg_wal: ""
 
+# if you have tablespaces to include and are using link method, give location to rsync to
+new_pg_tblspc: ""
+
 # log directory and filename for the new cluster
 pg_log: "/var/log/postgres"
 pg_log_filename: "{{ pg_instance_name }}-postgresql-%a.log"
@@ -50,7 +55,9 @@ pg_upgrade_options: >-
 rsync_options: >-
   --archive --delete --hard-links --size-only --no-inc-recursive -e "ssh -p {{ ssh_port }} -o StrictHostKeyChecking=no"
 
+rsync_data_directories: "{{ base_pg_data }}/{{ old_pg_version }} {{ base_pg_data }}/{{ new_pg_version }}"
 rsync_config_directories: "{{ base_pg_config }}/{{ old_pg_version }} {{ base_pg_config }}/{{ new_pg_version }}"
+rsync_tblspc_directories: "{{ base_pg_data }}/pg_tblspc {{ base_pg_data }}/pg_tblspc"
 
 # unix socket domain directories
 pg_unix_socket_directories:
