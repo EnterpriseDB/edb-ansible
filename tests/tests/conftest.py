@@ -223,3 +223,10 @@ def get_pgbouncer_auth_file():
             return '/etc/edb/pgbouncer1.17/userlist.txt'
         elif os_family() == 'Debian':
             return '/etc/edb/pgbouncer1.17/userlist.txt'
+
+
+def get_enable_edb_tde():
+    ansible_vars = load_ansible_vars()
+    edb_enable_tde = ansible_vars.get('edb_enable_tde', False)
+
+    return edb_enable_tde
