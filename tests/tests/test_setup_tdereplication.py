@@ -1,22 +1,19 @@
 import pytest
 
 from conftest import (
-    load_ansible_vars,
     get_hosts,
-    get_os,
-    get_pg_type,
     get_primary,
     get_standbys,
-    get_pg_unix_socket_dir
+    get_pg_unix_socket_dir,
+    get_enable_edb_tde
 )
 
-def test_setup_replication_user():
-    pg_user = 'postgres'
-    pg_group = 'postgres'
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
+def test_setup_replication_user():
+    if not get_enable_edb_tde():
+        pytest.skip()
+
+    pg_user = 'enterprisedb'
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -29,13 +26,12 @@ def test_setup_replication_user():
     assert len(result) > 0, \
         "repuser was not succesfully created"
 
-def test_setup_replication_slots():
-    pg_user = 'postgres'
-    pg_group = 'postgres'
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
-        pg_group = 'enterprisedb'
+def test_setup_replication_slots():
+    if not get_enable_edb_tde():
+        pytest.skip()
+
+    pg_user = 'enterprisedb'
 
     host = get_primary()
     socket_dir = get_pg_unix_socket_dir()
@@ -48,11 +44,12 @@ def test_setup_replication_slots():
     assert len(result) > 0, \
         "Replication did not create replication slots"
 
-def test_setup_replication_stat_replication():
-    pg_user = 'postgres'
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
+def test_setup_replication_stat_replication():
+    if not get_enable_edb_tde():
+        pytest.skip()
+
+    pg_user = 'enterprisedb'
 
     host = get_primary()
     rep_count = len(get_standbys())
@@ -66,11 +63,12 @@ def test_setup_replication_stat_replication():
     assert len(result) == rep_count, \
         "Replication was not successful on master"
 
-def test_setup_replication_stat_wal_receiver():
-    pg_user = 'postgres'
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
+def test_setup_replication_stat_wal_receiver():
+    if not get_enable_edb_tde():
+        pytest.skip()
+
+    pg_user = 'enterprisedb'
 
     hosts = get_standbys()
     socket_dir = get_pg_unix_socket_dir()
@@ -88,11 +86,12 @@ def test_setup_replication_stat_wal_receiver():
     assert len(res) == len(hosts), \
         "Replication was not successful on standby(s)"
 
-def test_setup_replication_tde_enabled():
-    pg_user = 'postgres'
 
-    if get_pg_type() == 'EPAS':
-        pg_user = 'enterprisedb'
+def test_setup_replication_tde_enabled():
+    if not get_enable_edb_tde():
+        pytest.skip()
+
+    pg_user = 'enterprisedb'
 
     hosts = get_standbys()
     socket_dir = get_pg_unix_socket_dir()

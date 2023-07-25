@@ -1,5 +1,10 @@
 {
   "use_hostname": false,
-  "pg_data": "/opt/pgdata",
-  "pg_wal": "/opt/pgwal"
+  "pg_data": "/var/lib/edb/as15/main/data",
+  "edb_enable_tde": true,
+  "edb_key_wrap_cmd": "openssl enc -e -aes-128-cbc -in  /etc/edb/keyloc/master_key.plain -out \"%p\" -pass file:/etc/edb/keyloc/master_secure_key.key",
+  "edb_key_unwrap_cmd": "openssl enc -d -aes-128-cbc -in \"%p\" -pass file:/etc/edb/keyloc/master_secure_key.key",
+  "edb_master_key": "ItsImportantToCheckThisItsImportantToCheckThisItsImportantToCheckThis",
+  "edb_master_key_location": "/etc/edb/keyloc",
+  "edb_secure_master_key": "12345678"
 }
