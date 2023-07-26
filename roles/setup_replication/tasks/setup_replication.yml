@@ -129,11 +129,10 @@
 
 - name: Update primary for synchronous replication
   ansible.builtin.import_tasks: primary_synchronous_param.yml
-  when: >-
-      _synchronous_standbys is defined and (
-      _synchronous_standbys|length > 0
-      or synchronous_standby_names|length > 0 ) and not validate_only|bool
-      and not remove_only|bool
+  when:
+    - (_synchronous_standbys is defined and _synchronous_standbys|length > 0) or synchronous_standby_names|length > 0
+    - not validate_only|bool
+    - not remove_only|bool
   run_once: true
   delegate_to: "{{ primary_inventory_hostname }}"
   no_log: "{{ disable_logging }}"
@@ -149,7 +148,6 @@
     primary_private_ip: ""
     primary_inventory_hostname: ""
     primary_host_name: ""
-    standby_names: []
     pg_allow_ip_addresses: []
     standby_physical_slots: []
     force_replication: false
