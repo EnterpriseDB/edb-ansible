@@ -4,4 +4,4 @@ warn_list:
   - package-latest  # Package installs should not use latest
   - args[module]  # Validating module arguments.
   - experimental  # all rules tagged as experimental
-  - role-name
+  - var-naming[no-role-prefix]
