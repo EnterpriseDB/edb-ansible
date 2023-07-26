@@ -1,0 +1,65 @@
+---
+- name: Configure PGD CAMO on Primary and Secondary Nodes
+  block:
+    - name: Create PGD Node Sub Group with Two Nodes
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:
+          - query: "SELECT bdr.create_node_group(node_group_name := '{{ pgd_two_node_group_name }}',
+                                          parent_group_name := '{{ pgd_cluster_name }}',
+                                          join_node_group := false
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when:
+        - inventory_hostname == pgd_cluster_nodes[0].inventory_hostname or inventory_hostname == pgd_cluster_nodes[0].inventory_hostname
+        - configure_pgd_commitscopes|bool
+
+    - name: Switch Primary Node towards PGD Node Sub Group with Two Nodes
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:      
+          - query: "SELECT bdr.switch_node_group(node_group_name := '{{ pgd_two_node_group_name }}',
+                                          wait_for_completion := true
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when:
+        - inventory_hostname == pgd_cluster_nodes[0].inventory_hostname or inventory_hostname == pgd_cluster_nodes[0].inventory_hostname
+        - configure_pgd_commitscopes|bool
+              
+    - name: Switch Secondary Node towards PGD Node Sub Group with Two Nodes
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:      
+          - query: "SELECT bdr.switch_node_group(node_group_name := '{{ pgd_two_node_group_name }}',
+                                          wait_for_completion := true
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when:
+        - inventory_hostname == pgd_cluster_nodes[1].inventory_hostname
+        - configure_pgd_commitscopes|bool
+      
+    - name: Configure PGD Cluster with a CAMO Commit Scope
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+        apply:
+          throttle: 1
+      vars:
+        pg_query:       
+          - query: "SELECT bdr.add_commit_scope(commit_scope_name := '{{ pgd_camo_scope_name }}',
+                                              origin_node_group := '{{ pgd_two_node_group_name }}',
+                                              rule := 'ALL ( {{pgd_two_node_group_name}} ) CAMO DEGRADE ON (timeout=500ms) TO ASYNC'
+                                              )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when: configure_pgd_commitscopes|bool
+      run_once: true

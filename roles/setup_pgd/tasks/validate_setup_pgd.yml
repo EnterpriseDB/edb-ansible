@@ -193,9 +193,3 @@
     init_data_query_res: null
     unix_stat: null
     pg_tde_query_result: null
-
-# Exclusive to pgd setup authentication
-- name: Start service oidentd, if not started
-  ansible.builtin.service:
-    name: oidentd
-    state: started

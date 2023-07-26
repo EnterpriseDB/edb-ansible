@@ -57,25 +57,25 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
-- name: Prepare hba non ssl list for user - enterprisedb_user
+- name: Prepare hba non ssl list for user - pg_owner
   ansible.builtin.set_fact:
     pg_allow_ip_addresses: >-
       {{ pg_allow_ip_addresses | default([]) + [
         {
           "contype": "host",
-          "users": enterprisedb_user,
+          "users": pg_owner,
           "source": node.private_ip + "/32",
           "databases": "postgres"
           },
         {
           "contype": "host",
-          "users": enterprisedb_user,
+          "users": pg_owner,
           "source": node.private_ip + "/32",
           "databases": "postgres"
           },
           {
            "contype": "host",
-           "users": enterprisedb_user,
+           "users": pg_owner,
            "source": node.private_ip + "/32",
            "databases": "postgres"
            }
@@ -87,23 +87,23 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
-- name: Prepare hba ssl list for user - enterprisedb_user
+- name: Prepare hba ssl list for user - pg_owner
   ansible.builtin.set_fact:
     pg_allow_ip_addresses: >-
       {{ pg_allow_ip_addresses | default([]) + [
         {
-          "users": enterprisedb_user,
+          "users": pg_owner,
           "source": node.private_ip + "/32",
           "databases": "postgres"
           },
           {
           "contype": "host",
-          "users": enterprisedb_user,
+          "users": pg_owner,
           "source": node.private_ip + "/32",
           "databases": "postgres"
           },
           {
-           "users": enterprisedb_user,
+           "users": pg_owner,
            "source": node.private_ip + "/32",
            "databases": "postgres"
            }

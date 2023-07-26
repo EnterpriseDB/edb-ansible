@@ -113,11 +113,11 @@
     name: oidentd
     state: started
 
-# Remove extra nodes from architecture
-- name: Remove extra nodes from architecture
+# Configure PGD Primary and Secondary Nodes for PGD CAMO
+- name: Configure PGD Primary and Secondary Nodes for PGD CAMO
   when:
     - not validate_only|bool
   become: true
   block:
-    - name: Remove extra nodes from PGD cluster
-      ansible.builtin.import_tasks: pgd_camo_remove_extra_nodes.yml    
+    - name: Configure PGD Primary and Secondary Nodes for PGD CAMO
+      ansible.builtin.import_tasks: pgd_camo_configuration.yml

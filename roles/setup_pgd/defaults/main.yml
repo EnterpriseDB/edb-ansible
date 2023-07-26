@@ -118,7 +118,5 @@ supported_pgd_version:
 enterprisedb_user: "enterprisedb"
 
 # PGD CAMO
-# PGD Cluster Node To remove for CAMO
-# PGD CAMO configuration requires a maximum of two nodes
-pgd_node_names_to_remove: ["edb_primary3"]
 pgd_camo_scope_name: "pgd_camo_scope"  
+pgd_two_node_group_name: "pgd_camo_two_nodes"
