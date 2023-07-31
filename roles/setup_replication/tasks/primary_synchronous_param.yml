@@ -1,18 +1,11 @@
 ---
-- name: Prepare standby list
-  ansible.builtin.set_fact:
-    _standbys_list: "{{ _standbys_list | default([]) + [node.inventory_hostname] }}"
-  loop: "{{ pg_cluster_nodes }}"
-  loop_control:
-    loop_var: node
-  when:
-    - synchronous_standby_names|length < 1
-    - node.node_type == 'standby'
-  no_log: "{{ disable_logging }}"
-
 - name: Set _synchronous_standby_names
   ansible.builtin.set_fact:
-    _synchronous_standby_names: "{{ ' ' + _synchronous_standbys | default([]) | length | string() + '(' + _standbys_list | map('to_json') | join(',') + ')' }}"
+    _synchronous_standby_names: >-
+      {{
+        ' ' + _synchronous_standbys | default([]) | length | string() +
+        '(' + _synchronous_standbys | map('to_json') | join(',') + ')'
+      }}
   when:
     - synchronous_standby_names|length < 1
 
@@ -22,7 +15,6 @@
   when:
     - synchronous_standby_names|length < 1
     - standby_quorum_type|length > 0
-    - _synchronous_standby_names is defined
     - _synchronous_standby_names|length > 0
 
 - name: Call manage_dbserver tasks for synchronous_standby_names
