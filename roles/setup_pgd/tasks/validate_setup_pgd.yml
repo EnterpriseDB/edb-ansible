@@ -48,7 +48,7 @@
       - ansible_facts.services[pg_service + '.service']['state'] == 'running'
     fail_msg: "The service {{ pg_service }} is not running."
     success_msg: "The service {{ pg_service }} is running."
-    
+
 - name: Check if service pg_service is enabled
   ansible.builtin.assert:
     that:
@@ -56,7 +56,7 @@
     fail_msg: "The service {{ pg_service }} is not enabled."
     success_msg: "The service {{ pg_service }} is enabled."
   when: ansible_os_family == 'RedHat'
-       
+
 # check if sockets are listening
 - name: Get stat info for pg_unix_socket_directories
   ansible.builtin.stat:
@@ -106,7 +106,7 @@
     success_msg: "Postgres data_directory is linked to {{ pg_data }}"
   when:
     - init_data_query_res.results[0].query_result[0].setting != pg_data
-  
+
 # test if TDE is enabled or not
 - name: Run query to check if TDE on standbys or not
   ansible.builtin.include_role:

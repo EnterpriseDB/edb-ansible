@@ -114,6 +114,9 @@ supported_pg_version:
 supported_pgd_version:
   - 5
 
-# PGD CAMO
-pgd_camo_scope_name: "pgd_camo_scope"  
-pgd_two_node_group_name: "pgd_camo_two_nodes"
+# PGD Commit Scopes
+configure_pgd_camo: true
+configure_pgd_groupcommit: false
+pgd_camo_scope_name: "pgd_camo_scope"
+pgd_groupcommit_scope_name: "pgd_groupcommit_scope"
+pgd_two_node_group_name: "pgd_two_nodes"

@@ -1,0 +1,158 @@
+---
+# CAMO Commit Scope
+- name: Run query to check if PGD 'pgd_camo_scope_name' commit scope exists or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM bdr.commit_scopes WHERE commit_scope_name  = '{{ pgd_camo_scope_name }}'"
+        db: "{{ pgd_cluster_database }}"
+  when:
+     - configure_pgd_camo|bool
+
+- name: Store status of existence of 'pgd_camo_scope_name' commit scope
+  ansible.builtin.set_fact:
+    _pgd_camoscope_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+  when:
+     - configure_pgd_camo|bool
+
+- name: Run query to check if PGD 'pgd_two_node_group_name' subgroup exists or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_two_node_group_name }}'"
+        db: "{{ pgd_cluster_database }}"
+  when:
+     - configure_pgd_camo|bool or configure_pgd_groupcommit|bool
+
+- name: Store status of existence of 'pgd_two_node_group_name' subgroup
+  ansible.builtin.set_fact:
+    _pgd_two_node_group_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+  when:
+     - configure_pgd_camo|bool or configure_pgd_groupcommit|bool   
+
+- name: Configure PGD Cluster subgroups
+  block:
+    - name: Create PGD node sub group with two nodes
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:
+          - query: "SELECT bdr.create_node_group(node_group_name := '{{ pgd_two_node_group_name }}',
+                                          parent_group_name := '{{ pgd_cluster_name }}',
+                                          join_node_group := false
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when:
+        - inventory_hostname == pgd_cluster_nodes[0].inventory_hostname or inventory_hostname == pgd_cluster_nodes[0].inventory_hostname        
+        - configure_pgd_camo|bool or configure_pgd_groupcommit|bool
+        - _pgd_two_node_group_exists|int == 0
+
+    - name: Switch primary node towards PGD node sub group with two nodes
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:
+          - query: "SELECT bdr.switch_node_group(node_group_name := '{{ pgd_two_node_group_name }}',
+                                          wait_for_completion := true
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when:
+        - inventory_hostname == pgd_cluster_nodes[0].inventory_hostname or inventory_hostname == pgd_cluster_nodes[0].inventory_hostname
+        - configure_pgd_camo|bool or configure_pgd_groupcommit|bool
+        - _pgd_two_node_group_exists|int == 0
+
+    - name: Switch secondary node towards PGD node sub group with two nodes
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+      vars:
+        pg_query:      
+          - query: "SELECT bdr.switch_node_group(node_group_name := '{{ pgd_two_node_group_name }}',
+                                          wait_for_completion := true
+                                          )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: true
+      when:
+        - inventory_hostname == pgd_cluster_nodes[1].inventory_hostname
+        - configure_pgd_camo|bool or configure_pgd_groupcommit|bool
+        - _pgd_two_node_group_exists|int == 0        
+
+- name: Configure PGD Cluster with a CAMO Commit Scope
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      throttle: 1
+  vars:
+    pg_query:
+      - query: "SELECT bdr.add_commit_scope(commit_scope_name := '{{ pgd_camo_scope_name }}',
+                                          origin_node_group := '{{ pgd_two_node_group_name }}',
+                                          rule := 'ALL ( {{ pgd_two_node_group_name }} ) ON durable CAMO DEGRADE ON (timeout=500s) TO ASYNC'
+                                         )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: true
+  when:
+     - configure_pgd_camo|bool
+     - _pgd_camoscope_exists|int == 0
+
+- name: Configure PGD Cluster default CAMO Commit Scope
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      throttle: 1
+  vars:
+    pg_query:
+      - query: "SELECT bdr.alter_node_group_option(node_group_name := '{{ pgd_two_node_group_name }}',
+                                      config_key := 'default_commit_scope',
+                                      config_value := '{{ pgd_camo_scope_name }}'
+                                      )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: true
+  when:
+     - configure_pgd_camo|bool
+     - _pgd_camoscope_exists|int == 0
+
+# Group Commit Scope
+- name: Run query to check if PGD 'pgd_groupcommit_scope_name' commit scope exists or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM bdr.commit_scopes WHERE commit_scope_name  = '{{ pgd_groupcommit_scope_name }}'"
+        db: "{{ pgd_cluster_database }}"
+  when:
+     - configure_pgd_groupcommit|bool
+
+- name: Store status of existence of 'pgd_groupcommit_scope_name' commit scope
+  ansible.builtin.set_fact:
+    _pgd_groupcommitscope_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+  when:
+     - configure_pgd_groupcommit|bool
+
+- name: Configure PGD Cluster with a group commit scope
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      throttle: 1
+  vars:
+    pg_query:
+      - query: "SELECT bdr.add_commit_scope(commit_scope_name := '{{ pgd_groupcommit_scope_name }}',
+                                          origin_node_group := '{{ pgd_two_node_group_name }}',
+                                          rule := 'ANY 2 ( {{pgd_two_node_group_name}} ) GROUP COMMIT'
+                                          )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: true
+  when:
+     - configure_pgd_groupcommit|bool
+     - _pgd_groupcommitscope_exists|int == 0

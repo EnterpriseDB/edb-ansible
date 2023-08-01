@@ -120,4 +120,4 @@
   become: true
   block:
     - name: Configure PGD Primary and Secondary Nodes for PGD CAMO
-      ansible.builtin.import_tasks: pgd_camo_configuration.yml
+      ansible.builtin.import_tasks: pgd_commitscope_configuration.yml
