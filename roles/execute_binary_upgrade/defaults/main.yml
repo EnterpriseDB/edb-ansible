@@ -31,6 +31,15 @@ pg_upgrade_additional_params: ""
 # setting to true will recreate these slots
 use_replication_slots: true
 
+# if using copy method, the standbys will be recreated from scratch.
+# include replication parameters
+pg_replication_user: "repuser"
+pg_replication_user_password: ""
+synchronous_standby_names: ""
+standby_quorum_type: "any"
+pg_basebackup: "{{ new_pg_bin_path }}/pg_basebackup -Fp -R -l standby --checkpoint=fast --wal-method=stream"
+pg_basebackup_options: ""
+
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup
 validate_only: false

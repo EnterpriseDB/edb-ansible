@@ -12,13 +12,6 @@
     - name: Initialize the user defined variables
       ansible.builtin.set_fact:
         disable_logging: false
-        pg_shared_libraries_list:
-          - "$libdir/dbms_pipe"
-          - "$libdir/edb_gen"
-          - "$libdir/dbms_aq"
-          - "$libdir/sql-profiler"
-          - "$libdir/index_advisor"
-          - "$libdir/pg_stat_statements"
 
   roles:
     - role: setup_repo

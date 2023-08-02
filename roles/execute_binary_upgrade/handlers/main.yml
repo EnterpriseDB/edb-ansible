@@ -1,7 +1,7 @@
 ---
 - name: Stop the new PG service
   ansible.builtin.systemd:
-    name: "{{ pg_service }}"
+    name: "{{ new_pg_service }}"
     state: stopped
 
 - name: Drop the default new EPAS debian database

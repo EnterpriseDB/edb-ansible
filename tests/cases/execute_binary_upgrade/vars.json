@@ -1,7 +1,7 @@
 {
   "use_hostname": false,
   "pg_ssl": false,
-  "use_link_method": true,
+  "use_link_method": false,
   "old_pg_version": 13,
   "new_pg_version": 15
 }
