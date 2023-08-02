@@ -16,6 +16,12 @@
   become: true
   when: "'standby' in group_names"
 
+# if not defined here, it will not include the new_pg_version and new_pg_bin_path variables in pg_basebackup
+- name: Set fact for pg_basebackup options
+  ansible.builtin.set_fact:
+    pg_basebackup: "{{ new_pg_basebackup }}"
+    pg_basebackup_options: "{{ new_pg_basebackup_options }}"
+
 - name: Include setup_replication role for standby's when not use_link_method
   ansible.builtin.include_role:
     name: setup_replication
@@ -30,9 +36,6 @@
     pg_initdb: "{{ new_pg_initdb }}"
     pg_initdb_options: "{{ new_pg_initdb_options }}"
     pg_port: "{{ new_pg_port }}"
-    pg_basebackup: "{{ pg_basebackup }}"
-    pg_basebackup_options: "{{ pg_basebackup_options }}"
     use_validation: false
   no_log: "{{ disable_logging }}"
   when: "'standby' in group_names"
-
