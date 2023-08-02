@@ -17,3 +17,11 @@
   loop:
     - "{{ old_pg_bin_path | dirname }}"
     - "{{ old_pg_data | dirname }}"
+
+- name: Remove old configuration directory on Debian
+  ansible.builtin.file:
+    path: "{{ old_pg_config_dir }}"
+    state: absent
+  become: true
+  when: ansible_os_family == 'Debian'
+

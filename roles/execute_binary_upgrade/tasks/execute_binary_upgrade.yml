@@ -55,12 +55,9 @@
   register: pg_controldata_check
   become: true
   become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
   when:
     - _standby_private_ip|length > 0
-
-- name: Debug
-  ansible.builtin.debug:
-    var: pg_controldata_check
 
 - name: Check that all latest checkpoint locations are the same
   ansible.builtin.assert:
@@ -94,6 +91,17 @@
       ansible.builtin.include_tasks: init_new_dbserver.yml
     - name: Execute pg_upgrade
       ansible.builtin.include_tasks: pg_upgrade.yml
+
+- name: Enable and start systemd service on primary if no standbys are present
+  ansible.builtin.systemd:
+    name: "{{ new_pg_service }}"
+    daemon_reload: true
+    state: started
+    enabled: true
+  become: true
+  when:
+    - "'primary' in group_names"
+    - _standby_private_ip|length < 1
 
 - name: Include upgrade_standbys when not use_link_method
   ansible.builtin.include_tasks: upgrade_standbys.yml

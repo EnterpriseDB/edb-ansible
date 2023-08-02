@@ -63,7 +63,6 @@
   loop_control:
     loop_var: standby_node
   when: "'primary' in group_names"
-  register: rsync_output
 
 # run rsync command for pg_wal directory if new_pg_data not in new_pg_wal
 - name: Run rsync command for pg_wal

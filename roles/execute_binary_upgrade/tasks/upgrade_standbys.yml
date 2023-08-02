@@ -23,6 +23,16 @@
     pg_version: "{{ new_pg_version }}"
     pg_service: "{{ new_pg_service }}"
     pg_data: "{{ new_pg_data }}"
+    pg_default_data: "{{ new_pg_default_data }}"
+    pg_wal: "{{ new_pg_wal }}"
+    pg_systemd_global_unit_file: "{{ new_pg_systemd_global_unit_file | default('') }}"
+    pg_bin_path: "{{ new_pg_bin_path }}"
+    pg_initdb: "{{ new_pg_initdb }}"
+    pg_initdb_options: "{{ new_pg_initdb_options }}"
+    pg_port: "{{ new_pg_port }}"
+    pg_basebackup: "{{ pg_basebackup }}"
+    pg_basebackup_options: "{{ pg_basebackup_options }}"
     use_validation: false
+  no_log: "{{ disable_logging }}"
   when: "'standby' in group_names"
 
