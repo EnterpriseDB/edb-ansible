@@ -2,9 +2,11 @@
 # generate ssh keys to execute rsync commands
 - name: Include the SSH keys generation tasks
   ansible.builtin.include_tasks: generate_ssh_keys.yml
+  no_log: "{{ disable_logging }}"
 
 - name: Include the SSH keys exchange tasks
   ansible.builtin.include_tasks: exchange_ssh_keys.yml
+  no_log: "{{ disable_logging }}"
 
 - name: Install rsync on primary
   ansible.builtin.package:
@@ -38,6 +40,8 @@
     mode: "0700"
     state: directory
   become: true
+  when:
+    - "'standby' in group_names"
 
 - name: Save postgresql.auto.conf to tmp/pgupgrade
   ansible.builtin.copy:
