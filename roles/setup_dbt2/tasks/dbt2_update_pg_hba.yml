@@ -57,3 +57,23 @@
   become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
+
+- name: Update pg_hba.conf with DBT-2 database host connections
+  ansible.builtin.lineinfile:
+    path: "{{ hba_info.query_result[0].hba_file }}"
+    line: "host all all {{ hostvars[item]['private_ip'] }}/32 trust"
+    create: true
+  with_items: "{{ groups['primary'] }}"
+  become: true
+  become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
+
+- name: Update pg_hba.conf with DBT-2 database hostssl connections
+  ansible.builtin.lineinfile:
+    path: "{{ hba_info.query_result[0].hba_file }}"
+    line: "hostssl all all {{ hostvars[item]['private_ip'] }}/32 trust"
+    create: true
+  with_items: "{{ groups['primary'] }}"
+  become: true
+  become_user: "{{ pg_owner }}"
+  no_log: "{{ disable_logging }}"
