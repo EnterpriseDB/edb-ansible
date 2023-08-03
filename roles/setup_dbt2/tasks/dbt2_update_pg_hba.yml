@@ -77,3 +77,10 @@
   become: true
   become_user: "{{ pg_owner }}"
   no_log: "{{ disable_logging }}"
+
+- name: Reload pg_hba.conf for DBT-2
+  ansible.builtin.systemd:
+    name: "{{ pg_service }}"
+    daemon_reload: true
+    state: reloaded
+  become: true
