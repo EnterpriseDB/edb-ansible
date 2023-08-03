@@ -35,3 +35,19 @@
         value: "{{ synchronous_standby_names }}"
   when: synchronous_standby_names|length > 0
   no_log: "{{ disable_logging }}"
+
+# restart here otherwise cluster will start with restart required on primary
+# execute restart here to flush out any pending restart requirement
+- name: Restart postgres after change of postgresql parameters
+  ansible.builtin.shell: >
+    {{ patroni_bin_dir }}/patronictl -c {{ patroni_config_file }} \
+        restart {{ pg_instance_name }} {{ inventory_hostname }} --force
+  args:
+    executable: /bin/bash
+  register: patronictl_exec
+  changed_when: patronictl_exec.rc == 0
+  failed_when: patronictl_exec.rc != 0
+  when:
+    - not pg_version_stat.stat.exists
+  become_user: "{{ pg_owner }}"
+  become: true

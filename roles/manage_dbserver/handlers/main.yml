@@ -1,6 +1,8 @@
 ---
+# needs to be run with become: true because of daemon_reload
 - name: Reload the pg service
   ansible.builtin.systemd:
     name: "{{ pg_service }}"
     daemon_reload: true
     state: reloaded
+  become: true
