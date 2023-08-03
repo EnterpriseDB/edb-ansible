@@ -40,7 +40,7 @@ bootstrap:
     {% endfor %}
 
 postgresql:
-  listen: "0.0.0.0:{{ pg_port }}"
+  listen: "*"
   connect_address: "{{ hostvars[inventory_hostname].private_ip }}:{{ pg_port }}"
   use_unix_socket: true
   data_dir: "{{ pg_data }}"

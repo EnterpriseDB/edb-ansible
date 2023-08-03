@@ -150,11 +150,10 @@
 
 - name: Update primary for synchronous replication
   ansible.builtin.import_tasks: primary_synchronous_param.yml
-  when: >-
-      _synchronous_standbys is defined and (
-      _synchronous_standbys|length > 0
-      or synchronous_standby_names|length > 0 )
-      and 'primary' in group_names and not validate_only|bool
+  when:
+    - synchronous_standby_names|length > 0 or (_synchronous_standbys is defined and _synchronous_standbys|length > 0)
+    - "'primary' in group_names"
+    - not validate_only|bool
   run_once: true
   no_log: "{{ disable_logging }}"
 

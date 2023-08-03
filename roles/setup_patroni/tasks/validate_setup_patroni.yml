@@ -105,6 +105,7 @@
       - patroni_stat_query_result.results[0].query_result|length == patroni_standby_list|length
     fail_msg: "Replication was not successful on primary"
     success_msg: "Replication was successful on primary"
+  run_once: true
   when: patroni_standby_list|length > 0
 
 # validate patroni wal receiver - on standby's
