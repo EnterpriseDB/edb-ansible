@@ -1,4 +1,20 @@
 ---
+- name: Set patroni_pg_init_params_list
+  ansible.builtin.set_fact:
+    patroni_pg_init_params_list: >-
+      {{ patroni_pg_init_params_list | default([]) + [
+        {
+          "name": parameter.name,
+          "value": parameter.value
+        }
+      ] }}
+  when: patroni_pg_init_params|length > 0
+  with_items: "{{ patroni_pg_init_params }}"
+  loop_control:
+    loop_var: parameter
+  run_once: true
+  no_log: "{{ disable_logging }}"
+
 - name: Create patroni configuration file
   ansible.builtin.template:
     src: patroni.config.yml.j2
@@ -7,6 +23,7 @@
     group: "{{ pg_group }}"
     mode: "0600"
   become: true
+  no_log: "{{ disable_logging }}"
 
 - name: Create patroni unit file
   ansible.builtin.template:

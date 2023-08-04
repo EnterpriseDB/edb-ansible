@@ -52,6 +52,8 @@ postgresql:
     - write-recovery-conf
     - checkpoint: 'fast'
     - label: 'standby'
+    - create-slot
+    - slot: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
 {% if pg_wal|length > 0 and pg_data not in pg_wal %}
     - waldir: {{ pg_wal }}
 {% endif %}
@@ -62,6 +64,13 @@ postgresql:
       username: {{ pg_superuser }}
     pg_rewind:
       username: {{ pg_rewind_user }}
+{% if patroni_pg_init_params|length > 0 %}
+  parameters:
+  {% for param in patroni_pg_init_params_list %}
+    {{ param.name }}: "{{ param.value }}"
+  {% endfor %}
+{% endif %}
+
 tags:
   nosync: false
 log:
