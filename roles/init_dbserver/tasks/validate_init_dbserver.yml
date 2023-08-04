@@ -67,7 +67,7 @@
   ansible.builtin.wait_for:
     port: "{{ pg_port }}"
     state: started
-    msg: "Port {{ pg_port }} is not listening."
+    msg: "Port {{ pg_port }} is listening."
   become: true
 
 - name: Check pg_unix_socket_directories socket
