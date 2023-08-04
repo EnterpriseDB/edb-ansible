@@ -62,12 +62,6 @@ postgresql:
       username: {{ pg_superuser }}
     pg_rewind:
       username: {{ pg_rewind_user }}
-{% if patroni_pg_init_params|length > 0 %}
-  parameters:
-{% for param in patroni_pg_init_params -%}
-    - {{ param.name }}: '{{ param.value }}'
-{% endfor %}
-{% endif %}
 tags:
   nosync: false
 log:
