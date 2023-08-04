@@ -66,25 +66,6 @@ pg_init_conf_params: []
 # postgres port
 pg_port: 5432
 
-# certain parameters must be placed in the DCS parameters for patroni to recognize
-# it will overide any values in postgresql.conf and postgresql.auto.conf for the following parameters:
-#  - max_wal_senders: 5
-#  - max_replication_slots: 5
-#  - wal_keep_segments: 8
-#  - wal_keep_size: '128MB'
-# to override these values, place parameters and value in patroni_pg_init_params
-# parameters to be configured in postgresql params in patroni DCS config file
-# will be placed:
-# postgresql:
-#   parameters:
-#     - wal_keep_segments: '32'
-# ----- example:
-# patroni_pg_init_params:
-#  - name: 'wal_keep_segments'
-#    value: '32'
-
-patroni_pg_init_params: ""
-
 # postgres database
 pg_database: "postgres"
 
