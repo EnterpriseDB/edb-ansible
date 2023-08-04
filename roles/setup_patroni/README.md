@@ -27,20 +27,47 @@ The requirements for this ansible galaxy role are:
 
 When executing the role via ansible there are three required variables:
 
-  * ***os***
+### os
 
-  Operating Systems supported are: CentOS7, RHEL7, CentOS8, RHEL8, AlmaLinux8, Debian10 and Ubuntu20
+Operating Systems supported are: CentOS7, RHEL7, CentOS8, RHEL8, AlmaLinux8, Debian10 and Ubuntu20
 
-  * ***pg_version***
+### pg_version
 
-  Postgres Versions supported are: 10, 11, 12, 13, 14 and 15
+Postgres Versions supported are: 10, 11, 12, 13, 14 and 15
 
-  * ***pg_type***
+### pg_type
 
   Database Engine supported are: PG and EPAS
 
+### patroni_pg_init_params
+
+Certain parameters are restricted by Patroni and are required to be set in the Patroni DCS configuration file.
+These parameters and their Patroni defaults are: 
+* `max_wal_senders: 5` 
+* `max_replication_slots: 5` 
+* `wal_keep_segments: 8`
+* `wal_keep_size: 128MB`
+
+[Learn more about PostgreSQL parameters controlled by Patroni](https://patroni.readthedocs.io/en/latest/patroni_configuration.html#important-rules).
+
+Using this parameter you can customize these and other Postgres parameters in the Patroni DCS config file.
+*Note*: To ensure the playbook runs successfully, input parameter names and values as strings.
+
+Example:
+```yaml
+patroni_pg_init_params:
+  - name: 'max_keep_segments'
+    value: '32'
+```
+The resulting Patroni DCS config will appear as such:
+```yaml
+postgresql:
+  parameters:
+    max_keep_segments: '32'
+```
+
 These and other variables can be assigned in the `pre_tasks` definition of the
-section: *How to include the `setup_patroni` role in your Playbook*
+section: [How to include the `setup_patroni` role in your Playbook](#how-to-include-the-setuppatroni-role-in-your-playbook)
 
 The rest of the variables can be configured and are available in the:
 
@@ -112,6 +139,9 @@ Below is an example of how to include the `setup_patroni` role:
         pg_type: "PG"
         pg_version: 14
         use_patroni: true
+        patroni_pg_init_params:
+          - name: 'max_keep_size'
+            value: '160'
 
   roles:
     - role: setup_repo
