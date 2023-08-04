@@ -1,4 +1,9 @@
 ---
+# validation of replication on primary will fail if not given time to reload and settle
+- name: Pause for few seconds for postgres to be available
+  ansible.builtin.pause:
+    seconds: 30
+
 - name: Prepare primary_private_ip
   ansible.builtin.set_fact:
     primary_private_ip: "{{ node.private_ip }}"

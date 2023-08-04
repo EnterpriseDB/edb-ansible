@@ -102,7 +102,7 @@ Below is an example of how to include the `setup_etcd` role:
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        etcd_version: 3.5.6
+        etcd_version: 3.5.7
         etcd_architecture: "amd64"
 
   roles:
