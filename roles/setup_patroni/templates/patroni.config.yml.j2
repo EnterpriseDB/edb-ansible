@@ -46,6 +46,15 @@ postgresql:
   data_dir: "{{ pg_data }}"
   bin_dir: "{{ pg_bin_path }}"
   pgpass: {{ pgpass_file }}
+  create_replica_methods:
+    - basebackup
+  basebackup:
+    - write-recovery-conf
+    - checkpoint: 'fast'
+    - label: 'standby'
+{% if pg_wal|length > 0 and pg_data not in pg_wal %}
+    - waldir: {{ pg_wal }}
+{% endif %}
   authentication:
     replication:
       username: {{ pg_replication_user }}
@@ -53,6 +62,12 @@ postgresql:
       username: {{ pg_superuser }}
     pg_rewind:
       username: {{ pg_rewind_user }}
+{% if patroni_pg_init_params|length > 0 %}
+  parameters:
+{% for param in patroni_pg_init_params -%}
+    - {{ param.name }}: '{{ param.value }}'
+{% endfor %}
+{% endif %}
 tags:
   nosync: false
 log:
