@@ -7,10 +7,12 @@
     input_user: "{{ pg_owner }}"
     input_password: ""
   no_log: true
+  when: pg_superuser_password|length < 1
 
 - name: Set pg_superuser_password
   ansible.builtin.set_fact:
     pg_superuser_password: "{{ input_password }}"
+  when: pg_superuser_password|length < 1
 
 - name: Generate .pgpass file for the DBT-2
   ansible.builtin.template:
@@ -21,3 +23,18 @@
     pg_superuser_override: "{{ pg_owner }}"
     pg_superuser_password_override: "{{ pg_superuser_password }}"
   become_user: "{{ pg_owner }}"
+  when:
+    - azure_db_hackery is defined and azure_db_hackery|bool
+
+- name: Add superuser password in pgpass
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: manage_pgpass
+  vars:
+    pg_pgpass_values:
+      - user: "{{ pg_superuser }}"
+        password: "{{ pg_superuser_password }}"
+        create: true
+  when:
+    - (azure_db_hackery is defined and not azure_db_hackery|bool) or (azure_db_hackery is not defined)
+  no_log: "{{ disable_logging }}"
