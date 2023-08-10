@@ -32,7 +32,7 @@
 - name: Reference ssl variables
   ansible.builtin.include_vars: edb-ssl.yml
   when: pg_ssl
-  
+
 - name: Gather service facts
   ansible.builtin.service_facts:
 
@@ -113,11 +113,13 @@
     name: oidentd
     state: started
 
-# Configure PGD Primary and Secondary Nodes for PGD CAMO
-- name: Configure PGD Primary and Secondary Nodes for PGD CAMO
+# Configure PGD with commit scopes
+- name: Configure PGD with commit scopes
   when:
     - not validate_only|bool
   become: true
   block:
     - name: Configure PGD Primary and Secondary Nodes for PGD CAMO
-      ansible.builtin.import_tasks: pgd_commitscope_configuration.yml
+      ansible.builtin.import_tasks: pgd_camo_commitscope_configuration.yml
+    - name: Configure for PGD Group Commit
+      ansible.builtin.import_tasks: pgd_group_commitscope_configuration.yml

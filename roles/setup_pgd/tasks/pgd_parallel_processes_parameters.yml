@@ -52,7 +52,7 @@
 - name: Calculate required setting for max_worker_processes
   ansible.builtin.set_fact:
     _base_max_worker_processes: "{{  (_num_pgd_nodes | int + 1*8 + 2*2 + 2 *( _num_pgd_nodes | int - 1 )) + _twice_pgd_nodes | int }}"
-  
+
 - name: Evaluate the current setting of max_worker_processes, max_replication_slots and max_wal_senders
   ansible.builtin.set_fact:
     max_replication_slots: "{{ [ _current_max_replication_slots | int,  _twice_pgd_nodes | int ] | max }}"

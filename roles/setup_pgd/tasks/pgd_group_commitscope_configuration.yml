@@ -1,0 +1,129 @@
+---
+# Group Commit Scope
+- name: Run query to check if PGD group commit scope exists
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_commit_scopes[1].cs_name }}'"
+        db: "{{ pgd_cluster_database }}"
+
+- name: Store status of existence of PGD group commit scope
+  ansible.builtin.set_fact:
+    _pgd_groupcommitscope_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+
+- name: Run query to check if PGD group commit scope origin node group
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_commit_scopes[1].cs_origin_node_group }}'"
+        db: "{{ pgd_cluster_database }}"
+
+- name: Store status of existence of PGD commit scope origin node group
+  ansible.builtin.set_fact:
+    _pgd_groupcommit_originnodegroup_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+
+- name: Run query to check if PGD group commit parent group exists or not
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_commit_scopes[1].parent_group }}'"
+        db: "{{ pgd_cluster_database }}"
+
+- name: Store status of existence of PGD group commit parent group
+  ansible.builtin.set_fact:
+    _pgd_groupcommit_parentgroup_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+
+- name: Create PGD Cluster group commit scope origin node group
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT bdr.create_node_group(node_group_name := '{{ pgd_commit_scopes[1].cs_origin_node_group }}',
+                                      parent_group_name := '{{ pgd_commit_scopes[1].parent_group }}',
+                                      join_node_group := false
+                                      )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when:
+    - inventory_hostname == pgd_commit_scopes[1].member_nodes[0]
+    - _pgd_groupcommit_originnodegroup_exists|int == 0 and _pgd_groupcommit_parentgroup_exists|int == 1
+    - pgd_commit_scopes[1].cs_type == 'GROUP_COMMIT'
+
+- name: Run query to re-check if PGD group commit scope origin node group
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_commit_scopes[1].cs_origin_node_group }}'"
+        db: "{{ pgd_cluster_database }}"
+
+- name: Store status of existence of PGD commit scope origin node group
+  ansible.builtin.set_fact:
+    _pgd_groupcommit_originnodegroup_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
+
+- name: Switch node towards PGD node sub group when Group Commit
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+  vars:
+    pg_query:
+      - query: "SELECT bdr.switch_node_group(node_group_name := '{{ pgd_commit_scopes[1].cs_origin_node_group }}',
+                                      wait_for_completion := true
+                                      )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when:
+    - inventory_hostname == node
+    - _pgd_groupcommit_originnodegroup_exists|int == 1
+    - pgd_commit_scopes[1].cs_type == 'GROUP_COMMIT'
+  loop: "{{ pgd_commit_scopes[1].member_nodes }}"
+  loop_control:
+    loop_var: node
+
+- name: Configure PGD Cluster with a group commit scope
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      throttle: 1
+  vars:
+    pg_query:
+      - query: "SELECT bdr.add_commit_scope(commit_scope_name := '{{ pgd_commit_scopes[1].cs_name }}',
+                                          origin_node_group := '{{ pgd_commit_scopes[1].cs_origin_node_group }}',
+                                          rule := '{{ pgd_commit_scopes[1].cs_rule }}'
+                                          )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when:
+     - inventory_hostname == node
+     - _pgd_groupcommit_originnodegroup_exists|int == 1
+  loop: "{{ pgd_commit_scopes[1].member_nodes }}"
+  loop_control:
+    loop_var: node
+
+- name: Configure PGD Cluster default Group Commit Scope
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      throttle: 1
+  vars:
+    pg_query:
+      - query: "SELECT bdr.alter_node_group_option(node_group_name := '{{ pgd_commit_scopes[1].cs_origin_node_group }}',
+                                      config_key := 'default_commit_scope',
+                                      config_value := '{{ pgd_commit_scopes[1].cs_name }}'
+                                      )"
+        db: "{{ pgd_cluster_database }}"
+    ignore_query_execution_error: false
+  when:
+     - pgd_commit_scopes[1].default_group_cs|bool == true
+     - pgd_commit_scopes[1].cs_type|string == 'GROUP_COMMIT'
+     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
