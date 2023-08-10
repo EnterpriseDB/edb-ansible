@@ -126,3 +126,23 @@
   ansible.builtin.import_tasks: validate_setup_pgd.yml
   when:
     - validate_only|bool or use_validation|bool
+<<<<<<< HEAD
+=======
+
+# Exclusive to pgd setup authentication
+- name: Start service oidentd, if not started
+  ansible.builtin.service:
+    name: oidentd
+    state: started
+
+# Configure PGD with commit scopes
+- name: Configure PGD with commit scopes
+  when:
+    - not validate_only|bool
+  become: true
+  block:
+    - name: Configure PGD Primary and Secondary Nodes for PGD CAMO
+      ansible.builtin.import_tasks: pgd_camo_commitscope_configuration.yml
+    - name: Configure for PGD Group Commit
+      ansible.builtin.import_tasks: pgd_group_commitscope_configuration.yml
+>>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)

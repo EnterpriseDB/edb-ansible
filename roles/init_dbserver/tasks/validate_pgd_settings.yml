@@ -1,0 +1,59 @@
+---
+- name: Check that PGD CAMO commit scope is configured properly
+  ansible.builtin.assert:
+    that:
+      - pgd_commit_scopes[0].cs_name is defined and pgd_commit_scopes[0].cs_name|string != ''
+      - pgd_commit_scopes[0].cs_type is defined and pgd_commit_scopes[0].cs_type|string != ''
+      - pgd_commit_scopes[0].cs_origin_node_group is defined and pgd_commit_scopes[0].cs_origin_node_group|string != ''
+      - pgd_commit_scopes[0].cs_rule is defined and pgd_commit_scopes[0].cs_rule|string != ''
+    fail_msg: "The PGD CAMO commit scope cannot contain empty values."
+    success_msg: "The PGD CAMO commit scope does contain defined and non-empty configuration values."
+
+- name: Check that PGD Group commit scope is configured properly
+  ansible.builtin.assert:
+    that:
+      - pgd_commit_scopes[1].cs_name is defined and pgd_commit_scopes[1].cs_name|string != ''
+      - pgd_commit_scopes[1].cs_type is defined and pgd_commit_scopes[1].cs_type|string != ''
+      - pgd_commit_scopes[1].cs_origin_node_group is defined and pgd_commit_scopes[1].cs_origin_node_group|string != ''
+      - pgd_commit_scopes[1].cs_rule is defined and pgd_commit_scopes[1].cs_rule|string != ''
+    fail_msg: "The PGD Group commit scope cannot contain empty values."
+    success_msg: "The PGD Group commit scope does contain defined and non-empty configuration values."
+
+- name: Check that PGD CAMO commit scope is configured properly
+  ansible.builtin.assert:
+    that:
+      - pgd_commit_scopes[0].cs_type|string == 'CAMO'
+      - pgd_commit_scopes[0].member_nodes is defined
+      - pgd_commit_scopes[0].member_nodes|length == 2
+    fail_msg: "The PGD commit scope {{ pgd_commit_scopes[0].cs_name }} is not configured correctly."
+    success_msg: "The PGD CAMO commit scope: {{ pgd_commit_scopes[0].cs_name }} is not configured correctly."
+
+- name: Check that PGD Group commit scope is configured properly
+  ansible.builtin.assert:
+    that:
+      - pgd_commit_scopes[1].cs_type|string == 'GROUP_COMMIT'
+      - pgd_commit_scopes[1].member_nodes is defined
+      - pgd_commit_scopes[1].member_nodes|length > 0
+    fail_msg: "The PGD Group commit scope {{ pgd_commit_scopes[1].cs_name }} is not configured correctly."
+    success_msg: "The PGD commit scope: {{ pgd_commit_scopes[1].cs_name }} is not configured correctly."
+
+- name: Checks that only PGD CAMO commit scopes default_group_cs is set to true
+  ansible.builtin.assert:
+    that:
+      - (pgd_commit_scopes[0].default_group_cs|bool == true or pgd_commit_scopes[1].default_group_cs|bool == false) or (pgd_commit_scopes[0].default_group_cs|bool == false or pgd_commit_scopes[1].default_group_cs|bool == true)
+    fail_msg: "Only one PGD commit scope can have 'default_group_cs' set to true."
+    success_msg: "The PGD CAMO and Group commit scope 'default_group_cs' values are configured correctly."
+
+- name: Initialize CAMO and Group commit scopes member_nodes array
+  set_fact:
+    result_dict: {}
+
+- name: Check if a member_node exists in both PGD commit scope member_nodes array
+  set_fact:
+    result_dict: "{{ result_dict | combine({item: item in pgd_commit_scopes[1].member_nodes}) }}"
+  loop: "{{ pgd_commit_scopes[0].member_nodes }}"
+
+- name: Assert member nodes for each commit scope exist within each other
+  fail:
+    msg: "A member_node cannot belong to a PGD CAMO nor Group commit scope."
+  when: true in result_dict.values()
