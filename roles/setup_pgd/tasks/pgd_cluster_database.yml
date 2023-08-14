@@ -16,6 +16,6 @@
      tasks_from: manage_extensions
   vars:
     pg_extensions:
-       - name: bdr
-         state: present
-         database: "{{ pgd_cluster_database }}"
+      - name: bdr
+        state: present
+        database: "{{ pgd_cluster_database }}"

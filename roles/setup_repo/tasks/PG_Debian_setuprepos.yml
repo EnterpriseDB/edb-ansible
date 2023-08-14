@@ -36,7 +36,7 @@
     state: present
   become: true
   when: install_pgd
-  
+
 - name: Install acl
   ansible.builtin.package:
     name: acl

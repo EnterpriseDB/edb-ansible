@@ -51,6 +51,13 @@
     - hostvars[inventory_hostname].pgd.use_physical_backup is defined
     - hostvars[inventory_hostname].pgd.use_physical_backup|bool
 
+- name: Import PGD verify tasks
+  ansible.builtin.import_tasks: verify_pgd_settings.yml
+  when:
+    - validate_only|bool or use_validation|bool
+    - not remove_only|bool
+    - install_pgd
+
 - name: Force cleanup based on force_initdb
   ansible.builtin.include_tasks: rm_initdb.yml
   when: >
@@ -104,9 +111,3 @@
     - validate_only|bool or use_validation|bool
     - not remove_only|bool
     - run_initdb
-
-- name: Import PGD validate tasks
-  ansible.builtin.import_tasks: validate_pgd_settings.yml
-  when:
-    - validate_only|bool or use_validation|bool
-    - not remove_only|bool

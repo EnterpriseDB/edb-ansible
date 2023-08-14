@@ -39,7 +39,6 @@
           "databases": pgd_cluster_database
           },
           {
-          "contype": "host",
           "users": pgd_replication_user,
           "source": node.private_ip + "/32",
           "databases": "replication"
@@ -65,20 +64,14 @@
           "contype": "host",
           "users": pg_owner,
           "source": node.private_ip + "/32",
-          "databases": "postgres"
+          "databases": pgd_cluster_database
           },
         {
           "contype": "host",
           "users": pg_owner,
           "source": node.private_ip + "/32",
-          "databases": "postgres"
-          },
-          {
-           "contype": "host",
-           "users": pg_owner,
-           "source": node.private_ip + "/32",
-           "databases": "postgres"
-           }
+          "databases": pg_database
+          }
         ] }}
   when: not pg_ssl
   loop: "{{ pgd_cluster_nodes }}"
@@ -94,19 +87,13 @@
         {
           "users": pg_owner,
           "source": node.private_ip + "/32",
-          "databases": "postgres"
+          "databases": pgd_cluster_database
           },
           {
-          "contype": "host",
           "users": pg_owner,
           "source": node.private_ip + "/32",
-          "databases": "postgres"
-          },
-          {
-           "users": pg_owner,
-           "source": node.private_ip + "/32",
-           "databases": "postgres"
-           }
+          "databases": pg_database
+          }
         ] }}
   when: pg_ssl
   loop: "{{ pgd_cluster_nodes }}"

@@ -148,10 +148,10 @@
     name: oidentd
     state: present
   become: true
-  when: 
-    - install_pgd  
+  when:
+    - install_pgd
     - enable_epel_repo
-  
+
 - name: Install PGD4 packages repo if tpa_subscription_token is given
   ansible.builtin.shell: >
       set -o pipefail;

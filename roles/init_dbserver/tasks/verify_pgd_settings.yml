@@ -1,0 +1,29 @@
+---
+- name: Check and fail for empty values
+  ansible.builtin.fail:
+    msg: "Empty value detected for '{{ item.cs_name }}', '{{ item.cs_type }}', '{{ item.cs_origin_node_group }}', or '{{ item.cs_rule }}'"
+  when: item.cs_name == '' or item.cs_type == '' or item.cs_origin_node_group == '' or item.cs_rule == ''
+  loop: "{{ pgd_commit_scopes }}"
+
+- name: Create a string array from member_nodes
+  ansible.builtin.set_fact:
+    member_nodes_array: "{{ pgd_commit_scopes | map(attribute='member_nodes') | flatten }}"
+
+- name: Check for duplicates in member_nodes_array
+  ansible.builtin.set_fact:
+    has_duplicates: "{{ member_nodes_array | length != member_nodes_array | unique | list | count }}"
+  run_once: true
+
+- name: Fail if duplicates are found
+  ansible.builtin.fail:
+    msg: "Duplicates found in member_nodes_array"
+  when: has_duplicates
+
+- name: Count true values in default_group_cs
+  ansible.builtin.set_fact:
+    true_count: "{{ pgd_commit_scopes | map(attribute='default_group_cs') | select('equalto', true) | list | count }}"
+
+- name: Fail if more than one true value in default_group_cs
+  ansible.builtin.fail:
+    msg: "More than one true value found in default_group_cs"
+  when: true_count | int > 1
