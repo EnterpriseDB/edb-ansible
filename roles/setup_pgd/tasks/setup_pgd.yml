@@ -102,6 +102,20 @@
     - name: Configure SSL if not exists
       ansible.builtin.import_tasks: pg_ssl_config.yml
 
+<<<<<<< HEAD
+=======
+- name: Import validate tasks
+  ansible.builtin.import_tasks: validate_setup_pgd.yml
+  when:
+    - validate_only|bool or use_validation|bool
+
+# setup oidentd authentication
+- name: Start service oidentd, if not started
+  ansible.builtin.service:
+    name: oidentd
+    state: started
+
+>>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
 - name: Filter items based on cs_type 'CAMO'
   set_fact:
     filtered_items_camo: "{{ pgd_commit_scopes | selectattr('cs_type', 'equalto', 'CAMO') | list }}"

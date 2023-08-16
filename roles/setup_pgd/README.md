@@ -132,35 +132,7 @@ configured beforehand with the `setup_repo` role. At least one lead primary must
 and a database cluster must be initialized on that node. 
 =======
 
-### `PGD Commit Scopes Configuration`
 
-The code below is part of the [roles/setup_pgd/defaults/main.yml](./defaults/main.yml), and 
-example for configuring two PGD commit scopes is listed below.
-
-The configuration requirements for PGD through the configuration setting variables are:
-  1. Only one scope can be configured as default at a time. The variable to configure is: `default_group_cs`
-  2. The length of the `member_nodes` for a `camo` commit scope is exactly `two`
-  3. No node in `member_nodes` for either commit scope can belong to the other commit scope
-  4. All nodes in `member_nodes` must belong to a `parent_group`
-  5. The `cs_rule` parameter must be: valid, correctly formatted, and adhere to the correct syntax
-
-```yaml
-pgd_commit_scopes:
-  - cs_name: 'camo_scope_1'
-    cs_type: 'CAMO' # either camo or group_commit
-    parent_group: 'pgd_cluster' # this group is present in cluster
-    cs_origin_node_group: 'pgd_two_nodes' # this group may or may not be present
-    member_nodes: ['edb-primary1', 'edb-primary2']
-    default_group_cs: true # don't make mandatory, default('false') if not present in array
-    cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
-  - cs_name: 'groupcommit_scope_1'
-    cs_type: 'GROUP_COMMIT'
-    parent_group: 'pgd_cluster'
-    cs_origin_node_group: 'pgd_remaining_nodes'
-    member_nodes: ['edb-primary3']
-    default_group_cs: false
-    cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
-```
 
 
 Example Playbook

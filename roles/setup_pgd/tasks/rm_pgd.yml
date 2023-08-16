@@ -12,6 +12,10 @@
   block:
     - name: Gather PGD node information with state
       ansible.builtin.include_tasks: verify_pgd_node_group.yml
+<<<<<<< HEAD
+=======
+
+>>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
     - name: Part node from PGD cluster
       ansible.builtin.include_role:
         name: manage_dbserver
@@ -32,6 +36,10 @@
         - _pgd_extension_exists == 1
         - _pgd_local_node_created == 1
         - _pgd_cluster_group_joined == 1
+<<<<<<< HEAD
+=======
+
+>>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
     - name: Drop node from PGD cluster
       ansible.builtin.include_role:
         name: manage_dbserver
@@ -50,6 +58,10 @@
         - _pgd_extension_exists == 1
         - _pgd_local_node_created == 1
         - _pgd_cluster_group_joined == 1
+<<<<<<< HEAD
+=======
+
+>>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
     - name: Drop database in PGD Node
       ansible.builtin.include_role:
         name: manage_dbserver

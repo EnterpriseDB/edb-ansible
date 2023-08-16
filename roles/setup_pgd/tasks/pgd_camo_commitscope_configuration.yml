@@ -183,6 +183,9 @@
     ignore_query_execution_error: false
   when:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
     - item.default_group_cs|bool
     - item.cs_type|string == 'CAMO'
     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
