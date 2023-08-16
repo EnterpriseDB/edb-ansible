@@ -12,8 +12,8 @@
 
 - name: Ensure BDR extension exists in {{ pgd_cluster_database }}
   ansible.builtin.include_role:
-     name: manage_dbserver
-     tasks_from: manage_extensions
+    name: manage_dbserver
+    tasks_from: manage_extensions
   vars:
     pg_extensions:
       - name: bdr

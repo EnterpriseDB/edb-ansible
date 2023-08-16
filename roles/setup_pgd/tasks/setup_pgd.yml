@@ -107,7 +107,7 @@
   when:
     - validate_only|bool or use_validation|bool
 
-# Exclusive to pgd setup authentication
+# setup oidentd authentication
 - name: Start service oidentd, if not started
   ansible.builtin.service:
     name: oidentd

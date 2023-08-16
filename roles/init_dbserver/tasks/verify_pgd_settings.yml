@@ -1,4 +1,17 @@
 ---
+- name: Check 'pgd_commit_scopes' dictionary length
+  ansible.builtin.assert:
+    that:
+      - pgd_commit_scopes | length > 0
+    msg: "The 'pgd_commit_scopes' list should have at least one dictionary."
+
+- name: Check if cs_type is consistent and the sampe 'cs_type' across the entire list
+  ansible.builtin.assert:
+    that:
+      - pgd_commit_scopes | map(attribute='cs_type') | unique | length == 1
+      - pgd_commit_scopes | map(attribute='cs_type') | difference(['CAMO', 'GROUP_COMMIT']) | length == 0
+    msg: "The 'cs_type' values in 'pgd_commit_scopes' should be either 'CAMO' or 'GROUP_COMMIT'."
+
 - name: Check and fail for empty values
   ansible.builtin.fail:
     msg: "Empty value detected for '{{ item.cs_name }}', '{{ item.cs_type }}', '{{ item.cs_origin_node_group }}', or '{{ item.cs_rule }}'"
@@ -27,3 +40,9 @@
   ansible.builtin.fail:
     msg: "More than one true value found in default_group_cs"
   when: true_count | int > 1
+
+- name: Check default_group_cs
+  assert:
+    that:
+      - pgd_commit_scopes | map(attribute='default_group_cs') | select("equalto", true) | list | count > 0
+    fail_msg: "At least one 'default_group_cs' value should be set to true."

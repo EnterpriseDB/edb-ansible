@@ -124,7 +124,7 @@
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
   when:
-    - item.default_group_cs|bool == True
+    - item.default_group_cs|bool
     - item.cs_type|string == 'CAMO'
     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
 
@@ -143,7 +143,7 @@
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
   when:
-    - item.default_group_cs|bool == true
+    - item.default_group_cs|bool
     - item.cs_type|string == 'CAMO'
     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
 
