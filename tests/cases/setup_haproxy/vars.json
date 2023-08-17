@@ -1,0 +1,44 @@
+{
+  "use_hostname": false,
+  "pg_data": "/opt/pg_data/pgdata",
+  "pg_wal": "/opt/pg_wal/pgwal",
+  "patroni_pg_init_params": [
+    {
+      "name": "wal_keep_segments",
+      "value": "32"
+    },
+    {
+      "name": "wal_keep_size",
+      "value": "160"
+    }
+  ],
+  "pgbouncer_listen_port": 5432,
+  "pgbouncer_listen_addr": "*",
+  "pgbouncer_databases_list": [
+    {
+      "dbname": "test_db",
+      "host": "127.0.0.1",
+      "port": 5000,
+      "pool_size": 50,
+      "pool_mode": "transaction",
+      "max_db_connections": 100,
+      "reserve_pool": 10,
+      "state": "present"
+    }
+  ],
+  "pgbouncer_users": [
+    {
+     "name": "test",
+     "pass": "password",
+     "auth": "scram"
+    }
+   ],
+  "pgbouncer_auth_user_list": [
+    {
+    "username": "pgbouncer_admin",
+    "password": "password",
+    "state": "present"
+    }
+  ],
+  "pgbouncer_admin_users": "pgbouncer_admin"
+}

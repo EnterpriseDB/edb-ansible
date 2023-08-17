@@ -1,0 +1,20 @@
+---
+haproxy_user: "haproxy"
+haproxy_group: "haproxy"
+haproxy_user_home: "/var/lib/haproxy"
+
+haproxy_package: "haproxy"
+haproxy_service: "haproxy"
+haproxy_config_file: "/etc/haproxy/haproxy.cfg"
+
+haproxy_global_maxconn: "100"
+
+# if true, haproxy will configure a read-only load balancer and send read-only connections to repicas
+haproxy_read_only_lb: false
+haproxy_replica_port: 5001
+
+# port haproxy will accept connections from
+haproxy_listen_address: "*"
+haproxy_port: 5000
+patroni_rest_api_port: 8008
+pg_port: 5432

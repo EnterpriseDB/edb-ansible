@@ -1,0 +1,29 @@
+---
+- name: Get haproxy_backend_nodes
+  ansible.builtin.set_fact:
+    haproxy_backend_nodes: "{{ lookup('edb_devops.edb_postgres.haproxy_backends', wantlist=True) }}"
+  become: true
+
+- name: Build haproxy_server_lines
+  ansible.builtin.set_fact:
+    haproxy_server_lines: >-
+      {{ haproxy_server_lines | default([]) + [
+        "server " + node.inventory_hostname + " " + node.private_ip | string + ":" + pg_port | string + " " +
+        "maxconn 100 check port " + patroni_rest_api_port | string
+        ] 
+      }}
+  loop: "{{ haproxy_backend_nodes }}"
+  loop_control:
+    loop_var: node
+  when: not node.haproxy_configure
+  run_once: true
+
+- name: Create haproxy configuration file
+  ansible.builtin.template:
+    src: haproxy.cfg.template
+    dest: "{{ haproxy_config_file }}"
+    owner: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
+    mode: "0644"
+  become: true
+  no_log: "{{ disable_logging }}"
