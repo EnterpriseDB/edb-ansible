@@ -3,7 +3,6 @@ global
     user {{ haproxy_user }}
     group {{ haproxy_group }}
     daemon
-    log 127.0.0.1:514 local0
 
 defaults
     log global
