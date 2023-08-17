@@ -147,6 +147,17 @@ class LookupModule(LookupBase):
                     set(supported_roles)
                     | set(['setup_barman'])
                 )
+
+            # Special case for setting up HAProxy
+            # if haproxy_configure is true, run setup_haproxy role
+            if (group in ['primary', 'standby', 'pemserver', 'pgbouncer', 'pgpool2',
+                          'barmanserver', 'witness', 'proxy', 'pgbackrestserver']
+                    and hostvars.get('haproxy_configure', False)):
+                supported_roles = list(
+                    set(supported_roles)
+                    | set(['setup_haproxy'])
+                )
+
             # Special case for the primary nodes when the host variable
             # dbt2 is set to true.
             if (group in ['primary'] and hostvars.get('dbt2', False)):

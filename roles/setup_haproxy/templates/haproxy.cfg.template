@@ -1,0 +1,40 @@
+global
+    maxconn {{ haproxy_global_maxconn }}
+    user {{ haproxy_user }}
+    group {{ haproxy_group }}
+    daemon
+    log 127.0.0.1:514 local0
+
+defaults
+    log global
+    mode tcp
+    retries 2
+    timeout connect 1s
+    timeout check 1s
+    timeout server 30m
+    timeout client 30m
+
+listen postgres
+    bind {{ haproxy_listen_address }}:{{ haproxy_port }}
+    stick-table type ip size 1
+    stick on dst
+    option httpchk OPTIONS /primary
+    http-check expect status 200
+    default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+    {% for line in haproxy_server_lines %}
+    {{ line }}
+    {% endfor %}
+
+{% if haproxy_read_only_lb %}
+listen postgres_replica
+    bind {{ haproxy_listen_address }}:{{ haproxy_replica_port }}
+    balance roundrobin
+    stick-table type ip size 1
+    stick on dst
+    option httpchk OPTIONS /replica
+    http-check expect status 200
+    default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+    {% for line in haproxy_server_lines %}
+    {{ line }}
+    {% endfor %}
+{% endif %}

@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure etcd_group exists
   ansible.builtin.group:
     name: "{{ etcd_group }}"

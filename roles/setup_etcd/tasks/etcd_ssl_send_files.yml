@@ -1,5 +1,4 @@
 ---
-
 - name: Send ETCD CA key file
   ansible.builtin.copy:
     src: "{{ etcd_user_ca_key }}"

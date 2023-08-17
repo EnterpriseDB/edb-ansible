@@ -7,8 +7,8 @@ restapi:
 etcd3:
 {% if etcd_ssl %}
   protocol: https
-  cert: {{ etcd_member_crt }}
-  key:  {{ etcd_member_key }}
+  cert: {{ etcd_ssl_dir }}/client-{{ inventory_hostname }}.pem
+  key:  {{ etcd_ssl_dir }}/client-{{ inventory_hostname }}.key
   cacert: {{ etcd_ca_crt }}
 {% endif %}
   hosts:
@@ -49,7 +49,6 @@ postgresql:
   create_replica_methods:
     - basebackup
   basebackup:
-    - write-recovery-conf
     - checkpoint: 'fast'
     - label: 'standby'
     - create-slot

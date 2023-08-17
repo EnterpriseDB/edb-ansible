@@ -1,15 +1,13 @@
-[req]
+[ req ]
+prompt = no
+default_bits = 2048
 req_extensions = v3_req
 distinguished_name = req_distinguished_name
 
-[req_distinguished_name]
+[ req_distinguished_name ]
 
 [ v3_req ]
-basicConstraints = CA:FALSE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-subjectAltName = @alt_names
-
-[ ssl_client ]
 extendedKeyUsage = clientAuth, serverAuth
 basicConstraints = CA:FALSE
 subjectKeyIdentifier=hash
@@ -22,8 +20,10 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName = @alt_names
 authorityKeyIdentifier=keyid:always,issuer
 
-[alt_names]
+[ alt_names ]
 DNS.1 = localhost
 DNS.2 = {{ inventory_hostname }}
+DNS.3 = {{ hostvars[inventory_hostname].private_ip }}
+DNS.4 = 127.0.0.1
 IP.1 = {{ hostvars[inventory_hostname].private_ip }}
 IP.2 = 127.0.0.1

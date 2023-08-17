@@ -1,0 +1,40 @@
+name: "{{ inventory_hostname }}"
+data-dir: /var/lib/etcd/{{ inventory_hostname|replace('-', '_') }}
+enable-v2: true
+{% if etcd_ssl %}
+listen-peer-urls: https://0.0.0.0:{{ etcd_peer_port }}
+listen-client-urls: https://0.0.0.0:{{ etcd_client_port }}
+{% else %}
+listen-peer-urls: http://0.0.0.0:{{ etcd_peer_port }}
+listen-client-urls: http://0.0.0.0:{{ etcd_client_port }}
+{% endif %}
+
+{% if etcd_ssl %}
+initial-advertise-peer-urls: https://{{ inventory_hostname if use_hostname else hostvars[inventory_hostname].private_ip }}:{{ etcd_peer_port }}
+advertise-client-urls: https://{{ inventory_hostname if use_hostname else hostvars[inventory_hostname].private_ip }}:{{ etcd_client_port }}
+{% else %}
+initial-advertise-peer-urls: http://{{ inventory_hostname if use_hostname else hostvars[inventory_hostname].private_ip }}:{{ etcd_peer_port }}
+advertise-client-urls: http://{{ inventory_hostname if use_hostname else hostvars[inventory_hostname].private_ip }}:{{ etcd_client_port }}
+{% endif %}
+initial-cluster: "{{ etcd_initial_cluster | join(',') }}"
+initial-cluster-state: "{{ etcd_initial_cluster_state | default('new') }}"
+auto-compaction-mode: "{{ etcd_compaction_mode }}"
+auto-compaction-retention: "{{ etcd_compaction_retention }}"
+{% if etcd_ssl %}
+client-transport-security:
+  cert-file: {{ etcd_ssl_dir }}/server-{{ inventory_hostname }}.pem
+  key-file: {{ etcd_ssl_dir }}/server-{{ inventory_hostname }}.key
+  client-cert-auth: true
+  trusted-ca-file: {{ etcd_ca_crt }}
+peer-transport-security:
+  cert-file: {{ etcd_member_crt }}
+  key-file: {{ etcd_member_key }}
+  client-cert-auth: true
+  trusted-ca-file: {{ etcd_ca_crt }}
+{% endif %}
+
+{% if etcd_conf_params|length > 0 %}
+{% for item in etcd_conf_params %}
+{{ item.name }}: "{{ item.value }}"
+{% endfor %}
+{% endif %}

@@ -4,7 +4,7 @@
     path: "{{ etcd_data_dir }}"
     owner: "{{ etcd_owner }}"
     group: "{{ etcd_owner }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
 
@@ -13,7 +13,7 @@
     path: "{{ etcd_config_dir }}"
     owner: "{{ etcd_owner }}"
     group: "{{ etcd_owner }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
 
@@ -28,7 +28,7 @@
   ansible.builtin.copy:
     src: "{{ etcd_ca_conf_directory }}/{{ item }}"
     dest: "{{ etcd_conf_dir }}/{{ item }}"
-    mode: 0640
+    mode: "0640"
     owner: root
     group: root
   with_items:
@@ -41,5 +41,5 @@
     state: directory
     owner: "{{ etcd_owner }}"
     group: "{{ etcd_group }}"
-    mode: 0700
+    mode: "0700"
   become: true
