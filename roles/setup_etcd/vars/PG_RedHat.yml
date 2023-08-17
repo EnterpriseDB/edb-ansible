@@ -1,5 +1,5 @@
 ---
-
 pg_owner: "postgres"
 pg_group: "postgres"
-etcd_systemd_global_unit_file: "/usr/lib/systemd/system/{{ etcd_service }}.service"
+etcd_systemd_global_unit_file: "/etc/systemd/system/{{ etcd_service }}.service"
+etcd_environment_file: "/etc/sysconfig/etcd"

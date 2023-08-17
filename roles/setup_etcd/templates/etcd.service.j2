@@ -11,8 +11,8 @@ Group={{ etcd_group }}
 StandardOutput=syslog
 
 WorkingDirectory={{ etcd_data_dir }}
-EnvironmentFile={{ etcd_config }}
-ExecStart={{ etcd_bin_dir }}/etcd
+EnvironmentFile=-{{ etcd_environment_file }}
+ExecStart={{ etcd_bin_dir }}/etcd --config-file {{ etcd_config }}
 Restart=always
 RestartSec=10s
 LimitNOFILE=40000

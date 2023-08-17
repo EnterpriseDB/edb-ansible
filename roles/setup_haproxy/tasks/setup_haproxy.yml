@@ -1,0 +1,57 @@
+---
+- name: Open haproxy TCP port
+  ansible.posix.firewalld:
+    port: "{{ haproxy_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+  become: true
+
+- name: Open haproxy replica TCP port when haproxy_read_only_lb
+  ansible.posix.firewalld:
+    port: "{{ haproxy_replica_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - ansible_facts.services['firewalld.service'] is defined
+    - ansible_facts.services['firewalld.service'].state == 'running'
+    - ansible_facts.services['firewalld.service'].status == 'enabled'
+    - haproxy_read_only_lb|bool
+  become: true
+
+- name: Create haproxy group
+  ansible.builtin.group:
+    name: "{{ haproxy_group }}"
+    state: present
+  become: true
+
+- name: Create haproxy user
+  ansible.builtin.user:
+    name: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
+    create_home: true
+    home: "{{ haproxy_user_home }}"
+    state: present
+  become: true
+
+- name: Install haproxy
+  ansible.builtin.package:
+    name: "{{ haproxy_package }}"
+    state: present
+  become: true
+
+- name: Include the haproxy_configure.yml
+  ansible.builtin.include_tasks: haproxy_configure.yml
+
+- name: Enable and start systemd service
+  ansible.builtin.systemd:
+    name: "{{ haproxy_service }}"
+    daemon_reload: true
+    state: restarted
+    enabled: true
+  become: true

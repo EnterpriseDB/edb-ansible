@@ -37,12 +37,12 @@ etcd_bin_dir: "/usr/bin"
 etcd_certificates: []
 
 # CA key and ETCD member key file names
-etcd_ca_key: "{{ etcd_ssl_dir }}/ca-key.pem"
+etcd_ca_key: "{{ etcd_ssl_dir }}/ca-key.key"
 etcd_ca_crt: "{{ etcd_ssl_dir }}/ca-crt.pem"
-etcd_member_key: "{{ etcd_ssl_dir }}/etcd-key-{{ inventory_hostname }}.pem"
+etcd_member_key: "{{ etcd_ssl_dir }}/etcd-{{ inventory_hostname }}.key"
 etcd_member_csr: "{{ etcd_ssl_dir }}/etcd-{{ inventory_hostname }}.csr"
-etcd_member_crt: "{{ etcd_ssl_dir }}/etcd-crt-{{ inventory_hostname }}.pem"
-etcd_ssl_valid_days: 10000
+etcd_member_crt: "{{ etcd_ssl_dir }}/etcd-{{ inventory_hostname }}.pem"
+etcd_ssl_valid_days: 365
 
 # User defined key variables
 etcd_remote_ssl_src: false
@@ -53,6 +53,15 @@ etcd_user_member_crt: ""
 
 # Enable SSL
 etcd_ssl: true
+etcd_ssl_csr_dn:
+  CN: "{{ inventory_hostname if use_hostname else hostvars[inventory_hostname].private_ip }}"
+  O: "Patroni-ETCD"
+  OU: ""
+  L: "ETCD"
+  ST: "NA"
+  C: "NA"
+  EMAIL: "example@mail.com"
+
 update_etc_file: true
 etc_hosts_lists: []
 # etcd parametrs needed for initialization

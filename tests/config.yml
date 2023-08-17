@@ -534,3 +534,17 @@ cases:
     - almalinux8
     - debian10
     - ubuntu20
+  setup_haproxy:
+    pg_version:
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    pg_type:
+    - PG
+    - EPAS
+    os:
+    - rocky8
+    - centos7
+    - almalinux8
