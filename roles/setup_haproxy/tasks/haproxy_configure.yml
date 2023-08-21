@@ -9,7 +9,7 @@
     haproxy_server_lines: >-
       {{ haproxy_server_lines | default([]) + [
         "server " + node.inventory_hostname + " " + node.private_ip | string + ":" + pg_port | string + " " +
-        "maxconn 100 check port " + patroni_rest_api_port | string
+        "maxconn " + haproxy_global_maxconn | string + " check port " + patroni_rest_api_port | string
         ] 
       }}
   loop: "{{ haproxy_backend_nodes }}"
