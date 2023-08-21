@@ -111,3 +111,62 @@ all:
           etcd: true
           etcd_cluster_name: 'patroni-etcd'
 ```
+
+### How to include the `setup_haproxy` role in your Playbook
+
+Below is an example of how to include the `setup_haproxy` role:
+
+```yaml
+---
+- hosts: all
+  name: Deploy haproxy
+  become: yes
+  gather_facts: yes
+  any_errors_fatal: true
+
+  collections:
+    - edb_devops.edb_postgres
+  
+  pre_tasks:
+    - name: Initialize the user defined variables
+      set_fact:
+        pg_version: 15
+        pg_type: "PG"
+
+  roles:
+    - role: setup_repo
+      when: "'setup_repo' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: install_dbserver
+      when: "'install_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_etcd
+      when: "'setup_etcd' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_patroni
+      when: "'setup_patroni' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_pgbouncer
+      when: "'setup_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: setup_haproxy
+      when: "'setup_haproxy' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_pgbouncer
+      when: "'manage_pgbouncer' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+    - role: manage_dbserver
+      when: "'manage_dbserver' in lookup('edb_devops.edb_postgres.supported_roles', wantlist=True)"
+```
+
+Defining and adding variables is done in the `set_fact` of the `pre_tasks`.
+
+All the variables are available at:
+
+* [/roles/setup_haproxy/defaults/main.yml](./defaults/main.yml)
+
+## License
+
+BSD
+
+## Author information
+
+Author:
+
+  * Hannah Stoik
+  * Vibhor Kumar (Reviewer)
+  * EDB Postgres
+  * edb-devops@enterprisedb.com www.enterprisedb.com
