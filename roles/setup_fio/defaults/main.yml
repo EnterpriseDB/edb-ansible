@@ -1,0 +1,24 @@
+---
+# setting validate_only to true allows you to validate setup on an existing node
+# use_validation flag applies to deployment configuration and validation after setup
+validate_only: false
+use_validation: true
+remove_only: false
+
+fio_version: 3.35
+fio_filename: fio-{{ fio_version }}.tar.gz
+fio_url: "https://github.com/axboe/fio/archive/refs/tags"
+
+supported_os:
+  - CentOS8
+  - RHEL8
+  - Rocky8
+  - AlmaLinux8
+  - Debian10
+  - OracleLinux8
+  - Ubuntu20
+
+use_patroni: false
+
+supported_fio_versions:
+  - "3.35"

@@ -1,0 +1,33 @@
+---
+- name: Check support for fio version
+  ansible.builtin.fail:
+    msg: "fio version = {{ fio_version }} not supported."
+  when: fio_version|string not in supported_fio_versions
+
+- name: Install packages required for installing and using fio
+  ansible.builtin.package:
+    name:
+      - bc
+      - curl
+  become: true
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
+  failed_when: false
+
+- name: Set up fio facts
+  ansible.builtin.set_fact:
+    configure_args:
+      - --prefix=/usr
+    src_type: "tarball"
+    url: "{{ fio_url }}/{{ fio_filename }}"
+
+- name: Install fio
+  ansible.builtin.include_role:
+    name: install_from_source
+
+- name: Validate setup_fio tasks
+  ansible.builtin.include_tasks: validate_setup_fio.yml
+  when:
+    - validate_only|bool or use_validation|bool
+    - not remove_only|bool

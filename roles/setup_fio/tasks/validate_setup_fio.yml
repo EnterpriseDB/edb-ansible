@@ -1,0 +1,12 @@
+---
+- name: Stat to fio
+  ansible.builtin.stat:
+    path: "/usr/bin/fio"
+  register: fio_install_check
+
+- name: Check that fio is present
+  ansible.builtin.assert:
+    that:
+      - fio_install_check.stat['exists']
+    fail_msg: "The file /usr/bin/fio is missing."
+    success_msg: "The file /usr/bin/fio is installed correctly."
