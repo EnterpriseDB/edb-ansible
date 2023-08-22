@@ -1,10 +1,4 @@
 ---
-- name: Check 'pgd_commit_scopes' dictionary length
-  ansible.builtin.assert:
-    that:
-      - pgd_commit_scopes | length > 0
-    msg: "The 'pgd_commit_scopes' list should have at least one dictionary."
-
 - name: Check if cs_type is consistent and the sampe 'cs_type' across the entire list
   ansible.builtin.assert:
     that:
@@ -42,7 +36,7 @@
   when: true_count | int > 1
 
 - name: Check default_group_cs
-  assert:
+  ansible.builtin.assert:
     that:
       - pgd_commit_scopes | map(attribute='default_group_cs') | select("equalto", true) | list | count > 0
     fail_msg: "At least one 'default_group_cs' value should be set to true."

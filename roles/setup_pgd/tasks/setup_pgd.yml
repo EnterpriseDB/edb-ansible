@@ -107,12 +107,6 @@
   when:
     - validate_only|bool or use_validation|bool
 
-# setup oidentd authentication
-- name: Start service oidentd, if not started
-  ansible.builtin.service:
-    name: oidentd
-    state: started
-
 - name: Filter items based on cs_type 'CAMO'
   set_fact:
     filtered_items_camo: "{{ pgd_commit_scopes | selectattr('cs_type', 'equalto', 'CAMO') | list }}"

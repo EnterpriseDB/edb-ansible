@@ -57,6 +57,7 @@
     - validate_only|bool or use_validation|bool
     - not remove_only|bool
     - install_pgd
+    - pgd_commit_scopes | length > 0
 
 - name: Force cleanup based on force_initdb
   ansible.builtin.include_tasks: rm_initdb.yml

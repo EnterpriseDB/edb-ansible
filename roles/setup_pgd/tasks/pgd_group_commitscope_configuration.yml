@@ -56,6 +56,7 @@
   ansible.builtin.set_fact:
     _pgd_groupcommit_originnodegroup_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
 
+# FIX ME: Get 'join' to work
 - name: Switch node towards PGD node sub group when Group Commit
   ansible.builtin.include_role:
     name: manage_dbserver

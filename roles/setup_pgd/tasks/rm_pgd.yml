@@ -12,7 +12,6 @@
   block:
     - name: Gather PGD node information with state
       ansible.builtin.include_tasks: verify_pgd_node_group.yml
-
     - name: Part node from PGD cluster
       ansible.builtin.include_role:
         name: manage_dbserver
@@ -33,7 +32,6 @@
         - _pgd_extension_exists == 1
         - _pgd_local_node_created == 1
         - _pgd_cluster_group_joined == 1
-
     - name: Drop node from PGD cluster
       ansible.builtin.include_role:
         name: manage_dbserver
@@ -52,7 +50,6 @@
         - _pgd_extension_exists == 1
         - _pgd_local_node_created == 1
         - _pgd_cluster_group_joined == 1
-
     - name: Drop database in PGD Node
       ansible.builtin.include_role:
         name: manage_dbserver

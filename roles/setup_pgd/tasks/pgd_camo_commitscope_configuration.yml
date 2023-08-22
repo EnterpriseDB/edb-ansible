@@ -56,6 +56,7 @@
   ansible.builtin.set_fact:
     _pgd_camo_originnodegroup_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
 
+# FIX ME: Get 'join' to work
 - name: Switch primary node towards PGD node sub group with two nodes when CAMO
   ansible.builtin.include_role:
     name: manage_dbserver
@@ -150,7 +151,7 @@
 - name: ALTER max_prepared_transactions
   community.postgresql.postgresql_query:
     query: >-
-      ALTER SYSTEM SET max_prepared_transactions = 100
+      ALTER SYSTEM SET max_prepared_transactions = '{{ max_prepared_transactions }}'
     port: "{{ pg_port }}"
     db: "{{ pg_database }}"
     login_user: "{{ pg_owner }}"

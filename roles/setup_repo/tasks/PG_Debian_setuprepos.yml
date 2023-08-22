@@ -29,14 +29,6 @@
     state: present
   become: true
 
-# Package is used for ident authentication
-- name: Install oidentd package when install_pgd
-  ansible.builtin.package:
-    name: oidentd
-    state: present
-  become: true
-  when: install_pgd
-
 - name: Install acl
   ansible.builtin.package:
     name: acl
