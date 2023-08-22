@@ -35,7 +35,7 @@
 - name: Download source (tarball)
   ansible.builtin.get_url:
     url: "{{ url }}"
-    dest: "{{ tmpdir }}"
+    dest: "{{ tmpdir }}/{{ url | ansible.builtin.basename }}"
   when: src_type == "tarball"
 
 - name: Create a known location to unpack soucce based on the URL
