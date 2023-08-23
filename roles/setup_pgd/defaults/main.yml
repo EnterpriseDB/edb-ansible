@@ -111,9 +111,6 @@ supported_pg_version:
   - 14
   - 15
 
-supported_pgd_version:
-  - 5
-
 # The following parameters must be configured in the 'pgd_commit_scopes' list
 # the values below are examples and should be adjusted to your requirements
 #  for CAMO
@@ -132,6 +129,8 @@ supported_pgd_version:
 #  - member_nodes: ['edb-primary3']
 #  - default_group_cs: true
 #  - cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
+supported_pgd_version:
+  - 5
 
 # For CAMO Commit Scopes
 max_prepared_transactions: 100

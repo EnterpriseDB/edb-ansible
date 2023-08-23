@@ -102,11 +102,6 @@
     - name: Configure SSL if not exists
       ansible.builtin.import_tasks: pg_ssl_config.yml
 
-- name: Import validate tasks
-  ansible.builtin.import_tasks: validate_setup_pgd.yml
-  when:
-    - validate_only|bool or use_validation|bool
-
 - name: Filter items based on cs_type 'CAMO'
   set_fact:
     filtered_items_camo: "{{ pgd_commit_scopes | selectattr('cs_type', 'equalto', 'CAMO') | list }}"
@@ -126,3 +121,8 @@
   loop: "{{ filtered_items_group_commit }}"
   loop_control:
     label: "{{ item.cs_name }}"
+
+- name: Import validate tasks
+  ansible.builtin.import_tasks: validate_setup_pgd.yml
+  when:
+    - validate_only|bool or use_validation|bool
