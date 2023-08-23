@@ -132,7 +132,6 @@ configured beforehand with the `setup_repo` role. At least one lead primary must
 and a database cluster must be initialized on that node. 
 
 
-
 Example Playbook
 ----------------
 
