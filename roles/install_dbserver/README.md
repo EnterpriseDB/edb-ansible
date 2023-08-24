@@ -42,6 +42,12 @@ When executing the role via ansible these are the required variables:
 
   Database Engine supported are: `PG` and `EPAS`
 
+  * **install_edb_postgres_tuner**
+
+  EDB Postgres Tuner will be installed and enabled when
+  `install_edb_postgres_tuner: true`.  EDB Postgres Tuner also requires
+  `enable_edb_repo` be set to `true`.  Default: `false`
+
 These and other variables can be assigned in the `pre_tasks` definition of the
 section: [How to include the install_dbserver role in your Playbook](#how-to-include-the-install_dbserver-role-in-your-playbook)
 
