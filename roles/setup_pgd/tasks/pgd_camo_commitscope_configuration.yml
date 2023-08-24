@@ -6,11 +6,7 @@
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ item.parent_group }}'"
-=======
-      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_commit_scopes[0].parent_group }}'"
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
         db: "{{ pgd_cluster_database }}"
 
 - name: Store status of existence of PGD parent group
@@ -23,11 +19,7 @@
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ item.cs_origin_node_group }}'"
-=======
-      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_commit_scopes[0].cs_origin_node_group }}'"
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
         db: "{{ pgd_cluster_database }}"
 
 - name: Store status of existence of PGD commit scope origin node group
@@ -40,27 +32,15 @@
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT bdr.create_node_group(node_group_name := '{{ item.cs_origin_node_group }}',
                                       parent_group_name := '{{ item.parent_group }}',
-=======
-      - query: "SELECT bdr.create_node_group(node_group_name := '{{ pgd_commit_scopes[0].cs_origin_node_group }}',
-                                      parent_group_name := '{{ pgd_commit_scopes[0].parent_group }}',
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
                                       join_node_group := false
                                       )"
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
   when:
-<<<<<<< HEAD
     - inventory_hostname == item.member_nodes[0]
     - _pgd_camo_originnodegroup_exists|int == 0 and _pgd_camo_parentgroup_exists|int == 1
-    - item.cs_type == 'CAMO'
-=======
-    - inventory_hostname == pgd_commit_scopes[0].member_nodes[0]
-    - _pgd_camo_originnodegroup_exists|int == 0 and _pgd_camo_parentgroup_exists|int == 1
-    - pgd_commit_scopes[0].cs_type == 'CAMO'
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
 
 - name: Run query to re-check if PGD CAMO commit scope origin node group
   ansible.builtin.include_role:
@@ -68,32 +48,21 @@
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ item.cs_origin_node_group }}'"
-=======
-      - query: "SELECT COUNT(1) FROM bdr.node_group WHERE node_group_name  = '{{ pgd_commit_scopes[0].cs_origin_node_group }}'"
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
         db: "{{ pgd_cluster_database }}"
 
 - name: Store status of existence of PGD commit scope origin node group
   ansible.builtin.set_fact:
     _pgd_camo_originnodegroup_exists: "{{ sql_query_output.results[0].query_result[0].count | int }}"
 
-<<<<<<< HEAD
 # FIX ME: Get 'join' to work
-=======
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
 - name: Switch primary node towards PGD node sub group with two nodes when CAMO
   ansible.builtin.include_role:
     name: manage_dbserver
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT bdr.switch_node_group(node_group_name := '{{ item.cs_origin_node_group }}',
-=======
-      - query: "SELECT bdr.switch_node_group(node_group_name := '{{ pgd_commit_scopes[0].cs_origin_node_group }}',
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
                                       wait_for_completion := true
                                       )"
         db: "{{ pgd_cluster_database }}"
@@ -101,13 +70,7 @@
   when:
     - inventory_hostname == node
     - _pgd_camo_originnodegroup_exists|int == 1 and _pgd_camo_parentgroup_exists|int == 1
-<<<<<<< HEAD
-    - item.cs_type == 'CAMO'
   loop: "{{ item.member_nodes }}"
-=======
-    - pgd_commit_scopes[0].cs_type == 'CAMO'
-  loop: "{{ pgd_commit_scopes[0].member_nodes }}"
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
   loop_control:
     loop_var: node
 
@@ -119,28 +82,16 @@
       throttle: 1
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT bdr.add_commit_scope(commit_scope_name := '{{ item.cs_name }}',
                                           origin_node_group := '{{ item.cs_origin_node_group }}',
                                           rule := '{{ item.cs_rule }}'
-=======
-      - query: "SELECT bdr.add_commit_scope(commit_scope_name := '{{ pgd_commit_scopes[0].cs_name }}',
-                                          origin_node_group := '{{ pgd_commit_scopes[0].cs_origin_node_group }}',
-                                          rule := '{{ pgd_commit_scopes[0].cs_rule }}'
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
                                          )"
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
   when:
-<<<<<<< HEAD
     - inventory_hostname == node
     - _pgd_camo_originnodegroup_exists|int == 1 and _pgd_camo_parentgroup_exists|int == 1
   loop: "{{ item.member_nodes }}"
-=======
-     - inventory_hostname == node
-     - _pgd_camo_originnodegroup_exists|int == 1 and _pgd_camo_parentgroup_exists|int == 1
-  loop: "{{ pgd_commit_scopes[0].member_nodes }}"
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
   loop_control:
     loop_var: node
 
@@ -150,11 +101,7 @@
     tasks_from: execute_sql_scripts
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT COUNT(1) FROM bdr.commit_scopes WHERE commit_scope_name  = '{{ item.cs_name }}'"
-=======
-      - query: "SELECT COUNT(1) FROM bdr.commit_scopes WHERE commit_scope_name  = '{{ pgd_commit_scopes[0].cs_name }}'"
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
         db: "{{ pgd_cluster_database }}"
 
 - name: Store status of existence of PGD CAMO commit scope
@@ -169,25 +116,13 @@
       throttle: 1
   vars:
     pg_query:
-<<<<<<< HEAD
       - query: "SELECT bdr.alter_node_group_option(node_group_name := '{{ item.cs_origin_node_group }}',
                                       config_key := 'default_commit_scope',
                                       config_value := '{{ item.cs_name }}'
-=======
-      - query: "SELECT bdr.alter_node_group_option(node_group_name := '{{ pgd_commit_scopes[0].cs_origin_node_group }}',
-                                      config_key := 'default_commit_scope',
-                                      config_value := '{{ pgd_commit_scopes[0].cs_name }}'
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
                                       )"
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
   when:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
-    - item.default_group_cs|bool
-    - item.cs_type|string == 'CAMO'
     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
 
 - name: Configure BDR 'default_streaming_mode' to off
@@ -205,30 +140,25 @@
         db: "{{ pgd_cluster_database }}"
     ignore_query_execution_error: false
   when:
-    - item.default_group_cs|bool
-    - item.cs_type|string == 'CAMO'
     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
 
 - name: ALTER max_prepared_transactions
-  community.postgresql.postgresql_query:
-    query: >-
-      ALTER SYSTEM SET max_prepared_transactions = '{{ max_prepared_transactions }}'
-    port: "{{ pg_port }}"
-    db: "{{ pg_database }}"
-    login_user: "{{ pg_owner }}"
-    login_unix_socket: "{{ pg_unix_socket_directories[0] }}"
-    autocommit: true
-  no_log: "{{ disable_logging }}"
-  become: true
-  become_user: "{{ pg_owner }}"
+  ansible.builtin.include_role:
+    name: manage_dbserver
+    tasks_from: execute_sql_scripts
+    apply:
+      throttle: 1
+  vars:
+    pg_query:  
+      - query: "ALTER SYSTEM SET max_prepared_transactions = '{{ max_prepared_transactions }}'"
+        db: "{{ pg_database }}"
+        autocommit: true
+    ignore_query_execution_error: false
+  when:
+    - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
 
 - name: Restart the pg service
   ansible.builtin.systemd:
     name: "{{ pg_service }}"
     state: restarted
   become: true
-=======
-     - pgd_commit_scopes[0].default_group_cs|bool == true
-     - pgd_commit_scopes[0].cs_type|string == 'CAMO'
-     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)

@@ -34,7 +34,6 @@ pass_dir: "~/.edb"
 pg_local_wal_archive_dir: ""
 edb_audit_directory: ""
 
-
 # unix socket domain directories
 pg_unix_socket_directories:
   - "/var/run/postgresql"
@@ -92,6 +91,29 @@ pgd_cluster_nodes: []
 local_node_dsn: ""
 lead_primary_dsn: ""
 
+# For CAMO Commit Scopes
+max_prepared_transactions: 100
+
+# The following parameters must be configured in the 'pgd_commit_scopes' list
+# the values below are examples and should be adjusted to your requirements
+#  for CAMO
+#  - cs_type: 'CAMO'
+#  - cs_name: 'camo_scope_1'
+#  - parent_group: 'pgd_cluster'
+#  - cs_origin_node_group: 'pgd_two_nodes'
+#  - member_nodes: ['edb-primary1', 'edb-primary2']
+#  - default_group_cs: true
+#  - cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
+#  for GROUP_COMMIT
+#  - cs_type: 'GROUP_COMMIT'
+#  - cs_name: 'group_commit_scope_1'
+#  - parent_group: 'pgd_cluster'
+#  - cs_origin_node_group: 'pgd_gc_nodes'
+#  - member_nodes: ['edb-primary3']
+#  - default_group_cs: true
+#  - cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
+pgd_commit_scopes: ""
+
 etc_hosts_lists: []
 
 supported_os:
@@ -111,81 +133,5 @@ supported_pg_version:
   - 14
   - 15
 
-# The following parameters must be configured in the 'pgd_commit_scopes' list
-# the values below are examples and should be adjusted to your requirements
-#  for CAMO
-#  - cs_type: 'CAMO'
-#  - cs_name: 'camo_scope_1'
-#  - parent_group: 'pgd_cluster'
-#  - cs_origin_node_group: 'pgd_two_nodes'
-#  - member_nodes: ['edb-primary1', 'edb-primary2']
-#  - default_group_cs: true
-#  - cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
-#  for GROUP_COMMIT
-#  - cs_type: 'GROUP_COMMIT'
-#  - cs_name: 'group_commit_scope_1'
-#  - parent_group: 'pgd_cluster'
-#  - cs_origin_node_group: 'pgd_gc_nodes'
-#  - member_nodes: ['edb-primary3']
-#  - default_group_cs: true
-#  - cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
 supported_pgd_version:
   - 5
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-# For CAMO Commit Scopes
-max_prepared_transactions: 100
-
-pgd_commit_scopes: ""
-=======
-pgd_commit_scopes:
-  - cs_name: 'camo_scope_1'
-    cs_type: 'CAMO' # either camo or group_commit
-    parent_group: 'pgd_cluster' # this group is present in cluster
-    cs_origin_node_group: 'pgd_two_nodes' # this group may or may not be present
-    member_nodes: ['edb-primary1', 'edb-primary2']
-    default_group_cs: true # don't make mandatory, default('false') if not present in array
-    cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
-  - cs_name: 'groupcommit_scope_1'
-    cs_type: 'GROUP_COMMIT'
-    parent_group: 'pgd_cluster'
-    cs_origin_node_group: 'pgd_remaining_nodes'
-    member_nodes: ['edb-primary3']
-    default_group_cs: false
-    cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
->>>>>>> c5b23aa (Added support for camo and group commit scopes. Updated 'README.md' for 'setup_pgd' role. Added tests for pgd configuration settings in 'main.yml' in 'init_dbserver' role.)
-=======
-# The following parameters must be configured in the 'pgd_commit_scopes' list
-# the values below are examples and should be adjusted to your requirements
-#  for CAMO
-#  - cs_type: 'CAMO'
-#  for GROUP_COMMIT
-#  - cs_type: 'GROUP_COMMIT'
-#  for CAMO
-#  - cs_name: 'camo_scope_1'
-#  for GROUP_COMMIT
-#  - cs_name: 'group_commit_scope_1'
-#  - parent_group: 'pgd_cluster'
-#  for CAMO
-#  - cs_origin_node_group: 'pgd_two_nodes'
-#  for GROUP_COMMIT
-#  - cs_origin_node_group: 'pgd_gc_nodes'
-#  for CAMO
-#  - member_nodes: ['edb-primary1', 'edb-primary2']
-#  for GROUP_COMMIT
-#  - member_nodes: ['edb-primary3']
-#  - default_group_cs: true
-#  for CAMO
-#  - cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
-#  for GROUP_COMMIT
-#  - cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
-pgd_commit_scopes:
-  - cs_name: ''
-    cs_type: ''
-    parent_group: ''
-    cs_origin_node_group: ''
-    member_nodes: ['']
-    default_group_cs: true
-    cs_rule: ""
->>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)

@@ -130,8 +130,6 @@ Dependencies
 This role does not have any dependencies, but package repositories should have been 
 configured beforehand with the `setup_repo` role. At least one lead primary must exist
 and a database cluster must be initialized on that node. 
-=======
-
 
 
 

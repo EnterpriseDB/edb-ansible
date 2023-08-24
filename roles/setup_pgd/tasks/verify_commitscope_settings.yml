@@ -1,13 +1,4 @@
 ---
-<<<<<<< HEAD
-=======
-- name: Check 'pgd_commit_scopes' dictionary length
-  ansible.builtin.assert:
-    that:
-      - pgd_commit_scopes | length > 0
-    msg: "The 'pgd_commit_scopes' list should have at least one dictionary."
-
->>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
 - name: Check if cs_type is consistent and the sampe 'cs_type' across the entire list
   ansible.builtin.assert:
     that:
@@ -35,21 +26,8 @@
     msg: "Duplicates found in member_nodes_array"
   when: has_duplicates
 
-- name: Count true values in default_group_cs
-  ansible.builtin.set_fact:
-    true_count: "{{ pgd_commit_scopes | map(attribute='default_group_cs') | select('equalto', true) | list | count }}"
-
-- name: Fail if more than one true value in default_group_cs
-  ansible.builtin.fail:
-    msg: "More than one true value found in default_group_cs"
-  when: true_count | int > 1
-
 - name: Check default_group_cs
-<<<<<<< HEAD
   ansible.builtin.assert:
-=======
-  assert:
->>>>>>> abab58a (Added checks for 'pgd_commit_scopes' list. Removed 'streaming' and 'max_prepared' for GROUP COMMIT SCOPE.)
     that:
       - pgd_commit_scopes | map(attribute='default_group_cs') | select("equalto", true) | list | count > 0
     fail_msg: "At least one 'default_group_cs' value should be set to true."
