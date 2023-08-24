@@ -19,6 +19,13 @@
     msg: "PGD version {{ pgd_version }} is not supported"
   when: pgd_version|int not in supported_pgd_version
 
+- name: Import PGD verify commit setstings tasks
+  ansible.builtin.import_tasks: verify_commitscope_settings.yml
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
+    - pgd_commit_scopes | length > 0
+
 - name: Verify TDE parameters based on the version and pg_type
   ansible.builtin.include_tasks: verify_tde_vars.yml
   when:
@@ -32,7 +39,7 @@
 - name: Reference ssl variables
   ansible.builtin.include_vars: edb-ssl.yml
   when: pg_ssl
-  
+
 - name: Gather service facts
   ansible.builtin.service_facts:
 
@@ -51,7 +58,7 @@
 
 - name: Set initdb_executed to false if cluster was already initialized
   set_fact:
-     initdb_executed: false
+    initdb_executed: false
   when:
     - hostvars[inventory_hostname].pgd.use_physical_backup is defined
     - hostvars[inventory_hostname].pgd.use_physical_backup|bool
@@ -101,6 +108,11 @@
       ansible.builtin.import_tasks: pg_ssl_check.yml
     - name: Configure SSL if not exists
       ansible.builtin.import_tasks: pg_ssl_config.yml
+
+- name: Include tasks to setup commit scopes
+  ansible.builtin.include_tasks: pgd_commit_scopes.yml
+  when:
+    - pgd_commit_scopes|length > 0
 
 - name: Import validate tasks
   ansible.builtin.import_tasks: validate_setup_pgd.yml

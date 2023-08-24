@@ -9,7 +9,7 @@
   become: true
   when:
     - edb_master_key|length > 0
-    - pg_data not in edb_master_key_location
+    - edb_master_key_location not in pg_data
 
 - name: Store edb_master_key in a secure location
   ansible.builtin.copy:

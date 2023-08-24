@@ -10,57 +10,54 @@
   when:
     - initdb_executed
   block:
-      - name: Gather PGD node information with state
-        ansible.builtin.include_tasks: verify_pgd_node_group.yml
-
-      - name: Part node from PGD cluster
-        ansible.builtin.include_role:
-          name: manage_dbserver
-          tasks_from: execute_sql_scripts
-          apply:
-            throttle: 1
-            delegate_to: "{{ lead_primary_node.ansible_host }}"
-        vars:
-            pg_query:
-              - query: "SELECT bdr.part_node( node_name := '{{ pgd_local_node_name }}',
-                                              wait_for_completion := true
-                                            )"
-                db: "{{ pgd_cluster_database }}"
-            ignore_query_execution_error: false
-        when:
-          - inventory_hostname != lead_primary_node.inventory_hostname
-          - _pgd_db_exists == 1
-          - _pgd_extension_exists == 1
-          - _pgd_local_node_created == 1
-          - _pgd_cluster_group_joined == 1
-
-      - name: Drop node from PGD cluster
-        ansible.builtin.include_role:
-          name: manage_dbserver
-          tasks_from: execute_sql_scripts
-          apply:
-            throttle: 1
-            delegate_to: "{{ lead_primary_node.ansible_host }}"
-        vars:
-            pg_query:
-              - query: "SELECT bdr.part_node( node_name := '{{ pgd_local_node_name }}' )"
-                db: "{{ pgd_cluster_database }}"
-            ignore_query_execution_error: false
-        when:
-          - inventory_hostname != lead_primary_node.inventory_hostname
-          - _pgd_db_exists == 1
-          - _pgd_extension_exists == 1
-          - _pgd_local_node_created == 1
-          - _pgd_cluster_group_joined == 1
-
-      - name: Drop database in PGD Node
-        ansible.builtin.include_role:
-          name: manage_dbserver
-          tasks_from: manage_db
-        vars:
-          pg_databases:
-            - name: "{{ pgd_cluster_database }}"
-              owner: "{{ pgd_cluster_database_owner }}"
-              state: absent
-        when:
-          - pgd_cluster_database != pg_database
+    - name: Gather PGD node information with state
+      ansible.builtin.include_tasks: verify_pgd_node_group.yml
+    - name: Part node from PGD cluster
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+        apply:
+          throttle: 1
+          delegate_to: "{{ lead_primary_node.ansible_host }}"
+      vars:
+        pg_query:
+          - query: "SELECT bdr.part_node( node_name := '{{ pgd_local_node_name }}',
+                                          wait_for_completion := true
+                                        )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: false
+      when:
+        - inventory_hostname != lead_primary_node.inventory_hostname
+        - _pgd_db_exists == 1
+        - _pgd_extension_exists == 1
+        - _pgd_local_node_created == 1
+        - _pgd_cluster_group_joined == 1
+    - name: Drop node from PGD cluster
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: execute_sql_scripts
+        apply:
+          throttle: 1
+          delegate_to: "{{ lead_primary_node.ansible_host }}"
+      vars:
+        pg_query:
+          - query: "SELECT bdr.part_node( node_name := '{{ pgd_local_node_name }}' )"
+            db: "{{ pgd_cluster_database }}"
+        ignore_query_execution_error: false
+      when:
+        - inventory_hostname != lead_primary_node.inventory_hostname
+        - _pgd_db_exists == 1
+        - _pgd_extension_exists == 1
+        - _pgd_local_node_created == 1
+        - _pgd_cluster_group_joined == 1
+    - name: Drop database in PGD Node
+      ansible.builtin.include_role:
+        name: manage_dbserver
+        tasks_from: manage_db
+      vars:
+        pg_databases:
+          - name: "{{ pgd_cluster_database }}"
+            owner: "{{ pgd_cluster_database_owner }}"
+            state: absent
+      when:
+        - pgd_cluster_database != pg_database

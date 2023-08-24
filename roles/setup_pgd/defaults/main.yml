@@ -34,7 +34,6 @@ pass_dir: "~/.edb"
 pg_local_wal_archive_dir: ""
 edb_audit_directory: ""
 
-
 # unix socket domain directories
 pg_unix_socket_directories:
   - "/var/run/postgresql"
@@ -91,6 +90,29 @@ pgd_cluster_nodes: []
 # PGD DSN variables
 local_node_dsn: ""
 lead_primary_dsn: ""
+
+# For CAMO Commit Scopes
+max_prepared_transactions: 100
+
+# The following parameters must be configured in the 'pgd_commit_scopes' list
+# the values below are examples and should be adjusted to your requirements
+#  for CAMO
+#  - cs_type: 'CAMO'
+#  - cs_name: 'camo_scope_1'
+#  - parent_group: 'pgd_cluster'
+#  - cs_origin_node_group: 'pgd_two_nodes'
+#  - member_nodes: ['edb-primary1', 'edb-primary2']
+#  - default_group_cs: true
+#  - cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
+#  for GROUP_COMMIT
+#  - cs_type: 'GROUP_COMMIT'
+#  - cs_name: 'group_commit_scope_1'
+#  - parent_group: 'pgd_cluster'
+#  - cs_origin_node_group: 'pgd_gc_nodes'
+#  - member_nodes: ['edb-primary3']
+#  - default_group_cs: true
+#  - cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
+pgd_commit_scopes: ""
 
 etc_hosts_lists: []
 
