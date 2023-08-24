@@ -63,6 +63,44 @@ The rest of the variables can be configured and are available in the:
   * [roles/setup_pgd/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
   * [roles/setup_pgd/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
 
+### `PGD Commit Scopes Configuration`
+
+See examples for PGD Commit Scopes available at: [EDB PGD v5](https://www.enterprisedb.com/docs/pgd/5/durability/commit-scopes/).
+
+The code below is part of the [roles/setup_pgd/defaults/main.yml](./defaults/main.yml), and 
+example for configuring two PGD commit scopes is listed below.
+
+The configuration requirements for PGD through the configuration setting variables are:
+  1. Only one scope can be configured as default at a time. The variable to configure is: `default_group_cs`
+  2. The length of the `member_nodes` for a `camo` commit scope is exactly `two`
+  3. No node in `member_nodes` for either commit scope can belong to the other commit scope
+  4. All nodes in `member_nodes` must belong to a `parent_group`
+  5. The `cs_rule` parameter must be: valid, correctly formatted, and adhere to the correct syntax
+
+COMMIT AT MOST ONCE SCOPE - CAMO
+```yaml
+pgd_commit_scopes:
+  - cs_name: 'camo_scope_1'
+    cs_type: 'CAMO'
+    parent_group: 'pgd_cluster'
+    cs_origin_node_group: 'pgd_two_nodes'
+    member_nodes: ['edb-primary1', 'edb-primary2']
+    default_group_cs: true
+    cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
+```
+
+GROUP COMMIT SCOPE
+```yaml
+pgd_commit_scopes:
+  - cs_name: 'groupcommit_scope_1'
+    cs_type: 'GROUP_COMMIT'
+    parent_group: 'pgd_cluster'
+    cs_origin_node_group: 'pgd_remaining_nodes'
+    member_nodes: ['edb-primary3']
+    default_group_cs: true
+    cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
+```
+
 Host Variables
 --------------
 
@@ -92,6 +130,8 @@ Dependencies
 This role does not have any dependencies, but package repositories should have been 
 configured beforehand with the `setup_repo` role. At least one lead primary must exist
 and a database cluster must be initialized on that node. 
+
+
 
 Example Playbook
 ----------------
@@ -196,5 +236,6 @@ Author:
 
   * Vibhor Kumar
   * Hannah Stoik
+  * Doug Ortiz
   * EDB Postgres
   * edb-devops@enterprisedb.com www.enterprisedb.com

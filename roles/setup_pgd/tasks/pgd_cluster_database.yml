@@ -7,15 +7,15 @@
     pg_databases:
       - name: "{{ pgd_cluster_database }}"
         owner: "{{ pgd_cluster_database_owner }}"
-  when: 
+  when:
     - pgd_cluster_database != pg_database
 
 - name: Ensure BDR extension exists in {{ pgd_cluster_database }}
   ansible.builtin.include_role:
-     name: manage_dbserver
-     tasks_from: manage_extensions
+    name: manage_dbserver
+    tasks_from: manage_extensions
   vars:
     pg_extensions:
-       - name: bdr
-         state: present
-         database: "{{ pgd_cluster_database }}"
+      - name: bdr
+        state: present
+        database: "{{ pgd_cluster_database }}"
