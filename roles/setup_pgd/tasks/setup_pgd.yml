@@ -112,6 +112,8 @@
 - name: Include tasks to setup commit scopes
   ansible.builtin.include_tasks: pgd_commit_scopes.yml
   when:
+    - not validate_only|bool
+    - not remove_only|bool
     - pgd_commit_scopes|length > 0
 
 - name: Import validate tasks
