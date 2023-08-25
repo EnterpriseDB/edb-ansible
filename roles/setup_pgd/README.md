@@ -71,11 +71,10 @@ The code below is part of the [roles/setup_pgd/defaults/main.yml](./defaults/mai
 example for configuring two PGD commit scopes is listed below.
 
 The configuration requirements for PGD through the configuration setting variables are:
-  1. Only one scope can be configured as default at a time. The variable to configure is: `default_group_cs`
-  2. The length of the `member_nodes` for a `camo` commit scope is exactly `two`
-  3. No node in `member_nodes` for either commit scope can belong to the other commit scope
-  4. All nodes in `member_nodes` must belong to a `parent_group`
-  5. The `cs_rule` parameter must be: valid, correctly formatted, and adhere to the correct syntax
+  1. The length of the `member_nodes` for a `camo` commit scope is exactly `two`
+  2. No node in `member_nodes` for either commit scope can belong to the other commit scope
+  3. All nodes in `member_nodes` must belong to a `parent_group`
+  4. The `cs_rule` parameter must be: valid, correctly formatted, and adhere to the correct syntax
 
 COMMIT AT MOST ONCE SCOPE - CAMO
 ```yaml
