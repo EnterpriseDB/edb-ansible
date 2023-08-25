@@ -27,14 +27,3 @@
         pass: "{{ pgd_cluster_database_owner_password }}"
         role_attr_flags: replication
   no_log: "{{ disable_logging }}"
-
-- name: Update the pgpass with postgres PGD database owners password
-  ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: manage_pgpass
-  vars:
-    pg_pgpass_values:
-      - user: "{{ pgd_cluster_database_owner }}"
-        password: "{{ pgd_cluster_database_owner_password }}"
-        create: true
-  no_log: "{{ disable_logging }}"

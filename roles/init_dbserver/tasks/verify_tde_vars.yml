@@ -1,5 +1,5 @@
 ---
-- name: Verify edb_key_wrap_cmd is defined or not
+- name: Verify edb_key_wrap_cmd and edb_key_unwrap_cmd are defined
   ansible.builtin.fail:
     msg: "edb_key_wrap_cmd and edb_key_unwrap_cmd are must for initializing a cluster"
   when: edb_key_wrap_cmd|length < 1 or edb_key_unwrap_cmd|length < 1
