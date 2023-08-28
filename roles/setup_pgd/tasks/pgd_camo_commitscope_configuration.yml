@@ -125,23 +125,6 @@
   when:
     - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
 
-- name: Configure BDR 'default_streaming_mode' to off
-  ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: execute_sql_scripts
-    apply:
-      throttle: 1
-  vars:
-    pg_query:
-      - query: "SELECT bdr.alter_node_group_option(node_group_name := '{{ item.parent_group }}',
-                                      config_key := 'streaming_mode',
-                                      config_value := 'off'
-                                      )"
-        db: "{{ pgd_cluster_database }}"
-    ignore_query_execution_error: false
-  when:
-    - _pgd_camoscope_exists|int == 1 and _pgd_camo_originnodegroup_exists|int == 1
-
 - name: ALTER max_prepared_transactions
   ansible.builtin.include_role:
     name: manage_dbserver
