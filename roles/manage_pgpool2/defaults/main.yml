@@ -14,6 +14,7 @@ supported_os:
   - RHEL7
   - RHEL8
   - Rocky8
+  - Rocky9
   - AlmaLinux8
   - OracleLinux7
   - Ubuntu20

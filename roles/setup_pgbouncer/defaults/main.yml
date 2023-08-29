@@ -70,6 +70,7 @@ supported_os:
   - RHEL7
   - RHEL8
   - Rocky8
+  - Rocky9
   - AlmaLinux8
   - Debian10
   - OracleLinux7
