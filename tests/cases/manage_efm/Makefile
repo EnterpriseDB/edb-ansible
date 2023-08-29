@@ -10,6 +10,11 @@ build-rocky8:
 	docker compose up standby1-rocky8 -d
 	docker compose up standby2-rocky8 -d
 
+build-rocky9:
+	docker compose up primary1-rocky9 -d
+	docker compose up standby1-rocky9 -d
+	docker compose up standby2-rocky9 -d
+
 build-almalinux8:
 	docker compose up primary1-almalinux8 -d
 	docker compose up standby1-almalinux8 -d
