@@ -122,6 +122,7 @@ supported_os:
   - RedHat7
   - RedHat8
   - Rocky8
+  - Rocky9
   - AlmaLinux8
   - OracleLinux7
 
