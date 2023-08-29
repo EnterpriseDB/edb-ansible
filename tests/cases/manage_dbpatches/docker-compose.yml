@@ -53,6 +53,39 @@ services:
     - .:/workspace
     - /sys/fs/cgroup/:/sys/fs/cgroup:ro
     command: /usr/sbin/init
+  primary1-rocky9:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky9
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  standby1-rocky9:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky9
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
+  standby2-rocky9:
+    privileged: true
+    build:
+      context: ../../docker
+      dockerfile: Dockerfile.rocky9
+    cap_add:
+    - SYS_ADMIN
+    volumes:
+    - .:/workspace
+    - /sys/fs/cgroup/:/sys/fs/cgroup:ro
+    command: /usr/sbin/init
   primary1-almalinux8:
     privileged: true
     build:
