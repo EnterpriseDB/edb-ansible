@@ -50,6 +50,7 @@ supported_os:
   - CentOS8
   - RedHat7
   - RedHat8
+  - RedHat9
   - Ubuntu20
   - Debian9
   - Debian10

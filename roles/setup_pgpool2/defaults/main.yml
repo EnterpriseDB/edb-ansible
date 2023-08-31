@@ -61,6 +61,7 @@ supported_os:
   - CentOS8
   - RHEL7
   - RHEL8
+  - RHEL9
   - Rocky8
   - Rocky9
   - AlmaLinux8
