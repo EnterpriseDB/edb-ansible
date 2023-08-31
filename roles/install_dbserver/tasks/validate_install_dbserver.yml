@@ -38,7 +38,7 @@
   when:
     - pg_type == 'PG'
     - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
 
 - name: Set package list for EPAS RedHat
   ansible.builtin.set_fact:
@@ -82,7 +82,7 @@
   when:
     - pg_type == 'EPAS'
     - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
 
 - name: Add pg_version > 10 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:

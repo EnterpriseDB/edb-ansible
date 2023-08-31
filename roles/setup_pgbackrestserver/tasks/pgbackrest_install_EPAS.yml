@@ -8,6 +8,7 @@
     pg_gpg_key_8: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
     pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
     pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+    pg_rpm_repo_9: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
   when: ansible_os_family == 'RedHat'
 
 # add repo facts for Debian
@@ -18,12 +19,12 @@
   when: ansible_os_family == 'Debian'
 
 # Add PG repo for RHEL
-- name: Download PGDG GPG key for EL8
+- name: Download PGDG GPG key for EL8 and EL9
   ansible.builtin.rpm_key:
     key: "{{ pg_gpg_key_8 }}"
     state: present
   when:
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
     - ansible_os_family == 'RedHat'
   become: true
 
@@ -43,6 +44,15 @@
   become: true
   when:
     - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
+
+- name: Install PG repo for EL9
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_9 }}"
+    state: present
+  become: true
+  when:
+    - ansible_distribution_major_version == '9'
     - ansible_os_family == 'RedHat'
 
 # Add PG repo for Debian

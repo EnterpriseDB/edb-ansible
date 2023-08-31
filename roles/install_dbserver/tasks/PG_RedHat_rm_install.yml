@@ -22,7 +22,7 @@
   when: ansible_distribution_major_version == '7'
   become: true
 
-- name: Remove require python package on EL8
+- name: Remove require python package on EL8 and EL9
   ansible.builtin.package:
     name:
       - python3-pycurl
@@ -30,7 +30,7 @@
       - python3-psycopg2
     state: absent
   become: true
-  when: ansible_distribution_major_version == '8'
+  when: ansible_distribution_major_version in ['8', '9']
 
 - name: Remove Postgres
   ansible.builtin.package:

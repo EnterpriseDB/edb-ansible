@@ -20,7 +20,7 @@ def test_setup_pgbouncer_service():
         if os_family() == 'Debian':
             service = 'edb-pgbouncer117'
         elif os_family() == 'RedHat':
-            service = 'edb-pgbouncer-1.17'
+            service = 'edb-pgbouncer-1.20'
 
     assert host.service(service).is_running, \
         "pgbouncer service not running"
@@ -38,7 +38,7 @@ def test_setup_pgbouncer_packages():
 
     if get_pg_type() == 'EPAS':
         packages = [
-            'edb-pgbouncer117'
+            'edb-pgbouncer120'
         ]
 
     for package in packages:

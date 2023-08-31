@@ -6,8 +6,8 @@ pgbouncer_user: "enterprisedb"
 pgbouncer_group: "enterprisedb"
 
 # Databases configuration file
-pgbouncer_databases_file: "/etc/edb/pgbouncer1.17/databases.ini"
+pgbouncer_databases_file: "/etc/edb/pgbouncer1.20/databases.ini"
 # Authentication file path
-pgbouncer_auth_file: "/etc/edb/pgbouncer1.17/userlist.txt"
+pgbouncer_auth_file: "/etc/edb/pgbouncer1.20/userlist.txt"
 # PID file
-pgbouncer_pid_file: "/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid"
+pgbouncer_pid_file: "/run/edb/pgbouncer1.20/edb-pgbouncer-1.20.pid"

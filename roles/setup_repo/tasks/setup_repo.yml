@@ -32,6 +32,14 @@
     - enable_edb_repo|bool
     - repo_token | length < 1 and (repo_username | length < 1 or repo_password | length < 1)
 
+- name: Validate repos 2.0 if Rocky9
+  ansible.builtin.fail:
+    msg: "Repo token required to setup Rocky9."
+  when:
+    - enable_edb_repo|bool
+    - repo_token | length < 1
+    - os in ['Rocky9']
+
 - name: Capture if pgd_nod_ips if defined
   ansible.builtin.set_fact:
     pgd_node_ips: "{{ lookup('edb_devops.edb_postgres.pgd_nodes') | flatten | map(attribute='ansible_host') | flatten }}"

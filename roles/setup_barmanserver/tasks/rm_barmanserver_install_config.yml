@@ -33,8 +33,9 @@
       {{ barman_cli_package }}.*el{{ os[-1:] }}
   when:
     - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version in ['7', '8']
 
-- name: Remove Barman packages on EL
+- name: Remove Barman packages on EL7 and EL8
   ansible.builtin.package:
     name:
       - "{{ _barman_package }}"
@@ -42,6 +43,18 @@
     state: absent
   when:
     - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version in ['7', '8']
+  become: true
+
+- name: Remove Barman packages on EL9
+  ansible.builtin.package:
+    name:
+      - barman
+      - barman-cli
+    state: absent
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '9'
   become: true
 
 - name: Remove Barman packages on Debian

@@ -16,6 +16,7 @@
     pg_gpg_key_8: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
     pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
     pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+    pg_rpm_repo_9: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
   when:
     - ansible_os_family == 'RedHat'
     - pg_type == 'EPAS'
@@ -30,12 +31,12 @@
     - pg_type == 'EPAS'
 
 # Remove PG repo for RHEL
-- name: Remove PGDG GPG key for EL8
+- name: Remove PGDG GPG key for EL8 and EL9
   ansible.builtin.rpm_key:
     key: "{{ pg_gpg_key_8 }}"
     state: absent
   when:
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
     - ansible_os_family == 'RedHat'
     - pg_type == 'EPAS'
   become: true
@@ -57,6 +58,16 @@
   become: true
   when:
     - ansible_distribution_major_version == '8'
+    - ansible_os_family == 'RedHat'
+    - pg_type == 'EPAS'
+
+- name: Remove PG repo for EL9
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_9 }}"
+    state: absent
+  become: true
+  when:
+    - ansible_distribution_major_version == '9'
     - ansible_os_family == 'RedHat'
     - pg_type == 'EPAS'
 

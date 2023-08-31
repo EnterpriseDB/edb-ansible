@@ -1,25 +1,25 @@
 ---
 # RPM package name
-pgbouncer_package_name: "edb-pgbouncer117"
+pgbouncer_package_name: "edb-pgbouncer120"
 
 # PgBouncer service name
-pgbouncer_service_name: "edb-pgbouncer-1.17"
+pgbouncer_service_name: "edb-pgbouncer-1.20"
 
 # PgBouncer system user & group
 pgbouncer_user: "enterprisedb"
 pgbouncer_group: "enterprisedb"
 
 # PgBouncer authentication part
-pgbouncer_auth_file: "/etc/edb/pgbouncer1.17/userlist.txt"
+pgbouncer_auth_file: "/etc/edb/pgbouncer1.20/userlist.txt"
 
 # PID file
-pgbouncer_pid_file: "/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid"
+pgbouncer_pid_file: "/run/edb/pgbouncer1.20/edb-pgbouncer-1.20.pid"
 # Configuration file
-pgbouncer_config_file: "/etc/edb/pgbouncer1.17/edb-pgbouncer-1.17.ini"
+pgbouncer_config_file: "/etc/edb/pgbouncer1.20/edb-pgbouncer-1.20.ini"
 # Log file
-pgbouncer_log_file: "/var/log/edb/pgbouncer1.17/edb-pgbouncer-1.17.log"
+pgbouncer_log_file: "/var/log/edb/pgbouncer1.20/edb-pgbouncer-1.20.log"
 # Databases configuration file
-pgbouncer_databases_file: "/etc/edb/pgbouncer1.17/databases.ini"
+pgbouncer_databases_file: "/etc/edb/pgbouncer1.20/databases.ini"
 
 # SSL dir
-pgbouncer_ssl_dir: "/etc/edb/pgbouncer1.17/ssl"
+pgbouncer_ssl_dir: "/etc/edb/pgbouncer1.20/ssl"
