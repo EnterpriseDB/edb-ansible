@@ -53,7 +53,6 @@ supported_os:
   - Debian9
   - Debian10
   - Rocky8
-  - Rocky9
   - AlmaLinux8
   - OracleLinux7
 

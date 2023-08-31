@@ -14,12 +14,12 @@
     - enable_edb_repo|bool
   become: true
 
-- name: Download PGDG GPG key for EL8
+- name: Download PGDG GPG key for EL8 and EL9
   ansible.builtin.rpm_key:
     key: "{{ pg_gpg_key_8 }}"
     state: present
   when:
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
     - pg_type == 'PG'
     - enable_pgdg_repo|bool
   become: true
@@ -30,6 +30,15 @@
     state: present
   when:
     - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
+  become: true
+
+- name: Download EPEL GPG key for EL9
+  ansible.builtin.rpm_key:
+    key: "{{ epel_gpg_key_9 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '9'
     - enable_epel_repo|bool
   become: true
 
@@ -52,13 +61,13 @@
     - pg_type == 'PG'
     - enable_pgdg_repo|bool
 
-- name: Install dnf-plugins-core for EL8
+- name: Install dnf-plugins-core for EL8 and EL9
   ansible.builtin.package:
     name: dnf-plugins-core
     state: present
   become: true
   when:
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
     - enable_epel_repo|bool
 
 # for RedHat8, use subscription-manager to enable codeready-builder repo, if required.
@@ -72,12 +81,31 @@
     - os not in ['RedHat8']
     - enable_epel_repo|bool
 
+- name: Enable CodeReady Builder for EL9
+  ansible.builtin.command: >
+    dnf config-manager --set-enabled crb
+  become: true
+  changed_when: true
+  when:
+    - ansible_distribution_major_version == '9'
+    - os not in ['RedHat9']
+    - enable_epel_repo|bool
+
 - name: Install EPEL repo for EL8
   ansible.builtin.package:
     name: "{{ epel_repo_8 }}"
     state: present
   when:
     - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
+  become: true
+
+- name: Install EPEL repo for EL9
+  ansible.builtin.package:
+    name: "{{ epel_repo_9 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '9'
     - enable_epel_repo|bool
   become: true
 
@@ -88,6 +116,16 @@
   become: true
   when:
     - ansible_distribution_major_version == '8'
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
+
+- name: Install PG repo for EL9
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_9 }}"
+    state: present
+  become: true
+  when:
+    - ansible_distribution_major_version == '9'
     - pg_type == 'PG'
     - enable_pgdg_repo|bool
 
@@ -141,6 +179,7 @@
     name: curl
     state: present
   become: true
+  when: ansible_distribution_major_version in ['7', '8']
 
 - name: Install PGD4 packages repo if tpa_subscription_token is given
   ansible.builtin.shell: >

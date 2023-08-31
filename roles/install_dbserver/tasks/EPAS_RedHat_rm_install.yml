@@ -52,11 +52,11 @@
   when: ansible_distribution_major_version == '7'
   become: true
 
-- name: Remove python packages on EL8
+- name: Remove python packages on EL8 and EL9
   ansible.builtin.package:
     name:
       - python3-pip
       - python3-psycopg2
     state: absent
-  when: ansible_distribution_major_version == '8'
+  when: ansible_distribution_major_version in ['8', '9']
   become: true

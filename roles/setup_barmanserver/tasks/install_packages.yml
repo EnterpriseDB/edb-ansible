@@ -22,7 +22,7 @@
     - ansible_os_family == 'RedHat'
   become: true
 
-- name: Install Barman packages on EL
+- name: Install Barman packages on EL7 and EL8
   ansible.builtin.package:
     name:
       - "{{ _barman_package }}"
@@ -30,6 +30,18 @@
     state: present
   when:
     - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version in ['7', '8']
+  become: true
+
+- name: Install Barman packages on EL9
+  ansible.builtin.package:
+    name:
+      - barman
+      - barman-cli
+    state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version == '9'
   become: true
 
 - name: Install Barman packages on Debian

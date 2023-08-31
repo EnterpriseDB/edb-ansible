@@ -12,7 +12,7 @@
     - ansible_distribution_major_version == '7'
   become: true
 
-- name: Install python packages on EL8
+- name: Install python packages on EL8 and EL9
   ansible.builtin.package:
     name:
       - python3-pip
@@ -20,7 +20,7 @@
     state: present
   when:
     - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
   become: true
 
 - name: Install EPAS >= 11 packages on RedHat

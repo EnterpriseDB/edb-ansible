@@ -30,3 +30,4 @@ supported_pg_version:
 
 supported_pgpool2_version:
   - 4.3
+  - 4.4

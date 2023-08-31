@@ -18,7 +18,7 @@ def test_setup_pgpool2():
         if os_family() == 'Debian':
             service = 'edb-pgpool43'
         elif os_family() == 'RedHat':
-            service = 'edb-pgpool-4.3'
+            service = 'edb-pgpool-4.4'
 
     if get_pg_type() == 'PG':
         if os_family() == 'Debian':
@@ -38,7 +38,10 @@ def test_setup_pgpool_packages():
     packages = ['openssl']
 
     if get_pg_type() == 'EPAS':
-        packages.append('edb-pgpool43')
+        if os_family() == 'Debian':
+            packages.append('edb-pgpool43')
+        elif os_family() == 'RedHat':
+            packages.append('edb-pgpool44')
 
     if get_pg_type() == 'PG':
         if os_family() == 'Debian':

@@ -206,9 +206,9 @@ def get_pgbouncer_pid_file():
             return '/var/run/pgbouncer/pgbouncer.pid'
     elif pg_type == 'EPAS':
         if os_family() == 'RedHat':
-            return '/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid'
+            return '/run/edb/pgbouncer1.20/edb-pgbouncer-1.20.pid'
         elif os_family() == 'Debian':
-            return '/var/run/edb/pgbouncer1.17/edb-pgbouncer-1.17.pid'
+            return '/var/run/edb/pgbouncer1.20/edb-pgbouncer-1.20.pid'
 
 
 def get_pgbouncer_auth_file():
@@ -220,9 +220,9 @@ def get_pgbouncer_auth_file():
             return '/etc/pgbouncer/userlist.txt'
     elif pg_type == 'EPAS':
         if os_family() == 'RedHat':
-            return '/etc/edb/pgbouncer1.17/userlist.txt'
+            return '/etc/edb/pgbouncer1.20/userlist.txt'
         elif os_family() == 'Debian':
-            return '/etc/edb/pgbouncer1.17/userlist.txt'
+            return '/etc/edb/pgbouncer1.20/userlist.txt'
 
 
 def get_enable_edb_tde():
