@@ -1,6 +1,6 @@
 ---
 dbt2_client_port: 30000
-dbt2_version: "0.53.5"
+dbt2_version: "0.53.6"
 
 # DBT-2 AppImage path
 dbt2_path: "/usr/bin/dbt2"
