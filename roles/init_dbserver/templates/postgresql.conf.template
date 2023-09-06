@@ -36,6 +36,13 @@ log_autovacuum_min_duration = 0
 autovacuum_max_workers = 5
 autovacuum_vacuum_cost_limit = 3000
 idle_in_transaction_session_timeout = 10min
+{% if install_auto_explain|bool %}
+{{ pg_shared_libraries_list.append('$libdir/auto_explain') }}
+auto_explain.log_min_duration = 60
+auto_explain.log_analyze = on
+auto_explain.log_wal = on
+auto_explain.log_timing = on
+{% endif %}
 {% if enable_edb_repo|bool and install_edb_postgres_tuner|bool and pg_version|int >= 11 %}
 {{ pg_shared_libraries_list.append('$libdir/edb_pg_tuner') }}
 edb_pg_tuner.autotune = on

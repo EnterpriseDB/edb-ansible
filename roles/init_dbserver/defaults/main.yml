@@ -6,6 +6,9 @@ pg_ssl: true
 pg_instance_name: main
 pg_remote_ssl_src: false
 
+# auto_explain
+install_auto_explain: true
+
 # This parameter define if we want to run pg_initdb command on a server or not
 run_initdb: true
 
