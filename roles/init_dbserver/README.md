@@ -34,6 +34,11 @@ The only dependencies required for this ansible galaxy role are:
 
 When executing the role via ansible there are two required variables:
 
+  * ***install_auto_explain***
+
+  The `auto_explain` shared library will be loaded `install_auto_explain:
+  true`.  Default: `true`
+
   * ***pg_version***
 
   Postgres Versions supported are: 10, 11, 12, 13, 14 and 15
