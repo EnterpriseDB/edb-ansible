@@ -48,7 +48,8 @@ auto_explain.log_timing = on
 edb_pg_tuner.autotune = on
 {% endif %}
 {% if install_pgd|bool %}
-{{ pg_shared_libraries_list.append('$libdir/bdr') }}
+{{ pg_shared_libraries_list.insert(0, '$libdir/bdr') }}
+# bdr library goes first per documentation
 {% endif %}
 shared_preload_libraries = '{{ pg_shared_libraries_list | join(",") }}'
 cluster_name = '{{ pg_instance_name }}'
