@@ -56,7 +56,7 @@
 - name: "Install PGD packages for EPAS >= 14"
   ansible.builtin.package:
     name:
-      - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}
+      - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}{% if pgd_semver is defined %}-{{ pgd_semver }}{% endif %}
     state: present
   become: true
   when:
