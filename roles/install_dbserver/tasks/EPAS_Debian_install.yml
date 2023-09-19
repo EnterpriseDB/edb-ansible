@@ -59,7 +59,6 @@
   ansible.builtin.package:
     name:
       - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}
-      - edb-bdr{{ pgd_version }}-{{ pg_type | lower }}{{ pg_version }}-debuginfo
     state: present
   become: true
   when:
