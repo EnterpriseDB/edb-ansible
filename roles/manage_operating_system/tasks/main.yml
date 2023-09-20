@@ -3,3 +3,8 @@
   ansible.builtin.include_tasks: enable_user_profiling.yml
   when:
     - enable_user_profiling | bool
+
+- name: Enable core dumps
+  ansible.builtin.include_tasks: enable_core_dump.yml
+  when:
+    - enable_core_dump | bool

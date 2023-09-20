@@ -1,0 +1,15 @@
+---
+- name: Enable unlimited core size for all users
+  community.general.pam_limits:
+    domain: "*"
+    limit_type: "-"
+    limit_item: "core"
+    value: "unlimited"
+  become: true
+
+- name: Install debuginfo helper packages
+  ansible.builtin.package:
+    name: yum-utils
+    state: present
+  when: ansible_os_family == 'RedHat'
+  become: true

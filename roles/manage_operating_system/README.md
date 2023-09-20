@@ -12,6 +12,11 @@ Following are the requirements of this role.
 
 When executing the role via Ansible these are the applicable variables:
 
+  * ***enable_core_dump***
+
+    When `true`, enable operating system facilities to capture and save core
+    dumps.  Default: `false`
+
   * ***enable_user_profiling***
 
     When `true`, sets relevant operating system settings such that any user and
@@ -49,6 +54,7 @@ Content of the `inventory.yml` file:
   pre_tasks:
     - name: Initialize the user defined variables
       ansible.builtin.set_fact:
+        enable_core_dump: true
         enable_user_profiling: true
 
   collections:
@@ -65,7 +71,7 @@ $ ansible-playbook playbook.yml \
   -i inventory.yml \
   -u centos \
   --private-key <key.pem> \
-  --extra-vars="enable_user_profiling=true"
+  --extra-vars="enable_user_profiling=true enable_core_dump=true"
 ```
 
 ## License
