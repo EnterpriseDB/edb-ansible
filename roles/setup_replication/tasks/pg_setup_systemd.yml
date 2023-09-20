@@ -29,15 +29,3 @@
   become: true
   when:
     - ansible_os_family == "RedHat"
-
-- name: Add LimitCORE in systemd file
-  edb_devops.edb_postgres.linesinfile:
-    path: "/etc/systemd/system/{{ pg_service }}.service"
-    lines:
-      - line: "LimitCORE=infinity"
-        regexp: "^LimitCORE=.*"
-        insertafter: "^\\[Service\\]$"
-  become: true
-  when:
-    - enable_core_dump|bool
-    - ansible_os_family == 'RedHat'

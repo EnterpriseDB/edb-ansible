@@ -39,13 +39,6 @@
     - not validate_only|bool
     - not remove_only|bool
 
-- name: Enable coredump based on enable_core_dump
-  ansible.builtin.include_tasks: linux_coredump.yml
-  when:
-    - enable_core_dump|bool
-    - not validate_only|bool
-    - not remove_only|bool
-
 - name: Validate install_dbserver tasks
   ansible.builtin.include_tasks: validate_install_dbserver.yml
   when:

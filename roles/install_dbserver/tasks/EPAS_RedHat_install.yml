@@ -70,3 +70,23 @@
     state: present
   become: true
   when: pg_ssl
+
+- name: Install debuginfo helper packages
+  ansible.builtin.package:
+    name:
+      - yum-utils
+    state: present
+  become: true
+  when: enable_core_dump | bool
+
+- name: Install debug packages
+  ansible.builtin.command:
+    cmd: >-
+      debuginfo-install -y
+      edb-as{{ pg_version }}-server
+      edb-as{{ pg_version }}-server-core
+      edb-as{{ pg_version }}-server-contrib
+      edb-as{{ pg_version }}-server-libs
+      edb-as{{ pg_version }}-server-client
+  when: enable_core_dump | bool
+  become: true

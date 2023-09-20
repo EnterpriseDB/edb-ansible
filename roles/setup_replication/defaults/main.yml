@@ -11,8 +11,6 @@ force_replication: false
 use_replication_slots: true
 use_hostname: true
 update_etc_file: true
-enable_core_dump: false
-
 
 # TDE functionality key
 edb_enable_tde: false
