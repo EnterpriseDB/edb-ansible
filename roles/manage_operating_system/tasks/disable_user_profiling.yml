@@ -1,0 +1,12 @@
+---
+- name: reset use of all profiling events by all users
+  ansible.posix.sysctl:
+    name: kernel.perf_event_paranoid
+    state: absent
+  become: true
+
+- name: reset restrictions on exposing kernel address
+  ansible.posix.sysctl:
+    name: kernel.kptr_restrict
+    state: absent
+  become: true
