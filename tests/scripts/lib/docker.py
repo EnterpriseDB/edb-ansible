@@ -20,7 +20,7 @@ class DockerInventory():
         cmd = "docker compose ps \
                 --format='{\"ID\": \"{{ .ID }}\", \"Service\": \"{{ .Service }}\"}' | jq -s"
 
-        cp = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cp = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.cwd)
 
         # cp.communicate() returns tuple (cp.stdout, cp.stderr)
         # to get the cp.stderr, use index 1
