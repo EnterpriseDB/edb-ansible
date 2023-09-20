@@ -1,0 +1,5 @@
+---
+- name: Enable user level profiling
+  ansible.builtin.include_tasks: enable_user_profiling.yml
+  when:
+    - enable_user_profiling | bool
