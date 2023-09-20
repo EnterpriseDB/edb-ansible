@@ -17,18 +17,16 @@ class DockerInventory():
         # the issue was an item: "Command": "\"/usr/sbin/init\"" that is not in proper json format
         # with docker compose 2.21 "docker compose ps --format json" no longer returns proper json
         # add "| jq -s" to format output into json format that json.loads() will parse correctly
-        cmd = "docker compose ps \
-                --format='{\"ID\": \"{{ .ID }}\", \"Service\": \"{{ .Service }}\"}' | jq -s"
+        cmd = "docker compose ps --format='{\"ID\": \"{{ .ID }}\", \"Service\": \"{{ .Service }}\"}' | jq -s"
 
         cp = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.cwd)
-
-        # cp.communicate() returns tuple (cp.stdout, cp.stderr)
-        # to get the cp.stderr, use index 1
-        if cp.returncode != 0:
-            raise Exception(cp.communicate()[1].decode("utf-8"))
-
+        # cp.communicate() returns a tuple (cp.stdout, cp.stderr)
         # to get cp.stdout, use index 0
         b_output = cp.communicate()[0]
+
+        # to show cp.stderr, use the index 1
+        if cp.returncode != 0:
+            raise Exception(cp.communicate()[1].decode("utf-8"))
 
         if len(b_output) > 0:
             self.containers = json.loads(b_output)
