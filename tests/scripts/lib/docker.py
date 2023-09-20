@@ -11,16 +11,25 @@ class DockerInventory():
         self.containers = []
 
     def discover(self):
-        cp = subprocess.run(
-            ['docker', 'compose', 'ps', '--format', 'json'],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            cwd=self.cwd,
-        )
+        # need to define command required as string to pass in pipe filter '|'
+        # format definition required to only obtain information required (ID and Service)
+        # if all information was returned, the json.loads() could not parse b_output
+        # the issue was an item: "Command": "\"/usr/sbin/init\"" that is not in proper json format
+        # with docker compose 2.21 "docker compose ps --format json" no longer returns proper json
+        # add "| jq -s" to format output into json format that json.loads() will parse correctly
+        cmd = "docker compose ps \
+                --format='{\"ID\": \"{{ .ID }}\", \"Service\": \"{{ .Service }}\"}' | jq -s"
 
+        cp = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # cp.communicate() returns tuple (cp.stdout, cp.stderr)
+        # to get the cp.stderr, use index 1
         if cp.returncode != 0:
-            raise Exception(cp.stderr.decode('utf-8'))
+            raise Exception(cp.communicate()[1].decode("utf-8"))
 
-        b_output = cp.stdout
+        # to get cp.stdout, use index 0
+        b_output = cp.communicate()[0]
+
         if len(b_output) > 0:
             self.containers = json.loads(b_output)
 
