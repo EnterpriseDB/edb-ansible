@@ -109,6 +109,13 @@
     - name: Configure SSL if not exists
       ansible.builtin.import_tasks: pg_ssl_config.yml
 
+- name: Setup pgd-cli if setup_pgd_cli
+  ansible.builtin.include_tasks: pgd_setup_cli.yml
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
+    - setup_pgd_cli|bool
+
 - name: Include tasks to setup commit scopes
   ansible.builtin.include_tasks: pgd_commit_scopes.yml
   when:

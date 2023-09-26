@@ -65,10 +65,6 @@ pg_ssl_cert_file: ""
 pg_ssl_ca_file: ""
 pg_ssl_crl_file: ""
 
-# Input variables
-input_user: ""
-input_password: ""
-
 # PGD variable
 pgd_version: 5
 install_pgd: false
@@ -80,6 +76,9 @@ pgd_replication_user_password: ""
 pgd_cluster_name: "pgd_cluster"
 pgd_local_node_name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
 initdb_executed: true
+setup_pgd_cli: true
+# if placed elsewhere, you will need to use the -f or --config-file flag on a pgd command
+pgd_cli_config_file: "/etc/edb/pgd-cli/pgd-cli-config.yml"
 
 # HBA variable
 pg_allow_ip_addresses: []
