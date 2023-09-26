@@ -11,8 +11,6 @@
   pre_tasks:
     - name: Initialize the user defined variables
       set_fact:
-        enable_pgdg_repo: true  
-        install_pgd: true
         disable_logging: false
 
   roles:

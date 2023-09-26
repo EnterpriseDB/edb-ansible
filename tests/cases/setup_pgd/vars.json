@@ -2,5 +2,9 @@
   "use_hostname": false,
   "pg_data": "/opt/pgdata",
   "pg_wal": "/opt/pgwal",
-  "pgd_version": 5
+  "pgd_version": 5,
+  "install_pgd": true,
+  "enable_pgdg_repo": true,
+  "pgd_replication_user": "pgd_replication_user",
+  "pgd_replication_user_password": "password"
 }
