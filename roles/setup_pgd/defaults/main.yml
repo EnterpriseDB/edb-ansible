@@ -55,9 +55,6 @@ pg_database: "postgres"
 pg_owner: "postgres"
 pg_group: "postgres"
 
-# postgres superuser
-pg_random_password: true
-
 # Local path to SSL server key and certificate to be sent to the server
 # if empty, they are generated
 pg_ssl_key_file: ""

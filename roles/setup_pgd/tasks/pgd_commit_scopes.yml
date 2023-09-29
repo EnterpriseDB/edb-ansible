@@ -2,7 +2,7 @@
 # since we know only one is populated based on verify_pgd_settings in init_dbserver
 # set both and only enter the one that is populated
 - name: Filter items based on cs_type
-  set_fact:
+  ansible.builtin.set_fact:
     filtered_items_camo: "{{ pgd_commit_scopes | selectattr('cs_type', 'equalto', 'CAMO') | list }}"
     filtered_items_group_commit: "{{ pgd_commit_scopes | selectattr('cs_type', 'equalto', 'GROUP_COMMIT') | list }}"
 

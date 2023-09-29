@@ -19,7 +19,8 @@ pg_initdb_options: "-k --encoding=UTF-8 --locale=en_US.UTF-8"
 edb_initdb_encryption_options: "--data-encryption --key-wrap-command='{{ edb_key_wrap_cmd }}' --key-unwrap-command='{{ edb_key_unwrap_cmd }}'"
 
 # bdr_init_physical binary for backup and restor
-bdr_init_physical: "{{ pg_bin_path }}/bdr_init_physical -D {{ pg_data }} --node-name={{ pgd_local_node_name }} --local-dsn='{{ local_node_dsn }}' --node-group-name='{{ pgd_cluster_name }}'"
+bdr_init_physical: "{{ pg_bin_path }}/bdr_init_physical -D {{ pg_data }} --node-name={{ pgd_local_node_name }} \
+                    --local-dsn='{{ local_node_dsn }}' --node-group-name='{{ pgd_cluster_name }}'"
 
 # unix socket domain directories
 pg_unix_socket_directories:
