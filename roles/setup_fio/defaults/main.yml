@@ -6,7 +6,7 @@ use_validation: true
 remove_only: false
 
 fio_version: 3.35
-fio_filename: "fio-{{ fio_version }}.tar.gz"
+fio_filename: fio-{{ fio_version }}.tar.gz
 fio_url: "https://github.com/axboe/fio/archive/refs/tags"
 
 supported_os:
