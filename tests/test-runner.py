@@ -43,7 +43,7 @@ class OSChecker(argparse.Action):
 
 
 class ACVersionChecker(argparse.Action):
-    available_versions = ['2.11', '2.12', '2.13', '2.14', '2.15']
+    available_versions = ['2.11', '2.12', '2.13', '2.13.3', '2.14', '2.14.9', '2.14.10', '2.15']
 
     def __call__(self, parser, namespace, values, option_string=None):
         for v in values:
