@@ -9,7 +9,7 @@
 
 - name: Remove PGDG GPG key for EL8
   ansible.builtin.rpm_key:
-    key: "{{ pg_gpg_key_8 }}_{{ ansible_architecture }}"
+    key: "{{ lookup('ansible.builtin.vars', 'pg_gpg_key_8_' + ansible_architecture) }}"
     state: absent
   when:
     - ansible_distribution_major_version == '8'
@@ -18,7 +18,7 @@
 
 - name: Remove PGDG GPG key for EL9
   ansible.builtin.rpm_key:
-    key: "{{ pg_gpg_key_9 }}_{{ ansible_architecture }}"
+    key: "{{ lookup('ansible.builtin.vars', 'pg_gpg_key_9_' + ansible_architecture) }}"
     state: absent
   when:
     - ansible_distribution_major_version == '9'
@@ -31,6 +31,14 @@
     state: absent
   when:
     - ansible_distribution_major_version == '8'
+  become: true
+
+- name: Remove EPEL GPG key for EL9
+  ansible.builtin.rpm_key:
+    key: "{{ epel_gpg_key_9 }}"
+    state: absent
+  when:
+    - ansible_distribution_major_version == '9'
   become: true
 
 - name: Remove repo file
@@ -56,13 +64,13 @@
     state: absent
   become: true
 
-- name: Remove dnf-plugins-core for EL8
+- name: Remove dnf-plugins-core for EL8/EL9
   ansible.builtin.package:
     name: dnf-plugins-core
     state: absent
   become: true
   when:
-    - ansible_distribution_major_version == '8'
+    - ansible_distribution_major_version in ['8', '9']
 
 - name: Remove additional Redhat repositories
   ansible.builtin.yum_repository:
