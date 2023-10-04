@@ -1,0 +1,233 @@
+---
+- name: Update the ca-certificates package
+  ansible.builtin.package:
+    name: ca-certificates
+    state: latest
+  become: true
+
+- name: Download EDB GPG key for EL8
+  ansible.builtin.rpm_key:
+    key: "{{ edb_gpg_key_8 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '8'
+    - enable_edb_repo|bool
+  become: true
+
+- name: Download PGDG GPG key for EL8 and EL9
+  ansible.builtin.rpm_key:
+    key: "{{ pg_gpg_key_8_x86_64 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version in ['8', '9']
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
+  become: true
+
+- name: Download EPEL GPG key for EL8
+  ansible.builtin.rpm_key:
+    key: "{{ epel_gpg_key_8 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
+  become: true
+
+- name: Download EPEL GPG key for EL9
+  ansible.builtin.rpm_key:
+    key: "{{ epel_gpg_key_9 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '9'
+    - enable_epel_repo|bool
+  become: true
+
+- name: Install EPEL repo for EL7
+  ansible.builtin.package:
+    name: "{{ epel_repo_7 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '7'
+    - enable_epel_repo|bool
+  become: true
+
+- name: Install PG repo for EL7
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_7_x86_64 }}"
+    state: present
+  become: true
+  when:
+    - ansible_distribution_major_version == '7'
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
+
+- name: Install dnf-plugins-core for EL8 and EL9
+  ansible.builtin.package:
+    name: dnf-plugins-core
+    state: present
+  become: true
+  when:
+    - ansible_distribution_major_version in ['8', '9']
+    - enable_epel_repo|bool
+
+# for RedHat8, use subscription-manager to enable codeready-builder repo, if required.
+- name: Enable powertools for EL8
+  ansible.builtin.command: >
+    dnf config-manager --set-enabled powertools
+  become: true
+  changed_when: true
+  when:
+    - ansible_distribution_major_version == '8'
+    - os not in ['RedHat8']
+    - enable_epel_repo|bool
+
+- name: Enable CodeReady Builder for EL9
+  ansible.builtin.command: >
+    dnf config-manager --set-enabled crb
+  become: true
+  changed_when: true
+  when:
+    - ansible_distribution_major_version == '9'
+    - os not in ['RedHat9']
+    - enable_epel_repo|bool
+
+- name: Install EPEL repo for EL8
+  ansible.builtin.package:
+    name: "{{ epel_repo_8 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '8'
+    - enable_epel_repo|bool
+  become: true
+
+- name: Install EPEL repo for EL9
+  ansible.builtin.package:
+    name: "{{ epel_repo_9 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '9'
+    - enable_epel_repo|bool
+  become: true
+
+- name: Install PG repo for EL8
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_8_x86_64 }}"
+    state: present
+  become: true
+  when:
+    - ansible_distribution_major_version == '8'
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
+
+- name: Install PG repo for EL9
+  ansible.builtin.package:
+    name: "{{ pg_rpm_repo_9_x86_64 }}"
+    state: present
+  become: true
+  when:
+    - ansible_distribution_major_version == '9'
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
+
+- name: Install EPAS repo for RedHat
+  ansible.builtin.package:
+    name: "{{ edb_rpm_repo }}"
+    state: present
+  become: true
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
+
+- name: Set Credentials for EDB Yum Repo
+  ansible.builtin.replace:
+    path: /etc/yum.repos.d/edb.repo
+    regexp: '<username>:<password>'
+    replace: "{{ repo_username }}:{{ repo_password }}"
+  become: true
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
+
+- name: Add additional Redhat repositories
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(item.name) }}"
+    state: present
+    baseurl: "{{ item.baseurl }}"
+    gpgcheck: "{{ item.gpgcheck | default('no') }}"
+    gpgkey: "{{ item.gpgkey | default(None) }}"
+  become: true
+  loop: "{{ yum_additional_repos }}"
+  when: yum_additional_repos | length > 0
+
+# This is needed for some fresh versions of CentOS8 where this issue is met:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1768206
+# Executing yum/dnf updateinfo -y makes the import of GPG keys effective even
+# if command's return is different from 0.
+- name: Execute yum updateinfo
+  ansible.builtin.shell: >
+    set -o pipefail;
+    yum updateinfo -y
+  register: updateinfo_output
+  become: true
+  failed_when: false
+  changed_when: updateinfo_output.rc != 0
+
+# Adding PGD repository if PGD nodes are defined
+- name: Install curl package if not available
+  ansible.builtin.package:
+    name: curl
+    state: present
+  become: true
+  when: ansible_distribution_major_version in ['7', '8']
+
+- name: Install PGD4 packages repo if tpa_subscription_token is given
+  ansible.builtin.shell: >
+      set -o pipefail;
+      curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/rpm" | bash
+  args:
+    executable: /bin/bash
+  register: reposub
+  become: true
+  failed_when: >
+    reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+  changed_when: reposub.rc == '0'
+  when:
+    - enable_edb_repo|bool
+    - tpa_subscription_token|length > 0
+    - install_pgd|bool
+    - pg_version|int == 14
+    - pgd_version|int == 4
+  loop: "{{ edb_2q_repositories }}"
+
+- name: Install PGD RPM packages repo
+  ansible.builtin.yum_repository:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    file: "enterprisedb-postgres_distributed"
+    baseurl: "{{ item.repo_url }}"
+    gpgkey: "{{ edb_pgd_rpm_gpg_key }}"
+    repo_gpgcheck: true
+    enabled: true
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length > 1
+    - install_pgd|bool
+    - pg_version|int >= 15
+    - pgd_version|int >= 5
+  loop: "{{ pgd_rpm_repo }}"
+
+- name: Install EDB repository 2.0
+  ansible.builtin.shell: >
+      set -o pipefail;
+      curl -1sLf "{{ edb_repo_script_link }}" | bash
+  args:
+    executable: /bin/bash
+  register: reposub
+  become: true
+  failed_when: >
+    reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+  changed_when: reposub.rc == '0'
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length > 1

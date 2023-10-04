@@ -60,11 +60,16 @@ edb_auth_conf_url: "machine apt.enterprisedb.com"
 pg_deb_repo_url: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
 pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 
-# Postgresql Repos
-pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-pg_rpm_repo_9: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-pg_gpg_key_8: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
+# Postgresql Repos x86
+pg_rpm_repo_7_x86_64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+pg_rpm_repo_8_x86_64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+pg_rpm_repo_9_x86_64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+pg_gpg_key_8_x86_64: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
+# Postgresql Repos aarch64
+pg_rpm_repo_8_aarch64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-aarch64/pgdg-redhat-repo-latest.noarch.rpm"
+pg_rpm_repo_9_aarch64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-aarch64/pgdg-redhat-repo-latest.noarch.rpm"
+pg_gpg_key_8_aarch64: "https://yum.postgresql.org/RPM-GPG-KEY-PGDG-AARCH64-RHEL8"
+pg_gpg_key_9_aarch64: "https://yum.postgresql.org/RPM-GPG-KEY-PGDG-AARCH64-RHEL9"
 
 # epel Repo
 epel_repo_7: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
