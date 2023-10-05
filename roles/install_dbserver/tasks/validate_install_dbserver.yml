@@ -18,6 +18,7 @@
     - ansible_os_family == 'RedHat'
     - pg_type == 'PG'
     - pg_ssl
+    - ansible_architecture == "x86_64"
 
 - name: Add Centos7 packages to PG RedHat package_list
   ansible.builtin.set_fact:
@@ -29,11 +30,11 @@
     - pg_type == 'PG'
     - os == 'Centos7'
 
-- name: Add EL8 packages to PG RedHat package_list
+- name: Add EL8/9 packages to PG RedHat package_list
   ansible.builtin.set_fact:
     package_list: >-
       {{ package_list | default([]) + [
-        'python3-pycurl', 'python3-libselinux', 'python3-psycopg2'
+        'python3-pycurl', 'python3-libselinux', 'python3-psycopg2', 'glibc-langpack-en'
       ] }}
   when:
     - pg_type == 'PG'
@@ -73,7 +74,7 @@
     - ansible_os_family == 'RedHat'
     - ansible_distribution_major_version == '7'
 
-- name: Add EL8 packages to EPAS RedHat package_list
+- name: Add EL8/EL9 packages to EPAS RedHat package_list
   ansible.builtin.set_fact:
     package_list: >-
       {{ package_list | default([]) + [

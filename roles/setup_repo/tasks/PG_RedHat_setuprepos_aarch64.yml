@@ -14,12 +14,22 @@
     - enable_edb_repo|bool
   become: true
 
-- name: Download PGDG GPG key for EL8 and EL9
+- name: Download PGDG GPG key for EL8
   ansible.builtin.rpm_key:
-    key: "{{ pg_gpg_key_8 }}"
+    key: "{{ pg_gpg_key_8_aarch64 }}"
     state: present
   when:
-    - ansible_distribution_major_version in ['8', '9']
+    - ansible_distribution_major_version == '8'
+    - pg_type == 'PG'
+    - enable_pgdg_repo|bool
+  become: true
+
+- name: Download PGDG GPG key for EL9
+  ansible.builtin.rpm_key:
+    key: "{{ pg_gpg_key_9_aarch64 }}"
+    state: present
+  when:
+    - ansible_distribution_major_version == '9'
     - pg_type == 'PG'
     - enable_pgdg_repo|bool
   become: true
@@ -41,25 +51,6 @@
     - ansible_distribution_major_version == '9'
     - enable_epel_repo|bool
   become: true
-
-- name: Install EPEL repo for EL7
-  ansible.builtin.package:
-    name: "{{ epel_repo_7 }}"
-    state: present
-  when:
-    - ansible_distribution_major_version == '7'
-    - enable_epel_repo|bool
-  become: true
-
-- name: Install PG repo for EL7
-  ansible.builtin.package:
-    name: "{{ pg_rpm_repo_7 }}"
-    state: present
-  become: true
-  when:
-    - ansible_distribution_major_version == '7'
-    - pg_type == 'PG'
-    - enable_pgdg_repo|bool
 
 - name: Install dnf-plugins-core for EL8 and EL9
   ansible.builtin.package:
@@ -110,9 +101,10 @@
   become: true
 
 - name: Install PG repo for EL8
-  ansible.builtin.package:
-    name: "{{ pg_rpm_repo_8 }}"
+  ansible.builtin.dnf:
+    name: "{{ pg_rpm_repo_8_aarch64 }}"
     state: present
+    disable_gpg_check: true
   become: true
   when:
     - ansible_distribution_major_version == '8'
@@ -120,9 +112,10 @@
     - enable_pgdg_repo|bool
 
 - name: Install PG repo for EL9
-  ansible.builtin.package:
-    name: "{{ pg_rpm_repo_9 }}"
+  ansible.builtin.dnf:
+    name: "{{ pg_rpm_repo_9_aarch64 }}"
     state: present
+    disable_gpg_check: true
   become: true
   when:
     - ansible_distribution_major_version == '9'

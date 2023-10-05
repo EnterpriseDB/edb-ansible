@@ -36,7 +36,7 @@
   when:
     - pg_postgres_conf_params|length > 0
     - params.changed
-    - not params_restart_required
+    - params_restart_required
     - not use_patroni
 
 - name: Reload patroni postgres

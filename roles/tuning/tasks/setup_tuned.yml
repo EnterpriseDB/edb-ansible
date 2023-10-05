@@ -35,6 +35,13 @@
     - ansible_distribution_major_version == '8'
     - ansible_os_family == 'RedHat'
 
+- name: Set the variable tuned_disk_elevator on EL9
+  ansible.builtin.set_fact:
+    tuned_disk_elevator: "mq-deadline"
+  when:
+    - ansible_distribution_major_version == '9'
+    - ansible_os_family == 'RedHat'
+
 - name: Set the variable tuned_disk_elevator for Debian
   ansible.builtin.set_fact:
     tuned_disk_elevator: "deadline"
