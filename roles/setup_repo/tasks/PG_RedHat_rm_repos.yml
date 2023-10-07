@@ -1,4 +1,38 @@
 ---
+- name: Get repo list on RedHat
+  ansible.builtin.yum:
+    list: repos
+  become: true
+  register: yum_repos
+
+- name: Get PGDG repos
+  ansible.builtin.set_fact:
+    pgdg_repo_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'pgdg') \
+                      | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when: enable_pgdg_repo|bool
+
+- name: Get EPEL repos
+  ansible.builtin.set_fact:
+    epel_repo_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'pgdg') \
+                       | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when: enable_epel_repo|bool
+
+- name: Get EDB Repos 1.0
+  ansible.builtin.set_fact:
+    edb_repos_1_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'edb') \
+                      | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
+
+- name: Get EDB Repos 2.0
+  ansible.builtin.set_fact:
+    edb_repos_2_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'enterprisedb') \
+                      | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length > 1
+
 - name: Remove EDB GPG key for EL8
   ansible.builtin.rpm_key:
     key: "{{ edb_gpg_key_8 }}"
@@ -41,28 +75,47 @@
     - ansible_distribution_major_version == '9'
   become: true
 
-- name: Remove repo file
-  ansible.builtin.file:
-    path: "{{ item_file }}"
+- name: Remove PGDG repos
+  ansible.builtin.yum_repository:
+    name: "{{ item }}"
     state: absent
-  with_items:
-    - "/etc/yum.repos.d/pgdg-redhat-all.repo"
-    - "/etc/yum.repos.d/edb.repo"
-    - "/etc/yum.repos.d/edb.repo.rpmsave"
-    - "/etc/yum.repos.d/enterprisedb-enterprise.repo"
-    - "/etc/yum.repos.d/enterprisedb-postgres_distributed.repo"
-  loop_control:
-    loop_var: item_file
   become: true
+  loop: "{{ pgdg_repo_list }}"
+  when:
+    - enable_pgdg_repo|bool
+    - pgdg_repo_list|length > 0
 
-- name: Remove PG/EDB repos and epel-release packages
-  ansible.builtin.package:
-    name:
-      - pgdg-redhat-repo
-      - epel-release
-      - edb-repo
+- name: Remove EPEL repos
+  ansible.builtin.yum_repository:
+    name: "{{ item }}"
     state: absent
   become: true
+  loop: "{{ epel_repo_list }}"
+  when:
+    - enable_epel_repo|bool
+    - epel_repo_list|length > 0
+
+- name: Remove EDB Repos 1.0
+  ansible.builtin.yum_repository:
+    name: "{{ item }}"
+    state: absent
+  become: true
+  loop: "{{ edb_repos_1_list }}"
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
+    - edb_repos_1_list|length > 0
+
+- name: Remove EDB Repos 2.0
+  ansible.builtin.yum_repository:
+    name: "{{ item }}"
+    state: absent
+  become: true
+  loop: "{{ edb_repos_2_list }}"
+  when:
+    - enable_edb_repo|bool
+    - repo_token|length > 1
+    - edb_repos_2_list|length > 0
 
 - name: Remove dnf-plugins-core for EL8/EL9
   ansible.builtin.package:
@@ -71,6 +124,7 @@
   become: true
   when:
     - ansible_distribution_major_version in ['8', '9']
+    - enable_epel_repo|bool
 
 - name: Remove additional Redhat repositories
   ansible.builtin.yum_repository:
@@ -79,3 +133,11 @@
   become: true
   loop: "{{ yum_additional_repos }}"
   when: yum_additional_repos | length > 0
+
+- name: Reset variables
+  ansible.builtin.set_fact:
+    yum_repos: null
+    pgdg_repo_list: null
+    epel_repo_list: null
+    edb_repos_1_list: null
+    edb_repos_2_list: null

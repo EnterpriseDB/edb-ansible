@@ -5,14 +5,15 @@
     state: latest
   become: true
 
-- name: Download EDB GPG key for EL8
-  ansible.builtin.rpm_key:
-    key: "{{ edb_gpg_key_8 }}"
-    state: present
-  when:
-    - ansible_distribution_major_version == '8'
-    - enable_edb_repo|bool
-  become: true
+# EDB aarch64 repos coming soon
+# - name: Download EDB GPG key for EL8
+#   ansible.builtin.rpm_key:
+#     key: "{{ edb_gpg_key_8 }}"
+#     state: present
+#   when:
+#     - ansible_distribution_major_version == '8'
+#     - enable_edb_repo|bool
+#   become: true
 
 - name: Download PGDG GPG key for EL8
   ansible.builtin.rpm_key:
@@ -122,24 +123,25 @@
     - pg_type == 'PG'
     - enable_pgdg_repo|bool
 
-- name: Install EPAS repo for RedHat
-  ansible.builtin.package:
-    name: "{{ edb_rpm_repo }}"
-    state: present
-  become: true
-  when:
-    - enable_edb_repo|bool
-    - repo_token|length <= 1
-
-- name: Set Credentials for EDB Yum Repo
-  ansible.builtin.replace:
-    path: /etc/yum.repos.d/edb.repo
-    regexp: '<username>:<password>'
-    replace: "{{ repo_username }}:{{ repo_password }}"
-  become: true
-  when:
-    - enable_edb_repo|bool
-    - repo_token|length <= 1
+# EDB aarch64 repos coming soon
+# - name: Install EPAS repo for RedHat
+#   ansible.builtin.package:
+#     name: "{{ edb_rpm_repo }}"
+#     state: present
+#   become: true
+#   when:
+#     - enable_edb_repo|bool
+#     - repo_token|length <= 1
+#
+# - name: Set Credentials for EDB Yum Repo
+#   ansible.builtin.replace:
+#     path: /etc/yum.repos.d/edb.repo
+#     regexp: '<username>:<password>'
+#     replace: "{{ repo_username }}:{{ repo_password }}"
+#   become: true
+#   when:
+#     - enable_edb_repo|bool
+#     - repo_token|length <= 1
 
 - name: Add additional Redhat repositories
   ansible.builtin.yum_repository:
@@ -166,61 +168,64 @@
   failed_when: false
   changed_when: updateinfo_output.rc != 0
 
+# EDB aarch64 repos coming soon
 # Adding PGD repository if PGD nodes are defined
-- name: Install curl package if not available
-  ansible.builtin.package:
-    name: curl
-    state: present
-  become: true
-  when: ansible_distribution_major_version in ['7', '8']
-
-- name: Install PGD4 packages repo if tpa_subscription_token is given
-  ansible.builtin.shell: >
-      set -o pipefail;
-      curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/rpm" | bash
-  args:
-    executable: /bin/bash
-  register: reposub
-  become: true
-  failed_when: >
-    reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
-  changed_when: reposub.rc == '0'
-  when:
-    - enable_edb_repo|bool
-    - tpa_subscription_token|length > 0
-    - install_pgd|bool
-    - pg_version|int == 14
-    - pgd_version|int == 4
-  loop: "{{ edb_2q_repositories }}"
-
-- name: Install PGD RPM packages repo
-  ansible.builtin.yum_repository:
-    name: "{{ item.name }}"
-    description: "{{ item.description }}"
-    file: "enterprisedb-postgres_distributed"
-    baseurl: "{{ item.repo_url }}"
-    gpgkey: "{{ edb_pgd_rpm_gpg_key }}"
-    repo_gpgcheck: true
-    enabled: true
-  when:
-    - enable_edb_repo|bool
-    - repo_token|length > 1
-    - install_pgd|bool
-    - pg_version|int >= 15
-    - pgd_version|int >= 5
-  loop: "{{ pgd_rpm_repo }}"
-
-- name: Install EDB repository 2.0
-  ansible.builtin.shell: >
-      set -o pipefail;
-      curl -1sLf "{{ edb_repo_script_link }}" | bash
-  args:
-    executable: /bin/bash
-  register: reposub
-  become: true
-  failed_when: >
-    reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
-  changed_when: reposub.rc == '0'
-  when:
-    - enable_edb_repo|bool
-    - repo_token|length > 1
+# - name: Install curl package if not available
+#   ansible.builtin.package:
+#     name: curl
+#     state: present
+#   become: true
+#   when:
+#     - pgd_node_ips|length > 0
+#     - ansible_distribution_major_version in ['7', '8', '9']
+#
+# - name: Install PGD4 packages repo if tpa_subscription_token is given
+#   ansible.builtin.shell: >
+#       set -o pipefail;
+#       curl -sS "{{ edb_2q_base_repo_link }}/{{ item }}/{{ pg_version }}/rpm" | bash
+#   args:
+#     executable: /bin/bash
+#   register: reposub
+#   become: true
+#   failed_when: >
+#     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+#   changed_when: reposub.rc == '0'
+#   when:
+#     - enable_edb_repo|bool
+#     - tpa_subscription_token|length > 0
+#     - install_pgd|bool
+#     - pg_version|int == 14
+#     - pgd_version|int == 4
+#   loop: "{{ edb_2q_repositories }}"
+#
+# - name: Install PGD RPM packages repo
+#   ansible.builtin.yum_repository:
+#     name: "{{ item.name }}"
+#     description: "{{ item.description }}"
+#     file: "enterprisedb-postgres_distributed"
+#     baseurl: "{{ item.repo_url }}"
+#     gpgkey: "{{ edb_pgd_rpm_gpg_key }}"
+#     repo_gpgcheck: true
+#     enabled: true
+#   when:
+#     - enable_edb_repo|bool
+#     - repo_token|length > 1
+#     - install_pgd|bool
+#     - pg_version|int >= 15
+#     - pgd_version|int >= 5
+#   loop: "{{ pgd_rpm_repo }}"
+#
+# - name: Install EDB repository 2.0
+#   ansible.builtin.shell: >
+#       set -o pipefail;
+#       curl -1sLf "{{ edb_repo_script_link }}" | bash
+#   args:
+#     executable: /bin/bash
+#   register: reposub
+#   become: true
+#   failed_when: >
+#     reposub.rc != 0 or 'error: ' in reposub.stdout.lower()
+#   changed_when: reposub.rc == '0'
+#   when:
+#     - enable_edb_repo|bool
+#     - repo_token|length > 1

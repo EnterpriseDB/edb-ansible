@@ -15,27 +15,17 @@
   register: apt_sources
   changed_when: apt_sources.rc == '0'
 
-- name: Check for EDB Repo 1.0 on RedHat
-  ansible.builtin.assert:
-    that:
-      - "'EnterpriseDB RPMs' in yum_repolist.stdout"
-    fail_msg: "Access to the EDB package repository is not configured"
-    success_msg: "Access to the EDB package repository has been configured successfully"
-  when:
-    - ansible_os_family == 'RedHat'
-    - enable_edb_repo|bool
-    - repo_token|length <= 1
-
-- name: Check for EDB Repo 2.0 on RedHat
-  ansible.builtin.assert:
-    that:
-      - "'enterprisedb-enterprise' in yum_repolist.stdout"
-    fail_msg: "Access to the EDB package repository is not configured"
-    success_msg: "Access to the EDB package repository has been configured successfully"
-  when:
-    - ansible_os_family == 'RedHat'
-    - enable_edb_repo|bool
-    - repo_token|length > 1
+# EDB aarch64 repos coming soon
+# - name: Check for EDB Repo 2.0 on RedHat
+#   ansible.builtin.assert:
+#     that:
+#       - "'enterprisedb-enterprise' in yum_repolist.stdout"
+#     fail_msg: "Access to the EDB package repository is not configured"
+#     success_msg: "Access to the EDB package repository has been configured successfully"
+#   when:
+#     - ansible_os_family == 'RedHat'
+#     - enable_edb_repo|bool
+#     - repo_token|length > 1
 
 - name: Check for PGDG Repo on RedHat
   ansible.builtin.assert:
@@ -47,37 +37,27 @@
     - ansible_os_family == 'RedHat'
     - pg_type == 'PG'
 
-- name: Check for EDB Postgres Distributed x86_64 Repo on RedHat
-  ansible.builtin.assert:
-    that:
-      - "'enterprisedb-postgres_distributed-x86_64' in yum_repolist.stdout"
-    fail_msg: "Access to the EDB Postgres Distributed x86_64 package repository is not configured"
-    success_msg: "Access to the EDB Postgres Distributed x86_64 package repository has been configured successfully"
-  when:
-    - ansible_os_family == 'RedHat'
-    - enable_edb_repo|bool
-    - install_pgd|bool
-
-- name: Check for EDB Postgres Distributed noarch Repo on RedHat
-  ansible.builtin.assert:
-    that:
-      - "'enterprisedb-postgres_distributed-noarch' in yum_repolist.stdout"
-    fail_msg: "Access to the EDB Postgres Distributed noarch package repository is not configured"
-    success_msg: "Access to the EDB Postgres Distributed noarch package repository has been configured successfully"
-  when:
-    - ansible_os_family == 'RedHat'
-    - enable_edb_repo|bool
-    - install_pgd|bool
-
-- name: Check for EDB Repo on Debian
-  ansible.builtin.assert:
-    that:
-      - "'apt.enterprisedb.com' in apt_sources.stdout"
-    fail_msg: "Access to the EDB package repository is not configured"
-    success_msg: "Access to the EDB package repository has been configured successfully"
-  when:
-    - ansible_os_family == 'Debian'
-    - enable_edb_repo|bool
+# EDB aarch64 repos coming soon
+# - name: Check for EDB Postgres Distributed noarch Repo on RedHat
+#   ansible.builtin.assert:
+#     that:
+#       - "'enterprisedb-postgres_distributed-noarch' in yum_repolist.stdout"
+#     fail_msg: "Access to the EDB Postgres Distributed noarch package repository is not configured"
+#     success_msg: "Access to the EDB Postgres Distributed noarch package repository has been configured successfully"
+#   when:
+#     - ansible_os_family == 'RedHat'
+#     - enable_edb_repo|bool
+#     - install_pgd|bool
+#
+# - name: Check for EDB Repo on Debian
+#   ansible.builtin.assert:
+#     that:
+#       - "'apt.enterprisedb.com' in apt_sources.stdout"
+#     fail_msg: "Access to the EDB package repository is not configured"
+#     success_msg: "Access to the EDB package repository has been configured successfully"
+#   when:
+#     - ansible_os_family == 'Debian'
+#     - enable_edb_repo|bool
 
 - name: Check for PGDG Repo on Debian
   ansible.builtin.assert:
