@@ -1,5 +1,5 @@
 ---
-dbt2_version: "0.53.6"
+dbt2_version: "0.53.7"
 driver_pub_key: ""
 pg_dbt2_dbname: dbt2
 use_patroni: false

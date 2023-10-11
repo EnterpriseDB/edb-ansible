@@ -6,7 +6,7 @@ supported_os:
   - Rocky8
   - AlmaLinux8
 
-dbt2_version: "0.53.6"
+dbt2_version: "0.53.7"
 
 # DBT-2 AppImage path
 dbt2_path: "/usr/bin/dbt2"
