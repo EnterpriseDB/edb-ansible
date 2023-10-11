@@ -2,6 +2,8 @@
 - name: Install packages for Touchstone
   ansible.builtin.package:
     name:
+      - dejavu-fonts-common
+      - fontconfig
       - fuse
       - perf
       - sysstat

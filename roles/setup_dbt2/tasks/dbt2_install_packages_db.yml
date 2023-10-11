@@ -2,6 +2,8 @@
 - name: Install DBT-2 supporting packages
   ansible.builtin.package:
     name:
+      - dejavu-fonts-common
+      - fontconfig
       - perf
       - rsync
       - tmux
