@@ -179,7 +179,9 @@
     name: curl
     state: present
   become: true
-  when: ansible_distribution_major_version in ['7', '8']
+  when:
+    - pgd_node_ips|length > 0
+    - ansible_distribution_major_version in ['7', '8', '9']
 
 - name: Install PGD4 packages repo if tpa_subscription_token is given
   ansible.builtin.shell: >

@@ -19,6 +19,11 @@ EDB_PG_VERSION = os.getenv('EDB_PG_VERSION')
 EDB_PG_TYPE = os.getenv('EDB_PG_TYPE')
 # Use EDB repo
 EDB_ENABLE_REPO = (os.getenv('EDB_ENABLE_REPO').lower() in ['true', '1'])
+# Whether repos 1.0 or 2.0 is being used
+# True if edb_repo_username and edb_repo_password are set
+EDB_REPOS_ONE = ((len(os.getenv('EDB_REPO_USERNAME', '')) > 1) and (len(os.getenv('EDB_REPO_PASSWORD', '')) > 1))
+# True if edb_repo_token is set
+EDB_REPOS_TWO = (len(os.getenv('EDB_REPO_TOKEN', '')) > 1)
 # SSH parameters
 EDB_SSH_USER = os.getenv('EDB_SSH_USER', 'root')
 EDB_SSH_KEY = os.getenv('EDB_SSH_KEY', '../.ssh/id_rsa')
@@ -97,6 +102,14 @@ def os_family():
 
 def get_pg_type():
     return EDB_PG_TYPE
+
+
+def get_repos_one():
+    return EDB_REPOS_ONE
+
+
+def get_repos_two():
+    return EDB_REPOS_TWO
 
 
 def get_primary():

@@ -1,10 +1,44 @@
 ---
 - name: Get repo list on RedHat
-  ansible.builtin.command: yum repolist
-  when: ansible_os_family == 'RedHat'
+  ansible.builtin.yum:
+    list: repos
   become: true
-  register: yum_repolist
-  changed_when: yum_repolist.rc == '0'
+  register: yum_repos
+  when: ansible_os_family == 'RedHat'
+
+- name: Get PGDG repos on RedHat
+  ansible.builtin.set_fact:
+    pgdg_repo_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'pgdg') \
+                      | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_pgdg_repo|bool
+
+- name: Get EPEL repos on RedHat
+  ansible.builtin.set_fact:
+    epel_repo_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'pgdg') \
+                       | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_epel_repo|bool
+
+- name: Get EDB Repos 1.0 on RedHat
+  ansible.builtin.set_fact:
+    edb_repos_1_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'edb') \
+                      | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_edb_repo|bool
+    - repo_token|length <= 1
+
+- name: Get EDB Repos 2.0 on RedHat
+  ansible.builtin.set_fact:
+    edb_repos_2_list: "{{ yum_repos.results | selectattr('repoid', 'search', 'enterprisedb') \
+                      | selectattr('state', 'equalto', 'enabled') | map(attribute='repoid') | list }}"
+  when:
+    - ansible_os_family == 'RedHat'
+    - enable_edb_repo|bool
+    - repo_token|length > 1
 
 - name: Get repo list on Debian
   ansible.builtin.shell: grep -rhE ^deb /etc/apt/sources.list*
@@ -18,7 +52,7 @@
 - name: Check for EDB Repo 1.0 on RedHat
   ansible.builtin.assert:
     that:
-      - "'EnterpriseDB RPMs' in yum_repolist.stdout"
+      - edb_repos_1_list|length > 1
     fail_msg: "Access to the EDB package repository is not configured"
     success_msg: "Access to the EDB package repository has been configured successfully"
   when:
@@ -29,7 +63,7 @@
 - name: Check for EDB Repo 2.0 on RedHat
   ansible.builtin.assert:
     that:
-      - "'enterprisedb-enterprise' in yum_repolist.stdout"
+      - edb_repos_2_list|length > 1
     fail_msg: "Access to the EDB package repository is not configured"
     success_msg: "Access to the EDB package repository has been configured successfully"
   when:
@@ -40,7 +74,7 @@
 - name: Check for PGDG Repo on RedHat
   ansible.builtin.assert:
     that:
-      - "'PostgreSQL common RPMs for RHEL' in yum_repolist.stdout"
+      - pgdg_repo_list|length > 1
     fail_msg: "Access to the PGDG package repository is not configured"
     success_msg: "Access to the PGDG package repository has been configured successfully"
   when:
@@ -50,7 +84,7 @@
 - name: Check for EDB Postgres Distributed x86_64 Repo on RedHat
   ansible.builtin.assert:
     that:
-      - "'enterprisedb-postgres_distributed-x86_64' in yum_repolist.stdout"
+      - "'enterprisedb-postgres_distributed-x86_64' in edb_repos_2_list"
     fail_msg: "Access to the EDB Postgres Distributed x86_64 package repository is not configured"
     success_msg: "Access to the EDB Postgres Distributed x86_64 package repository has been configured successfully"
   when:
@@ -61,7 +95,7 @@
 - name: Check for EDB Postgres Distributed noarch Repo on RedHat
   ansible.builtin.assert:
     that:
-      - "'enterprisedb-postgres_distributed-noarch' in yum_repolist.stdout"
+      - "'enterprisedb-postgres_distributed-noarch' in edb_repos_2_list"
     fail_msg: "Access to the EDB Postgres Distributed noarch package repository is not configured"
     success_msg: "Access to the EDB Postgres Distributed noarch package repository has been configured successfully"
   when:
@@ -91,5 +125,9 @@
 
 - name: Reset variables
   ansible.builtin.set_fact:
-    yum_repolist: null
+    yum_repos: null
+    pgdg_repo_list: null
+    epel_repo_list: null
+    edb_repos_1_list: null
+    edb_repos_2_list: null
     apt_sources: null

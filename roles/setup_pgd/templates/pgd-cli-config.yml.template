@@ -1,0 +1,6 @@
+cluster:
+  name: {{ pgd_cluster_name }}
+  endpoints:
+{% for item in pgd_cluster_nodes %}
+  - "host={{ item.inventory_hostname if use_hostname else item.private_ip }} port={{ pg_port }} user={{ pgd_replication_user }} dbname={{ pgd_cluster_database }}"
+{% endfor %}

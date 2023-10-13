@@ -57,7 +57,7 @@
   become: true
 
 - name: Set initdb_executed to false if cluster was already initialized
-  set_fact:
+  ansible.builtin.set_fact:
     initdb_executed: false
   when:
     - hostvars[inventory_hostname].pgd.use_physical_backup is defined
@@ -82,7 +82,7 @@
 
 - name: Capture nodes in PGD cluster
   ansible.builtin.set_fact:
-    pgd_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pgd_nodes', hostvars[inventory_hostname].location , wantList=True) }}"
+    pgd_cluster_nodes: "{{ lookup('edb_devops.edb_postgres.pgd_nodes', hostvars[inventory_hostname].location, wantList=True) }}"
 
 - name: Check and setup PGD cluster if cluster was already initialized
   when:
@@ -93,7 +93,7 @@
       ansible.builtin.import_tasks: pgd_lead_primary_node.yml
     - name: Configure PGD cluster when initdb_executed is true
       ansible.builtin.import_tasks: create_add_pgd_node.yml
-    - name: Add node using phycal backup bsaed when initdb_executed is false
+    - name: Add node using physical backup based when initdb_executed is false
       ansible.builtin.import_tasks: bdr_init_physical.yml
 
 - name: Configure ssl based on pg_ssl parameter
@@ -108,6 +108,13 @@
       ansible.builtin.import_tasks: pg_ssl_check.yml
     - name: Configure SSL if not exists
       ansible.builtin.import_tasks: pg_ssl_config.yml
+
+- name: Setup pgd-cli if setup_pgd_cli
+  ansible.builtin.include_tasks: pgd_setup_cli.yml
+  when:
+    - not validate_only|bool
+    - not remove_only|bool
+    - setup_pgd_cli|bool
 
 - name: Include tasks to setup commit scopes
   ansible.builtin.include_tasks: pgd_commit_scopes.yml

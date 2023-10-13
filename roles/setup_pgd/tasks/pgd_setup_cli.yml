@@ -1,0 +1,24 @@
+---
+- name: Create directory for {{ pgd_cli_config_file }}
+  ansible.builtin.file:
+    path: "{{ pgd_cli_config_file | dirname }}"
+    state: directory
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+  become: true
+
+- name: Create pgd-cli config file
+  ansible.builtin.template:
+    src: ./templates/pgd-cli-config.yml.template
+    dest: "{{ pgd_cli_config_file }}"
+    owner: "{{ pg_owner }}"
+    group: "{{ pg_group }}"
+    mode: "0700"
+  become: true
+
+- name: Install edb-pgd-cli
+  ansible.builtin.package:
+    name: "edb-pgd{{ pgd_version }}-cli"
+    state: present
+  become: true

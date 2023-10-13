@@ -132,7 +132,7 @@
     apply:
       throttle: 1
   vars:
-    pg_query:  
+    pg_query:
       - query: "ALTER SYSTEM SET max_prepared_transactions = '{{ max_prepared_transactions }}'"
         db: "{{ pg_database }}"
         autocommit: true

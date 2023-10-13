@@ -165,10 +165,8 @@
   ansible.builtin.assert:
     that:
       - _pgd_local_node_created|int == 1
-
     fail_msg: "Local PGD node wasn't created successfully"
     success_msg: "Local PGD node created successfully"
-
 
 - name: Verify PGD local node is created or not
   ansible.builtin.assert:

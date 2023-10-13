@@ -55,19 +55,12 @@ pg_database: "postgres"
 pg_owner: "postgres"
 pg_group: "postgres"
 
-# postgres superuser
-pg_random_password: true
-
 # Local path to SSL server key and certificate to be sent to the server
 # if empty, they are generated
 pg_ssl_key_file: ""
 pg_ssl_cert_file: ""
 pg_ssl_ca_file: ""
 pg_ssl_crl_file: ""
-
-# Input variables
-input_user: ""
-input_password: ""
 
 # PGD variable
 pgd_version: 5
@@ -80,6 +73,10 @@ pgd_replication_user_password: ""
 pgd_cluster_name: "pgd_cluster"
 pgd_local_node_name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
 initdb_executed: true
+# to enable pgd-cli with connections strings to pgd cluster, set true
+setup_pgd_cli: false
+# if placed elsewhere, you will need to use the -f or --config-file flag on a pgd command
+pgd_cli_config_file: "/etc/edb/pgd-cli/pgd-cli-config.yml"
 
 # HBA variable
 pg_allow_ip_addresses: []

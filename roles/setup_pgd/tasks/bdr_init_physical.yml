@@ -96,24 +96,26 @@
         - not pg_wal_state.islnk
       become: true
       block:
-      #  - name: Ensure pg_wal directory is empty
-      #    ansible.builtin.command: rm -rf {{ pg_wal }}/*
-      #  - name: Copy WAL files from pg_data/pg_wal to pg_wal
-      #    ansible.builtin.command: rsync -cavr {{ pg_data }}/pg_wal/* {{ pg_wal }}
-        - name: Synchronoize pg_data/pg_wal file with pg_wal
-          ansible.builtin.synchronize:
+      # - name: Ensure pg_wal directory is empty
+      #   ansible.builtin.command: rm -rf {{ pg_wal }}/*
+      # - name: Copy WAL files from pg_data/pg_wal to pg_wal
+      #   ansible.builtin.command: rsync -cavr {{ pg_data }}/pg_wal/* {{ pg_wal }}
+        - name: Synchronize pg_data/pg_wal file with pg_wal
+          ansible.posix.synchronize:
             src: "{{ pg_data }}/pg_wal/"
             dest: "{{ pg_wal }}/"
             delete: true
-            recurse: true
+            recursive: true
             checksum: true
           delegate_to: "{{ inventory_hostname }}"
           become: true
           become_user: "{{ pg_owner }}"
+
         - name: Remove pg_wal from pg_data directory
           ansible.builtin.file:
             path: "{{ pg_data }}/pg_wal"
             state: absent
+
         - name: Create pg_wal as symbolic link in pg_data
           ansible.builtin.file:
             src: "{{ pg_wal }}"
@@ -122,6 +124,7 @@
             group: "{{ pg_group }}"
             mode: "0700"
             state: link
+          become: true
           become_user: "{{ pg_owner }}"
 
     - name: Setup systemd for PG

@@ -14,6 +14,7 @@
   ansible.builtin.stat:
     path: "{{ pg_user_home }}/.pgpass"
   register: pgpass_stat
+  become: true
   become_user: "{{ pg_owner }}"
 
 - name: Check if .psqlrc file was created properly

@@ -14,7 +14,9 @@ def test_setup_dbt2_driver_packages():
         'tmux',
         'fuse',
         'fuse-libs',
-        'sysstat'
+        'sysstat',
+        'fontconfig',
+        'dejavu-fonts-common'
     ]
 
     for package in packages:

@@ -4,11 +4,14 @@ from conftest import (
     load_ansible_vars,
     get_hosts,
     get_os,
+    get_repos_two,
+    get_repos_one,
     get_pg_type,
     get_primary,
     EDB_ENABLE_REPO,
     os_family,
 )
+
 
 def test_setup_repo_edb_centos():
     if not EDB_ENABLE_REPO:
@@ -21,8 +24,13 @@ def test_setup_repo_edb_centos():
     cmd = host.run("yum repolist")
     assert cmd.succeeded, \
         "Unable to list the package repository list"
-    assert "EnterpriseDB RPMs" in cmd.stdout, \
-        "Access to the EDB package repository not configured"
+    if get_repos_one():
+        assert "EnterpriseDB RPMs" in cmd.stdout, \
+            "Access to the EDB package repository not configured"
+    elif get_repos_two():
+        assert "enterprisedb-enterprise" in cmd.stdout, \
+            "Access to the EDB package repository not configured"
+
 
 def test_setup_repo_pgdg_centos():
     if os_family() != 'RedHat':
@@ -38,6 +46,7 @@ def test_setup_repo_pgdg_centos():
     assert "PostgreSQL common RPMs for RHEL" in cmd.stdout, \
         "Access to the PGDG package repository not configured"
 
+
 def test_setup_repo_edb_debian():
     if not EDB_ENABLE_REPO:
         pytest.skip()
@@ -51,6 +60,7 @@ def test_setup_repo_edb_debian():
         "Unable to list the package repository list"
     assert "apt.enterprisedb.com" in cmd.stdout, \
         "Access to the EDB package repository not configured"
+
 
 def test_setup_repo_pgdg_debian():
     if os_family() != 'Debian':
