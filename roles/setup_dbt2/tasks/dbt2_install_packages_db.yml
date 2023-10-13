@@ -9,7 +9,6 @@
       - tmux
       - fuse
       - fuse-libs
-      - rsync
       - sysstat
     state: present
   when: ansible_os_family == "RedHat"
