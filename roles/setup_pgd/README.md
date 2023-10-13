@@ -57,48 +57,60 @@ Name of PGD cluster to be initialized.
 
 Hostname of local node.
 
+### `setup_pgd_cli`
+
+When `true`, the PGD CLI will be installed and configured. Default: `false`.
+
+### `pgd_commit_scopes`
+
+Sets either CAMO or group commit PGD commit scopes to be configured. 
+[For more information on PGD Commit Scopes and the caveats you need to consider before implementing, 
+please refer to the documentation.](https://www.enterprisedb.com/docs/pgd/5/durability/commit-scopes/).
+
+For each commit scope, you need to set the:
+* `cs_name` - name of the commit scope
+* `cs_type` - type of commit scope. Options are `CAMO` or `GROUP_COMMIT`.
+* `parent_group` - name of the top level group the member nodes belong to, usually `pgd_cluster_name`.
+* `cs_origin_node_group` - name of the subgroup to be created that each node in `member_nodes` will join.
+* `member_nodes` - list of hostnames of nodes that will be part of the commit scope.
+* `default_group_cs` - flag to set the commit scope as the default commit scope for the `cs_origin_node_group`.
+* `cs_rule` - the commit scope rule to be applied to the commit scope. This must be correctly formatted and valid.
+
+The commit scope configuration requirements are:
+  1. CAMO and group commit are incompatible with each another. Only one can be enabled per cluster.
+  2. When `cs_type: CAMO`, only two member data nodes, also referred to as a CAMO pair, can be present.
+  3. Each host can only be a part of at most one commit scope. 
+  4. The `cs_rule` parameter must be: valid, correctly formatted, and adhere to the correct syntax
+
+```yaml
+# CAMO example
+pgd_commit_scopes:
+  - cs_name: 'camo_scope_1'
+    cs_type: 'CAMO'
+    parent_group: 'pgd_cluster'
+    cs_origin_node_group: 'pgd_camo_group_1'
+    member_nodes: ['pgd1', 'pgd2']
+    default_group_cs: true
+    cs_rule: "ALL (pgd_camo_group_1) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
+```
+
+```yaml
+# group commit example
+pgd_commit_scopes:
+  - cs_name: 'groupcommit_scope_1'
+    cs_type: 'GROUP_COMMIT'
+    parent_group: 'pgd_cluster'
+    cs_origin_node_group: 'pgd_gc_group_1'
+    member_nodes: ['pgd1', 'pgd2', 'pgd3', 'pgd4']
+    default_group_cs: true
+    cs_rule: "ANY 2 (pgd_gc_group_1) GROUP COMMIT"
+```
+
 The rest of the variables can be configured and are available in the:
 
   * [roles/setup_pgd/defaults/main.yml](./defaults/main.yml)
   * [roles/setup_pgd/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
   * [roles/setup_pgd/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
-
-### `PGD Commit Scopes Configuration`
-
-See examples for PGD Commit Scopes available at: [EDB PGD v5](https://www.enterprisedb.com/docs/pgd/5/durability/commit-scopes/).
-
-The code below is part of the [roles/setup_pgd/defaults/main.yml](./defaults/main.yml), and 
-example for configuring two PGD commit scopes is listed below.
-
-The configuration requirements for PGD through the configuration setting variables are:
-  1. The length of the `member_nodes` for a `camo` commit scope is exactly `two`
-  2. No node in `member_nodes` for either commit scope can belong to the other commit scope
-  3. All nodes in `member_nodes` must belong to a `parent_group`
-  4. The `cs_rule` parameter must be: valid, correctly formatted, and adhere to the correct syntax
-
-COMMIT AT MOST ONCE SCOPE - CAMO
-```yaml
-pgd_commit_scopes:
-  - cs_name: 'camo_scope_1'
-    cs_type: 'CAMO'
-    parent_group: 'pgd_cluster'
-    cs_origin_node_group: 'pgd_two_nodes'
-    member_nodes: ['edb-primary1', 'edb-primary2']
-    default_group_cs: true
-    cs_rule: "ALL ( pgd_two_nodes ) ON visible CAMO DEGRADE ON (timeout=500s) TO ASYNC"
-```
-
-GROUP COMMIT SCOPE
-```yaml
-pgd_commit_scopes:
-  - cs_name: 'groupcommit_scope_1'
-    cs_type: 'GROUP_COMMIT'
-    parent_group: 'pgd_cluster'
-    cs_origin_node_group: 'pgd_remaining_nodes'
-    member_nodes: ['edb-primary3']
-    default_group_cs: true
-    cs_rule: "ALL ( pgd_remaining_nodes ) GROUP COMMIT"
-```
 
 Host Variables
 --------------
@@ -129,8 +141,6 @@ Dependencies
 This role does not have any dependencies, but package repositories should have been 
 configured beforehand with the `setup_repo` role. At least one lead primary must exist
 and a database cluster must be initialized on that node. 
-
-
 
 Example Playbook
 ----------------
@@ -195,11 +205,6 @@ Below is an example of how to include the `setup_pgd` role:
         pg_version: 15            # Change the version of Postgres you want to install
         pg_type: "EPAS"           # Change the pg_type to EPAS if EDB Advanced Server is needed
         repo_token: "XXXXXXXXX"   # EDB repo 2.0 token
-        edb_enable_tde: false     # Enable TDE
-        edb_key_unwrap_cmd: ""    # EDB Unwrap commad to decrypt EDB master key. Use can use KMS command to get the real key
-        edb_key_wrap_cmd: ""      # EDB Key wrap command to encrypt EDB master key. User can also use KMS commands to get the key
-        edb_master_key: ""        # EDB master key for TDE encryption
-        edb_secure_master_key: "" # EDB key or passphrase to encrypt EDB master key
         install_pgd: true         # Install PGD flag for installing PGD
         pgd_version: 5            # Postgres Distributed version
         enable_pgdg_repo: true    # flag/variable for enabling PGD repo
@@ -222,6 +227,7 @@ All the variables are available at:
   * [roles/setup_pgd/defaults/main.yml](./defaults/main.yml)
   * [roles/setup_pgd/vars/PG_RedHat.yml](./vars/PG_RedHat.yml)
   * [roles/setup_pgd/vars/EPAS_RedHat.yml](./vars/EPAS_RedHat.yml)
+  * [roles/setup_pgd/vars/edb-ssl.yml](./vars/edb-ssl.yml)
 
 License
 -------
