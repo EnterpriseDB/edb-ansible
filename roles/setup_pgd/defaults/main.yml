@@ -73,7 +73,8 @@ pgd_replication_user_password: ""
 pgd_cluster_name: "pgd_cluster"
 pgd_local_node_name: "{{ inventory_hostname | regex_replace('[^a-zA-Z0-9_]', '_') }}"
 initdb_executed: true
-setup_pgd_cli: true
+# to enable pgd-cli with connections strings to pgd cluster, set true
+setup_pgd_cli: false
 # if placed elsewhere, you will need to use the -f or --config-file flag on a pgd command
 pgd_cli_config_file: "/etc/edb/pgd-cli/pgd-cli-config.yml"
 
