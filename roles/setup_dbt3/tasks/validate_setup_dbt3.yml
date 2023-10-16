@@ -1,45 +1,40 @@
 ---
-# validate dbt3 packages
-- name: Set dbt3 package name
+# validate dbt3 db packages installation
+- name: Set dbt3_db_pkg_list
   ansible.builtin.set_fact:
-    dbt3_package: 'dbt3'
+    dbt3_db_pkg_list: [ 'bc', 'dejavu-fonts-common', 'fontconfig', 'fuse', 'fuse-libs', 'gcc', 'make', 'patch', 'perf', 'psmisc', 'sysstat', 'tmux', 'unzip' ]
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
     strategy: "all"
 
-- name: Check that DBT3 packages have been installed
+- name: Check that all packages in dbt3_db_pkg_list has been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[dbt3_package] }} is defined"
-    fail_msg: "Package {{ dbt3_package }} has not been installed."
-    success_msg: "Package {{ dbt3_package }} has been installed."
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ dbt3_db_pkg_list }}"
+  loop_control:
+    loop_var: package
 
-# validate dbt3 user
-- name: Run query to check dbt3 user is in pg_user
-  ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: execute_sql_scripts
-  vars:
-    pg_query:
-      - query: "Select * from pg_user where usename = '{{ pg_owner }}'"
-        db: "{{ pg_database }}"
-
-- name: Set user_query_result with sql_query_output
-  ansible.builtin.set_fact:
-    user_query_result: "{{ sql_query_output }}"
+# ensure the DBT-3 AppImage has been installed to the proper location
+- name: Stat to dbt3_path
+  ansible.builtin.stat:
+    path: "{{ dbt3_path }}"
+  register: dbt3_path_stat
   become: true
 
-- name: Check if DBT3 postgres user was successfully created
+- name: Check if DBT-3 AppImage was installed properly on DB
   ansible.builtin.assert:
     that:
-      - user_query_result.results[0].query_result[0]['usename'] == pg_owner
-    fail_msg: "DBT3 postgres user was not successfully created."
-    success_msg: "DBT3 postgres user was successfully created."
-  run_once: true
+      - dbt3_path_stat.stat['exists']|bool
+    fail_msg: "DBT-3 AppImage at {{ dbt3_path }} was not created properly"
+    success_msg: "DBT-3 AppImage at {{ dbt3_path }} was created successfully"
 
 # reset variables
 - name: Reset variables
   ansible.builtin.set_fact:
-    dbt3_package: null
+    dbt3_db_pkg_list: null
+    dbt3_path_stat: null
     user_query_result: null

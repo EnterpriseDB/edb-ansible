@@ -3,23 +3,26 @@
   ansible.builtin.package:
     name:
       - bc
+      - dejavu-fonts-common
+      - fontconfig
+      - fuse
+      - fuse-libs
       - gcc
+      - make
       - patch
       - perf
       - psmisc
-      - python3-docutils
-      - R-core
       - sysstat
       - tmux
+      - unzip
     state: present
   when: ansible_os_family == "RedHat"
   become: true
 
-- name: Install packages for DBT-3 Database
-  ansible.builtin.dnf:
-    name:
-      - 'https://github.com/osdldbt/dbt3-packaging/releases/download/v{{ dbt3_version }}/dbt3-{{ dbt3_version }}-1.el8.x86_64.rpm'
-    state: present
-    disable_gpg_check: true
-  when: ansible_os_family == "RedHat"
+- name: Download DBT-3 AppImage
+  ansible.builtin.get_url:
+    url: "{{ dbt3_appimage }}"
+    checksum: "sha256:{{ dbt3_checksum }}"
+    dest: "{{ dbt3_path }}"
+    mode: '0755'
   become: true
