@@ -13,19 +13,7 @@
     dest: "{{ pg_user_home }}"
   become_user: "{{ pg_owner }}"
 
-- name: Patch TPC-H Tools for PostgreSQL
-  ansible.posix.patch:
-    remote_src: true
-    src: "{{ item }}"
-    basedir: "{{ pg_user_home }}"
-    strip: 1
-  become_user: "{{ pg_owner }}"
-  loop:
-    - /usr/share/dbt3/dbt3-TPC-H_Tools_v3.0.0-postgresql.diff
-    - /usr/share/dbt3/dbt3-TPC-H_Tools_v3.0.0-stdout.diff
-
 - name: Build TPC-H Tools for PostgreSQL
-  community.general.make:
-    chdir: "{{ pg_user_home }}/TPC-H_Tools_v3.0.0/dbgen"
-    file: Makefile.postgresql
+  ansible.builtin.shell: >-
+    dbt3 build-dbgen pgsql {{ pg_user_home }}/'TPC-H V3.0.1'
   become_user: "{{ pg_owner }}"

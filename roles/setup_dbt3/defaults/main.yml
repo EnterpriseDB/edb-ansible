@@ -1,9 +1,12 @@
 ---
-dbt3_version: "1.11.0"
-dbt3_pgdata: "/pgdata/dbt3/pgdata"
-pg_version: 14
+dbt3_version: "2.0.1"
 have_tpcfile: true
 tpcfile: ""
+
+# DBT-3 AppImage information
+dbt3_appimage: "https://github.com/osdldbt/dbt3/releases/download/v{{ dbt3_version }}/dbt3-{{ dbt3_version }}-x86_64.AppImage"
+dbt3_checksum: "{{ dbt3_appimage }}.sha256"
+dbt3_path: "/usr/bin/dbt3"
 
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup

@@ -10,10 +10,6 @@
   ansible.builtin.include_tasks: dbt3_tpc.yml
   when: have_tpcfile and not validate_only|bool
 
-- name: Include DBT-3 profile configuration
-  ansible.builtin.include_tasks: dbt3_configure_profile.yml
-  when: not validate_only|bool
-
 - name: Include the validate_setup_dbt3 tasks
   ansible.builtin.include_tasks: validate_setup_dbt3.yml
   when: validate_only|bool or use_validation|bool
