@@ -8,12 +8,8 @@
 
 - name: Include TPC installation
   ansible.builtin.include_tasks: dbt7_tpc.yml
-  when: have_tpcfile and not validate_only|bool
+  when: have_tpcdsfile and not validate_only|bool
 
-- name: Include DBT-7 profile configuration
-  ansible.builtin.include_tasks: dbt7_configure_profile.yml
-  when: not validate_only|bool
-
-- name: Include validate_setup_dbt7 tasks
+- name: Include the validate_setup_dbt7 tasks
   ansible.builtin.include_tasks: validate_setup_dbt7.yml
   when: validate_only|bool or use_validation|bool

@@ -1,45 +1,39 @@
 ---
-# validate dbt7 package
-- name: Set dbt7 package name
+# validate dbt7 db packages installation
+- name: Set dbt7_db_pkg_list
   ansible.builtin.set_fact:
-    dbt7_package: 'dbt7'
+    dbt7_db_pkg_list: ['bc', 'byacc', 'dejavu-fonts-common', 'flex', 'fontconfig', 'fuse', 'fuse-libs', 'gcc', 'make', 'patch', 'perf', 'psmisc', 'sysstat', 'tmux', 'unzip']
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
     strategy: "all"
 
-- name: Check that DBT7 packages have been installed
+- name: Check that all packages in dbt7_db_pkg_list has been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[dbt7_package] }} is defined"
-    fail_msg: "Package {{ dbt7_package }} has not been installed."
-    success_msg: "Package {{ dbt7_package }} has been installed."
+      - "{{ ansible_facts.packages[package] }} is defined"
+    fail_msg: "Package {{ package }} has not been installed."
+    success_msg: "Package {{ package }} has been installed."
+  loop: "{{ dbt7_db_pkg_list }}"
+  loop_control:
+    loop_var: package
 
-# validate dbt7 user
-- name: Run query to check dbt7 user is in pg_user
-  ansible.builtin.include_role:
-    name: manage_dbserver
-    tasks_from: execute_sql_scripts
-  vars:
-    pg_query:
-      - query: "Select * from pg_user where usename = '{{ pg_owner }}'"
-        db: "{{ pg_database }}"
-
-- name: Set user_query_result with sql_query_output
-  ansible.builtin.set_fact:
-    user_query_result: "{{ sql_query_output }}"
+# ensure the DBT-7 AppImage has been installed to the proper location
+- name: Stat to dbt7_path
+  ansible.builtin.stat:
+    path: "{{ dbt7_path }}"
+  register: dbt7_path_stat
   become: true
 
-- name: Check if DBT7 postgres user was successfully created
+- name: Check if DBT-7 AppImage was installed properly on DB
   ansible.builtin.assert:
     that:
-      - user_query_result.results[0].query_result[0]['usename'] == pg_owner
-    fail_msg: "DBT7 postgres user was not successfully created."
-    success_msg: "DBT7 postgres user was successfully created."
-  run_once: true
+      - dbt7_path_stat.stat['exists']|bool
+    fail_msg: "DBT-7 AppImage at {{ dbt7_path }} was not created properly"
+    success_msg: "DBT-7 AppImage at {{ dbt7_path }} was created successfully"
 
 # reset variables
 - name: Reset variables
   ansible.builtin.set_fact:
-    dbt7_package: null
-    user_query_result: null
+    dbt7_db_pkg_list: null
+    dbt7_path_stat: null

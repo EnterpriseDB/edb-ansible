@@ -1,30 +1,19 @@
 ---
-- name: Check that 'tpcfile' is set to local TPC-H Tools location
+- name: Check that 'tpcdsfile' is set to local TPC-H Tools location
   ansible.builtin.fail:
     msg: >-
-      The Ansible variable 'tpcfile' must be set to a locally downloaded copy
+      The Ansible variable 'tpcdsfile' must be set to a locally downloaded copy
       of the TPC supplied TPC-H Tools from:
       https://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp
-  when: tpcfile|length < 1
+  when: tpcdsfile | length < 1
 
 - name: Copy and unarchive TPC-H Tools to remote host
   ansible.builtin.unarchive:
-    src: "{{ tpcfile }}"
+    src: "{{ tpcdsfile }}"
     dest: "{{ pg_user_home }}"
   become_user: "{{ pg_owner }}"
 
-- name: Patch TPC-H Tools for PostgreSQL
-  ansible.posix.patch:
-    remote_src: true
-    src: "{{ item }}"
-    basedir: "{{ pg_user_home }}"
-    strip: 1
-  become_user: "{{ pg_owner }}"
-  loop:
-    - /usr/share/dbt7/dbt7-DSGen-software-code-3.2.0rc1.diff
-    - /usr/share/dbt7/dbt7-DSGen-software-code-3.2.0rc1-postgresql-queries.diff
-
-- name: Build TPC-H Tools for PostgreSQL
-  community.general.make:
-    chdir: "{{ pg_user_home }}/DSGen-software-code-3.2.0rc1/tools"
+- name: Build TPC-DS Tools for PostgreSQL
+  ansible.builtin.shell: >-
+    dbt7 build-dsgen {{ pg_user_home }}/DSGen-software-code-3.2.0rc1
   become_user: "{{ pg_owner }}"

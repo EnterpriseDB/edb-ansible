@@ -1,9 +1,12 @@
 ---
-dbt7_version: "0.4.1"
-dbt7_pgdata: "/pgdata/dbt7/pgdata"
-pg_version: 14
-have_tpcfile: true
-tpcfile: ""
+dbt7_version: "0.5.0"
+have_tpcdsfile: true
+tpcdsfile: ""
+
+# DBT-7 AppImage information
+dbt7_appimage: "https://github.com/osdldbt/dbt7/releases/download/v{{ dbt7_version }}/dbt7-{{ dbt7_version }}-x86_64.AppImage"
+dbt7_checksum: "{{ dbt7_appimage }}.sha256"
+dbt7_path: "/usr/bin/dbt7"
 
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup
@@ -15,3 +18,4 @@ supported_os:
   - RedHat8
   - Rocky8
   - AlmaLinux8
+  - OracleLinux7

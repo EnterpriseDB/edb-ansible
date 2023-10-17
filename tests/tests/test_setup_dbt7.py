@@ -10,7 +10,23 @@ from conftest import (
 
 def test_setup_dbt7_packages():
     host = get_primary()
-    packages = ['dbt7']
+    packages = [
+        'bc',
+        'byacc',
+        'dejavu-fonts-common',
+        'flex',
+        'fontconfig',
+        'fuse',
+        'fuse-libs',
+        'gcc',
+        'make',
+        'patch',
+        'perf',
+        'psmisc',
+        'sysstat',
+        'tmux',
+        'unzip',
+    ]
 
     for package in packages:
         assert host.package(package).is_installed, \
