@@ -1,5 +1,5 @@
 ---
-dbt7_version: "0.5.0"
+dbt7_version: "0.6.0"
 have_tpcdsfile: true
 tpcdsfile: ""
 
