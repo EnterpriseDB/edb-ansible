@@ -1,24 +1,32 @@
 ---
-- name: Install packages for Touchstone
+# if CentOS or RHEL, fuse-libs package is needed as per example https://github.com/AppImage/AppImageKit/wiki/FUSE
+- name: Install supporting packages for Touchstone (RedHat)
   ansible.builtin.package:
     name:
       - dejavu-fonts-common
       - fontconfig
       - fuse
+      - fuse-libs
       - perf
       - sysstat
       - util-linux
     state: present
   become: true
+  when: ansible_os_family == 'RedHat'
 
-# if CentOS or RHEL, fuse-libs package is needed as per example https://github.com/AppImage/AppImageKit/wiki/FUSE
-- name: Install packages to use AppImage if RHEL
+- name: Install supporting packages for Touchstone (Debian)
   ansible.builtin.package:
     name:
-      - fuse-libs
+      - fontconfig
+      - fonts-dejavu
+      - fuse
+      - libfuse2
+      - linux-perf
+      - sysstat
+      - util-linux
     state: present
   become: true
-  when: ansible_os_family == 'RedHat'
+  when: ansible_os_family == 'Debian'
 
 - name: Download Touchstone Tools AppImage
   ansible.builtin.get_url:
