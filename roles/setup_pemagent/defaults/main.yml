@@ -60,6 +60,7 @@ supported_os:
   - OracleLinux7
   - Debian10
   - Ubuntu20
+  - Ubuntu22
 
 supported_pg_type:
   - EPAS

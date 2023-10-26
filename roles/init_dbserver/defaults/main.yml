@@ -110,6 +110,7 @@ supported_os:
   - RedHat8
   - RedHat9
   - Ubuntu20
+  - Ubuntu22
   - Debian9
   - Debian10
   - Rocky8

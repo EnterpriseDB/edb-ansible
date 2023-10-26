@@ -22,7 +22,7 @@
     pg_type == 'EPAS' and
     ((pg_version|int < 12 and os in ['RedHat8','CentOS8','Rocky8','AlmaLinux8']) or
      (pg_version|int < 11 and os in ['Ubuntu18', 'Debian9']) or
-     (pg_version|int < 13 and os in ['Ubuntu20'])  or
+     (pg_version|int < 13 and os in ['Ubuntu20', 'Ubuntu22'])  or
      (pg_version|int < 12 and os in ['Debian10']))
 
 - name: Remove Postgres packages

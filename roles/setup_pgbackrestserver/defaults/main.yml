@@ -64,6 +64,7 @@ supported_os:
   - AlmaLinux8
   - Debian10
   - Ubuntu20
+  - Ubuntu22
 
 supported_log_level:
   - 'off'

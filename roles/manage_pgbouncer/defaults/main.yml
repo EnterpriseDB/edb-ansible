@@ -21,3 +21,4 @@ supported_os:
   - Debian10
   - OracleLinux7
   - Ubuntu20
+  - Ubuntu22
