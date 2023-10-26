@@ -16,7 +16,7 @@ When executing the role via ansible these are the required variables:
 
   * ***os***
 
-    Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, Rocky8, Ubuntu20, Debian10 and AlmaLinux8
+    Operating Systems supported are: CentOS7, CentOS8, RHEL7, RHEL8, Rocky8, Ubuntu20, Ubuntu22, Debian10 and AlmaLinux8
 
 The rest of the variables can be configured and are available in the:
 

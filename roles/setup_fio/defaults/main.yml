@@ -17,6 +17,7 @@ supported_os:
   - Debian10
   - OracleLinux8
   - Ubuntu20
+  - Ubuntu22
 
 use_patroni: false
 

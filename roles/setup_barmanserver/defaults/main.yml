@@ -34,3 +34,4 @@ supported_os:
   - AlmaLinux8
   - OracleLinux7
   - Ubuntu20
+  - Ubuntu22
