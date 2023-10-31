@@ -1,4 +1,18 @@
 ---
+# This and reloading sysctl can be removed when tpaexec doesn't force any
+# kernel.core_pattern to be set.
+- name: Remove kernel.core_pattern from tpaexec installed sysctl file
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.conf
+    search_string: kernel.core_pattern=core.%e.%p.%t
+    state: absent
+  become: true
+
+- name: Reload sysctl settings
+  ansible.builtin.command:
+    cmd: sysctl -p --system
+  become: true
+
 - name: Enable unlimited core size for all users
   community.general.pam_limits:
     domain: "*"
