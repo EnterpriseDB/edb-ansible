@@ -27,3 +27,10 @@
     state: present
   when: ansible_os_family == 'RedHat'
   become: true
+
+- name: Install systemd-coredump
+  ansible.builtin.package:
+    name: systemd-coredump
+    state: present
+  when: ansible_os_family == 'Debian'
+  become: true
