@@ -3,6 +3,13 @@
 - name: Set dbt2_db_pkg_list
   ansible.builtin.set_fact:
     dbt2_db_pkg_list: ['perf', 'rsync', 'tmux', 'fuse', 'fuse-libs', 'sysstat', 'dejavu-fonts-common', 'fontconfig']
+  when: ansible_os_family == 'RedHat'
+
+# validate dbt2 db packages installation
+- name: Set dbt2_db_pkg_list
+  ansible.builtin.set_fact:
+    dbt2_db_pkg_list: ['linux-perf', 'rsync', 'tmux', 'fuse', 'libfuse2', 'sysstat', 'fonts-dejavu', 'fontconfig']
+  when: ansible_os_family == 'Debian'
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
