@@ -14,6 +14,21 @@
   when: ansible_os_family == "RedHat"
   become: true
 
+- name: Install DBT-2 supporting packages
+  ansible.builtin.package:
+    name:
+      - fonts-dejavu
+      - fontconfig
+      - linux-perf
+      - rsync
+      - tmux
+      - fuse
+      - libfuse2
+      - sysstat
+    state: present
+  when: ansible_os_family == "Debian"
+  become: true
+
 - name: Download DBT-2 AppImage
   ansible.builtin.get_url:
     url: "{{ dbt2_appimage }}"
