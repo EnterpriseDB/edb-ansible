@@ -1,5 +1,5 @@
 ---
-- name: Install additional supporting packages
+- name: Install additional supporting packages on Redhat
   ansible.builtin.package:
     name:
       - bc
@@ -21,7 +21,7 @@
   when: ansible_os_family == "RedHat"
   become: true
 
-- name: Install DBT-7 supporting packages
+- name: Install DBT-7 supporting packages on Debian
   ansible.builtin.package:
     name:
       - bc
