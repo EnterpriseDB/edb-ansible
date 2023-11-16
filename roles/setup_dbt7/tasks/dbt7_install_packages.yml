@@ -21,6 +21,29 @@
   when: ansible_os_family == "RedHat"
   become: true
 
+- name: Install DBT-7 supporting packages
+  ansible.builtin.package:
+    name:
+      - bc
+      - byacc
+      - flex
+      - make
+      - fonts-dejavu
+      - fontconfig
+      - linux-perf
+      - rsync
+      - tmux
+      - fuse
+      - libfuse2
+      - sysstat
+      - gcc
+      - patch
+      - psmisc
+      - unzip
+    state: present
+  when: ansible_os_family == "Debian"
+  become: true
+
 - name: Download DBT-7 AppImage
   ansible.builtin.get_url:
     url: "{{ dbt7_appimage }}"
