@@ -26,6 +26,7 @@
     executable: /bin/bash
     creates: "{{ pg_data }}/PG_VERSION"
   environment:
+    PG_DATA: "{{ pg_data }}"
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
     ENCRYPTION_PASSPHRASE: "{{ edb_secure_master_key }}"
   when: ansible_os_family == 'RedHat'
@@ -38,6 +39,7 @@
     executable: /bin/bash
     creates: "{{ pg_data }}/PG_VERSION"
   environment:
+    PG_DATA: "{{ pg_data }}"
     PGSETUP_INITDB_OPTIONS: "{{ pg_initdb_options }}"
   when: ansible_os_family == 'Debian'
   become: true
