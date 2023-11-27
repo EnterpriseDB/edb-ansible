@@ -27,7 +27,8 @@
     loop_var: line_item
   no_log: "{{ disable_logging }}"
 
-- name: Reload the pg service
+# Reload when no restart is required, otherwise restart will occur
+- name: Reload the pg service when restart not required
   ansible.builtin.systemd:
     name: "{{ pg_service }}"
     daemon_reload: true
@@ -36,7 +37,7 @@
   when:
     - pg_postgres_conf_params|length > 0
     - params.changed
-    - params_restart_required
+    - not params_restart_required
     - not use_patroni
 
 - name: Reload patroni postgres
@@ -86,11 +87,11 @@
     - ansible_facts.services[efm_service + '.service'].status == 'enabled'
     - pg_postgres_conf_params|length > 0
     - params.changed
-    - params_restart_required is defined
     - params_restart_required
     - not use_patroni
   become: true
 
+# Restart when restart required, otherwise only reload is done
 - name: Restart the pg service
   ansible.builtin.systemd:
     name: "{{ pg_service }}"
@@ -100,7 +101,6 @@
   when:
     - pg_postgres_conf_params|length > 0
     - params.changed
-    - params_restart_required is defined
     - params_restart_required
     - not use_patroni
 
@@ -114,7 +114,6 @@
     - ansible_facts.services[efm_service + '.service'].status == 'enabled'
     - pg_postgres_conf_params|length > 0
     - params.changed
-    - params_restart_required is defined
     - params_restart_required
     - not use_patroni
   become: true
