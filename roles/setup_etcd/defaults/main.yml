@@ -4,10 +4,14 @@ os: ""
 
 pg_type: "PG"
 pg_version: 14
-pg_owner: "postgres"
-pg_group: "postgres"
 etcd_owner: "{{ pg_owner }}"
 etcd_group: "{{ pg_group }}"
+# by default, etcd_owner is set to the pg_owner var
+# the home directory for pg_owner needs to be set to pg_user_home
+# this role will run prior to postgres initialization
+# if etcd_owner == pg_owner, etcd_owner_home == pg_user_home is a requirement
+# if etcd_owner != pg_owner, set etcd_owner_home to preferred location
+etcd_owner_home: "{{ pg_user_home }}"
 
 use_hostname: true
 
@@ -17,6 +21,8 @@ etcd_download_url: "https://github.com/etcd-io/etcd/releases/download/v{{ etcd_v
 etcd_checksum_url: "sha256:https://github.com/coreos/etcd/releases/download/v{{ etcd_version }}/SHA256SUMS"
 etcd_architecture: "amd64"
 etcd_package: "etcd-v{{ etcd_version }}-linux-{{ etcd_architecture }}"
+# to install etcd from RPM, PGDG repo is required on RHEL
+# ensure you set enable_pgdg_repo: true
 etcd_rpm: false
 
 etcd_name: "{{ inventory_hostname }}"

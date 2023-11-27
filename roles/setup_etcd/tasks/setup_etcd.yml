@@ -77,13 +77,6 @@
   run_once: true
   no_log: "{{ disable_logging }}"
 
-- name: Update /etc/hosts based on use_hostname
-  ansible.builtin.import_tasks: linux_update_etc_hosts.yml
-  when:
-    - use_hostname|bool
-    - update_etc_file|bool
-  become: true
-
 - name: Ensure ETCD user and group exists
   ansible.builtin.include_tasks: etcd_user_group.yml
 

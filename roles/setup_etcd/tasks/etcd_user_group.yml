@@ -5,8 +5,10 @@
     state: present
   become: true
 
-- name: Ensure etcd_user exists
+- name: Ensure etcd_owner exists
   ansible.builtin.user:
     name: "{{ etcd_owner }}"
     group: "{{ etcd_group }}"
+    create_home: true
+    home: "{{ etcd_owner_home }}"
   become: true

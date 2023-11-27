@@ -23,7 +23,7 @@
   ansible.builtin.copy:
     src: "{{ etcd_download_dir }}/{{ etcd_package }}/{{ item }}"
     dest: "{{ etcd_bin_dir }}/{{ item }}"
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
     remote_src: true
@@ -33,11 +33,21 @@
   when: not etcd_rpm
   become: true
 
-- name: Install etcd using RPM
-  ansible.builtin.package:
-    name: "{{ etcd_package }}"
-    state: present
+- name: Enable PGDG yum extras repository for RedHat
+  ansible.builtin.command: >
+    dnf config-manager --enable pgdg-rhel{{ ansible_distribution_major_version }}-extras
+  become: true
+  changed_when: true
   when:
     - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version in ['8', '9']
+    - etcd_rpm|bool
+    - enable_pgdg_repo|bool
+
+- name: Install etcd using RPM
+  ansible.builtin.package:
+    name: etcd
+    state: present
+  when:
     - etcd_rpm
   become: true

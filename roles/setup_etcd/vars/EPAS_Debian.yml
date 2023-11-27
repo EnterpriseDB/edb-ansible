@@ -1,5 +1,6 @@
 ---
 pg_owner: "enterprisedb"
 pg_group: "enterprisedb"
+pg_user_home: "/var/lib/edb-as"
 etcd_systemd_global_unit_file: "/etc/systemd/system/{{ etcd_service }}.service"
 etcd_environment_file: "/etc/default/etcd"

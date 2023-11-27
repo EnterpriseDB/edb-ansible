@@ -25,7 +25,7 @@
     cmd: >-
       openssl genrsa -out {{ etcd_member_key }} 2048
   args:
-    cmd: "{{ etcd_member_key }}"
+    creates: "{{ etcd_member_key }}"
   become: true
   become_user: "{{ etcd_owner }}"
   when: not _etcd_member_key.stat.exists
