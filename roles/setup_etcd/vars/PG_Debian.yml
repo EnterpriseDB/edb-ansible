@@ -1,5 +1,6 @@
 ---
 pg_owner: "postgres"
 pg_group: "postgres"
+pg_user_home: "/var/lib/postgresql"
 etcd_systemd_global_unit_file: "/etc/systemd/system/{{ etcd_service }}.service"
 etcd_environment_file: "/etc/default/etcd"
