@@ -11,4 +11,4 @@ lock-path={{ pgbackrest_lock_path }}
 start-fast=y
 
 [{{ pg_instance_name }}]
-pg1-path={{ pg_data }}
+pg1-path={{ pg_default_data }}

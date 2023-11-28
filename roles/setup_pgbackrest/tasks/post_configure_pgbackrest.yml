@@ -9,17 +9,14 @@
   when:
     - _pgbackrest_server_info|length == 0
 
-- name: Set  _pgbackrest_host when not using hostname
+- name: Set _pgbackrest_host
   ansible.builtin.set_fact:
-    _pgbackrest_host: "{{ _pgbackrest_server_info[0].ansible_host }}"
-  when:
-    - "not use_hostname|bool"
-
-- name: Set _pgbackrest_host when using hostname
-  ansible.builtin.set_fact:
-    _pgbackrest_host: "{{ _pgbackrest_server_info[0].inventory_hostname }}"
-  when:
-    - use_hostname|bool
+    _pgbackrest_host: >-
+      {% if use_hostname %}
+      {{ _pgbackrest_server_info[0].inventory_hostname }}
+      {% else %}
+      {{ _pgbackrest_server_info[0].private_ip }}
+      {% endif %}
 
 # get a list of nodes to update backup-standby setting in pgbackrest.conf
 # only pgbackrest and standby nodes set backup-standby=y
@@ -58,6 +55,5 @@
 - name: Reset local variables
   ansible.builtin.set_fact:
     _pgbackrest_server_info: ""
-    _pgbackrest_server_public_ip: null
-    _pgbackrest_host: Null
-    _update_config: Null
+    _pgbackrest_host: ""
+    _update_config: ""

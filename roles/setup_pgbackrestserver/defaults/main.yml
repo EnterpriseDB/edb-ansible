@@ -49,9 +49,12 @@ primary_pgbr_config_file: "/etc/pgbackrest.conf"
 # postgres instance name
 pg_instance_name: "main"
 
+pg_replication_user: "repuser"
+
 etc_hosts_lists: []
 use_hostname: true
 update_etc_file: true
+use_patroni: false
 
 supported_os:
   - CentOS7

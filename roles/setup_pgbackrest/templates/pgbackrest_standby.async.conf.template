@@ -18,12 +18,11 @@ process-max={{ process_max_recovery }}
 [global:archive-push]
 process-max={{ process_max_backup }}
 
-
 [{{ pg_instance_name }}]
-pg{{ _standby_index_var }}-path={{ pg_data }}
+pg{{ _standby_index_var }}-path={{ pg_default_data }}
 {% if pg_type == 'PG' %}
-recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} user={{ replication_user }}
+recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} user={{ pg_replication_user }}
 {% endif %}
 {% if pg_type == 'EPAS' %}
-recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} port={{ pg_port_epas }} user={{ replication_user }}
+recovery-option=primary_conninfo=host={{ primary_node_hostname[0] }} port={{ pg_port }} user={{ pg_replication_user }}
 {% endif %}

@@ -9,9 +9,9 @@
   when:
     - _pgbackrest_server_info|length == 0
 
-- name: Set _pgbackrest_server_public_ip
+- name: Set _pgbackrest_server_private_ip
   ansible.builtin.set_fact:
-    _pgbackrest_server_public_ip: "{{ _pgbackrest_server_info[0].ansible_host }}"
+    _pgbackrest_server_private_ip: "{{ _pgbackrest_server_info[0].private_ip }}"
 
 # only need to be run when standby_present is defined because they have already been done on just the primary node
 - name: Initialize the Postgres parameters list
@@ -45,7 +45,7 @@
   ansible.builtin.command:
     cmd: "pgbackrest --stanza={{ pg_instance_name }} --type=full backup"
   become_user: "{{ pgbackrest_user }}"
-  delegate_to: "{{ _pgbackrest_server_public_ip }}"
+  delegate_to: "{{ _pgbackrest_server_private_ip }}"
   become: true
   run_once: true
   changed_when: true
@@ -53,5 +53,5 @@
 - name: Reset local variables
   ansible.builtin.set_fact:
     _pgbackrest_server_info: ""
-    _pgbackrest_server_public_ip: null
+    _pgbackrest_server_private_ip: ""
     _pg_postgres_conf_params: ""

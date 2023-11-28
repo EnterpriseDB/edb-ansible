@@ -20,48 +20,20 @@
 
 - name: Get primary node informations if not use_hostname
   ansible.builtin.set_fact:
-    primary_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='ansible_host') }}"
+    primary_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'primary') | map(attribute='private_ip') }}"
   when:
     - "not use_hostname|bool"
 
 - name: Get standby node informations if any, if use_hostname
   ansible.builtin.set_fact:
-    standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='inventory_hostname') }}"
+    standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='inventory_hostname') | list | flatten }}"
   when:
     - use_hostname|bool
     - standby_present is defined
 
 - name: Get standby node informations if any, if not use_hostname
   ansible.builtin.set_fact:
-    standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='ansible_host') }}"
+    standby_node_hostname: "{{ pgbackrest_node_info | selectattr('node_type', 'equalto', 'standby') | map(attribute='private_ip') | list | flatten }}"
   when:
     - "not use_hostname|bool"
     - standby_present is defined
-
-- name: Define postgres user on primary node when pg_type = PG
-  ansible.builtin.set_fact:
-    primary_host_user: "postgres"
-  when: pg_type == 'PG'
-
-- name: Define postgres user on primary node when pg_type = EPAS
-  ansible.builtin.set_fact:
-    primary_host_user: "enterprisedb"
-  when: pg_type == 'EPAS'
-
-- name: Define EPAS DB information if RedHat
-  ansible.builtin.set_fact:
-    pg_unix_socket_epas: "/var/run/edb/as{{ pg_version }}"
-    pg_port_epas: "5444"
-    pg_database_name: "edb"
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'RedHat'
-
-- name: Define EPAS DB information if Debian
-  ansible.builtin.set_fact:
-    pg_unix_socket_epas: "/var/run/edb-as"
-    pg_port_epas: "5444"
-    pg_database_name: "postgres"
-  when:
-    - pg_type == 'EPAS'
-    - ansible_os_family == 'Debian'
