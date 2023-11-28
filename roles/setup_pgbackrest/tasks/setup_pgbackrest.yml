@@ -21,8 +21,8 @@
 - name: Check pgbackrest_archive_method value
   ansible.builtin.fail:
     msg: "pgBackRest archive method {{ pgbackrest_archive_method }} not supported."
-  when: >
-    pgbackrest_archive_method not in ['standard', 'async']
+  when:
+    - pgbackrest_archive_method not in ['standard', 'async']
 
 - name: Update /etc/hosts based on use_hostname
   become: true

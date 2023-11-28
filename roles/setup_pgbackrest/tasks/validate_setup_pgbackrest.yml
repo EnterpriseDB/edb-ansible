@@ -1,15 +1,19 @@
 ---
-- name: Get pgBackRest node informations
+- name: Get pgBackRest server informations
   ansible.builtin.set_fact:
-    pgbackrest_server_node_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+    _pgbackrest_server_info: "{{ lookup('edb_devops.edb_postgres.pgbackrest_server', wantlist=True) }}"
+
+- name: Set _pgbackrest_server_private_ip
+  ansible.builtin.set_fact:
+    _pgbackrest_server_private_ip: "{{ _pgbackrest_server_info[0].private_ip }}"
 
 # validate command for configuration validation is successful
 - name: Run command to check if pgbackrest server has been configured correctly
   ansible.builtin.command:
-    cmd: pgbackrest --stanza={{ pg_instance_name }} check
-  become: true
+    cmd: "pgbackrest --stanza={{ pg_instance_name }} check"
   become_user: "{{ pgbackrest_user }}"
-  delegate_to: "{{ pgbackrest_server_node_info[0].inventory_hostname }}"
+  delegate_to: "{{ _pgbackrest_server_private_ip }}"
+  become: true
   run_once: true
   register: pgbackrest_config_check_res
   changed_when: pgbackrest_config_check_res.rc == '0'
@@ -25,10 +29,10 @@
 # validate backup exists on pgbackrest
 - name: Run command to check if backup for pgbackrest cluster was successful
   ansible.builtin.command:
-    cmd: pgbackrest --stanza={{ pg_instance_name }} info
+    cmd: "pgbackrest --stanza={{ pg_instance_name }} info"
   become: true
   become_user: "{{ pgbackrest_user }}"
-  delegate_to: "{{ pgbackrest_server_node_info[0].inventory_hostname }}"
+  delegate_to: "{{ _pgbackrest_server_private_ip }}"
   run_once: true
   register: pgbackrest_config_info_res
   changed_when: pgbackrest_config_info_res.rc == '0'
@@ -44,10 +48,10 @@
 # test archive repo for pgbackrest exists
 - name: Run command to check if pgbackrest archive repo was successfully configured
   ansible.builtin.command:
-    cmd: pgbackrest repo-ls
+    cmd: "pgbackrest repo-ls"
   become: true
   become_user: "{{ pgbackrest_user }}"
-  delegate_to: "{{ pgbackrest_server_node_info[0].inventory_hostname }}"
+  delegate_to: "{{ _pgbackrest_server_private_ip }}"
   run_once: true
   register: pgbackrest_config_repo_res
   changed_when: pgbackrest_config_repo_res.rc == '0'
@@ -62,6 +66,8 @@
 
 - name: Reset variables
   ansible.builtin.set_fact:
+    _pgbackrest_server_info: ""
+    _pgbackrest_server_private_ip: ""
     pgbackrest_config_check_res: null
     pgbackrest_config_info_res: null
     pgbackrest_config_repo_res: null

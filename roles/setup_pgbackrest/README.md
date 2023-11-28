@@ -31,13 +31,13 @@ The rest of the variables can be configured and are available in the:
 
 Below is the documentation of the rest of the main variables:
 
-### `replication_user`
+### `pg_replication_user`
 
 Dedicated replication user used in WAL streaming replication. Default: `repuser`
 
 Example:
 ```yaml
-replication_user: 'repuser'
+pg_replication_user: 'repuser'
 ```
 
 ### `pgbackrest_spool_directory`

@@ -7,10 +7,10 @@ repo1-host-user={{ pgbackrest_user }}
 repo1-host-type=ssh
 repo1-cipher-type={{ repo_cipher_type }}
 repo1-cipher-pass={{ repo_cipher_password }}
-start-fast=y
 log-level-console={{ pgbackrest_log_level_console }}
 log-level-file={{ pgbackrest_log_level_file }}
 lock-path={{ pgbackrest_lock_path }}
+start-fast=y
 
 [global:archive-get]
 process-max={{ process_max_recovery }}
@@ -19,4 +19,4 @@ process-max={{ process_max_recovery }}
 process-max={{ process_max_backup }}
 
 [{{ pg_instance_name }}]
-pg1-path={{ pg_data }}
+pg1-path={{ pg_default_data }}

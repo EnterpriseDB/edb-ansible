@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure the directory pg_user_home/.ssh exists
   ansible.builtin.file:
     state: directory

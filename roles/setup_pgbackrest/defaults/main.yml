@@ -3,11 +3,10 @@
 pgbackrest_package_name: "pgbackrest"
 
 # replication user setup in postgresql.conf
-replication_user: "repuser"
+pg_replication_user: "repuser"
 
 # spool directory - only used with archive-async
 pgbackrest_spool_directory: "/var/spool/pgbackrest"
-use_patroni: false
 
 # number of parallel processes to be used during backup and recovery
 # recommended to not use more than 25% of available CPU for the backup command
@@ -18,6 +17,7 @@ process_max_recovery: 3
 etc_hosts_lists: []
 use_hostname: true
 update_etc_file: true
+use_patroni: false
 
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup

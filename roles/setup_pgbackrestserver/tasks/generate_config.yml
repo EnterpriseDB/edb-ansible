@@ -1,117 +1,71 @@
 ---
-- name: Build lines about standby's
+- name: Build lines about standby's when PG
   ansible.builtin.set_fact:
     pgbackrest_standby_configuration: >-
       {{ pgbackrest_standby_configuration | default([]) + [
         {
           'key': 'pg' + standby_node.index_var + '-host' | string,
-          'value': standby_node.inventory_hostname
+          'value': _standby_pg_host_var
         },
         {
           'key': 'pg' + standby_node.index_var + '-path' | string,
-          'value': pg_data
+          'value': pg_default_data
         }
       ] }}
   loop: "{{ standby_node_info }}"
   loop_control:
     loop_var: standby_node
+  vars:
+    _standby_pg_host_var: >-
+      {% if use_hostname %}
+      {{ standby_node.inventory_hostname }}
+      {% else %}
+      {{ standby_node.private_ip }}
+      {% endif %}
   when:
-    - use_hostname|bool
     - pg_type == 'PG'
     - standby_present is defined
 
-- name: Build lines about standby's
+- name: Build lines about standby's when EPAS
   ansible.builtin.set_fact:
     pgbackrest_standby_configuration: >-
       {{ pgbackrest_standby_configuration | default([]) + [
         {
           'key': 'pg' + standby_node.index_var + '-host' | string,
-          'value': standby_node.private_ip
+          'value': _standby_pg_host_var
         },
         {
           'key': 'pg' + standby_node.index_var + '-path' | string,
-          'value': pg_data
-        }
-      ] }}
-  loop: "{{ standby_node_info }}"
-  loop_control:
-    loop_var: standby_node
-  when:
-    - "not use_hostname|bool"
-    - pg_type == 'PG'
-    - standby_present is defined
-
-- name: Build lines about standby's
-  ansible.builtin.set_fact:
-    pgbackrest_standby_configuration: >-
-      {{ pgbackrest_standby_configuration | default([]) + [
-        {
-          'key': 'pg' + standby_node.index_var + '-host' | string,
-          'value': standby_node.inventory_hostname
-        },
-        {
-          'key': 'pg' + standby_node.index_var + '-path' | string,
-          'value': pg_data
+          'value': pg_default_data
         },
         {
           'key': 'pg' + standby_node.index_var + '-host-user' | string,
-          'value': 'enterprisedb'
+          'value': pg_owner
         },
         {
           'key': 'pg' + standby_node.index_var + '-database' | string,
-          'value': pg_database_name
+          'value': pg_database
         },
         {
           'key': 'pg' + standby_node.index_var + '-port' | string,
-          'value': '5444'
+          'value': pg_port
         },
         {
           'key': 'pg' + standby_node.index_var + '-socket-path' | string,
-          'value': pg_unix_socket_epas
+          'value': pg_unix_socket_directories[0]
         }
       ] }}
   loop: "{{ standby_node_info }}"
   loop_control:
     loop_var: standby_node
+  vars:
+    _standby_pg_host_var: >-
+      {% if use_hostname %}
+      {{ standby_node.inventory_hostname }}
+      {% else %}
+      {{ standby_node.private_ip }}
+      {% endif %}
   when:
-    - use_hostname|bool
-    - pg_type == 'EPAS'
-    - standby_present is defined
-
-- name: Build lines about standby's
-  ansible.builtin.set_fact:
-    pgbackrest_standby_configuration: >-
-      {{ pgbackrest_standby_configuration | default([]) + [
-        {
-          'key': 'pg' + standby_node.index_var + '-host' | string,
-          'value': standby_node.private_ip
-        },
-        {
-          'key': 'pg' + standby_node.index_var + '-path' | string,
-          'value': pg_data
-        },
-        {
-          'key': 'pg' + standby_node.index_var + '-host-user' | string,
-          'value': 'enterprisedb'
-        },
-        {
-          'key': 'pg' + standby_node.index_var + '-database' | string,
-          'value': pg_database_name
-        },
-        {
-          'key': 'pg' + standby_node.index_var + '-port' | string,
-          'value': '5444'
-        },
-        {
-          'key': 'pg' + standby_node.index_var + '-socket-path' | string,
-          'value': pg_unix_socket_epas
-        }
-      ] }}
-  loop: "{{ standby_node_info }}"
-  loop_control:
-    loop_var: standby_node
-  when:
-    - "not use_hostname|bool"
     - pg_type == 'EPAS'
     - standby_present is defined
 
@@ -148,6 +102,8 @@
   when:
     - standby_present is defined
 
-- name: Reset pgbackrest_conf_lines
+- name: Reset variables
   ansible.builtin.set_fact:
+    pgbackrest_standby_configuration: ""
+    _standby_pg_host_var: ""
     pgbackrest_conf_lines: []

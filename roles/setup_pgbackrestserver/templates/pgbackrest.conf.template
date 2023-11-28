@@ -17,10 +17,10 @@ start-fast=y
 
 [{{ pg_instance_name }}]
 pg1-host={{ primary_node_hostname[0] }}
-pg1-path={{ pg_data }}
-pg1-host-user={{ primary_host_user }}
+pg1-path={{ pg_default_data }}
+pg1-host-user={{ pg_owner }}
 {% if pg_type == 'EPAS' %}
-pg1-database={{ pg_database_name }}
-pg1-port={{ pg_port_epas }}
-pg1-socket-path={{ pg_unix_socket_epas }}
+pg1-database={{ pg_database }}
+pg1-port={{ pg_port }}
+pg1-socket-path={{ pg_unix_socket_directories[0] }}
 {% endif %}
