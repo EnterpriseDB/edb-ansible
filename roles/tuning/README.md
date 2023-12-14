@@ -31,6 +31,20 @@ The rest of the variables can be configured and are available in the:
   * [roles/tuning/vars/PG.yml](./vars/PG.yml)
 
 
+### `pg_conf_override_tuning`
+
+Defines if the `pg_postgres_conf_params` should override the `tuning`
+values automaticaly calculated from gathered memory informations.
+Default: `false`
+
+Example:
+```yaml
+pg_conf_override_tuning: "true"
+pg_postgres_conf_params:
+- name: shared_buffers
+  value: "128MB"
+```
+
 ### `tuned_profile`
 
 This is the `tuned` profile name used for configuring the system. Default: `edb`
