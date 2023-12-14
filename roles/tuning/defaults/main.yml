@@ -2,6 +2,7 @@
 
 pg_instance_name: main
 pg_version: 14
+pg_conf_override_tuning: false
 tuned_profile: "edb"
 tuned_configuration_dir: "/etc/tuned"
 ssd_disk: false
