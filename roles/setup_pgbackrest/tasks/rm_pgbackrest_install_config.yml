@@ -13,7 +13,7 @@
 # add repo facts for RHEL
 - name: Set repo facts for RH os
   ansible.builtin.set_fact:
-    pg_gpg_key_8: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
+    pg_gpg_key_8: "http://yum.postgresql.org/keys/RPM-GPG-KEY-PGDG"
     pg_rpm_repo_7: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
     pg_rpm_repo_8: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
     pg_rpm_repo_9: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
