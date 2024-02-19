@@ -64,7 +64,7 @@ pg_deb_keys: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 pg_rpm_repo_7_x86_64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 pg_rpm_repo_8_x86_64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 pg_rpm_repo_9_x86_64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-pg_gpg_key_8_x86_64: "http://yum.postgresql.org/RPM-GPG-KEY-PGDG"
+pg_gpg_key_8_x86_64: "http://yum.postgresql.org/keys/RPM-GPG-KEY-PGDG"
 # Postgresql Repos aarch64
 pg_rpm_repo_8_aarch64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-aarch64/pgdg-redhat-repo-latest.noarch.rpm"
 pg_rpm_repo_9_aarch64: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-aarch64/pgdg-redhat-repo-latest.noarch.rpm"
