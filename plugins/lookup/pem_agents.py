@@ -62,7 +62,7 @@ class LookupModule(LookupBase):
                 nodes.append(
                     dict(
                         node_type=node_type,
-                        ansible_host=hv['ansible_host'],
+                        ansible_host=hv.get('ansible_host'),
                         hostname=hv.get('hostname', hv['ansible_hostname']),
                         private_ip=hv['private_ip'],
                         inventory_hostname=hv['inventory_hostname']

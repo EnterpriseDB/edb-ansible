@@ -63,7 +63,7 @@ class LookupModule(LookupBase):
 
             pgd_node = dict(
                 node_type='primary',
-                ansible_host=hostvars['ansible_host'],
+                ansible_host=hostvars.get('ansible_host'),
                 hostname=hostvars.get(
                     'hostname', hostvars.get('ansible_hostname')
                 ),

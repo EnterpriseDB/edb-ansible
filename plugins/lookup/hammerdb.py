@@ -63,7 +63,7 @@ class LookupModule(LookupBase):
             return [
                 dict(
                     node_type='hammerdb',
-                    ansible_host=hostvars['ansible_host'],
+                    ansible_host=hostvars.get('ansible_host'),
                     hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
                     private_ip=hostvars['private_ip'],
                     inventory_hostname=hostvars['inventory_hostname']

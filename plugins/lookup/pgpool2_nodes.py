@@ -59,7 +59,7 @@ class LookupModule(LookupBase):
                 dict(
                     node_id=node_id,
                     node_type='pgpool2',
-                    ansible_host=hostvars['ansible_host'],
+                    ansible_host=hostvars.get('ansible_host'),
                     private_ip=hostvars['private_ip'],
                     hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
                     inventory_hostname=hostvars['inventory_hostname'],
