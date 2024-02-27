@@ -64,7 +64,7 @@ class LookupModule(LookupBase):
             pg_clusters[private_ip].append(
                 dict(
                     node_type='primary',
-                    ansible_host=hostvars['ansible_host'],
+                    ansible_host=hostvars.get('ansible_host'),
                     hostname=hostvars.get('hostname',
                                           hostvars.get('ansible_hostname')),
                     private_ip=hostvars['private_ip'],
@@ -81,7 +81,7 @@ class LookupModule(LookupBase):
                 hostvars = myvars['hostvars'][host]
                 pg_standbys[host] = dict(
                     node_type='standby',
-                    ansible_host=hostvars['ansible_host'],
+                    ansible_host=hostvars.get('ansible_host'),
                     hostname=hostvars.get('hostname',
                                           hostvars.get('ansible_hostname')),
                     private_ip=hostvars['private_ip'],

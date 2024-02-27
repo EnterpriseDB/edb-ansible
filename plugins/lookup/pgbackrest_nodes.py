@@ -93,7 +93,7 @@ class LookupModule(LookupBase):
                     pgbr_nodes.append(dict(
                         node_type='primary',
                         inventory_hostname=hostvars['inventory_hostname'],
-                        ansible_host=hostvars['ansible_host'],
+                        ansible_host=hostvars.get('ansible_host'),
                         hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
                         private_ip=hostvars['private_ip'],
                         index_var=str(counter)
@@ -128,7 +128,7 @@ class LookupModule(LookupBase):
                             pgbr_nodes.append(dict(
                                 node_type='standby',
                                 inventory_hostname=hostvars['inventory_hostname'],
-                                ansible_host=hostvars['ansible_host'],
+                                ansible_host=hostvars.get('ansible_host'),
                                 hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
                                 private_ip=hostvars['private_ip'],
                                 index_var=str(counter)

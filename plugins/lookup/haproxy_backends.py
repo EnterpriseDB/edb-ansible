@@ -68,7 +68,7 @@ class LookupModule(LookupBase):
                         continue
 
                     backend_node = dict(
-                        ansible_host=hostvars['ansible_host'],
+                        ansible_host=hostvars.get('ansible_host'),
                         inventory_hostname=hostvars['inventory_hostname'],
                         hostname=hostvars.get('hostname', hostvars['ansible_hostname']),
                         proxy_location=hostvars.get('proxy_location', hostvars['proxy_location']),

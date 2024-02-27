@@ -68,7 +68,7 @@ class LookupModule(LookupBase):
                 dict(
                     node_type='primary',
                     id=node_id[private_ip],
-                    ansible_host=hostvars['ansible_host'],
+                    ansible_host=hostvars.get('ansible_host'),
                     hostname=hostvars.get('hostname',
                                           hostvars.get('ansible_hostname')),
                     private_ip=hostvars['private_ip'],
@@ -87,7 +87,7 @@ class LookupModule(LookupBase):
                 repmgr_standbys[host] = dict(
                     node_type='standby',
                     id=node_id[hostvars['upstream_node_private_ip']],
-                    ansible_host=hostvars['ansible_host'],
+                    ansible_host=hostvars.get('ansible_host'),
                     hostname=hostvars.get('hostname',
                                           hostvars.get('ansible_hostname')),
                     private_ip=hostvars['private_ip'],
@@ -107,7 +107,7 @@ class LookupModule(LookupBase):
                 repmgr_witnesses[host] = dict(
                     node_type='witness',
                     id=node_id[hostvars['upstream_node_private_ip']],
-                    ansible_host=hostvars['ansible_host'],
+                    ansible_host=hostvars.get('ansible_host'),
                     hostname=hostvars.get('hostname',
                                           hostvars.get('ansible_hostname')),
                     private_ip=hostvars['private_ip'],
