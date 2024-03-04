@@ -54,6 +54,10 @@ When executing the role via Ansible these are the required variables:
   EDB repository token used to access EDB package repository.
   Required when **enable_edb_repo** is set to `true` and **repo_username** and **repo_password** aren't used.
 
+  * **repo_plan**
+
+  Configure the EDB support plan. Plans supported are: `standard` and `enterprise`. Default: `enterprise`
+
   * **enable_pgdg_repo** 
 
   Configure access to the PGDG package repository. Default: `true`. Only set to `false` when using local repositories. 

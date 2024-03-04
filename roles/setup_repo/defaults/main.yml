@@ -5,11 +5,12 @@
 # PG_RPMREPO: "https://yum.enterprisedb.com/edb-repo-rpms/edb-repo-latest.noarch.rpm"
 # After 06/23/2020 - Redesigned EDB Portal
 
-# EDB repository username, password and subscription token
+# EDB repository username, password, subscription token and subscription plan
 enable_edb_repo: true
 repo_token: ""
 repo_username: ""
 repo_password: ""
+repo_plan: "enterprise"
 
 # TPA Specific token variable
 tpa_subscription_token: ""
@@ -37,7 +38,7 @@ edb_2q_repositories:
   - bdr4/release
   - harp/release
 edb_repo_base_download: "https://downloads.enterprisedb.com/{{ repo_token }}"
-edb_repo_script_link: "{{ edb_repo_base_download }}/enterprise/setup.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}.sh"
+edb_repo_script_link: "{{ edb_repo_base_download }}/{{ repo_plan }}/setup.{{ 'rpm' if ansible_os_family == 'RedHat' else 'deb' }}.sh"
 
 # EDB postgres_distributed RPM repo links
 pgd_rpm_repo:
