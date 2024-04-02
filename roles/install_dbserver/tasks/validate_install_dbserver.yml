@@ -99,7 +99,7 @@
 
 - name: Install python-apt package
   ansible.builtin.package:
-    name: python-apt
+    name: python3-apt
     state: present
   when:
     - ansible_os_family == 'Debian'
