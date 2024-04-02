@@ -52,7 +52,7 @@
 # - name: Check for EDB Repo on Debian
 #   ansible.builtin.assert:
 #     that:
-#       - "'apt.enterprisedb.com' in apt_sources.stdout"
+#       - "'enterprisedb.com' in apt_sources.stdout"
 #     fail_msg: "Access to the EDB package repository is not configured"
 #     success_msg: "Access to the EDB package repository has been configured successfully"
 #   when:
