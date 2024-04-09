@@ -36,7 +36,7 @@
         },
         {
           'key': 'backend_flag' + ansible_loop.index0 | string,
-          'value': 'ALLOW_TO_FAILOVER',
+          'value': pgpool2_backend_flag,
           'state': 'present',
           'quoted': true
         }

@@ -49,6 +49,7 @@ pgpool2_ssl_csr_dn:
   EMAIL: "example@mail.com"
 
 pgpool2_service_users: []
+pgpool2_backend_flag: "ALLOW_TO_FAILOVER"
 
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup
