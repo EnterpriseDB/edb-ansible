@@ -36,7 +36,7 @@
 
 - name: Build configuration file {{ pgbackrest_configuration_file }}
   ansible.builtin.template:
-    src: "./templates/pgbackrest_{{ group_names |select('match', 'primary|slave') |first }}.{{ pgbackrest_archive_method }}.conf.template"
+    src: "./templates/pgbackrest_{{ group_names | select('match', 'primary|slave') | first }}.{{ pgbackrest_archive_method }}.conf.template"
     dest: "{{ pgbackrest_configuration_file }}"
     owner: "{{ pg_owner }}"
     group: "{{ pg_group }}"
