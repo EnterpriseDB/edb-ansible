@@ -75,7 +75,7 @@
 - name: Override the variable _pg_max_connections
   ansible.builtin.set_fact:
     _pg_max_connections: >-
-      {{ pg_postgres_conf_params |selectattr('name', 'equalto', 'max_connections') |map(attribute='value') |default([_pg_max_connections], true) |first }}
+      {{ pg_postgres_conf_params | selectattr('name', 'equalto', 'max_connections') | map(attribute='value') | default([_pg_max_connections], true) | first }}
   when: pg_conf_override_tuning
 
 # Set the shared_buffers value
@@ -86,7 +86,8 @@
 - name: Override the variable _pg_shared_buffers_mb
   ansible.builtin.set_fact:
     _pg_shared_buffers_mb: >-
-      {{ pg_postgres_conf_params |selectattr('name', 'equalto', 'shared_buffers') |map(attribute='value') |default([_pg_shared_buffers_mb], true) |first |ansible.builtin.regex_replace('mb', '', ignorecase=True) }}
+      {{ pg_postgres_conf_params | selectattr('name', 'equalto', 'shared_buffers') | map(attribute='value')
+      | default([_pg_shared_buffers_mb], true) | first | ansible.builtin.regex_replace('mb', '', ignorecase=True) }}
   when: pg_conf_override_tuning
 
 # Set the work_mem value to: ((Total RAM - shared_buffers)/(16 x CPU cores))
@@ -99,7 +100,8 @@
 - name: Override the variable _pg_work_mem_mb
   ansible.builtin.set_fact:
     _pg_work_mem_mb: >-
-      {{ pg_postgres_conf_params |selectattr('name', 'equalto', 'work_mem') |map(attribute='value') |default([_pg_work_mem_mb], true) |first |ansible.builtin.regex_replace('mb', '', ignorecase=True) }}
+      {{ pg_postgres_conf_params | selectattr('name', 'equalto', 'work_mem') | map(attribute='value')
+      | default([_pg_work_mem_mb], true) | first | ansible.builtin.regex_replace('mb', '', ignorecase=True) }}
   when: pg_conf_override_tuning
 
 # Set the maintenance_work_mem value to:
@@ -121,7 +123,8 @@
 - name: Override the variable _pg_maintenance_work_mem_mb
   ansible.builtin.set_fact:
     _pg_maintenance_work_mem_mb: >-
-      {{ pg_postgres_conf_params |selectattr('name', 'equalto', 'maintenance_work_mem') |map(attribute='value') |default([_pg_maintenance_work_mem_mb], true) |first |ansible.builtin.regex_replace('mb', '', ignorecase=True) }}
+      {{ pg_postgres_conf_params | selectattr('name', 'equalto', 'maintenance_work_mem') | map(attribute='value')
+      | default([_pg_maintenance_work_mem_mb], true) | first | ansible.builtin.regex_replace('mb', '', ignorecase=True) }}
   when: pg_conf_override_tuning
 
 - name: Initialize the Postgres parameters list
