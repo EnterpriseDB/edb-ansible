@@ -108,6 +108,7 @@ pcp_passfile_owner: "efm"
 pcp_passfile_group: "efm"
 pcp_passfile_mode: "0600"
 pgpool2_pcp_port: 9898
+detach_on_agent_failure: true
 
 supported_os:
   - CentOS7

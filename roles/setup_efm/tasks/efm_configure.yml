@@ -46,6 +46,7 @@
       - {name: custom.monitor.interval, value: "5"}
       - {name: custom.monitor.safe.mode, value: "true"}
       - {name: custom.monitor.timeout, value: "10"}
+      - {name: detach.on.agent.failure, value: "{{ detach_on_agent_failure }}"}
   when:
     - efm_pgpool2_integration
 
