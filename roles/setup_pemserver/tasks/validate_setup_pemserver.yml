@@ -67,7 +67,7 @@
 - name: Check that all required packages have been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[item] }} is defined"
+      - ansible_facts.packages[item] is defined
     fail_msg: "Package {{ item }} has not been installed."
     success_msg: "Package {{ item }} has been installed."
   loop: "{{ pem_server_packages }}"
