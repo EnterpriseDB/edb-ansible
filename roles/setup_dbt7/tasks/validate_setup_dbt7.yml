@@ -11,7 +11,7 @@
 - name: Check that all packages in dbt7_db_pkg_list has been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[package] }} is defined"
+      - ansible_facts.packages[package] is defined
     fail_msg: "Package {{ package }} has not been installed."
     success_msg: "Package {{ package }} has been installed."
   loop: "{{ dbt7_db_pkg_list }}"
