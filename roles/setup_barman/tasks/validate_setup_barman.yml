@@ -42,7 +42,7 @@
 - name: Check if backup server has been configured correctly.
   ansible.builtin.assert:
     that:
-      - barman_list_server_res.stdout_lines is search('{{ primary_inventory_hostname }}')
+      - barman_list_server_res.stdout_lines is search(primary_inventory_hostname)
     fail_msg: "{{ primary_inventory_hostname }} backup server was not configured correctly."
     success_msg: "{{ primary_inventory_hostname }} backup server was configured correctly."
   run_once: true
@@ -64,7 +64,7 @@
 - name: Check if barman home directory has been configured correctly
   ansible.builtin.assert:
     that:
-      - barman_show_server_res.stdout_lines is search('{{ barman_home }}')
+      - barman_show_server_res.stdout_lines is search(barman_home)
     fail_msg: "{{ barman_home }} directory was not configured correctly"
     success_msg: "{{ barman_home }} directory was configured correctly"
   run_once: true
