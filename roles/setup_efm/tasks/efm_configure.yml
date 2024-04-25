@@ -45,7 +45,7 @@
       - {name: custom.monitor.interval, value: "5"}
       - {name: custom.monitor.safe.mode, value: "true"}
       - {name: custom.monitor.timeout, value: "10"}
-      - {name: pgpool.enable, value: "{{ efm_pgpool2_integration|lower }}"}
+      - {name: pgpool.enable, value: "{{ efm_pgpool2_integration | lower }}"}
       - {name: pgpool.bin, value: "{{ pgpool2_bin_path }}"}
       - {name: pcp.user, value: "{{ pcp_admin_user }}"}
       - {name: pcp.host, value: "{{ pgpool2_vip }}"}
