@@ -29,7 +29,7 @@
 
 - name: Install pgpool-II-pcp package on RedHat
   ansible.builtin.package:
-    name: "pgpool-II-pcp"
+    name: "{{ pgpool2_pcp_package_name }}"
     state: present
   when:
     - ansible_os_family == 'RedHat'
