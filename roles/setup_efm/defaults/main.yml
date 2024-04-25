@@ -108,6 +108,8 @@ pcp_passfile_owner: "efm"
 pcp_passfile_group: "efm"
 pcp_passfile_mode: "0600"
 pgpool2_pcp_port: 9898
+efm_pgpool2_lb_attach: "{{ efm_bin_path }}/pcp_attach_all.sh %h %t"
+efm_pgpool2_lb_detach: ""
 
 supported_os:
   - CentOS7
