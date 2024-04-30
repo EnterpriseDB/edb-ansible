@@ -97,12 +97,21 @@
     - ansible_os_family == 'RedHat'
     - pg_version|int > 10
 
-- name: Install python-apt package
+- name: Install python-apt package for Debian 9/10
   ansible.builtin.package:
     name: python-apt
     state: present
   when:
     - ansible_os_family == 'Debian'
+    - ansible_distribution_major_version in ['9', '10']
+
+- name: Install python3-apt package for Debian 11/12
+  ansible.builtin.package:
+    name: python3-apt
+    state: present
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_distribution_major_version in ['11', '12']
 
 - name: Set package list for PG Debian
   ansible.builtin.set_fact:
@@ -187,7 +196,7 @@
 - name: Check that all required packages have been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[package] }} is defined"
+      - ansible_facts.packages[package] is defined
     fail_msg: "Package {{ package }} has not been installed."
     success_msg: "Package {{ package }} has been installed."
   loop: "{{ package_list }}"

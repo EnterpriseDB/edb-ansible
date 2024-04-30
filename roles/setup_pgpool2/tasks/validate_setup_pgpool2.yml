@@ -55,7 +55,7 @@
 - name: Check that all required pgpool2 packages have been installed
   ansible.builtin.assert:
     that:
-      - "{{ ansible_facts.packages[package] }} is defined"
+      - ansible_facts.packages[package] is defined
     fail_msg: "Package {{ package }} has not been installed."
     success_msg: "Package {{ package }} has been installed."
   loop: "{{ pgpool2_packages_check }}"
@@ -123,6 +123,7 @@
         pg_database: "{{ pg_pgpool_database }}"
   no_log: "{{ disable_logging }}"
   when: pgpool2_test_user_password|length > 1
+  run_once: true
 
 - name: Add pgpool2_test_user
   ansible.builtin.include_role:
@@ -181,6 +182,7 @@
         state: absent
   no_log: "{{ disable_logging }}"
   when: pgpool2_test_user_password|length > 1
+  run_once: true
 
 - name: Remove pgpool2_test_user from pgpool2
   ansible.builtin.include_role:

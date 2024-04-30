@@ -27,6 +27,8 @@ primary_public_ip: ""
 primary_private_ip: ""
 input_password: ""
 pg_allow_ip_addresses: []
+ping_server_ip: "8.8.8.8"
+efm_user_email: "unknown@gmail.com"
 
 # setting validate_only to true allows you to validate setup on an existing node
 # use_validation flag applies to deployment configuration and validation after setup
@@ -46,7 +48,7 @@ efm_default_parameters:
   - {name: db.bin, value: "{{ pg_bin_path }}"}
   - {name: db.recovery.dir, value: "{{ pg_data }}"}
   - {name: db.data.dir, value: "{{ pg_data }}"}
-  - {name: user.email, value: "unknown@gmail.com"}
+  - {name: user.email, value: "{{ efm_user_email }}"}
   - {name: auto.allow.hosts, value: true}
   - {name: stable.nodes.file, value: true}
   - {name: local.period, value: "3"}
@@ -55,6 +57,7 @@ efm_default_parameters:
   - {name: remote.timeout, value: "5"}
   - {name: node.timeout, value: "5"}
   - {name: admin.port, value: "{{ efm_admin_port }}"}
+  - {name: ping.server.ip, value: "{{ ping_server_ip }}"}
 
 efm_physical_slot_param:
   - {name: update.physical.slots.period, value: "5"}
@@ -109,6 +112,8 @@ pcp_passfile_group: "efm"
 pcp_passfile_mode: "0600"
 pgpool2_pcp_port: 9898
 detach_on_agent_failure: true
+efm_pgpool2_lb_attach: "{{ efm_bin_path }}/pcp_attach_all.sh %h %t"
+efm_pgpool2_lb_detach: ""
 
 supported_os:
   - CentOS7

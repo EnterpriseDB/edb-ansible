@@ -40,13 +40,20 @@
 - name: Prepare parameters for PgPoolII integration
   ansible.builtin.set_fact:
     efm_lb_parameters:
-      - {name: script.load.balancer.attach, value: "{{ efm_bin_path }}/pcp_attach_all.sh %h %t"}
       - {name: auto.resume.period, value: "5"}
       - {name: script.custom.monitor, value: "{{ efm_bin_path }}/pg_pcp_health.sh"}
       - {name: custom.monitor.interval, value: "5"}
       - {name: custom.monitor.safe.mode, value: "true"}
       - {name: custom.monitor.timeout, value: "10"}
       - {name: detach.on.agent.failure, value: "{{ detach_on_agent_failure }}"}
+      - {name: pgpool.enable, value: "{{ efm_pgpool2_integration | lower }}"}
+      - {name: pgpool.bin, value: "{{ pgpool2_bin_path }}"}
+      - {name: pcp.user, value: "{{ pcp_admin_user }}"}
+      - {name: pcp.host, value: "{{ pgpool2_vip }}"}
+      - {name: pcp.port, value: "{{ pgpool2_pcp_port }}"}
+      - {name: pcp.pass.file, value: "{{ pcp_passfile }}"}
+      - {name: script.load.balancer.attach, value: "{{ efm_pgpool2_lb_attach }}"}
+      - {name: script.load.balancer.detach, value: "{{ efm_pgpool2_lb_detach }}"}
   when:
     - efm_pgpool2_integration
 
