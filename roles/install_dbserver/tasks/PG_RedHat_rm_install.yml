@@ -15,7 +15,6 @@
   ansible.builtin.package:
     name:
       - python-pycurl
-      - libselinux-python
       - python2-psycopg2
       - python-ipaddress
     state: absent
@@ -26,7 +25,6 @@
   ansible.builtin.package:
     name:
       - python3-pycurl
-      - python3-libselinux
       - python3-psycopg2
     state: absent
   become: true
