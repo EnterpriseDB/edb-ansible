@@ -1,5 +1,11 @@
 [![Tests status](https://github.com/EnterpriseDB/edb-ansible/workflows/edb-ansible%20testing/badge.svg)](https://github.com/EnterpriseDB/edb-ansible/actions?query=workflow%3Aedb-ansible-testing)
 
+#### ------
+#### NOTE:
+#### This repository has been archived and is no longer maintained.
+#### If you plan to use this repository, you must be prepared to maintain yourself.
+#### ------
+
 This is an open-source project and is not officially supported by EDB Support.
 This repository is maintained and supported by the EDB GitHub members of this
 repository. Please provide feedback by posting issues and contribute by
