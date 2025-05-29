@@ -10,3 +10,4 @@ backup_options = concurrent_backup
 immediate_checkpoint = true
 recovery_options = get-wal
 create_slot = auto
+{% for line in barman_template_lines %}{{ line }}{% endfor %}
